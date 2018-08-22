@@ -1,0 +1,46 @@
+# Exclude C/C++ files
+# Object files
+*.elf
+*.o
+*.ko
+*.lo
+*.obj
+*.slo
+# Precompiled Headers
+*.gch
+*.pch
+# Libraries
+*.a
+*.la
+*.lai
+*.lib
+*.lo
+# Shared objects
+*.dll
+*.so
+*.so.*
+*.dylib
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Exclude Free Pascal files
+# Object files
+*.elf
+*.o
+*.ppu
+
+# Exclude project files
+*.img
+*.bin
+*.lst
+*.map
+Config.mk
+
+# Exclude incomplete headers
+incomplete/
+*.incomplete
