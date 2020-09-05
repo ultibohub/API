@@ -12,6 +12,17 @@ The includes directory contains header files for interfaces to the following Ult
 * ultibo/globaltypes.h - 
 * ultibo/platform.h - 
 
+In addition to the Ultibo interface headers a small number of headers that expose functionality not normally available in the Newlib C library are also provided
+
+* netdb.h - 
+* semaphore.h -
+* arpa/inet.h - 
+* netinet/in.h - 
+* netinet6/in6.h - 
+* sys/dirent.h
+* sys/socket.h
+* sys/statfs.h
+
 ### Class libraries:
 
 The library contains C++ classes for several of the interfaces above, more will be added in future
