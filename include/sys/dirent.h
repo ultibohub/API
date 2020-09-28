@@ -11,11 +11,11 @@ extern "C" {
 struct dirent
   {
 #ifndef __USE_FILE_OFFSET64
-    __ino_t d_ino;
-    __off_t d_off;
+    ino_t d_ino;
+    off_t d_off;
 #else
-    __ino64_t d_ino;
-    __off64_t d_off;
+    ino64_t d_ino;
+    off64_t d_off;
 #endif
     unsigned short int d_reclen;
     unsigned char d_type;
@@ -25,8 +25,8 @@ struct dirent
 #ifdef __USE_LARGEFILE64
 struct dirent64
   {
-    __ino64_t d_ino;
-    __off64_t d_off;
+    ino64_t d_ino;
+    off64_t d_off;
     unsigned short int d_reclen;
     unsigned char d_type;
     char d_name[256];		/* We must not include limits.h! */
