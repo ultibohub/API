@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2021 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -979,6 +979,7 @@ extern "C" {
 #define MACHINE_TYPE_BCM2709	2 // Broadcom BCM2709 (Raspberry Pi 2)
 #define MACHINE_TYPE_BCM2710	3 // Broadcom BCM2710 (Raspberry Pi 3)
 #define MACHINE_TYPE_VERSATILEPB	4 // ARM Versatile PB (QEMU)
+#define MACHINE_TYPE_BCM2711    5 // Broadcom BCM2711 (Raspberry Pi 4)
 
 /* ============================================================================== */
 /* Board Type constants */
@@ -990,20 +991,6 @@ extern "C" {
 #define BOARD_TYPE_RPIB_PLUS	5 // Raspberry Pi Model B+
 #define BOARD_TYPE_RPI2B	6 // Raspberry Pi 2 Model B
 #define BOARD_TYPE_RPI_ZERO	7 // Raspberry Pi Model Zero
-#define BOARD_TYPE_BPI	8 // Banana Pi
-#define BOARD_TYPE_BPRO	9 // Banana Pro
-#define BOARD_TYPE_BBB_REVC	10 // Beagle Bone Black (Revision C)
-#define BOARD_TYPE_CUBOX_I	11 // Cubox i1/i2/i2ex/i4pro/i4x4
-#define BOARD_TYPE_HUMMINGBOARD	12 // Hummingboard
-#define BOARD_TYPE_CREATOR_CI20	13 // MIPS Creator CI20
-#define BOARD_TYPE_PCDUINO1	14 // pcDuino V1
-#define BOARD_TYPE_PCDUINO2	15 // pcDuino V2
-#define BOARD_TYPE_PCDUINO3	16 // pcDuino V3
-#define BOARD_TYPE_ODROID_C1	17 // Odroid C1/C1+
-#define BOARD_TYPE_ODROID_U2	18 // Odroid U2
-#define BOARD_TYPE_ODROID_U3	19 // Odroid U3
-#define BOARD_TYPE_ODROID_XU3	20 // Odroid XU3
-#define BOARD_TYPE_ODROID_XU4	21 // Odroid XU4
 #define BOARD_TYPE_PC_X86	22 // PC x86
 #define BOARD_TYPE_PC_X86_64	23 // PC x86 64bit
 #define BOARD_TYPE_RPI3B	24 // Raspberry Pi 3 Model B
@@ -1011,6 +998,9 @@ extern "C" {
 #define BOARD_TYPE_RPI_COMPUTE3	26 // Raspberry Pi Compute Module 3
 #define BOARD_TYPE_RPI_ZERO_W	27 // Raspberry Pi Model Zero W
 #define BOARD_TYPE_RPI3B_PLUS	28 // Raspberry Pi 3 Model B+
+#define BOARD_TYPE_RPI3A_PLUS	29 // Raspberry Pi 3 Model A+
+#define BOARD_TYPE_RPI_COMPUTE3_PLUS	30 // Raspberry Pi Compute Module 3+
+#define BOARD_TYPE_RPI4B    31 // Raspberry Pi 4 Model B
 
 /* ============================================================================== */
 /* CPU Arch constants */
@@ -1095,6 +1085,8 @@ extern "C" {
 
 #define CPU_GROUP_ALL	0xFFFFFFFF
 
+#define CPU_GROUP_MAX	CPU_GROUP_31
+
 /* CPU ID constants */
 #define CPU_ID_0	0
 #define CPU_ID_1	1
@@ -1130,6 +1122,45 @@ extern "C" {
 #define CPU_ID_31	31
 
 #define CPU_ID_ALL	0xFFFFFFFF
+
+#define CPU_ID_MAX	CPU_ID_31
+
+/* CPU Mask constants */
+#define CPU_MASK_0	(1 << CPU_ID_0)
+#define CPU_MASK_1	(1 << CPU_ID_1)
+#define CPU_MASK_2	(1 << CPU_ID_2)
+#define CPU_MASK_3	(1 << CPU_ID_3)
+#define CPU_MASK_4	(1 << CPU_ID_4)
+#define CPU_MASK_5	(1 << CPU_ID_5)
+#define CPU_MASK_6	(1 << CPU_ID_6)
+#define CPU_MASK_7	(1 << CPU_ID_7)
+#define CPU_MASK_8	(1 << CPU_ID_8)
+#define CPU_MASK_9	(1 << CPU_ID_9)
+#define CPU_MASK_10	(1 << CPU_ID_10)
+#define CPU_MASK_11	(1 << CPU_ID_11)
+#define CPU_MASK_12	(1 << CPU_ID_12)
+#define CPU_MASK_13	(1 << CPU_ID_13)
+#define CPU_MASK_14	(1 << CPU_ID_14)
+#define CPU_MASK_15	(1 << CPU_ID_15)
+#define CPU_MASK_16	(1 << CPU_ID_16)
+#define CPU_MASK_17	(1 << CPU_ID_17)
+#define CPU_MASK_18	(1 << CPU_ID_18)
+#define CPU_MASK_19	(1 << CPU_ID_19)
+#define CPU_MASK_20	(1 << CPU_ID_20)
+#define CPU_MASK_21	(1 << CPU_ID_21)
+#define CPU_MASK_22	(1 << CPU_ID_22)
+#define CPU_MASK_23	(1 << CPU_ID_23)
+#define CPU_MASK_24	(1 << CPU_ID_24)
+#define CPU_MASK_25	(1 << CPU_ID_25)
+#define CPU_MASK_26	(1 << CPU_ID_26)
+#define CPU_MASK_27	(1 << CPU_ID_27)
+#define CPU_MASK_28	(1 << CPU_ID_28)
+#define CPU_MASK_29	(1 << CPU_ID_29)
+#define CPU_MASK_30	(1 << CPU_ID_30)
+#define CPU_MASK_31	(1 << CPU_ID_31)
+
+#define CPU_MASK_NONE	0x00000000
+#define CPU_MASK_ALL	0xFFFFFFFF
 
 /* CPU Affinity constants */
 #define CPU_AFFINITY_0	(1 << CPU_ID_0)
@@ -1188,6 +1219,7 @@ extern "C" {
 #define GPU_TYPE_MALI450	3 // ARM Mali 450
 #define GPU_TYPE_GC880	4 // Vivante GC880
 #define GPU_TYPE_GC2000	5 // Vivante GC2000
+#define GPU_TYPE_VC6    6 // Broadcom VideoCore VI
 
 /* GPU State constants */
 #define GPU_STATE_NONE	(0 << 0)
@@ -1599,6 +1631,7 @@ extern "C" {
 #define LOGGING_FACILITY_CODEC	35 // Codec log messages
 #define LOGGING_FACILITY_NFS	36 // NFS log messages
 #define LOGGING_FACILITY_RPC	37 // RPC log messages
+#define LOGGING_FACILITY_PCI    38 // PCI log messages
 
 #define LOGGING_FACILITY_USER	1000 // User log messages
 

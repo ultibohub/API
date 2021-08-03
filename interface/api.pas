@@ -1,7 +1,7 @@
 {
 Ultibo Library API interface unit.
 
-Copyright (C) 2018 - SoftOz Pty Ltd.
+Copyright (C) 2021 - SoftOz Pty Ltd.
 
 Arch
 ====
@@ -56,7 +56,7 @@ API
  only on the features that you use then you should turn off any of the API_EXPORT_*
  that are not required for your project.
 
- //To do
+ //To Do
 
  //Export all Ultibo functions for linking from static libraries
 
@@ -85,44 +85,46 @@ interface
 {--$INCLUDE GlobalDefines.inc} //To Do //Continuing
 
 //To Do //Continuing
-{$DEFINE API_EXPORT_PLATFORM}    {Enable the library API unit to export symbols for the Platform unit (Default: On)}
-{$DEFINE API_EXPORT_THREADS}     {Enable the library API unit to export symbols for the Threads unit (Default: On)}
-{$DEFINE API_EXPORT_HEAP}      {Enable the library API unit to export symbols for the HeapManager unit (Default: On)}
+{$DEFINE API_EXPORT_PLATFORM}        {Enable the library API unit to export symbols for the Platform unit (Default: On)}
+{$DEFINE API_EXPORT_THREADS}         {Enable the library API unit to export symbols for the Threads unit (Default: On)}
+{$DEFINE API_EXPORT_HEAP}            {Enable the library API unit to export symbols for the HeapManager unit (Default: On)}
 
-{$DEFINE API_EXPORT_DEVICES}     {Enable the library API unit to export symbols for the Devices unit (Default: On)}
-{$DEFINE API_EXPORT_CONSOLE}     {Enable the library API unit to export symbols for the Console unit (Default: On)}
-{$DEFINE API_EXPORT_LOGGING}     {Enable the library API unit to export symbols for the Logging unit (Default: On)}
-{$DEFINE API_EXPORT_DMA}       {Enable the library API unit to export symbols for the DMA unit (Default: On)}
-{$DEFINE API_EXPORT_USB}       {Enable the library API unit to export symbols for the USB unit (Default: On)}
-{$DEFINE API_EXPORT_MMC}       {Enable the library API unit to export symbols for the MMC unit (Default: On)}
-{$DEFINE API_EXPORT_SPI}       {Enable the library API unit to export symbols for the SPI unit (Default: On)}
-{$DEFINE API_EXPORT_I2C}       {Enable the library API unit to export symbols for the I2C unit (Default: On)}
-{$DEFINE API_EXPORT_PWM}       {Enable the library API unit to export symbols for the PWM unit (Default: On)}
-{$DEFINE API_EXPORT_PCM}       {Enable the library API unit to export symbols for the PCM unit (Default: On)}
-{$DEFINE API_EXPORT_GPIO}      {Enable the library API unit to export symbols for the GPIO unit (Default: On)}
-{$DEFINE API_EXPORT_UART}      {Enable the library API unit to export symbols for the UART unit (Default: On)}
-{$DEFINE API_EXPORT_SERIAL}     {Enable the library API unit to export symbols for the Serial unit (Default: On)}
-{$DEFINE API_EXPORT_RTC}       {Enable the library API unit to export symbols for the RTC unit (Default: On)}
-{$DEFINE API_EXPORT_FONT}      {Enable the library API unit to export symbols for the Font unit (Default: On)}
-{$DEFINE API_EXPORT_FRAMEBUFFER}   {Enable the library API unit to export symbols for the Framebuffer unit (Default: On)}
+{$DEFINE API_EXPORT_DEVICE_TREE}     {Enable the library API unit to export symbols for the DeviceTree unit (Default: On)}
+{$DEFINE API_EXPORT_DEVICES}         {Enable the library API unit to export symbols for the Devices unit (Default: On)}
+{$DEFINE API_EXPORT_CONSOLE}         {Enable the library API unit to export symbols for the Console unit (Default: On)}
+{$DEFINE API_EXPORT_LOGGING}         {Enable the library API unit to export symbols for the Logging unit (Default: On)}
+{$DEFINE API_EXPORT_DMA}             {Enable the library API unit to export symbols for the DMA unit (Default: On)}
+{$DEFINE API_EXPORT_PCI}             {Enable the library API unit to export symbols for the PCI unit (Default: On)}
+{$DEFINE API_EXPORT_USB}             {Enable the library API unit to export symbols for the USB unit (Default: On)}
+{$DEFINE API_EXPORT_MMC}             {Enable the library API unit to export symbols for the MMC unit (Default: On)}
+{$DEFINE API_EXPORT_SPI}             {Enable the library API unit to export symbols for the SPI unit (Default: On)}
+{$DEFINE API_EXPORT_I2C}             {Enable the library API unit to export symbols for the I2C unit (Default: On)}
+{$DEFINE API_EXPORT_PWM}             {Enable the library API unit to export symbols for the PWM unit (Default: On)}
+{$DEFINE API_EXPORT_PCM}             {Enable the library API unit to export symbols for the PCM unit (Default: On)}
+{$DEFINE API_EXPORT_GPIO}            {Enable the library API unit to export symbols for the GPIO unit (Default: On)}
+{$DEFINE API_EXPORT_UART}            {Enable the library API unit to export symbols for the UART unit (Default: On)}
+{$DEFINE API_EXPORT_SERIAL}          {Enable the library API unit to export symbols for the Serial unit (Default: On)}
+{$DEFINE API_EXPORT_RTC}             {Enable the library API unit to export symbols for the RTC unit (Default: On)}
+{$DEFINE API_EXPORT_FONT}            {Enable the library API unit to export symbols for the Font unit (Default: On)}
+{$DEFINE API_EXPORT_FRAMEBUFFER}     {Enable the library API unit to export symbols for the Framebuffer unit (Default: On)}
 {$DEFINE API_EXPORT_GRAPHICSCONSOLE} {Enable the library API unit to export symbols for the GraphicsConsole unit (Default: On)}
-{$DEFINE API_EXPORT_KEYMAP}     {Enable the library API unit to export symbols for the Keymap unit (Default: On)}
-{$DEFINE API_EXPORT_KEYBOARD}    {Enable the library API unit to export symbols for the Keyboard unit (Default: On)}
-{$DEFINE API_EXPORT_MOUSE}      {Enable the library API unit to export symbols for the Mouse unit (Default: On)}
-{$DEFINE API_EXPORT_TOUCH}      {Enable the library API unit to export symbols for the Touch unit (Default: On)}
-{$DEFINE API_EXPORT_STORAGE}     {Enable the library API unit to export symbols for the Storage unit (Default: On)}
-{$DEFINE API_EXPORT_NETWORK}     {Enable the library API unit to export symbols for the Network unit (Default: On)}
-{$DEFINE API_EXPORT_TIMEZONE}    {Enable the library API unit to export symbols for the Timezone unit (Default: On)}
-{$DEFINE API_EXPORT_LOCALE}     {Enable the library API unit to export symbols for the Locale unit (Default: On)}
-{$DEFINE API_EXPORT_UNICODE}     {Enable the library API unit to export symbols for the Unicode unit (Default: On)}
-{$DEFINE API_EXPORT_TFTFRAMEBUFFER} {Enable the library API unit to export symbols for the TFTFramebuffer unit (Default: On)}
+{$DEFINE API_EXPORT_KEYMAP}          {Enable the library API unit to export symbols for the Keymap unit (Default: On)}
+{$DEFINE API_EXPORT_KEYBOARD}        {Enable the library API unit to export symbols for the Keyboard unit (Default: On)}
+{$DEFINE API_EXPORT_MOUSE}           {Enable the library API unit to export symbols for the Mouse unit (Default: On)}
+{$DEFINE API_EXPORT_TOUCH}           {Enable the library API unit to export symbols for the Touch unit (Default: On)}
+{$DEFINE API_EXPORT_STORAGE}         {Enable the library API unit to export symbols for the Storage unit (Default: On)}
+{$DEFINE API_EXPORT_NETWORK}         {Enable the library API unit to export symbols for the Network unit (Default: On)}
+{$DEFINE API_EXPORT_TIMEZONE}        {Enable the library API unit to export symbols for the Timezone unit (Default: On)}
+{$DEFINE API_EXPORT_LOCALE}          {Enable the library API unit to export symbols for the Locale unit (Default: On)}
+{$DEFINE API_EXPORT_UNICODE}         {Enable the library API unit to export symbols for the Unicode unit (Default: On)}
+{$DEFINE API_EXPORT_TFTFRAMEBUFFER}  {Enable the library API unit to export symbols for the TFTFramebuffer unit (Default: On)}
 
-{$DEFINE API_EXPORT_FILESYSTEM}   {Enable the library API unit to export symbols for the FileSystem unit (Default: On)}
-{--$DEFINE API_EXPORT_WINSOCK}    {Enable the library API unit to export symbols for the Winsock unit (Default: Off)}
-{--$DEFINE API_EXPORT_WINSOCK2}   {Enable the library API unit to export symbols for the Winsock2 unit (Default: Off)}
-{--$DEFINE API_EXPORT_IPHLPAPI}   {Enable the library API unit to export symbols for the Iphlpapi unit (Default: Off)}
+{$DEFINE API_EXPORT_FILESYSTEM}      {Enable the library API unit to export symbols for the FileSystem unit (Default: On)}
+{--$DEFINE API_EXPORT_WINSOCK}       {Enable the library API unit to export symbols for the Winsock unit (Default: Off)}
+{--$DEFINE API_EXPORT_WINSOCK2}      {Enable the library API unit to export symbols for the Winsock2 unit (Default: Off)}
+{--$DEFINE API_EXPORT_IPHLPAPI}      {Enable the library API unit to export symbols for the Iphlpapi unit (Default: Off)}
 
-{$DEFINE API_EXPORT_ULTIBO}     {Enable the library API unit to export symbols for the Ultibo unit (Default: On)}
+{$DEFINE API_EXPORT_ULTIBO}          {Enable the library API unit to export symbols for the Ultibo unit (Default: On)}
 
 {API dependencies}
 {$IFDEF API_EXPORT_CONSOLE}
@@ -151,6 +153,10 @@ uses GlobalConfig,
    HeapManager,
    {$ENDIF}
 
+   {$IFDEF API_EXPORT_DEVICE_TREE}
+   DeviceTree,
+   {$ENDIF}
+
    {$IFDEF API_EXPORT_DEVICES}
    Devices,
    {$ENDIF}
@@ -165,6 +171,10 @@ uses GlobalConfig,
 
    {$IFDEF API_EXPORT_DMA}
    DMA,
+   {$ENDIF}
+
+   {$IFDEF API_EXPORT_PCI}
+   PCI,
    {$ENDIF}
 
    {$IFDEF API_EXPORT_USB}
@@ -295,7 +305,11 @@ type
  {Interrupt Request (IRQ/FIQ) Types}
  interrupt_handler = TInterruptHandler;
  interrupt_ex_handler = TInterruptExHandler;
+ shared_interrupt_handler = TSharedInterruptHandler;
 
+ {Inter Processor Interrupt (IPI) Types}
+ ipi_handler = TIPIHandler;
+  
  {System Call (Software Interrupt or SWI) Types}
  system_call_handler = TSystemCallHandler;
  system_call_ex_handler = TSystemCallExHandler;
@@ -473,6 +487,10 @@ type
  dma_request_completed_cb = TDMARequestCompleted;
 {$ENDIF}
 
+{$IFDEF API_EXPORT_PCI}
+//To Do
+{$ENDIF}
+
 {$IFDEF API_EXPORT_USB}
 type
  PUSB_HOST = PUSBHost;
@@ -508,6 +526,8 @@ type
  PUSB_CONFIGURATION_DESCRIPTOR = PUSBConfigurationDescriptor;
  
  TUSB_STRING_DESCRIPTOR_LANGIDS = TUSBStringDescriptorLANGIDs;
+ 
+ usb_log_output_proc = TUSBLogOutput;
 {$ENDIF}
 
 {$IFDEF API_EXPORT_MMC}
@@ -588,8 +608,6 @@ type
 
  rtc_enumerate_cb = TRTCEnumerate;
  rtc_notification_cb = TRTCNotification;
- 
- TSYSTEM_TIME = TSystemTime;
 {$ENDIF}
 
 {$IFDEF API_EXPORT_FONT}
@@ -815,6 +833,14 @@ function release_fiq(cpuid, number: uint32_t; handler: interrupt_handler; parame
 function request_ex_fiq(cpuid, number: uint32_t; handler: interrupt_handler; handler_ex: interrupt_ex_handler; parameter: PVOID): uint32_t; stdcall; public name 'request_ex_fiq';
 function release_ex_fiq(cpuid, number: uint32_t; handler: interrupt_handler; handler_ex: interrupt_ex_handler; parameter: PVOID): uint32_t; stdcall; public name 'release_ex_fiq';
 
+{Inter Processor Interrupt (IPI) Functions}
+function request_ipi(cpuid, number: uint32_t; handler: ipi_handler; parameter: PVOID): uint32_t; stdcall; public name 'request_ipi';
+function release_ipi(cpuid, number: uint32_t; handler: ipi_handler; parameter: PVOID): uint32_t; stdcall; public name 'release_ipi';
+
+{Interrupt Register/Deregister Functions}
+function register_interrupt(number, mask, priority, flags: uint32_t; handler: shared_interrupt_handler; parameter: PVOID): uint32_t; stdcall; public name 'register_interrupt';
+function deregister_interrupt(number, mask, priority, flags: uint32_t; handler: shared_interrupt_handler; parameter: PVOID): uint32_t; stdcall; public name 'deregister_interrupt';
+
 {System Call (Software Interrupt or SWI) Functions}
 procedure system_call(number: uint32_t; param1, param2, param3: SIZE_T); stdcall; public name 'system_call';
 
@@ -826,12 +852,17 @@ function deregister_system_call_ex(cpuid, number: uint32_t; handler: system_call
 {Interrupt Entry Functions}
 function get_interrupt_count: uint32_t; stdcall; public name 'get_interrupt_count';
 function get_interrupt_start: uint32_t; stdcall; public name 'get_interrupt_start';
-function get_interrupt_entry(number: uint32_t): TINTERRUPT_ENTRY; stdcall; public name 'get_interrupt_entry';
+function get_interrupt_entry(number, instance: uint32_t; var interrupt: TINTERRUPT_ENTRY): uint32_t; stdcall; public name 'get_interrupt_entry';
 
 {Local Interrupt Entry Functions}
 function get_local_interrupt_count: uint32_t; stdcall; public name 'get_local_interrupt_count';
 function get_local_interrupt_start: uint32_t; stdcall; public name 'get_local_interrupt_start';
-function get_local_interrupt_entry(cpuid, number: uint32_t): TINTERRUPT_ENTRY; stdcall; public name 'get_local_interrupt_entry';
+function get_local_interrupt_entry(cpuid, number, instance: uint32_t; var interrupt: TINTERRUPT_ENTRY): uint32_t; stdcall; public name 'get_local_interrupt_entry';
+
+{Software Interrupt Entry (IPI) Functions}
+function get_software_interrupt_count: uint32_t; stdcall; public name 'get_software_interrupt_count';
+function get_software_interrupt_start: uint32_t; stdcall; public name 'get_software_interrupt_start'; 
+function get_software_interrupt_entry(cpuid, number, instance: uint32_t; var interrupt: TINTERRUPT_ENTRY): uint32_t; stdcall; public name 'get_software_interrupt_entry';
 
 {System Call Entry Functions}
 function get_system_call_count: uint32_t; stdcall; public name 'get_system_call_count';
@@ -854,7 +885,7 @@ function cpu_get_mode: uint32_t; stdcall; public name 'cpu_get_mode';
 function cpu_get_state: uint32_t; stdcall; public name 'cpu_get_state';
 function cpu_get_group: uint32_t; stdcall; public name 'cpu_get_group';
 function cpu_get_current: uint32_t; stdcall; public name 'cpu_get_current';
-function cpu_get_memory(var address: SIZE_T; var length: uint32_t): uint32_t; stdcall; public name 'cpu_get_memory';
+function cpu_get_memory(var address: SIZE_T; var length: uint64_t): uint32_t; stdcall; public name 'cpu_get_memory';
 function cpu_get_percentage(cpuid: uint32_t): double_t; stdcall; public name 'cpu_get_percentage';
 function cpu_get_utilization(cpuid: uint32_t): uint32_t; stdcall; public name 'cpu_get_utilization';
 
@@ -869,7 +900,7 @@ function fpu_get_state: uint32_t; stdcall; public name 'fpu_get_state';
 {GPU Functions}
 function gpu_get_type: uint32_t; stdcall; public name 'gpu_get_type';
 function gpu_get_state: uint32_t; stdcall; public name 'gpu_get_state';
-function gpu_get_memory(var address: SIZE_T; var length: uint32_t): uint32_t; stdcall; public name 'gpu_get_memory';
+function gpu_get_memory(var address: SIZE_T; var length: uint64_t): uint32_t; stdcall; public name 'gpu_get_memory';
 
 {Cache Functions}
 function l1_cache_get_type: uint32_t; stdcall; public name 'l1_cache_get_type';
@@ -904,7 +935,7 @@ function machine_get_type: uint32_t; stdcall; public name 'machine_get_type';
 
 {Memory Functions}
 function memory_get_base: SIZE_T; stdcall; public name 'memory_get_base';
-function memory_get_size: uint32_t; stdcall; public name 'memory_get_size';
+function memory_get_size: uint64_t; stdcall; public name 'memory_get_size';
 
 function memory_get_pagesize: uint32_t; stdcall; public name 'memory_get_pagesize';
 function memory_get_large_pagesize: uint32_t; stdcall; public name 'memory_get_large_pagesize';
@@ -1211,10 +1242,10 @@ procedure invalidate_data_cache; stdcall; public name 'invalidate_data_cache';
 procedure clean_and_invalidate_data_cache; stdcall; public name 'clean_and_invalidate_data_cache';
 procedure invalidate_instruction_cache; stdcall; public name 'invalidate_instruction_cache';
 
-procedure clean_data_cache_range(address, size: uint32_t); stdcall; public name 'clean_data_cache_range';
-procedure invalidate_data_cache_range(address, size: uint32_t); stdcall; public name 'invalidate_data_cache_range';
-procedure clean_and_invalidate_data_cache_range(address, size: uint32_t); stdcall; public name 'clean_and_invalidate_data_cache_range';
-procedure invalidate_instruction_cache_range(address, size: uint32_t); stdcall; public name 'invalidate_instruction_cache_range';
+procedure clean_data_cache_range(address: SIZE_T; size: uint32_t); stdcall; public name 'clean_data_cache_range';
+procedure invalidate_data_cache_range(address: SIZE_T; size: uint32_t); stdcall; public name 'invalidate_data_cache_range';
+procedure clean_and_invalidate_data_cache_range(address: SIZE_T; size: uint32_t); stdcall; public name 'clean_and_invalidate_data_cache_range';
+procedure invalidate_instruction_cache_range(address: SIZE_T; size: uint32_t); stdcall; public name 'invalidate_instruction_cache_range';
 
 procedure flush_prefetch_buffer; stdcall; public name 'flush_prefetch_buffer';
 
@@ -1243,6 +1274,9 @@ function page_table_set_entry(const entry: TPAGE_TABLE_ENTRY): uint32_t; stdcall
 
 function page_table_get_page_size(address: SIZE_T): uint32_t; stdcall; public name 'page_table_get_page_size';
 function page_table_get_page_flags(address: SIZE_T): uint32_t; stdcall; public name 'page_table_get_page_flags';
+{$IFDEF CPU32}
+function page_table_get_page_range(address: SIZE_T): uint32_t; stdcall; public name 'page_table_get_page_range';
+{$ENDIF CPU32}
 function page_table_get_page_physical(address: SIZE_T): SIZE_T; stdcall; public name 'page_table_get_page_physical';
 
 function page_tables_get_address: SIZE_T; stdcall; public name 'page_tables_get_address';
@@ -1840,6 +1874,11 @@ function create_heap_snapshot_ex(state, flags, affinity: uint32_t): PHEAP_SNAPSH
 function destroy_heap_snapshot(snapshot: PHEAP_SNAPSHOT): uint32_t; stdcall; public name 'destroy_heap_snapshot';
 {$ENDIF}
 {==============================================================================}
+{Device Tree Functions}
+{$IFDEF API_EXPORT_DEVICE_TREE}
+//To Do
+{$ENDIF}
+{==============================================================================}
 {Devices Functions}
 {$IFDEF API_EXPORT_DEVICES}
 function device_create: PDEVICE; stdcall; public name 'device_create';
@@ -2409,6 +2448,11 @@ function dma_host_set_default(dma: PDMA_HOST): uint32_t; stdcall; public name 'd
 function dma_host_check(dma: PDMA_HOST): PDMA_HOST; stdcall; public name 'dma_host_check';
 {$ENDIF}
 {==============================================================================}
+{PCI Functions}
+{$IFDEF API_EXPORT_PCI}
+//To Do
+{$ENDIF}
+{==============================================================================}
 {USB Functions}
 {$IFDEF API_EXPORT_USB}
 function usb_start: uint32_t; stdcall; public name 'usb_start';
@@ -2577,7 +2621,7 @@ procedure usb_hub_unbind_devices(device: PUSB_DEVICE; driver: PUSB_DRIVER; callb
 procedure usb_hub_enumerate_devices(device: PUSB_DEVICE; callback: usb_device_enumerate_cb; data: PVOID); stdcall; public name 'usb_hub_enumerate_devices';
 
 //Hub Port Methods
-function usb_hub_port_reset(port: PUSB_PORT): uint32_t; stdcall; public name 'usb_hub_port_reset';
+function usb_hub_port_reset(port: PUSB_PORT; delay: uint32_t): uint32_t; stdcall; public name 'usb_hub_port_reset';
 
 function usb_hub_port_disable(port: PUSB_PORT): uint32_t; stdcall; public name 'usb_hub_port_disable';
 
@@ -2635,7 +2679,14 @@ procedure usb_log_configuration_descriptor(device: PUSB_DEVICE; descriptor: PUSB
 procedure usb_log_interface_descriptor(device: PUSB_DEVICE; descriptor: PUSB_INTERFACE_DESCRIPTOR); stdcall; public name 'usb_log_interface_descriptor';
 procedure usb_log_endpoint_descriptor(device: PUSB_DEVICE; descriptor: PUSB_ENDPOINT_DESCRIPTOR); stdcall; public name 'usb_log_endpoint_descriptor';
 
+procedure usb_log_device_configuration_ex(device: PUSB_DEVICE; output: usb_log_output_proc; data: PVOID); stdcall; public name 'usb_log_device_configuration_ex';
+procedure usb_log_device_descriptor_ex(device: PUSB_DEVICE; descriptor: PUSB_DEVICE_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall; public name 'usb_log_device_descriptor_ex';
+procedure usb_log_configuration_descriptor_ex(device: PUSB_DEVICE; descriptor: PUSB_CONFIGURATION_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall; public name 'usb_log_configuration_descriptor_ex';
+procedure usb_log_interface_descriptor_ex(device: PUSB_DEVICE; descriptor: PUSB_INTERFACE_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall; public name 'usb_log_interface_descriptor_ex';
+procedure usb_log_endpoint_descriptor_ex(device: PUSB_DEVICE; descriptor: PUSB_ENDPOINT_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall; public name 'usb_log_endpoint_descriptor_ex';
+
 function usb_log_devices: uint32_t; stdcall; public name 'usb_log_devices';
+function usb_log_devices_ex(device: PUSB_DEVICE; output: usb_log_output_proc; devicecallback, treecallback: usb_device_enumerate_cb; data: PVOID): uint32_t; stdcall; public name 'usb_log_devices_ex';
 
 function usb_log_device_callback(device: PUSB_DEVICE; data: PVOID): uint32_t; stdcall; public name 'usb_log_device_callback';
 function usb_log_tree_callback(device: PUSB_DEVICE; data: PVOID): uint32_t; stdcall; public name 'usb_log_tree_callback';
@@ -2685,7 +2736,8 @@ function mmc_device_stop_transmission(mmc: PMMC_DEVICE): uint32_t; stdcall; publ
 function mmc_device_select_card(mmc: PMMC_DEVICE): uint32_t; stdcall; public name 'mmc_device_select_card';
 function mmc_device_deselect_card(mmc: PMMC_DEVICE): uint32_t; stdcall; public name 'mmc_device_deselect_card';
 
-function mmc_device_switch(mmc: PMMC_DEVICE; setting, index, value: uint8_t): uint32_t; stdcall; public name 'mmc_device_switch';
+function mmc_device_switch(mmc: PMMC_DEVICE; setting, index, value: uint8_t; timeout: uint32_t): uint32_t; stdcall; public name 'mmc_device_switch';
+//function mmc_device_switch_ex(mmc: PMMC_DEVICE;  //To Do //TestingEMMC 
 
 function mmc_device_send_card_status(mmc: PMMC_DEVICE): uint32_t; stdcall; public name 'mmc_device_send_card_status';
 
@@ -2739,7 +2791,6 @@ function sd_device_switch(mmc: PMMC_DEVICE; mode, group: int; value: uint8_t; bu
 
 function sd_device_switch_highspeed(mmc: PMMC_DEVICE): uint32_t; stdcall; public name 'sd_device_switch_highspeed';
 
-function sd_device_set_bus_speed(mmc: PMMC_DEVICE; speed: uint32_t): uint32_t; stdcall; public name 'sd_device_set_bus_speed';
 function sd_device_set_bus_width(mmc: PMMC_DEVICE; width: uint32_t): uint32_t; stdcall; public name 'sd_device_set_bus_width';
 
 function sd_device_send_interface_condition(mmc: PMMC_DEVICE): uint32_t; stdcall; public name 'sd_device_send_interface_condition';
@@ -2824,7 +2875,6 @@ function mmc_is_sd(mmc: PMMC_DEVICE): BOOL; stdcall; public name 'mmc_is_sd';
 
 function mmc_get_cid_value(mmc: PMMC_DEVICE; version, value: uint32_t): uint32_t; stdcall; public name 'mmc_get_cid_value';
 function mmc_get_csd_value(mmc: PMMC_DEVICE; value: uint32_t): uint32_t; stdcall; public name 'mmc_get_csd_value';
-function mmc_get_extended_csd_value(mmc: PMMC_DEVICE; value: uint32_t): uint32_t; stdcall; public name 'mmc_get_extended_csd_value';
 
 function mmc_extract_bits(buffer: PVOID; start, size: uint32_t): uint32_t; stdcall; public name 'mmc_extract_bits';
 function mmc_extract_bits_ex(buffer: PVOID; length, start, size: uint32_t): uint32_t; stdcall; public name 'mmc_extract_bits_ex';
@@ -3181,10 +3231,10 @@ function rtc_device_set_default(rtc: PRTC_DEVICE): uint32_t; stdcall; public nam
 
 function rtc_device_check(rtc: PRTC_DEVICE): PRTC_DEVICE; stdcall; public name 'rtc_device_check';
 
-function rtc_time_is_valid(const time: TSYSTEM_TIME): BOOL; stdcall; public name 'rtc_time_is_valid';
+function rtc_time_is_valid(const time: SYSTEMTIME): BOOL; stdcall; public name 'rtc_time_is_valid';
 
-function rtc_system_time_to_file_time(const systemtime: TSYSTEM_TIME; var filetime: int64_t): BOOL; stdcall; public name 'rtc_system_time_to_file_time';
-function rtc_file_time_to_system_time(const filetime: int64_t; var systemtime: TSYSTEM_TIME): BOOL; stdcall; public name 'rtc_file_time_to_system_time';
+function rtc_systemtime_to_filetime(const systemtime: SYSTEMTIME; var filetime: int64_t): BOOL; stdcall; public name 'rtc_systemtime_to_filetime';
+function rtc_filetime_to_systemtime(const filetime: int64_t; var systemtime: SYSTEMTIME): BOOL; stdcall; public name 'rtc_filetime_to_systemtime';
 {$ENDIF}
 {==============================================================================}
 {Font Functions}
@@ -4355,6 +4405,9 @@ function CompareFileTime(const lpfiletime1, lpfiletime2: FILETIME): LONG; stdcal
 
 function FileTimeToDosDateTime(const lpfiletime: FILETIME; var lpfatdate, lpfattime: uint16_t): BOOL; stdcall; public name 'FileTimeToDosDateTime';
 function DosDateTimeToFileTime(wfatdate, wfattime: uint16_t; var lpfiletime: FILETIME): BOOL; stdcall; public name 'DosDateTimeToFileTime';
+
+function QueryPerformanceCounter(var lpPerformanceCount: LARGE_INTEGER): BOOL; stdcall; public name 'QueryPerformanceCounter';
+function QueryPerformanceFrequency(var lpFrequency: LARGE_INTEGER): BOOL; stdcall; public name 'QueryPerformanceFrequency';
 
 {==============================================================================}
 {Time Functions (Ultibo)}
@@ -5600,6 +5653,58 @@ begin
 end;
 
 {==============================================================================}
+{Inter Processor Interrupt (IPI) Functions}
+function request_ipi(cpuid, number: uint32_t; handler: ipi_handler; parameter: PVOID): uint32_t; stdcall;
+{Request registration of the supplied handler to the specified IPI number (Where Applicable)}
+{Note: If the IPI number is already registered then the request will fail}
+begin
+ {}
+ Result:=RequestIPI(cpuid,number,handler,parameter);
+end;
+
+{==============================================================================}
+
+function release_ipi(cpuid, number: uint32_t; handler: ipi_handler; parameter: PVOID): uint32_t; stdcall;
+{Request deregistration of the supplied handler from the specified IPI number (Where Applicable)}
+{Note: If the IPI number is not currently registered then the request will fail}
+begin
+ {}
+ Result:=ReleaseIPI(cpuid,number,handler,parameter);
+end;
+
+{==============================================================================}
+{Interrupt Register/Deregister Functions}
+function register_interrupt(number, mask, priority, flags: uint32_t; handler: shared_interrupt_handler; parameter: PVOID): uint32_t; stdcall;
+{Request registration of the supplied handler to the specified interrupt number (Where Applicable)}
+{Number: The interrupt number to register the hanlder for}
+{Mask: The mask of CPUs to register the handler for (eg CPU_MASK_0, CPU_MASK_1) (Where Applicable)}
+{Priority: The priroty level of the interrupt to be registered (eg INTERRUPT_PRIORITY_MAXIMUM) (Where Applicable)}
+{Flags: The flags to control the registration of the interrupt (eg INTERRUPT_FLAG_SHARED) (Where Applicable)}
+{Handler: The shared interrupt handler to be called when the interrupt occurs}
+{Parameter: A pointer to be passed to the handler when the interrupt occurs (Optional)}
+{Return: ERROR_SUCCESS if the callback was scheduled successfully or another error code on failure}
+begin
+ {}
+ Result:=RegisterInterrupt(number,mask,priority,flags,handler,parameter);
+end;
+
+{==============================================================================}
+
+function deregister_interrupt(number, mask, priority, flags: uint32_t; handler: shared_interrupt_handler; parameter: PVOID): uint32_t; stdcall;
+{Request deregistration of the supplied handler from the specified interrupt number (Where Applicable)}
+{Number: The interrupt number to deregister the hanlder for}
+{Mask: The mask of CPUs to deregister the handler for (eg CPU_MASK_0, CPU_MASK_1) (Where Applicable)}
+{Priority: The priroty level of the interrupt to be deregistered (eg INTERRUPT_PRIORITY_MAXIMUM) (Where Applicable)}
+{Flags: The flags to control the deregistration of the interrupt (eg INTERRUPT_FLAG_SHARED, INTERRUPT_FLAG_LOCAL, INTERRUPT_FLAG_FIQ) (Where Applicable)}
+{Handler: The shared interrupt handler to be called when the interrupt occurs}
+{Parameter: A pointer to be passed to the handler when the interrupt occurs (Optional)}
+{Return: ERROR_SUCCESS if the callback was scheduled successfully or another error code on failure}
+begin
+ {}
+ Result:=DeregisterInterrupt(number,mask,priority,flags,handler,parameter);
+end;
+
+{==============================================================================}
 {System Call (Software Interrupt or SWI) Functions}
 procedure system_call(number: uint32_t; param1, param2, param3: SIZE_T); stdcall;
 {Perform a System Call function with the supplied parameters (Where Applicable)}
@@ -5729,16 +5834,19 @@ end;
 
 {==============================================================================}
 
-function get_interrupt_entry(number: uint32_t): TINTERRUPT_ENTRY; stdcall;
+function get_interrupt_entry(number, instance: uint32_t; var interrupt: TINTERRUPT_ENTRY): uint32_t; stdcall;
+{Get the interrupt entry for the specified interrupt number and instance}
 begin
  {}
  if Assigned(GetInterruptEntryHandler) then
   begin
-   Result:=GetInterruptEntryHandler(number);
+   Result:=GetInterruptEntryHandler(number, instance, interrupt);
   end
  else
   begin
    FillChar(Result,SizeOf(TInterruptEntry),0);
+   
+   Result:=ERROR_CALL_NOT_IMPLEMENTED;
   end;
 end;
 
@@ -5776,17 +5884,69 @@ end;
 
 {==============================================================================}
 
-function get_local_interrupt_entry(cpuid, number: uint32_t): TINTERRUPT_ENTRY; stdcall;
-{Get the local interrupt entry for the specified interrupt number (Where Applicable)}
+function get_local_interrupt_entry(cpuid, number, instance: uint32_t; var interrupt: TINTERRUPT_ENTRY): uint32_t; stdcall;
+{Get the local interrupt entry for the specified interrupt number and instance (Where Applicable)}
 begin
  {}
  if Assigned(GetLocalInterruptEntryHandler) then
   begin
-   Result:=GetLocalInterruptEntryHandler(cpuid,number);
+   Result:=GetLocalInterruptEntryHandler(cpuid, number, instance, interrupt);
   end
  else
   begin
    FillChar(Result,SizeOf(TInterruptEntry),0);
+   
+   Result:=ERROR_CALL_NOT_IMPLEMENTED;
+  end;
+end;
+
+{==============================================================================}
+{Software Interrupt Entry (SWI) Functions}
+function get_software_interrupt_count: uint32_t; stdcall;
+{Get the number of software interrupt entries for the current platform (Where Applicable)}
+begin
+ {}
+ if Assigned(GetSoftwareInterruptCountHandler) then
+  begin
+   Result:=GetSoftwareInterruptCountHandler;
+  end
+ else
+  begin
+   Result:=IRQ_SOFTWARE_COUNT;
+  end;
+end;
+
+{==============================================================================}
+
+function get_software_interrupt_start: uint32_t; stdcall;
+{Get the starting number of software interrupt entries for the current platform (Where Applicable)}
+begin
+ {}
+ if Assigned(GetSoftwareInterruptStartHandler) then
+  begin
+   Result:=GetSoftwareInterruptStartHandler;
+  end
+ else
+  begin
+   Result:=IRQ_SOFTWARE_START;
+  end;
+end;
+
+{==============================================================================}
+
+function get_software_interrupt_entry(cpuid, number, instance: uint32_t; var interrupt: TINTERRUPT_ENTRY): uint32_t; stdcall;
+{Get the software interrupt entry for the specified interrupt number and instance (Where Applicable)}
+begin
+ {}
+ if Assigned(GetSoftwareInterruptEntryHandler) then
+  begin
+   Result:=GetSoftwareInterruptEntryHandler(cpuid, number, instance, interrupt);
+  end
+ else
+  begin
+   FillChar(Result,SizeOf(TInterruptEntry),0);
+   
+   Result:=ERROR_CALL_NOT_IMPLEMENTED;
   end;
 end;
 
@@ -6052,7 +6212,7 @@ end;
 
 {==============================================================================}
 
-function cpu_get_memory(var address: SIZE_T; var length: uint32_t): uint32_t; stdcall;
+function cpu_get_memory(var address: SIZE_T; var length: uint64_t): uint32_t; stdcall;
 {Get the memory start and size available to the CPU}
 begin
  {}
@@ -6205,7 +6365,7 @@ end;
 
 {==============================================================================}
 
-function gpu_get_memory(var address: SIZE_T; var length: uint32_t): uint32_t; stdcall;
+function gpu_get_memory(var address: SIZE_T; var length: uint64_t): uint32_t; stdcall;
 {Get the memory start and size available to the GPU}
 begin
  {}
@@ -6544,7 +6704,7 @@ end;
 
 {==============================================================================}
 
-function memory_get_size: uint32_t; stdcall;
+function memory_get_size: uint64_t; stdcall;
 {Get the total size of system memory}
 begin
  {}
@@ -9803,7 +9963,7 @@ end;
 
 {==============================================================================}
 
-procedure clean_data_cache_range(address, size: uint32_t); stdcall;
+procedure clean_data_cache_range(address: SIZE_T; size: uint32_t); stdcall;
 {Perform a Clean Data Cache Range operation (Where Applicable)}
 begin
  {}
@@ -9815,7 +9975,7 @@ end;
 
 {==============================================================================}
 
-procedure invalidate_data_cache_range(address, size: uint32_t); stdcall;
+procedure invalidate_data_cache_range(address: SIZE_T; size: uint32_t); stdcall;
 {Perform an Invalidate Data Cache Range operation (Where Applicable)}
 begin
  {}
@@ -9827,7 +9987,7 @@ end;
 
 {==============================================================================}
 
-procedure clean_and_invalidate_data_cache_range(address, size: uint32_t); stdcall;
+procedure clean_and_invalidate_data_cache_range(address: SIZE_T; size: uint32_t); stdcall;
 {Perform a Clean and Invalidate Data Cache Range operation (Where Applicable)}
 begin
  {}
@@ -9839,7 +9999,7 @@ end;
 
 {==============================================================================}
 
-procedure invalidate_instruction_cache_range(address, size: uint32_t); stdcall;
+procedure invalidate_instruction_cache_range(address: SIZE_T; size: uint32_t); stdcall;
 {Perform an Invalidate Instruction Cache Range operation (Where Applicable)}
 begin
  {}
@@ -10157,6 +10317,15 @@ begin
   end;
 end;
 
+{==============================================================================}
+{$IFDEF CPU32}
+function page_table_get_page_range(address: SIZE_T): uint32_t; stdcall;
+{Get the Physical Range from the Page Table page that corresponds to the supplied virtual address}
+begin
+ {}
+ Result:=PageTableGetPageRange(address);
+end;
+{$ENDIF CPU32}
 {==============================================================================}
 
 function page_table_get_page_physical(address: SIZE_T): SIZE_T; stdcall;
@@ -19501,6 +19670,12 @@ end;
 {$ENDIF}
 {==============================================================================}
 {==============================================================================}
+{PCI Functions}
+{$IFDEF API_EXPORT_PCI}
+//To Do
+{$ENDIF}
+{==============================================================================}
+{==============================================================================}
 {USB Functions}
 {$IFDEF API_EXPORT_USB}
 function usb_start: uint32_t; stdcall;
@@ -20733,14 +20908,14 @@ end;
 
 {==============================================================================}
 
-function usb_hub_port_reset(port: PUSB_PORT): uint32_t; stdcall;
+function usb_hub_port_reset(port: PUSB_PORT; delay: uint32_t): uint32_t; stdcall;
 {Reset the specified USB port}
 {Port: USB port to reset}
 {Return: USB_STATUS_SUCCESS if completed or another error code on failure}
 {Note: Caller must hold the hub lock}
 begin
  {}
- Result:=USBHubPortReset(port);
+ Result:=USBHubPortReset(port,delay);
 end;
 
 {==============================================================================}
@@ -21095,12 +21270,67 @@ end;
 
 {==============================================================================}
 
+procedure usb_log_device_configuration_ex(device: PUSB_DEVICE; output: usb_log_output_proc; data: PVOID); stdcall;
+begin
+ {}
+ USBLogDeviceConfiguration(device,output,data);
+end;
+
+{==============================================================================}
+
+procedure usb_log_device_descriptor_ex(device: PUSB_DEVICE; descriptor: PUSB_DEVICE_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall;
+begin
+ {}
+ USBLogDeviceDescriptor(device,descriptor,output,data);
+end;
+
+{==============================================================================}
+
+procedure usb_log_configuration_descriptor_ex(device: PUSB_DEVICE; descriptor: PUSB_CONFIGURATION_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall;
+begin
+ {}
+ USBLogConfigurationDescriptor(device,descriptor,output,data);
+end;
+
+{==============================================================================}
+
+procedure usb_log_interface_descriptor_ex(device: PUSB_DEVICE; descriptor: PUSB_INTERFACE_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall;
+begin
+ {}
+ USBLogInterfaceDescriptor(device,descriptor,output,data);
+end;
+
+{==============================================================================}
+
+procedure usb_log_endpoint_descriptor_ex(device: PUSB_DEVICE; descriptor: PUSB_ENDPOINT_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall;
+begin
+ {}
+ USBLogEndpointDescriptor(device,descriptor,output,data);
+end;
+
+{==============================================================================}
+
 function usb_log_devices: uint32_t; stdcall;
 {Print information about all devices attached to the USB}
 {Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
  Result:=USBLogDevices;
+end;
+
+{==============================================================================}
+
+function usb_log_devices_ex(device: PUSB_DEVICE; output: usb_log_output_proc; devicecallback, treecallback: usb_device_enumerate_cb; data: PVOID): uint32_t; stdcall;
+{Print information about one or all devices attached to the USB with custom output and callbacks}
+{Device: The device to print information about (nil for all devices)}
+{Output: The log output callback to print information to (nil to use the default output)}
+{Device Callback: The callback to print device information (nil if no device information should be printed)}
+{Tree Callback: The callback to print tree information (nil if no tree information should be printed)}
+{Data: A pointer to caller specific data which should be passed to the callbacks (Optional)}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=USBLogDevicesEx(device,output,devicecallback,treecallback,data);
 end;
 
 {==============================================================================}
@@ -21325,10 +21555,10 @@ end;
 
 {==============================================================================}
 
-function mmc_device_switch(mmc: PMMC_DEVICE; setting, index, value: uint8_t): uint32_t; stdcall;
+function mmc_device_switch(mmc: PMMC_DEVICE; setting, index, value: uint8_t; timeout: uint32_t): uint32_t; stdcall;
 begin
  {}
- Result:=MMCDeviceSwitch(mmc,setting,index,value);
+ Result:=MMCDeviceSwitch(mmc,setting,index,value,timeout);
 end;
 
 {==============================================================================}
@@ -21618,14 +21848,6 @@ function sd_device_switch_highspeed(mmc: PMMC_DEVICE): uint32_t; stdcall;
 begin
  {}
  Result:=SDDeviceSwitchHighspeed(mmc);
-end;
-
-{==============================================================================}
-
-function sd_device_set_bus_speed(mmc: PMMC_DEVICE; speed: uint32_t): uint32_t; stdcall;
-begin
- {}
- Result:=SDDeviceSetBusSpeed(mmc,speed);
 end;
 
 {==============================================================================}
@@ -22064,15 +22286,6 @@ function mmc_get_csd_value(mmc: PMMC_DEVICE; value: uint32_t): uint32_t; stdcall
 begin
  {}
  Result:=MMCGetCSDValue(mmc,value);
-end;
-
-{==============================================================================}
-
-function mmc_get_extended_csd_value(mmc: PMMC_DEVICE; value: uint32_t): uint32_t; stdcall;
-{Extract an Extended CSD field value from the 512 byte Extended Card Specific register}
-begin
- {}
- Result:=MMCGetExtendedCSDValue(mmc,value);
 end;
 
 {==============================================================================}
@@ -24434,7 +24647,7 @@ end;
 
 {==============================================================================}
 
-function rtc_time_is_valid(const time: TSYSTEM_TIME): BOOL; stdcall;
+function rtc_time_is_valid(const time: SYSTEMTIME): BOOL; stdcall;
 begin
  {}
  Result:=RTCTimeIsValid(time);
@@ -24442,7 +24655,7 @@ end;
 
 {==============================================================================}
 
-function rtc_system_time_to_file_time(const systemtime: TSYSTEM_TIME; var filetime: int64_t): BOOL; stdcall;
+function rtc_systemtime_to_filetime(const systemtime: SYSTEMTIME; var filetime: int64_t): BOOL; stdcall;
 {System time is assumed to be UTC and returned file time is UTC}
 begin
  {}
@@ -24451,7 +24664,7 @@ end;
 
 {==============================================================================}
 
-function rtc_file_time_to_system_time(const filetime: int64_t; var systemtime: TSYSTEM_TIME): BOOL; stdcall;
+function rtc_filetime_to_systemtime(const filetime: int64_t; var systemtime: SYSTEMTIME): BOOL; stdcall;
 {File time is assumed to be UTC and returned system time is UTC}
 begin
  {}
@@ -32008,6 +32221,28 @@ function DosDateTimeToFileTime(wfatdate, wfattime: uint16_t; var lpfiletime: FIL
 begin
  {}
  Result:=Ultibo.DosDateTimeToFileTime(wfatdate,wfattime,lpfiletime);
+end;
+
+{==============================================================================}
+
+function QueryPerformanceCounter(var lpPerformanceCount: LARGE_INTEGER): BOOL; stdcall;
+{Retrieves the current value of the performance counter, which is a high
+ resolution (<1us) time stamp that can be used for time-interval measurements}
+begin
+ {}
+ Result:=Ultibo.QueryPerformanceCounter(lpPerformanceCount);
+end; 
+
+{==============================================================================}
+
+function QueryPerformanceFrequency(var lpFrequency: LARGE_INTEGER): BOOL; stdcall;
+{Retrieves the frequency of the performance counter.
+ The frequency of the performance counter is fixed at system boot and is
+ consistent across all processors. Therefore, the frequency need only be
+ queried upon application initialization, and the result can be cached}
+begin
+ {}
+ Result:=Ultibo.QueryPerformanceFrequency(lpFrequency);
 end;
 
 {==============================================================================}

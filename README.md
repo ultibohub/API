@@ -19,9 +19,9 @@ In addition to the Ultibo interface headers a small number of headers that expos
 * arpa/inet.h - 
 * netinet/in.h - 
 * netinet6/in6.h - 
-* sys/dirent.h
-* sys/socket.h
-* sys/statfs.h
+* sys/dirent.h - 
+* sys/socket.h - 
+* sys/statfs.h - 
 
 ### Class libraries:
 

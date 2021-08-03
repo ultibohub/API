@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2021 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -65,7 +65,9 @@ extern "C" {
 #define DMA_DATA_FLAG_NOWRITE	0x00000100 // Ignore the dest address and cache fill from the source (If supported)
 #define DMA_DATA_FLAG_NOCLEAN	0x00000200 // Do not perform cache clean on the source address (If applicable)
 #define DMA_DATA_FLAG_NOINVALIDATE	0x00000400 // Do not perform cache invalidate on the dest address (If applicable)
-#define DMA_DATA_FLAG_BULK	0x00000800 // Perform a bulk transfer (If applicable)
+#define DMA_DATA_FLAG_BULK	0x00000800 // Perform a bulk transfer (Higher transfer throughput)(If applicable)
+#define DMA_DATA_FLAG_LITE	0x00001000 // Perform a "lite" transfer (Lower transfer throughput but less waiting for free channel) (If applicable)
+#define DMA_DATA_FLAG_40BIT	0x00000800 // Perform a 40-bit address transfer (If applicable)
 
 /* Page Table Flags */
 #define PAGE_TABLE_FLAG_NONE	0x00000000
@@ -81,6 +83,26 @@ extern "C" {
 #define PAGE_TABLE_FLAG_WRITEBACK	0x00000200 // Page Table Entry is Writeback Cacheable memory
 #define PAGE_TABLE_FLAG_WRITETHROUGH	0x00000400 // Page Table Entry is Writethrough Cacheable memory
 #define PAGE_TABLE_FLAG_WRITEALLOCATE	0x00000800 // Page Table Entry is Writeallocate Cacheable memory
+#if defined (__i386__) || defined (__arm__)
+#define PAGE_TABLE_FLAG_LARGEADDRESS	0x00001000 // Page Table Entry is mapped to Large Physical Address range
+#endif
+
+/* Interrupt Entry Flags */
+#define INTERRUPT_FLAG_NONE	0x00000000
+#define INTERRUPT_FLAG_SHARED	0x00000001
+#define INTERRUPT_FLAG_LOCAL	0x00000002
+#define INTERRUPT_FLAG_IPI	0x00000004
+#define INTERRUPT_FLAG_FIQ	0x00000008
+
+/* Interrupt Priority Values */
+#define INTERRUPT_PRIORITY_MAXIMUM	0x00
+#define INTERRUPT_PRIORITY_FIQ	0x40
+#define INTERRUPT_PRIORITY_DEFAULT	0xA0
+#define INTERRUPT_PRIORITY_MINIMUM	0xF0
+
+/* Interrupt Return Values */
+#define INTERRUPT_RETURN_NONE	0 // Interrupt not handled or not for this device
+#define INTERRUPT_RETURN_HANDLED	1 // Interrupt handled, no further processing
 
 /* Vector Table Entries */
 /* ARM */
@@ -125,7 +147,13 @@ struct _DMA_DATA
 {
 	// Data Properties
 	void *source; // Source address for DMA (May need to be allocated in accordance with DMA host configuration)
+	#if defined (__i386__) || defined (__arm__)
+	uint32_t sourcerange; // Source address range for DMA (Only applicable when performing a 40-bit transfer)
+	#endif
 	void *dest; // Dest address for DMA (May need to be allocated in accordance with DMA host configuration)
+	#if defined (__i386__) || defined (__arm__)
+	uint32_t destrange; // Dest address range for DMA (Only applicable when performing a 40-bit transfer)
+	#endif
 	uint32_t size; // Size for DMA transfer (For 2D stride the length of a row multiplied by the count of rows)
 	uint32_t flags; // Flags for DMA transfer (See DMA_DATA_FLAG_* above)
 	// Stride Properties
@@ -177,15 +205,27 @@ struct _HANDLE_ENTRY
 	// Statistics Properties
 };
 
+/* Prototypes for Interrupt (IRQ/FIQ) Handlers */
+typedef void STDCALL (*interrupt_handler)(void *parameter);
+typedef THREAD_HANDLE STDCALL (*interrupt_ex_handler)(uint32_t cpuid, THREAD_HANDLE thread, void *parameter);
+typedef uint32_t STDCALL (*shared_interrupt_handler)(uint32_t number, uint32_t cpuid, uint32_t flags, void *parameter);
+
 /* Interrupt Entry (IRQ/FIQ */
 typedef struct _INTERRUPT_ENTRY INTERRUPT_ENTRY;
 struct _INTERRUPT_ENTRY
 {
+	// Interrupt Properties
 	uint32_t number;
-	uint32_t cpuid;
-    void STDCALL (*handler)(void *parameter);
-	THREAD_HANDLE STDCALL (*handlerex)(uint32_t cpuid, THREAD_HANDLE thread, void *parameter);
+	uint32_t flags;
+	uint32_t cpumask;
+	uint32_t priority;
+	interrupt_handler handler;
+	interrupt_ex_handler handlerex;
+	shared_interrupt_handler sharedhandler;
 	void *parameter;
+	// Internal Properties
+	INTERRUPT_ENTRY *prev;
+	INTERRUPT_ENTRY *next;
 };
 
 /* System Call Entry (SWI) */
@@ -203,14 +243,17 @@ typedef struct _PAGE_TABLE_ENTRY PAGE_TABLE_ENTRY;
 struct _PAGE_TABLE_ENTRY
 {
 	size_t virtualaddress;
+#if defined (__i386__) || defined (__arm__)
+	uint32_t physicalrange; // Physical Address Range referenced by entry when using Large Physical Address Extensions (LPAE)
+#endif
 	size_t physicaladdress;
 	uint32_t size;
 	uint32_t flags;
 };
 
-/* Prototype for Interrupt (IRQ/FIQ) Handlers */
-typedef void STDCALL (*interrupt_handler)(void *parameter);
-typedef THREAD_HANDLE STDCALL (*interrupt_ex_handler)(uint32_t cpuid, THREAD_HANDLE thread, void *parameter);
+/* Prototype for Inter Processor Interrupt (IPI) Handlers */
+/* Note: When used for IPI the CPUID parameter will be the sending CPU */
+typedef shared_interrupt_handler ipi_handler;
 
 /* Prototype for System Call (SWI) Handlers */
 typedef void STDCALL (*system_call_handler)(SYSTEM_CALL_REQUEST *request);
@@ -310,6 +353,16 @@ uint32_t STDCALL request_ex_fiq(uint32_t cpuid, uint32_t number, interrupt_handl
 uint32_t STDCALL release_ex_fiq(uint32_t cpuid, uint32_t number, interrupt_handler handler, interrupt_ex_handler handlerex, void *parameter);
 
 /* ============================================================================== */
+/* Inter Processor Interrupt (IPI) Functions */
+uint32_t STDCALL request_ipi(uint32_t cpuid, uint32_t number, ipi_handler handler, void *parameter);
+uint32_t STDCALL release_ipi(uint32_t cpuid, uint32_t number, ipi_handler handler, void *parameter);
+
+/* ============================================================================== */
+/* Interrupt Register/Deregister Functions */
+uint32_t STDCALL register_interrupt(uint32_t number, uint32_t mask, uint32_t priority, uint32_t flags, shared_interrupt_handler handler, void *parameter);
+uint32_t STDCALL deregister_interrupt(uint32_t number, uint32_t mask, uint32_t priority, uint32_t flags, shared_interrupt_handler handler, void *parameter);
+
+/* ============================================================================== */
 /* System Call (Software Interrupt or SWI) Functions */
 void STDCALL system_call(uint32_t number, size_t param1, size_t param2, size_t param3);
 
@@ -322,13 +375,19 @@ uint32_t STDCALL deregister_system_call_ex(uint32_t cpuid, uint32_t number, syst
 /* Interrupt Entry Functions */
 uint32_t STDCALL get_interrupt_count(void);
 uint32_t STDCALL get_interrupt_start(void);
-INTERRUPT_ENTRY STDCALL get_interrupt_entry(uint32_t number);
+uint32_t STDCALL get_interrupt_entry(uint32_t number, uint32_t instance, INTERRUPT_ENTRY *interrupt);
 
 /* ============================================================================== */
 /* Local Interrupt Entry Functions */
 uint32_t STDCALL get_local_interrupt_count(void);
 uint32_t STDCALL get_local_interrupt_start(void);
-INTERRUPT_ENTRY STDCALL get_local_interrupt_entry(uint32_t cpuid, uint32_t number);
+uint32_t STDCALL get_local_interrupt_entry(uint32_t cpuid, uint32_t number, uint32_t instance, INTERRUPT_ENTRY *interrupt);
+
+/* ============================================================================== */
+/* Software Interrupt Entry (IPI) Functions */
+uint32_t STDCALL get_software_interrupt_count(void);
+uint32_t STDCALL get_software_interrupt_start(void);
+uint32_t STDCALL get_software_interrupt_entry(uint32_t cpuid, uint32_t number, uint32_t instance, INTERRUPT_ENTRY *interrupt);
 
 /* ============================================================================== */
 /* System Call Entry Functions */
@@ -354,7 +413,7 @@ uint32_t STDCALL cpu_get_mode(void);
 uint32_t STDCALL cpu_get_state(void);
 uint32_t STDCALL cpu_get_group(void);
 uint32_t STDCALL cpu_get_current(void);
-uint32_t STDCALL cpu_get_memory(size_t *address, uint32_t *length);
+uint32_t STDCALL cpu_get_memory(size_t *address, uint64_t *length);
 double_t STDCALL cpu_get_percentage(uint32_t cpuid);
 uint32_t STDCALL cpu_get_utilization(uint32_t cpuid);
 
@@ -371,7 +430,7 @@ uint32_t STDCALL fpu_get_state(void);
 /* GPU Functions */
 uint32_t STDCALL gpu_get_type(void);
 uint32_t STDCALL gpu_get_state(void);
-uint32_t STDCALL gpu_get_memory(size_t *address, uint32_t *length);
+uint32_t STDCALL gpu_get_memory(size_t *address, uint64_t *length);
 
 /* ============================================================================== */
 /* Cache Functions */
@@ -412,7 +471,7 @@ uint32_t STDCALL machine_get_type(void);
 /* ============================================================================== */
 /* Memory Functions */
 size_t STDCALL memory_get_base(void);
-uint32_t STDCALL memory_get_size(void);
+uint64_t STDCALL memory_get_size(void);
 
 uint32_t STDCALL memory_get_page_size(void);
 uint32_t STDCALL memory_get_large_page_size(void);
@@ -740,10 +799,10 @@ void STDCALL invalidate_data_cache(void);
 void STDCALL clean_and_invalidate_data_cache(void);
 void STDCALL invalidate_instruction_cache(void);
 
-void STDCALL clean_data_cache_range(uint32_t address, uint32_t size);
-void STDCALL invalidate_data_cache_range(uint32_t address, uint32_t size);
-void STDCALL clean_and_invalidate_data_cache_range(uint32_t address, uint32_t size);
-void STDCALL invalidate_instruction_cache_range(uint32_t address, uint32_t size);
+void STDCALL clean_data_cache_range(size_t address, uint32_t size);
+void STDCALL invalidate_data_cache_range(size_t address, uint32_t size);
+void STDCALL clean_and_invalidate_data_cache_range(size_t address, uint32_t size);
+void STDCALL invalidate_instruction_cache_range(size_t address, uint32_t size);
 
 void STDCALL flush_prefetch_buffer(void);
 
@@ -772,6 +831,9 @@ uint32_t STDCALL page_table_set_entry(PAGE_TABLE_ENTRY *entry);
 
 uint32_t STDCALL page_table_get_page_size(size_t address);
 uint32_t STDCALL page_table_get_page_flags(size_t address);
+#if defined (__i386__) || defined (__arm__)
+uint32_t STDCALL page_table_get_page_range(size_t address);
+#endif
 size_t STDCALL page_table_get_page_physical(size_t address);
 
 size_t STDCALL page_tables_get_address(void);

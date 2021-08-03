@@ -5,7 +5,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2018 Garry Wood <garry@softoz.com.au>
+# Copyright (c) 2021 Garry Wood <garry@softoz.com.au>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,7 @@ ifeq ($(strip $(FPC_PATH)),)
 FPC_PATH = C:/Ultibo/Core/fpc/3.1.1/bin/i386-win32/
 endif
 
+# Include user customizations without error if file doesn't exist
 -include $(API_PATH)/Config.mk
 
 BOARD_TYPE ?= RPI2B
@@ -72,6 +73,11 @@ else ifeq ($(strip $(BOARD_TYPE)),rpi3b)
 CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard -D__DYNAMIC_REENT__
 FPC_FLAGS ?= -B -Tultibo -Parm -CpARMV7A -WpRPI3B @$(FPC_PATH)RPI3.CFG $(OPT_LEVEL) -dRPI3B $(PROJECT_NAME)
 TARGET_NAME ?= rpi3
+TOOLS_PREFIX ?= arm-none-eabi-
+else ifeq ($(strip $(BOARD_TYPE)),rpi4b)
+CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard -D__DYNAMIC_REENT__
+FPC_FLAGS ?= -B -Tultibo -Parm -CpARMV7A -WpRPI4B @$(FPC_PATH)RPI4.CFG $(OPT_LEVEL) -dRPI4B $(PROJECT_NAME)
+TARGET_NAME ?= rpi4
 TOOLS_PREFIX ?= arm-none-eabi-
 else ifeq ($(strip $(BOARD_TYPE)),qemuvpb)
 CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard -D__DYNAMIC_REENT__
