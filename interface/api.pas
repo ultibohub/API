@@ -1,7 +1,7 @@
 {
 Ultibo Library API interface unit.
 
-Copyright (C) 2021 - SoftOz Pty Ltd.
+Copyright (C) 2023 - SoftOz Pty Ltd.
 
 Arch
 ====
@@ -67,7 +67,7 @@ API
  //To Do //Callbacks need to be declared as Pascal calling convention in the C header ?
          //Or need to be declared in Ultibo as STDCALL (Probably this since it will have no affect at present)
          //Make it $IFDEF i386
-         
+
  //To Do //Strings embedded in structures such as TDevice/TDriver/THost need to be changed to PChar instead
 
 }
@@ -108,10 +108,12 @@ interface
 {$DEFINE API_EXPORT_FONT}            {Enable the library API unit to export symbols for the Font unit (Default: On)}
 {$DEFINE API_EXPORT_FRAMEBUFFER}     {Enable the library API unit to export symbols for the Framebuffer unit (Default: On)}
 {$DEFINE API_EXPORT_GRAPHICSCONSOLE} {Enable the library API unit to export symbols for the GraphicsConsole unit (Default: On)}
+{$DEFINE API_EXPORT_HID}             {Enable the library API unit to export symbols for the HID unit (Default: On)}
 {$DEFINE API_EXPORT_KEYMAP}          {Enable the library API unit to export symbols for the Keymap unit (Default: On)}
 {$DEFINE API_EXPORT_KEYBOARD}        {Enable the library API unit to export symbols for the Keyboard unit (Default: On)}
 {$DEFINE API_EXPORT_MOUSE}           {Enable the library API unit to export symbols for the Mouse unit (Default: On)}
 {$DEFINE API_EXPORT_TOUCH}           {Enable the library API unit to export symbols for the Touch unit (Default: On)}
+{$DEFINE API_EXPORT_JOYSTICK}        {Enable the library API unit to export symbols for the Joystick unit (Default: On)}
 {$DEFINE API_EXPORT_STORAGE}         {Enable the library API unit to export symbols for the Storage unit (Default: On)}
 {$DEFINE API_EXPORT_NETWORK}         {Enable the library API unit to export symbols for the Network unit (Default: On)}
 {$DEFINE API_EXPORT_TIMEZONE}        {Enable the library API unit to export symbols for the Timezone unit (Default: On)}
@@ -133,6 +135,14 @@ interface
 
 {$IFDEF API_EXPORT_THREADS}
  {$DEFINE API_EXPORT_PLATFORM}
+{$ENDIF}
+
+{$IFDEF API_EXPORT_WINSOCK}
+ {$UNDEF SYSCALLS_EXPORT_SOCKETS}
+{$ENDIF}
+
+{$IFDEF API_EXPORT_WINSOCK2}
+ {$UNDEF SYSCALLS_EXPORT_SOCKETS}
 {$ENDIF}
 
 //To Do //Continuing
@@ -225,6 +235,10 @@ uses GlobalConfig,
    GraphicsConsole,
    {$ENDIF}
 
+   {$IFDEF API_EXPORT_HID}
+   HID,
+   {$ENDIF}
+
    {$IFDEF API_EXPORT_KEYMAP}
    Keymap,
    {$ENDIF}
@@ -239,6 +253,10 @@ uses GlobalConfig,
 
    {$IFDEF API_EXPORT_TOUCH}
    Touch,
+   {$ENDIF}
+
+   {$IFDEF API_EXPORT_JOYSTICK}
+   Joystick,
    {$ENDIF}
 
    {$IFDEF API_EXPORT_STORAGE}
@@ -309,7 +327,7 @@ type
 
  {Inter Processor Interrupt (IPI) Types}
  ipi_handler = TIPIHandler;
-  
+
  {System Call (Software Interrupt or SWI) Types}
  system_call_handler = TSystemCallHandler;
  system_call_ex_handler = TSystemCallExHandler;
@@ -446,22 +464,22 @@ type
 
  TCONSOLE_RECT = TConsoleRect;
  TCONSOLE_POINT = TConsolePoint;
- 
+
  CURSOR_MODE = TCursorMode;
  CURSOR_STATE = TCursorState;
  CURSOR_SHAPE = TCursorShape;
- 
+
  PCONSOLE_CHAR = PConsoleChar;
  PCONSOLE_CARET = PConsoleCaret;
  PCONSOLE_DEVICE = PConsoleDevice;
  PCONSOLE_WINDOW = PConsoleWindow;
  PCONSOLE_PROPERTIES = PConsoleProperties;
- 
+
  console_enumerate_cb = TConsoleEnumerate;
  console_notification_cb = TConsoleNotification;
- 
+
  PWINDOW_PROPERTIES = PWindowProperties;
- 
+
  console_window_enumerate_cb = TConsoleWindowEnumerate;
  console_window_completion_cb = TConsoleWindowCompletion;
 {$ENDIF}
@@ -469,7 +487,7 @@ type
 {$IFDEF API_EXPORT_LOGGING}
 type
  PLOGGING_DEVICE = PLoggingDevice;
- 
+
  logging_enumerate_cb = TLoggingEnumerate;
  logging_notification_cb = TLoggingNotification;
 {$ENDIF}
@@ -478,12 +496,12 @@ type
 type
  PDMA_HOST = PDMAHost;
  PDMA_PROPERTIES = PDMAProperties;
- 
+
  dma_enumerate_cb = TDMAEnumerate;
  dma_notification_cb = TDMANotification;
- 
+
  PDMA_REQUEST = PDMARequest;
- 
+
  dma_request_completed_cb = TDMARequestCompleted;
 {$ENDIF}
 
@@ -498,35 +516,35 @@ type
  PUSB_ALTERNATE = PUSBAlternate;
  PUSB_INTERFACE = PUSBInterface;
  PUSB_CONFIGURATION = PUSBConfiguration;
- 
+
  usb_device_bind_proc = TUSBDeviceBind;
  usb_device_unbind_proc = TUSBDeviceUnbind;
  usb_device_enumerate_cb = TUSBDeviceEnumerate;
  usb_device_notification_cb = TUSBDeviceNotification;
- 
+
  PUSB_DRIVER = PUSBDriver;
  PUSB_REQUEST = PUSBRequest;
- 
+
  usb_driver_enumerate_cb = TUSBDriverEnumerate;
-  
+
  usb_host_enumerate_cb = TUSBHostEnumerate;
  usb_host_notification_cb = TUSBHostNotification;
- 
+
  usb_request_completed_cb = TUSBRequestCompleted;
 
  PUSB_HUB = PUSBHub;
  PUSB_PORT = PUSBPort;
- 
+
  usb_hub_enumerate_cb = TUSBHubEnumerate;
  usb_hub_notification_cb = TUSBHubNotification;
- 
+
  PUSB_DEVICE_DESCRIPTOR = PUSBDeviceDescriptor;
  PUSB_ENDPOINT_DESCRIPTOR = PUSBEndpointDescriptor;
  PUSB_INTERFACE_DESCRIPTOR = PUSBInterfaceDescriptor;
  PUSB_CONFIGURATION_DESCRIPTOR = PUSBConfigurationDescriptor;
- 
+
  TUSB_STRING_DESCRIPTOR_LANGIDS = TUSBStringDescriptorLANGIDs;
- 
+
  usb_log_output_proc = TUSBLogOutput;
 {$ENDIF}
 
@@ -534,12 +552,12 @@ type
 type
  PMMC_DEVICE = PMMCDevice;
  PMMC_COMMAND = PMMCCommand;
- 
+
  mmc_enumerate_cb = TMMCEnumerate;
  mmc_notification_cb = TMMCNotification;
 
  PSDHCI_HOST = PSDHCIHost;
- 
+
  sdhci_enumerate_cb = TSDHCIEnumerate;
  sdhci_notification_cb = TSDHCINotification;
 {$ENDIF}
@@ -548,7 +566,7 @@ type
 type
  PSPI_DEVICE = PSPIDevice;
  PSPI_PROPERTIES = PSPIProperties;
- 
+
  spi_enumerate_cb = TSPIEnumerate;
  spi_notification_cb = TSPINotification;
 {$ENDIF}
@@ -577,7 +595,7 @@ type
  PGPIO_EVENT = PGPIOEvent;
  PGPIO_DEVICE = PGPIODevice;
  PGPIO_PROPERTIES = PGPIOProperties;
- 
+
  gpio_enumerate_cb = TGPIOEnumerate;
  gpio_notification_cb = TGPIONotification;
 {$ENDIF}
@@ -586,7 +604,7 @@ type
 type
  PUART_DEVICE = PUARTDevice;
  PUART_PROPERTIES = PUARTProperties;
- 
+
  uart_enumerate_cb = TUARTEnumerate;
  uart_notification_cb = TUARTNotification;
 {$ENDIF}
@@ -596,7 +614,7 @@ type
  PSERIAL_DEVICE = PSerialDevice;
  PSERIAL_BUFFER = PSerialBuffer;
  PSERIAL_PROPERTIES = PSerialProperties;
- 
+
  serial_enumerate_cb = TSerialEnumerate;
  serial_notification_cb = TSerialNotification;
 {$ENDIF}
@@ -613,14 +631,14 @@ type
 {$IFDEF API_EXPORT_FONT}
 type
  FONT_HANDLE = TFontHandle;
- 
+
  PFONT_DATA = PFontData;
  PFONT_HEADER = PFontHeader;
  PFONT_UNICODE = PFontUnicode;
- 
+
  PFONT_ENTRY = PFontEntry;
  PFONT_PROPERTIES = PFontProperties;
- 
+
  font_enumerate_cb = TFontEnumerate;
 {$ENDIF}
 
@@ -629,7 +647,7 @@ type
  PFRAMEBUFFER_DEVICE = PFramebufferDevice;
  PFRAMEBUFFER_PALETTE = PFramebufferPalette;
  PFRAMEBUFFER_PROPERTIES = PFramebufferProperties;
- 
+
  framebuffer_enumerate_cb = TFramebufferEnumerate;
  framebuffer_notification_cb = TFramebufferNotification;
 {$ENDIF}
@@ -637,8 +655,12 @@ type
 {$IFDEF API_EXPORT_GRAPHICSCONSOLE}
 type
  PGRAPHICS_WINDOW = PGraphicsWindow;
- 
+
  graphics_window_enumerate_cb = console_window_enumerate_cb;
+{$ENDIF}
+
+{$IFDEF API_EXPORT_HID}
+// To Do
 {$ENDIF}
 
 {$IFDEF API_EXPORT_KEYMAP}
@@ -660,7 +682,7 @@ type
 type
  PKEYBOARD_DATA = PKeyboardData;
  PKEYBOARD_DEVICE = PKeyboardDevice;
- 
+
  keyboard_enumerate_cb = TKeyboardEnumerate;
  keyboard_notification_cb = TKeyboardNotification;
 {$ENDIF}
@@ -669,7 +691,7 @@ type
 type
  PMOUSE_DATA = PMouseData;
  PMOUSE_DEVICE = PMouseDevice;
- 
+
  mouse_enumerate_cb = TMouseEnumerate;
  mouse_notification_cb = TMouseNotification;
 {$ENDIF}
@@ -679,15 +701,19 @@ type
  PTOUCH_DATA = PTouchData;
  PTOUCH_DEVICE = PTouchDevice;
  PTOUCH_PROPERTIES = PTouchProperties;
- 
+
  touch_enumerate_cb = TTouchEnumerate;
  touch_notification_cb = TTouchNotification;
+{$ENDIF}
+
+{$IFDEF API_EXPORT_JOYSTICK}
+// To Do
 {$ENDIF}
 
 {$IFDEF API_EXPORT_STORAGE}
 type
  PSTORAGE_DEVICE = PStorageDevice;
- 
+
  storage_enumerate_cb = TStorageEnumerate;
  storage_notification_cb = TStorageNotification;
 {$ENDIF}
@@ -696,14 +722,14 @@ type
 type
  PNETWORK_ENTRY = PNetworkEntry;
  PNETWORK_DEVICE = PNetworkDevice;
- 
+
  THARDWARE_ADDRESS = THardwareAddress;
- 
+
  network_enumerate_cb = TNetworkEnumerate;
  network_notification_cb = TNetworkNotification;
- 
+
  PNETWORK_EVENT = PNetworkEvent;
- 
+
  network_event_callback_cb = TNetworkEventCallback;
 {$ENDIF}
 
@@ -711,7 +737,7 @@ type
 type
  PTIMEZONE_DATA = PTimezoneData;
  PTIMEZONE_ENTRY = PTimezoneEntry;
- 
+
  timezone_enumerate_cb = TTimezoneEnumerate;
 {$ENDIF}
 
@@ -861,7 +887,7 @@ function get_local_interrupt_entry(cpuid, number, instance: uint32_t; var interr
 
 {Software Interrupt Entry (IPI) Functions}
 function get_software_interrupt_count: uint32_t; stdcall; public name 'get_software_interrupt_count';
-function get_software_interrupt_start: uint32_t; stdcall; public name 'get_software_interrupt_start'; 
+function get_software_interrupt_start: uint32_t; stdcall; public name 'get_software_interrupt_start';
 function get_software_interrupt_entry(cpuid, number, instance: uint32_t; var interrupt: TINTERRUPT_ENTRY): uint32_t; stdcall; public name 'get_software_interrupt_entry';
 
 {System Call Entry Functions}
@@ -2737,7 +2763,7 @@ function mmc_device_select_card(mmc: PMMC_DEVICE): uint32_t; stdcall; public nam
 function mmc_device_deselect_card(mmc: PMMC_DEVICE): uint32_t; stdcall; public name 'mmc_device_deselect_card';
 
 function mmc_device_switch(mmc: PMMC_DEVICE; setting, index, value: uint8_t; timeout: uint32_t): uint32_t; stdcall; public name 'mmc_device_switch';
-//function mmc_device_switch_ex(mmc: PMMC_DEVICE;  //To Do //TestingEMMC 
+//function mmc_device_switch_ex(mmc: PMMC_DEVICE;  //To Do //TestingEMMC
 
 function mmc_device_send_card_status(mmc: PMMC_DEVICE): uint32_t; stdcall; public name 'mmc_device_send_card_status';
 
@@ -3454,6 +3480,14 @@ function graphics_window_get_active(console: PCONSOLE_DEVICE): WINDOW_HANDLE; st
 function graphics_window_check(console: PCONSOLE_DEVICE; window: PGRAPHICS_WINDOW): PGRAPHICS_WINDOW; stdcall; public name 'graphics_window_check';
 {$ENDIF}
 {==============================================================================}
+{HID Functions}
+{$IFDEF API_EXPORT_HID}
+//To Do
+{==============================================================================}
+{HID Helper Functions}
+//To Do
+{$ENDIF}
+{==============================================================================}
 {Keymap Functions}
 {$IFDEF API_EXPORT_KEYMAP}
 function keymap_load(header: PKEYMAP_HEADER; data: PKEYMAP_DATA; size: uint32_t): KEYMAP_HANDLE; stdcall; public name 'keymap_load';
@@ -3550,6 +3584,9 @@ function mouse_flush: uint32_t; stdcall; public name 'mouse_flush';
 function mouse_device_read(mouse: PMOUSE_DEVICE; buffer: PVOID; size: uint32_t; var count: uint32_t): uint32_t; stdcall; public name 'mouse_device_read';
 function mouse_device_control(mouse: PMOUSE_DEVICE; request: int; argument1: uint32_t; var argument2: uint32_t): uint32_t; stdcall; public name 'mouse_device_control';
 
+//To Do //mouse_device_update
+//To Do //mouse_device_get_properties
+
 function mouse_device_set_state(mouse: PMOUSE_DEVICE; state: uint32_t): uint32_t; stdcall; public name 'mouse_device_set_state';
 
 function mouse_device_create: PMOUSE_DEVICE; stdcall; public name 'mouse_device_create';
@@ -3589,6 +3626,8 @@ function touch_device_write(touch: PTOUCH_DEVICE; buffer: PVOID; size, count: ui
 
 function touch_device_flush(touch: PTOUCH_DEVICE): uint32_t; stdcall; public name 'touch_device_flush';
 
+//To Do //touch_device_update
+
 function touch_device_control(touch: PTOUCH_DEVICE; request: int; argument1: uint32_t; var argument2: uint32_t): uint32_t; stdcall; public name 'touch_device_control';
 
 function touch_device_properties(touch: PTOUCH_DEVICE; properties: PTOUCH_PROPERTIES): uint32_t; stdcall; public name 'touch_device_properties';
@@ -3617,6 +3656,14 @@ function touch_device_set_default(touch: PTOUCH_DEVICE): uint32_t; stdcall; publ
 function touch_device_check(touch: PTOUCH_DEVICE): PTOUCH_DEVICE; stdcall; public name 'touch_device_check';
 
 function touch_insert_data(touch: PTOUCH_DEVICE; data: PTOUCH_DATA; signal: BOOL): uint32_t; stdcall; public name 'touch_insert_data';
+{$ENDIF}
+{==============================================================================}
+{Joystick Functions}
+{$IFDEF API_EXPORT_JOYSTICK}
+//To Do
+{==============================================================================}
+{Joystick Helper Functions}
+//To Do
 {$ENDIF}
 {==============================================================================}
 {Storage Functions}
@@ -3712,7 +3759,7 @@ function network_device_status_to_notification(status: uint32_t): uint32_t; stdc
 
 function network_event_check(event: PNETWORK_EVENT): PNETWORK_EVENT; stdcall; public name 'network_event_check';
 
-function hardware_address_to_string(const address: THARDWARE_ADDRESS): PCHAR; stdcall; public name 'hardware_address_to_string';
+function hardware_address_to_string(const address: THARDWARE_ADDRESS; separator: PCHAR): PCHAR; stdcall; public name 'hardware_address_to_string';
 function string_to_hardware_address(address: PCHAR): THARDWARE_ADDRESS; stdcall; public name 'string_to_hardware_address';
 
 function valid_hardware_address(const address: THARDWARE_ADDRESS): BOOL; stdcall; public name 'valid_hardware_address';
@@ -3785,7 +3832,7 @@ function GetCPInfoEx(codepage: UINT; dwflags: uint32_t; var lpcpinfoex: CPINFOEX
 function GetCPInfoExA(codepage: UINT; dwflags: uint32_t; var lpcpinfoex: CPINFOEXA): BOOL; stdcall; public name 'GetCPInfoExA';
 function GetCPInfoExW(codepage: UINT; dwflags: uint32_t; var lpcpinfoex: CPINFOEXW): BOOL; stdcall; public name 'GetCPInfoExW';
 
-function IsValidLocale(_locale: LCID; dwflags: uint32_t): BOOL; stdcall; public name 'IsValidLocale'; 
+function IsValidLocale(_locale: LCID; dwflags: uint32_t): BOOL; stdcall; public name 'IsValidLocale';
 
 function GetSystemDefaultLCID: LCID; stdcall; public name 'GetSystemDefaultLCID';
 function GetUserDefaultLCID: LCID; stdcall; public name 'GetUserDefaultLCID';
@@ -3865,8 +3912,6 @@ function tft_framebuffer_release(framebuffer: PFRAMEBUFFER_DEVICE): uint32_t; st
 
 function tft_framebuffer_mark(framebuffer: PFRAMEBUFFER_DEVICE; x, y, width, height, flags: uint32_t): uint32_t; stdcall; public name 'tft_framebuffer_mark';
 function tft_framebuffer_commit(framebuffer: PFRAMEBUFFER_DEVICE; address, size, flags: uint32_t): uint32_t; stdcall; public name 'tft_framebuffer_commit';
-
-function tft_framebuffer_set_properties(framebuffer: PFRAMEBUFFER_DEVICE; properties: PFRAMEBUFFER_PROPERTIES): uint32_t; stdcall; public name 'tft_framebuffer_set_properties';
 
 procedure tft_framebuffer_update_display(framebuffer: PTFT_FRAMEBUFFER); stdcall; public name 'tft_framebuffer_update_display';
 {$ENDIF}
@@ -4054,7 +4099,7 @@ function recvfrom(s: TSOCKET; buf: PCHAR; len: tOS_INT; flags: tOS_INT; from: PS
 function select(nfds: tOS_INT; readfds, writefds, exceptfds: PFDSet; timeout: PTimeVal): tOS_INT; stdcall; public name 'select';
 function send(s: TSOCKET; buf: PCHAR; len: tOS_INT; flags: tOS_INT): tOS_INT; stdcall; public name 'send';
 function sendto(s: TSOCKET; buf: PCHAR; len: tOS_INT; flags: tOS_INT; toaddr: PSockAddr; tolen: tOS_INT): tOS_INT; stdcall; public name 'sendto';
-function setsockopt(s: TSOCKET; level: tOS_INT; optname: tOS_INT; optval: PCHAR; optlen: tOS_INT): tOS_INT; stdcall; public name 'setsockopt'; 
+function setsockopt(s: TSOCKET; level: tOS_INT; optname: tOS_INT; optval: PCHAR; optlen: tOS_INT): tOS_INT; stdcall; public name 'setsockopt';
 function shutdown(s: TSOCKET; how: tOS_INT): tOS_INT; stdcall; public name 'shutdown';
 function socket(af: tOS_INT; struct: tOS_INT; protocol: tOS_INT): TSOCKET; stdcall; public name 'socket';
 
@@ -4081,7 +4126,7 @@ function WSAAsyncGetProtoByNumber(hwnd: HWND; wmsg: u_int; number: tOS_INT; buf:
 function WSAAsyncGetHostByName(hwnd: HWND; wmsg: u_int; name: PCHAR; buf: PCHAR; buflen: tOS_INT): THANDLE; stdcall; public name 'WSAAsyncGetHostByName';
 function WSAAsyncGetHostByAddr(hwnd: HWND; wmsg: u_int; addr: PCHAR; len: tOS_INT; family: tOS_INT; buf: PCHAR; buflen: tOS_INT): THANDLE; stdcall; public name 'WSAAsyncGetHostByAddr';
 function WSACancelAsyncRequest(hasynctaskhandle: THANDLE): tOS_INT; stdcall; public name 'WSACancelAsyncRequest';
-function WSAAsyncSelect(s: TSOCKET; hwnd: HWND; wmsg: u_int; levent: int32_t): tOS_INT; stdcall; public name 'WSAAsyncSelect'; //  really a c-long 
+function WSAAsyncSelect(s: TSOCKET; hwnd: HWND; wmsg: u_int; levent: int32_t): tOS_INT; stdcall; public name 'WSAAsyncSelect'; //  really a c-long
 function WSARecvEx(s: TSOCKET; buf: PVOID; len: tOS_INT; flags: ptOS_INT): tOS_INT; stdcall; public name 'WSARecvEx';
 function __WSAFDIsSet(s: TSOCKET; var fdset: TFDSet): BOOL; stdcall; public name '__WSAFDIsSet';
 function __WSAFDIsSet_(s: TSOCKET; var fdset: TFDSet): tOS_INT; stdcall; public name '__WSAFDIsSet_';
@@ -4130,7 +4175,7 @@ function WS2Stop: BOOL; stdcall; public name 'WS2Stop';
 
 procedure WS2AsyncStart(data: PVOID); stdcall; public name 'WS2AsyncStart';
 
-function accept(s: TSOCKET; addr: PSockAddr; addrlen: Pint32_t): TSOCKET; stdcall; public name 'accept'; 
+function accept(s: TSOCKET; addr: PSockAddr; addrlen: Pint32_t): TSOCKET; stdcall; public name 'accept';
 function bind(s: TSOCKET; addr: PSockAddr; namelen: int32_t): int32_t; stdcall; public name 'bind';
 function closesocket(s: TSOCKET): int32_t; stdcall; public name 'closesocket';
 function connect(s: TSOCKET; name: PSockAddr; namelen: int32_t): int32_t; stdcall; public name 'connect';
@@ -4390,7 +4435,7 @@ procedure GetLocalTime(var lpsystemtime: SYSTEMTIME); stdcall; public name 'GetL
 function SetLocalTime(var lpsystemtime: SYSTEMTIME): BOOL; stdcall; public name 'SetLocalTime';
 
 function SystemTimeToTzSpecificLocalTime(lptimezoneinformation: LPTIME_ZONE_INFORMATION; var lpuniversaltime, lplocaltime: SYSTEMTIME): BOOL; stdcall; public name 'SystemTimeToTzSpecificLocalTime';
-function TzSpecificLocalTimeToSystemTime(const lptimezoneinformation: TIME_ZONE_INFORMATION; const lplocaltime: SYSTEMTIME; var lpuniversaltime: SYSTEMTIME): BOOL; stdcall; public name 'TzSpecificLocalTimeToSystemTime';
+function TzSpecificLocalTimeToSystemTime(lptimezoneinformation: LPTIME_ZONE_INFORMATION; const lplocaltime: SYSTEMTIME; var lpuniversaltime: SYSTEMTIME): BOOL; stdcall; public name 'TzSpecificLocalTimeToSystemTime';
 
 function GetTimeZoneInformation(var lptimezoneinformation: TIME_ZONE_INFORMATION): uint32_t; stdcall; public name 'GetTimeZoneInformation';
 function SetTimeZoneInformation(const lptimezoneinformation: TIME_ZONE_INFORMATION): BOOL; stdcall; public name 'SetTimeZoneInformation';
@@ -4698,7 +4743,7 @@ function Xor64(const value1, value2: int64_t): int64_t; stdcall; public name 'Xo
 function Not64(const value: int64_t): int64_t; stdcall; public name 'Not64';
 
 function Rol32(value: uint32_t; count: uint8_t): uint32_t; stdcall; public name 'Rol32';
-function Ror32(value: uint32_t; count: uint8_t): uint32_t; stdcall; public name 'Ror32'; 
+function Ror32(value: uint32_t; count: uint8_t): uint32_t; stdcall; public name 'Ror32';
 
 function WordSwap(value: uint16_t): uint16_t; stdcall; public name 'WordSwap';
 function LongSwap(value: uint32_t): uint32_t; stdcall; public name 'LongSwap';
@@ -5845,7 +5890,7 @@ begin
  else
   begin
    FillChar(Result,SizeOf(TInterruptEntry),0);
-   
+
    Result:=ERROR_CALL_NOT_IMPLEMENTED;
   end;
 end;
@@ -5895,7 +5940,7 @@ begin
  else
   begin
    FillChar(Result,SizeOf(TInterruptEntry),0);
-   
+
    Result:=ERROR_CALL_NOT_IMPLEMENTED;
   end;
 end;
@@ -5945,7 +5990,7 @@ begin
  else
   begin
    FillChar(Result,SizeOf(TInterruptEntry),0);
-   
+
    Result:=ERROR_CALL_NOT_IMPLEMENTED;
   end;
 end;
@@ -11073,7 +11118,7 @@ begin
  else
   begin
    Result:=ClockGetCount;
-  end;  
+  end;
 end;
 
 {==============================================================================}
@@ -11088,7 +11133,7 @@ begin
  else
   begin
    Result:=ClockGetTotal;
-  end;  
+  end;
 end;
 {$ENDIF}
 {==============================================================================}
@@ -21866,7 +21911,7 @@ function sd_device_send_interface_condition(mmc: PMMC_DEVICE): uint32_t; stdcall
 
  CMD8 (SEND_IF_COND) must be invoked to support SD 2.0 cards
  The card must be in Idle State before issuing this command
-      
+
  This command will fail harmlessly for SD 1.0 cards
 }
 begin
@@ -23098,7 +23143,7 @@ function pwm_device_write(pwm: PPWM_DEVICE; value: uint32_t): uint32_t; stdcall;
 {Value: The value to write}
 {Return: ERROR_SUCCESS if completed or another error code on failure}
 {Note: The exact meaning of value may depend on the device and other configured options,
-       in many cases the value will represent the "on" time of each pulse with regard to 
+       in many cases the value will represent the "on" time of each pulse with regard to
        the duty cycle of the waveform output by the device}
 begin
  {}
@@ -23170,7 +23215,7 @@ function pwm_device_set_range(pwm: PPWM_DEVICE; range: uint32_t): uint32_t; stdc
 {Range: The range value to set}
 {Return: ERROR_SUCCESS if completed or another error code on failure}
 {Note: The exact meaning of range may depend on the device and other configured options,
-       in many cases the range will represent the period of one full cycle of the 
+       in many cases the range will represent the period of one full cycle of the
        waveform output by the device}
 begin
  {}
@@ -26432,6 +26477,15 @@ end;
 {$ENDIF}
 {==============================================================================}
 {==============================================================================}
+{HID Functions}
+{$IFDEF API_EXPORT_HID}
+//To Do
+{==============================================================================}
+{HID Helper Functions}
+//To Do
+{$ENDIF}
+{==============================================================================}
+{==============================================================================}
 {Keymap Functions}
 {$IFDEF API_EXPORT_KEYMAP}
 function keymap_load(header: PKEYMAP_HEADER; data: PKEYMAP_DATA; size: uint32_t): KEYMAP_HANDLE; stdcall;
@@ -26677,7 +26731,7 @@ function keyboard_get(var keycode: uint16_t): uint32_t; stdcall;
 {Return: ERROR_SUCCESS if completed or another error code on failure}
 {Note: Key code is the value translated from the scan code using the current keymap
        it may not be a character code and it may include non printable characters.
-       
+
        To translate a key code to a character call KeymapGetCharCode()}
 begin
  {}
@@ -26766,7 +26820,7 @@ function keyboard_device_get(keyboard: PKEYBOARD_DEVICE; var keycode: uint16_t):
 {Return: ERROR_SUCCESS if completed or another error code on failure}
 {Note: Key code is the value translated from the scan code using the current keymap
        it may not be a character code and it may include non printable characters.
-       
+
        To translate a key code to a character call KeymapGetCharCode()}
 begin
  {}
@@ -27513,6 +27567,15 @@ end;
 {$ENDIF}
 {==============================================================================}
 {==============================================================================}
+{Joystick Functions}
+{$IFDEF API_EXPORT_JOYSTICK}
+//To Do
+{==============================================================================}
+{Joystick Helper Functions}
+//To Do
+{$ENDIF}
+{==============================================================================}
+{==============================================================================}
 {Storage Functions}
 {$IFDEF API_EXPORT_STORAGE}
 function storage_device_read(storage: PSTORAGE_DEVICE; const start, count: int64_t; buffer: PVOID): uint32_t; stdcall;
@@ -27779,7 +27842,7 @@ function network_buffer_allocate(network: PNETWORK_DEVICE; var entry: PNETWORK_E
 {Allocate a transmit buffer from the specified network device, the returned entry will
  include a buffer for writing data to as well as an offfset value to allow the driver
  data to be written to the start of the buffer.
- 
+
  When the data has been copied to the buffer, pass the entry to NetworkBufferTransmit}
 {Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
@@ -27803,7 +27866,7 @@ end;
 function network_buffer_receive(network: PNETWORK_DEVICE; var entry: PNETWORK_ENTRY): uint32_t; stdcall;
 {Receive a completed receive buffer from the specified network device. The returned
  entry will contain a one or more packets of data to read from.
- 
+
  When the data has been processed pass the returned buffer to NetworkBufferRelease}
 {Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
@@ -28043,11 +28106,11 @@ end;
 
 {==============================================================================}
 
-function hardware_address_to_string(const address: THARDWARE_ADDRESS): PCHAR; stdcall;
+function hardware_address_to_string(const address: THARDWARE_ADDRESS; separator: PCHAR): PCHAR; stdcall;
 begin
  {}
  //To Do //PCHAR
- //Result:=HardwareAddressToString(address);
+ //Result:=HardwareAddressToString(address,separator);
 end;
 
 {==============================================================================}
@@ -28910,16 +28973,6 @@ function tft_framebuffer_commit(framebuffer: PFRAMEBUFFER_DEVICE; address, size,
 begin
  {}
  Result:=TFTFramebufferCommit(framebuffer,address,size,flags);
-end;
-
-{==============================================================================}
-
-function tft_framebuffer_set_properties(framebuffer: PFRAMEBUFFER_DEVICE; properties: PFRAMEBUFFER_PROPERTIES): uint32_t; stdcall;
-{Implementation of FramebufferDeviceSetProperties API for TFT Framebuffer}
-{Note: Not intended to be called directly by applications, use FramebufferDeviceSetProperties instead}
-begin
- {}
- Result:=TFTFramebufferSetProperties(framebuffer,properties);
 end;
 
 {==============================================================================}
@@ -30273,7 +30326,7 @@ end;
 
 {==============================================================================}
 
-function WSAAsyncSelect(s: TSOCKET; hwnd: HWND; wmsg: u_int; levent: int32_t): tOS_INT; stdcall; //  really a c-long 
+function WSAAsyncSelect(s: TSOCKET; hwnd: HWND; wmsg: u_int; levent: int32_t): tOS_INT; stdcall; //  really a c-long
 begin
  {}
  Result:=Winsock.WSAAsyncSelect(s,hwnd,wmsg,levent);
@@ -32130,7 +32183,7 @@ end;
 
 {==============================================================================}
 
-function TzSpecificLocalTimeToSystemTime(const lptimezoneinformation: TIME_ZONE_INFORMATION; const lplocaltime: SYSTEMTIME; var lpuniversaltime: SYSTEMTIME): BOOL; stdcall;
+function TzSpecificLocalTimeToSystemTime(lptimezoneinformation: LPTIME_ZONE_INFORMATION; const lplocaltime: SYSTEMTIME; var lpuniversaltime: SYSTEMTIME): BOOL; stdcall;
 begin
  {}
  Result:=Ultibo.TzSpecificLocalTimeToSystemTime(lptimezoneinformation,lplocaltime,lpuniversaltime);
@@ -32231,7 +32284,7 @@ function QueryPerformanceCounter(var lpPerformanceCount: LARGE_INTEGER): BOOL; s
 begin
  {}
  Result:=Ultibo.QueryPerformanceCounter(lpPerformanceCount);
-end; 
+end;
 
 {==============================================================================}
 

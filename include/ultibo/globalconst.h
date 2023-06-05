@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -797,6 +797,7 @@ extern "C" {
 #define SCAN_CODE_RIGHT_ALT	230 // Keyboard RightAlt
 #define SCAN_CODE_RIGHT_GUI	231 // Keyboard Right GUI
 /* Codes 232 to 65535 Reserved */
+#define SCAN_CODE_RESERVED_255	255 // Reserved
 
 /* Alternate names for above */
 #define SCAN_CODE_EXCLAMATION	30 // Keyboard 1 or !
@@ -933,6 +934,29 @@ extern "C" {
 #define SIZE_1G	0x40000000
 #define SIZE_2G	0x80000000
 
+#define SIZE_4G	0x100000000;
+#define SIZE_8G	0x200000000;
+
+/* ============================================================================== */
+/* Universal frequency constants */
+#define FREQUENCY_KHZ	1000
+#define FREQUENCY_MHZ	1000000
+#define FREQUENCY_GHZ	1000000000
+
+/* ============================================================================== */
+/* Universal bit constants */
+#define BITS_PER_BYTE	8
+#define BITS_PER_WORD	16
+#define BITS_PER_LONG	32
+#define BITS_PER_LONG_LONG	64
+
+/* ============================================================================== */
+/* Universal max constants */
+#define MAX_BYTE	(uint8_t)-1 // 0xFF
+#define MAX_WORD	(uint16_t)-1 // 0xFFFF
+#define MAX_LONG	(uint32_t)-1 // 0xFFFFFFFF
+#define MAX_LONG_LONG	(uint64_t)-1 // 0xFFFFFFFFFFFFFFFF
+
 /* ============================================================================== */
 /* Universal time constants */
 #define MILLISECONDS_PER_SECOND	1000
@@ -956,6 +980,7 @@ extern "C" {
 #define TIME_TICKS_PER_10MILLISECONDS	100000 // 10^7 / 10^2
 
 /* Unix/Linux time constants (Seconds since 1/1/1970) */
+#define UNIX_TIME_MILLISECONDS_PER_DAY	86400000 // 60*60*24*1000;
 #define UNIX_TIME_SECONDS_PER_DAY	86400 // 60*60*24;
 #define UNIX_TIME_DAYS_TO_1970	25569.0 // Offset between 1899 (FreePascal) and 1970 (Unix/Linux)
 
@@ -1000,7 +1025,10 @@ extern "C" {
 #define BOARD_TYPE_RPI3B_PLUS	28 // Raspberry Pi 3 Model B+
 #define BOARD_TYPE_RPI3A_PLUS	29 // Raspberry Pi 3 Model A+
 #define BOARD_TYPE_RPI_COMPUTE3_PLUS	30 // Raspberry Pi Compute Module 3+
-#define BOARD_TYPE_RPI4B    31 // Raspberry Pi 4 Model B
+#define BOARD_TYPE_RPI4B	31 // Raspberry Pi 4 Model B
+#define BOARD_TYPE_RPI400	32 // Raspberry Pi 400
+#define BOARD_TYPE_RPI_COMPUTE4	33 // Raspberry Pi Compute Module 4
+#define BOARD_TYPE_RPI_ZERO2_W	34 // Raspberry Pi Model Zero 2 W
 
 /* ============================================================================== */
 /* CPU Arch constants */
@@ -1241,7 +1269,7 @@ extern "C" {
 #define DMA_DIR_DEV_TO_MEM	3
 #define DMA_DIR_DEV_TO_DEV	4
 
-/* DMA DREQ ID constants */
+/* DMA DREQ ID constants (Where applicable) */
 #define DMA_DREQ_ID_NONE	0 // No peripheral gating (memory to memory transfer)
 #define DMA_DREQ_ID_UART_TX	1
 #define DMA_DREQ_ID_UART_RX	2
@@ -1254,6 +1282,42 @@ extern "C" {
 #define DMA_DREQ_ID_PWM	9
 #define DMA_DREQ_ID_MMC	10
 #define DMA_DREQ_ID_SDHOST	11
+/* Additional and aliased constants (Where applicable) */
+#define DMA_DREQ_ID_UART0_TX	DMA_DREQ_ID_UART_TX
+#define DMA_DREQ_ID_UART0_RX	DMA_DREQ_ID_UART_RX
+#define DMA_DREQ_ID_UART1_TX	12
+#define DMA_DREQ_ID_UART1_RX	13
+#define DMA_DREQ_ID_UART2_TX	14
+#define DMA_DREQ_ID_UART2_RX	15
+#define DMA_DREQ_ID_UART3_TX	16
+#define DMA_DREQ_ID_UART3_RX	17
+#define DMA_DREQ_ID_UART4_TX	18
+#define DMA_DREQ_ID_UART4_RX	19
+#define DMA_DREQ_ID_UART5_TX	20
+#define DMA_DREQ_ID_UART5_RX	21
+#define DMA_DREQ_ID_SPI0_TX	DMA_DREQ_ID_SPI_TX
+#define DMA_DREQ_ID_SPI0_RX	DMA_DREQ_ID_SPI_RX
+#define DMA_DREQ_ID_SPI1_TX	22
+#define DMA_DREQ_ID_SPI1_RX	23
+#define DMA_DREQ_ID_SPI2_TX	24
+#define DMA_DREQ_ID_SPI2_RX	25
+#define DMA_DREQ_ID_SPI3_TX	26
+#define DMA_DREQ_ID_SPI3_RX	27
+#define DMA_DREQ_ID_SPI4_TX	28
+#define DMA_DREQ_ID_SPI4_RX	29
+#define DMA_DREQ_ID_SPI5_TX	30
+#define DMA_DREQ_ID_SPI5_RX	31
+#define DMA_DREQ_ID_SPI6_TX	32
+#define DMA_DREQ_ID_SPI6_RX	33
+#define DMA_DREQ_ID_SPI_SLAVE0_TX	DMA_DREQ_ID_SPI_SLAVE_TX
+#define DMA_DREQ_ID_SPI_SLAVE0_RX	DMA_DREQ_ID_SPI_SLAVE_RX
+#define DMA_DREQ_ID_PCM0_TX	DMA_DREQ_ID_PCM_TX
+#define DMA_DREQ_ID_PCM0_RX	DMA_DREQ_ID_PCM_RX
+#define DMA_DREQ_ID_PWM0	DMA_DREQ_ID_PWM
+#define DMA_DREQ_ID_PWM1	34
+#define DMA_DREQ_ID_EMMC0	DMA_DREQ_ID_MMC
+#define DMA_DREQ_ID_EMMC1	DMA_DREQ_ID_SDHOST
+#define DMA_DREQ_ID_EMMC2	35
 
 /* ============================================================================== */
 /* GPIO Pin constants */
@@ -1362,14 +1426,14 @@ extern "C" {
 
 /* ============================================================================== */
 /* Virtual GPIO Pin constants */
-#define VIRTUAL_GPIO_PIN_0	0
-#define VIRTUAL_GPIO_PIN_1	1
-#define VIRTUAL_GPIO_PIN_2	2
-#define VIRTUAL_GPIO_PIN_3	3
-#define VIRTUAL_GPIO_PIN_4	4
-#define VIRTUAL_GPIO_PIN_5	5
-#define VIRTUAL_GPIO_PIN_6	6
-#define VIRTUAL_GPIO_PIN_7	7
+#define VIRTUAL_GPIO_PIN_0	GPIO_PIN_0
+#define VIRTUAL_GPIO_PIN_1	GPIO_PIN_1
+#define VIRTUAL_GPIO_PIN_2	GPIO_PIN_2
+#define VIRTUAL_GPIO_PIN_3	GPIO_PIN_3
+#define VIRTUAL_GPIO_PIN_4	GPIO_PIN_4
+#define VIRTUAL_GPIO_PIN_5	GPIO_PIN_5
+#define VIRTUAL_GPIO_PIN_6	GPIO_PIN_6
+#define VIRTUAL_GPIO_PIN_7	GPIO_PIN_7
 
 /* Virtual GPIO Function constants */
 #define VIRTUAL_GPIO_FUNCTION_IN	0
@@ -1483,6 +1547,27 @@ extern "C" {
 #define POWER_ID_SPI2	18
 #define POWER_ID_SPI3	19
 #define POWER_ID_CCP2TX	20
+/* Additional constants (Where applicable) */
+#define POWER_ID_UART4	21
+#define POWER_ID_UART5	22
+#define POWER_ID_UART6	23
+#define POWER_ID_UART7	24
+#define POWER_ID_UART8	25
+#define POWER_ID_UART9	26
+#define POWER_ID_I2C4	27
+#define POWER_ID_I2C5	28
+#define POWER_ID_I2C6	29
+#define POWER_ID_I2C7	30
+#define POWER_ID_I2C8	31
+#define POWER_ID_I2C9	32
+#define POWER_ID_SPI4	33
+#define POWER_ID_SPI5	34
+#define POWER_ID_SPI6	35
+#define POWER_ID_SPI7	36
+#define POWER_ID_SPI8	37
+#define POWER_ID_SPI9	38
+
+#define POWER_ID_UNKNOWN	(uint32_t)-1
 
 /* Power State constants */
 #define POWER_STATE_OFF	0
@@ -1516,6 +1601,27 @@ extern "C" {
 #define CLOCK_ID_SPI1	23
 #define CLOCK_ID_SPI2	24
 #define CLOCK_ID_SPI3	25
+/* Additional constants (Where applicable) */
+#define CLOCK_ID_UART4	26
+#define CLOCK_ID_UART5	27
+#define CLOCK_ID_UART6	28
+#define CLOCK_ID_UART7	29
+#define CLOCK_ID_UART8	30
+#define CLOCK_ID_UART9	31
+#define CLOCK_ID_I2C4	32
+#define CLOCK_ID_I2C5	33
+#define CLOCK_ID_I2C6	34
+#define CLOCK_ID_I2C7	35
+#define CLOCK_ID_I2C8	36
+#define CLOCK_ID_I2C9	37
+#define CLOCK_ID_SPI4	38
+#define CLOCK_ID_SPI5	39
+#define CLOCK_ID_SPI6	40
+#define CLOCK_ID_SPI7	41
+#define CLOCK_ID_SPI8	42
+#define CLOCK_ID_SPI9	43
+
+#define CLOCK_ID_UNKNOWN	(uint32_t)-1
 
 /* Clock State constants */
 #define CLOCK_STATE_OFF	0
@@ -1632,6 +1738,10 @@ extern "C" {
 #define LOGGING_FACILITY_NFS	36 // NFS log messages
 #define LOGGING_FACILITY_RPC	37 // RPC log messages
 #define LOGGING_FACILITY_PCI    38 // PCI log messages
+#define LOGGING_FACILITY_VIRTIO	39 // VIRTIO log messages
+#define LOGGING_FACILITY_BLUETOOTH	40 // Bluetooth log messages
+#define LOGGING_FACILITY_JOYSTICK	41 // Joystick log messages
+#define LOGGING_FACILITY_HID	42 // HID log messages
 
 #define LOGGING_FACILITY_USER	1000 // User log messages
 
@@ -1672,6 +1782,7 @@ extern "C" {
 #define HANDLE_TYPE_PIPE	101
 #define HANDLE_TYPE_SOCKET	102
 #define HANDLE_TYPE_DEVICE	103
+#define HANDLE_TYPE_FIRMWARE	104
 
 #define HANDLE_TYPE_USER_BASE	1000 // Base value for user or application defined handle types
 

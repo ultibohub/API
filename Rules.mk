@@ -5,7 +5,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2021 Garry Wood <garry@softoz.com.au>
+# Copyright (c) 2022 Garry Wood <garry@softoz.com.au>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ API_PATH = ..
 endif
 
 ifeq ($(strip $(FPC_PATH)),)
-FPC_PATH = C:/Ultibo/Core/fpc/3.1.1/bin/i386-win32/
+FPC_PATH = C:/Ultibo/Core/fpc/3.2.2/bin/i386-win32/
 endif
 
 # Include user customizations without error if file doesn't exist
@@ -52,6 +52,10 @@ else ifeq ($(strip $(BOARD_TYPE)),rpi0w)
 BOARD_TYPE = rpib
 else ifeq ($(strip $(BOARD_TYPE)),rpi3b+)
 BOARD_TYPE = rpi3b
+else ifeq ($(strip $(BOARD_TYPE)),rpi02w)
+BOARD_TYPE = rpi3b
+else ifeq ($(strip $(BOARD_TYPE)),rpi400)
+BOARD_TYPE = rpi4b
 else ifeq ($(strip $(BOARD_TYPE)),qemu)
 BOARD_TYPE = qemuvpb
 endif
