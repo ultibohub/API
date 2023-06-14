@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -55,7 +55,7 @@ typedef uint32_t DWORD;
 typedef _Bool BOOL; // Built in Boolean type (1 byte) (Redeclared here for flexibility)
 typedef int32_t LONGBOOL; // Compatibility with FPC LongBool type (4 bytes)
 
-typedef wchar_t WCHAR; // Standard WideChar type (4 bytes) (Redeclared here for flexibility)
+typedef wchar_t WCHAR; // Standard WideChar type (2 bytes) (Redeclared here for flexibility)
 
 typedef size_t SOCKET;
 
@@ -68,7 +68,8 @@ typedef void *FARPROC; //To Do //
 
 /* ============================================================================== */
 /* Structure types */
-typedef struct _OVERLAPPED
+typedef struct _OVERLAPPED OVERLAPPED;
+struct _OVERLAPPED
 {
   size_t Internal;
   size_t InternalHigh;
@@ -82,7 +83,24 @@ typedef struct _OVERLAPPED
     void *Pointer;
   };
   HANDLE hEvent;
-} OVERLAPPED;
+};
+
+/* ============================================================================== */
+/* Display Settings type (Generic) */
+typedef struct _DISPLAY_SETTINGS DISPLAY_SETTINGS;
+struct _DISPLAY_SETTINGS
+{
+	uint32_t displaynumber;
+	uint32_t width;
+	uint32_t height;
+	uint32_t depth;
+	uint32_t pitch;
+	uint32_t virtualwidth;
+	uint32_t virtualheight;
+	uint32_t virtualwidthoffset;
+	uint32_t virtualheightoffset;
+	size_t framebufferaddress;
+};
 
 /* ============================================================================== */
 /* Handle types */

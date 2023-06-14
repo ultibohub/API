@@ -207,6 +207,10 @@ uses GlobalConfig,
    PWM,
    {$ENDIF}
 
+   {$IFDEF API_EXPORT_PCM}
+   I2S,
+   {$ENDIF}
+
    {$IFDEF API_EXPORT_GPIO}
    GPIO,
    {$ENDIF}
@@ -314,6 +318,11 @@ uses GlobalConfig,
 {type}
  {API specific types}
 
+type
+ {GlobalTypes}
+ {Display Settings}
+ TDISPLAY_SETTINGS = TDisplaySettings;
+
 {$IFDEF API_EXPORT_PLATFORM}
 type
  {Platform}
@@ -341,6 +350,9 @@ type
  {Handle Entry Types}
  handle_enumerate_cb = THandleEnumerate;
  PHANDLE_ENTRY = PHandleEntry;
+
+ {Shutdown Entry Types}
+ shutdown_cb = TShutdownCallback;
 
  {GPIO Types}
  gpio_event_cb = TGPIOCallback;
@@ -427,12 +439,14 @@ type
  driver_enumerate_cb = TDriverEnumerate;
 
  {Clock Types}
+ TCLOCK_DEVICE = TClockDevice;
  PCLOCK_DEVICE = PClockDevice;
  PCLOCK_PROPERTIES = PClockProperties;
  clock_enumerate_cb = TClockEnumerate;
  clock_notification_cb = TClockNotification;
 
  {Timer Types}
+ TTIMER_DEVICE = TTimerDevice;
  PTIMER_DEVICE = PTimerDevice;
  PTIMER_WAITER = PTimerWaiter;
  PTIMER_PROPERTIES = PTimerProperties;
@@ -441,16 +455,19 @@ type
  timer_notification_cb = TTimerNotification;
 
  {Random Types}
+ TRANDOM_DEVICE = TRandomDevice;
  PRANDOM_DEVICE = PRandomDevice;
  random_enumerate_cb = TRandomEnumerate;
  random_notification_cb = TRandomNotification;
 
  {Mailbox Types}
+ TMAILBOX_DEVICE = TMailboxDevice;
  PMAILBOX_DEVICE = PMailboxDevice;
  mailbox_enumerate_cb = TMailboxEnumerate;
  mailbox_notification_cb = TMailboxNotification;
 
  {Watchdog Types}
+ TWATCHDOG_DEVICE = TWatchdogDevice;
  PWATCHDOG_DEVICE = PWatchdogDevice;
  watchdog_enumerate_cb = TWatchdogEnumerate;
  watchdog_notification_cb = TWatchdogNotification;
@@ -587,6 +604,10 @@ type
 
  pwm_enumerate_cb = TPWMEnumerate;
  pwm_notification_cb = TPWMNotification;
+{$ENDIF}
+
+{$IFDEF API_EXPORT_PCM}
+//To Do
 {$ENDIF}
 
 {$IFDEF API_EXPORT_GPIO}
@@ -798,6 +819,25 @@ procedure APIInit;
 {==============================================================================}
 {Platform Functions}
 {$IFDEF API_EXPORT_PLATFORM}
+{Device Tree Functions}
+function device_tree_valid: BOOL; stdcall; public name 'device_tree_valid';
+function device_tree_get_base: SIZE_T; stdcall; public name 'device_tree_get_base';
+function device_tree_get_size: uint32_t; stdcall; public name 'device_tree_get_size';
+
+function device_tree_read(path, name: PCHAR; buffer: PVOID; var size: uint32_t): uint32_t; stdcall; public name 'device_tree_read';
+function device_tree_read32(path, name: PCHAR; var value: uint32_t): uint32_t; stdcall; public name 'device_tree_read32';
+function device_tree_read64(path, name: PCHAR; var value: uint64_t): uint32_t; stdcall; public name 'device_tree_read64';
+function device_tree_read_string(path, name: PCHAR; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'device_tree_read_string';
+
+{Boot Functions}
+procedure boot_blink; stdcall; public name 'boot_blink';
+procedure boot_output(value: uint32_t); stdcall; public name 'boot_output';
+procedure boot_console_start; stdcall; public name 'boot_console_start';
+procedure boot_console_write(value: PCHAR); stdcall; public name 'boot_console_write';
+procedure boot_console_write_ex(value: PCHAR; x, y: uint32_t); stdcall; public name 'boot_console_write_ex';
+function boot_console_get_x: uint32_t; stdcall; public name 'boot_console_get_x';
+function boot_console_get_y: uint32_t; stdcall; public name 'boot_console_get_y';
+
 {LED Functions}
 procedure power_led_enable; stdcall; public name 'power_led_enable';
 procedure power_led_on; stdcall; public name 'power_led_on';
@@ -831,6 +871,8 @@ function mailbox_call_ex(mailbox, channel, data: uint32_t; var response: uint32_
 function mailbox_property_call(mailbox, channel: uint32_t; data: PVOID; var response: uint32_t): uint32_t; stdcall; public name 'mailbox_property_call';
 function mailbox_property_call_ex(mailbox, channel: uint32_t; data: PVOID; var response: uint32_t; timeout: uint32_t): uint32_t; stdcall; public name 'mailbox_property_call_ex';
 
+function mailbox_property_tag(tag: uint32_t; data: PVOID; size: uint32_t): uint32_t; stdcall; public name 'mailbox_property_tag';
+
 {Random Number Functions}
 function random_available: BOOL; stdcall; public name 'random_available';
 
@@ -839,6 +881,7 @@ procedure random_seed(seed: uint32_t); stdcall; public name 'random_seed';
 function random_read_longint(limit: int32_t): int32_t; stdcall; public name 'random_read_longint';
 function random_read_int64(limit: int64_t): int64_t; stdcall; public name 'random_read_int64';
 function random_read_double: double_t; stdcall; public name 'random_read_double';
+function random_read_extended: double_t; stdcall; public name 'random_read_extended';
 
 {Watchdog Functions}
 function watchdog_available: BOOL; stdcall; public name 'watchdog_available';
@@ -897,9 +940,18 @@ function get_system_call_entry(number: uint32_t): TSYSTEM_CALL_ENTRY; stdcall; p
 {System Functions}
 function system_restart(delay: uint32_t): uint32_t; stdcall; public name 'system_restart';
 function system_shutdown(delay: uint32_t): uint32_t; stdcall; public name 'system_shutdown';
+
+function system_register_shutdown(callback: TShutdownCallback; parameter: PVOID; timeout: uint32_t): uint32_t; stdcall; public name 'system_register_shutdown';
+function system_deregister_shutdown(callback: TShutdownCallback; parameter: PVOID): uint32_t; stdcall; public name 'system_deregister_shutdown';
+
 function system_get_uptime: int64_t; stdcall; public name 'system_get_uptime';
-function system_get_commandline: PCHAR; stdcall; public name 'system_get_commandline';
+function system_get_command_line(commandline: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'system_get_command_line';
 function system_get_environment: PVOID; stdcall; public name 'system_get_environment';
+
+function system_date_to_string(date: double_t; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'system_date_to_string';
+function system_time_to_string(time: double_t; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'system_time_to_string';
+function system_date_time_to_string(datetime: double_t; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'system_date_time_to_string';
+function system_interval_to_string(interval: double_t; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'system_interval_to_string';
 
 {CPU Functions}
 function cpu_get_arch: uint32_t; stdcall; public name 'cpu_get_arch';
@@ -917,7 +969,7 @@ function cpu_get_utilization(cpuid: uint32_t): uint32_t; stdcall; public name 'c
 
 function cpu_get_model: uint32_t; stdcall; public name 'cpu_get_model';
 function cpu_get_revision: uint32_t; stdcall; public name 'cpu_get_revision';
-function cpu_get_description: PCHAR; stdcall; public name 'cpu_get_description';
+function cpu_get_description(description: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'cpu_get_description';
 
 {FPU Functions}
 function fpu_get_type: uint32_t; stdcall; public name 'fpu_get_type';
@@ -941,16 +993,19 @@ function l2_cache_get_linesize: uint32_t; stdcall; public name 'l2_cache_get_lin
 
 {Version Functions}
 procedure version_get_info(var major, minor, revision: uint32_t); stdcall; public name 'version_get_info';
-function version_get_date: PCHAR; stdcall; public name 'version_get_date';
-function version_get_name: PCHAR; stdcall; public name 'version_get_name';
-function version_get_version: PCHAR; stdcall; public name 'version_get_version';
+function version_get_date(date: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'version_get_date';
+function version_get_name(name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'version_get_name';
+function version_get_version(version: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'version_get_version';
 
 {Board Functions}
 function board_get_type: uint32_t; stdcall; public name 'board_get_type';
 function board_get_model: uint32_t; stdcall; public name 'board_get_model';
 function board_get_serial: int64_t; stdcall; public name 'board_get_serial';
 function board_get_revision: uint32_t; stdcall; public name 'board_get_revision';
-function board_get_mac_address: PCHAR; stdcall; public name 'board_get_mac_address';
+function board_get_mac_address(address: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'board_get_mac_address';
+
+{Chip Functions}
+function chip_get_revision: uint32_t; stdcall; public name 'chip_get_revision';
 
 {Firmware Functions}
 function firmware_get_revision: uint32_t; stdcall; public name 'firmware_get_revision';
@@ -966,6 +1021,9 @@ function memory_get_size: uint64_t; stdcall; public name 'memory_get_size';
 function memory_get_pagesize: uint32_t; stdcall; public name 'memory_get_pagesize';
 function memory_get_large_pagesize: uint32_t; stdcall; public name 'memory_get_large_pagesize';
 
+function memory_get_section_size: uint32_t; stdcall; public name 'memory_get_section_size';
+function memory_get_large_section_size: uint32_t; stdcall; public name 'memory_get_large_section_size';
+
 {Power Functions}
 function power_on(powerid: uint32_t): uint32_t; stdcall; public name 'power_on';
 function power_off(powerid: uint32_t): uint32_t; stdcall; public name 'power_off';
@@ -975,10 +1033,13 @@ function power_get_state(powerid: uint32_t): uint32_t; stdcall; public name 'pow
 function power_set_state(powerid, state: uint32_t; wait: BOOL): uint32_t; stdcall; public name 'power_set_state';
 
 {Clock Functions}
-{$IFNDEF CLOCK_TICK_MANUAL}
 function clock_ticks: uint32_t; stdcall; public name 'clock_ticks';
 function clock_seconds: uint32_t; stdcall; public name 'clock_seconds';
-{$ENDIF}
+
+function clock_milliseconds: int64_t; stdcall; public name 'clock_milliseconds';
+function clock_microseconds: int64_t; stdcall; public name 'clock_microseconds';
+function clock_nanoseconds: int64_t; stdcall; public name 'clock_nanoseconds';
+
 function clock_get_time: int64_t; stdcall; public name 'clock_get_time';
 function clock_set_time(const time: int64_t; rtc: BOOL): int64_t; stdcall; public name 'clock_set_time';
 
@@ -995,6 +1056,8 @@ function clock_set_state(clockid, state: uint32_t): uint32_t; stdcall; public na
 
 function clock_get_min_rate(clockid: uint32_t): uint32_t; stdcall; public name 'clock_get_min_rate';
 function clock_get_max_rate(clockid: uint32_t): uint32_t; stdcall; public name 'clock_get_max_rate';
+
+function clock_get_measured_rate(clockid: uint32_t): uint32_t; stdcall; public name 'clock_get_measured_rate';
 
 {Turbo Functions}
 function turbo_get_state(turboid: uint32_t): uint32_t; stdcall; public name 'turbo_get_state';
@@ -1066,13 +1129,23 @@ function framebuffer_get_palette(buffer: PVOID; length: uint32_t): uint32_t; std
 function framebuffer_set_palette(start, count: uint32_t; buffer: PVOID; length: uint32_t): uint32_t; stdcall; public name 'framebuffer_set_palette';
 function framebuffer_test_palette(start, count: uint32_t; buffer: PVOID; length: uint32_t): uint32_t; stdcall; public name 'framebuffer_test_palette';
 
+function framebuffer_get_layer(var layer: int32_t): uint32_t; stdcall; public name 'framebuffer_get_layer';
+function framebuffer_set_layer(var layer: int32_t): uint32_t; stdcall; public name 'framebuffer_set_layer';
+function framebuffer_test_layer(var layer: int32_t): uint32_t; stdcall; public name 'framebuffer_test_layer';
+
 function framebuffer_test_vsync: uint32_t; stdcall; public name 'framebuffer_test_vsync';
 function framebuffer_set_vsync: uint32_t; stdcall; public name 'framebuffer_set_vsync';
 
 function framebuffer_set_backlight(brightness: uint32_t): uint32_t; stdcall; public name 'framebuffer_set_backlight';
 
+function framebuffer_get_num_displays(var numdisplays: uint32_t): uint32_t; stdcall; public name 'framebuffer_get_num_displays';
+function framebuffer_get_display_id(displaynum: uint32_t): uint32_t; stdcall; public name 'framebuffer_get_display_id';
+function framebuffer_set_display_num(displaynum: uint32_t): uint32_t; stdcall; public name 'framebuffer_set_display_num';
+function framebuffer_get_display_settings(displaynum: uint32_t; var displaysettings: TDISPLAY_SETTINGS): uint32_t; stdcall; public name 'framebuffer_get_display_settings';
+function framebuffer_display_id_to_name(displayid: uint32_t; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'framebuffer_display_id_to_name';
+
 {Touch Functions}
-function touch_get_buffer(var address: uint32_t): uint32_t; stdcall; public name 'touch_get_buffer';
+function touch_get_buffer(var address: SIZE_T): uint32_t; stdcall; public name 'touch_get_buffer';
 function touch_set_buffer(address: SIZE_T): uint32_t; stdcall; public name 'touch_set_buffer';
 
 {Cursor Functions}
@@ -1122,6 +1195,9 @@ function gpio_input_event(pin, trigger, timeout: uint32_t; callback: gpio_event_
 
 function gpio_output_set(pin, level: uint32_t): uint32_t; stdcall; public name 'gpio_output_set';
 
+function gpio_level_get(pin: uint32_t): uint32_t; stdcall; public name 'gpio_level_get';
+function gpio_level_set(pin, level: uint32_t): uint32_t; stdcall; public name 'gpio_level_set';
+
 function gpio_pull_get(pin: uint32_t): uint32_t; stdcall; public name 'gpio_pull_get';
 function gpio_pull_select(pin, mode: uint32_t): uint32_t; stdcall; public name 'gpio_pull_select';
 
@@ -1131,6 +1207,10 @@ function gpio_function_select(pin, mode: uint32_t): uint32_t; stdcall; public na
 {Virtual gpio_ Functions}
 function virtual_gpio_input_get(pin: uint32_t): uint32_t; stdcall; public name 'virtual_gpio_input_get';
 function virtual_gpio_output_set(pin, level: uint32_t): uint32_t; stdcall; public name 'virtual_gpio_output_set';
+
+function virtual_gpio_level_get(pin: uint32_t): uint32_t; stdcall; public name 'virtual_gpio_level_get';
+function virtual_gpio_level_set(pin, level: uint32_t): uint32_t; stdcall; public name 'virtual_gpio_level_set';
+
 function virtual_gpio_function_get(pin: uint32_t): uint32_t; stdcall; public name 'virtual_gpio_function_get';
 function virtual_gpio_function_select(pin, mode: uint32_t): uint32_t; stdcall; public name 'virtual_gpio_function_select';
 
@@ -1159,6 +1239,8 @@ function spi_set_clock_polarity(clockpolarity: uint32_t): uint32_t; stdcall; pub
 function spi_get_select_polarity(chipselect: uint16_t): uint32_t; stdcall; public name 'spi_get_select_polarity';
 function spi_set_select_polarity(chipselect: uint16_t; selectpolarity: uint32_t): uint32_t; stdcall; public name 'spi_set_select_polarity';
 
+function spi_get_description(id: uint32_t; description: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'spi_get_description';
+
 {I2C Functions}
 function i2c_available: BOOL; stdcall; public name 'i2c_available';
 
@@ -1176,6 +1258,9 @@ function i2c_set_rate(rate: uint32_t): uint32_t; stdcall; public name 'i2c_set_r
 function i2c_get_address: uint16_t; stdcall; public name 'i2c_get_address';
 function i2c_set_address(address: uint16_t): uint32_t; stdcall; public name 'i2c_set_address';
 
+function i2c_get_description(id: uint32_t; description: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'i2c_get_description';
+function i2c_slave_get_description(id: uint32_t; description: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'i2c_slave_get_description';
+
 {PWM Functions}
 function pwm_available: BOOL; stdcall; public name 'pwm_available';
 
@@ -1190,11 +1275,16 @@ function pwm_set_frequency(frequency: uint32_t): uint32_t; stdcall; public name 
 
 function pwm_configure(dutyns, periodns: uint32_t): uint32_t; stdcall; public name 'pwm_configure';
 
+function pwm_get_description(id, channel: uint32_t; description: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'pwm_get_description';
+
 {RTC Functions}
 function rtc_available: BOOL; stdcall; public name 'rtc_available';
 
 function rtc_get_time: int64_t; stdcall; public name 'rtc_get_time';
 function rtc_set_time(const time: int64_t): int64_t; stdcall; public name 'rtc_set_time';
+
+{UART Functions}
+function uart_get_description(id: uint32_t; description: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'uart_get_description';
 
 {Serial Functions}
 function serial_available: BOOL; stdcall; public name 'serial_available';
@@ -1292,6 +1382,11 @@ function interlocked_exchange(var target: int32_t; source: int32_t): int32_t; st
 function interlocked_add_exchange(var target: int32_t; source: int32_t): int32_t; stdcall; public name 'interlocked_add_exchange';
 function interlocked_compare_exchange(var target: int32_t; source, compare: int32_t): int32_t; stdcall; public name 'interlocked_compare_exchange';
 
+function page_table_get_levels: uint32_t; stdcall; public name 'page_table_get_levels';
+
+function page_directory_get_base: SIZE_T; stdcall; public name 'page_directory_get_base';
+function page_directory_get_size: uint32_t; stdcall; public name 'page_directory_get_size';
+
 function page_table_get_base: SIZE_T; stdcall; public name 'page_table_get_base';
 function page_table_get_size: uint32_t; stdcall; public name 'page_table_get_size';
 
@@ -1337,15 +1432,15 @@ function codepage_to_widechar(ch: CHAR): WIDECHAR; stdcall; public name 'codepag
 function widechar_to_codepage(ch: WIDECHAR): CHAR; stdcall; public name 'widechar_to_codepage';
 
 {Name Functions}
-function host_get_name: PCHAR; stdcall; public name 'host_get_name';
+function host_get_name(name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'host_get_name';
 function host_set_name(name: PCHAR): BOOL; stdcall; public name 'host_set_name';
-function host_get_domain: PCHAR; stdcall; public name 'host_get_domain';
+function host_get_domain(domain: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'host_get_domain';
 function host_set_domain(domain: PCHAR): BOOL; stdcall; public name 'host_set_domain';
 
 {Module Functions}
 function module_load(name: PCHAR): THANDLE; stdcall; public name 'module_load';
 function module_unload(handle: THANDLE): BOOL; stdcall; public name 'module_unload';
-function module_get_name(handle: THANDLE): PCHAR; stdcall; public name 'module_get_name';
+function module_get_name(handle: THANDLE; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'module_get_name';
 
 {Symbol Functions}
 function symbol_add(handle: THANDLE; name: PCHAR; address: SIZE_T): BOOL; stdcall; public name 'symbol_add';
@@ -1358,7 +1453,9 @@ procedure logging_output_ex(facility, severity: uint32_t; tag, content: PCHAR); 
 
 {Utility Functions}
 function first_bit_set(value: uint32_t): uint32_t; stdcall; public name 'first_bit_set';
+function last_bit_set(value: uint32_t): uint32_t; stdcall; public name 'last_bit_set';
 function count_leading_zeros(value: uint32_t): uint32_t; stdcall; public name 'count_leading_zeros';
+function count_trailing_zeros(value: uint32_t): uint32_t; stdcall; public name 'count_trailing_zeros';
 
 function physical_to_ioaddress(address: PVOID): SIZE_T; stdcall; public name 'physical_to_ioaddress';
 function ioaddress_to_physical(address: PVOID): SIZE_T; stdcall; public name 'ioaddress_to_physical';
@@ -1377,7 +1474,6 @@ procedure millisecond_delay_ex(milliseconds: uint32_t; wait: BOOL); stdcall; pub
 {RTL Functions}
 function get_tick_count:uint32_t; stdcall; public name 'get_tick_count';
 function get_tick_count64:uint64_t; stdcall; public name 'get_tick_count64';
-
 {$ENDIF}
 {==============================================================================}
 {Threads Functions}
@@ -1554,7 +1650,7 @@ function thread_destroy(thread: THREAD_HANDLE): uint32_t; stdcall; public name '
 function thread_get_current: THREAD_HANDLE; stdcall; public name 'thread_get_current';
 function thread_set_current(thread: THREAD_HANDLE): uint32_t; stdcall; public name 'thread_set_current';
 
-function thread_get_name(thread: THREAD_HANDLE): PCHAR; stdcall; public name 'thread_get_name';
+function thread_get_name(thread: THREAD_HANDLE; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'thread_get_name';
 function thread_set_name(thread: THREAD_HANDLE; name: PCHAR): uint32_t; stdcall; public name 'thread_set_name';
 
 function thread_get_cpu(thread: THREAD_HANDLE): uint32_t; stdcall; public name 'thread_get_cpu';
@@ -1911,10 +2007,10 @@ function device_create: PDEVICE; stdcall; public name 'device_create';
 function device_create_ex(size: uint32_t): PDEVICE; stdcall; public name 'device_create_ex';
 function device_destroy(device: PDEVICE): uint32_t; stdcall; public name 'device_destroy';
 
-function device_get_name(device: PDEVICE): PCHAR; stdcall; public name 'device_get_name';
+function device_get_name(device: PDEVICE; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'device_get_name';
 function device_set_name(device: PDEVICE; name: PCHAR): uint32_t; stdcall; public name 'device_set_name';
 
-function device_get_description(device: PDEVICE): PCHAR; stdcall; public name 'device_get_description';
+function device_get_description(device: PDEVICE; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'device_get_description';
 function device_set_description(device: PDEVICE; description: PCHAR): uint32_t; stdcall; public name 'device_set_description';
 
 function device_register(device: PDEVICE): uint32_t; stdcall; public name 'device_register';
@@ -1940,7 +2036,7 @@ function driver_create: PDRIVER; stdcall; public name 'driver_create';
 function driver_create_ex(size: uint32_t): PDRIVER; stdcall; public name 'driver_create_ex';
 function driver_destroy(driver: PDRIVER): uint32_t; stdcall; public name 'driver_destroy';
 
-function driver_get_name(driver: PDRIVER): PCHAR; stdcall; public name 'driver_get_name';
+function driver_get_name(driver: PDRIVER; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'driver_get_name';
 function driver_set_name(driver: PDRIVER; name: PCHAR): uint32_t; stdcall; public name 'driver_set_name';
 
 function driver_register(driver: PDRIVER): uint32_t; stdcall; public name 'driver_register';
@@ -2167,6 +2263,7 @@ function console_device_copy_image(console: PCONSOLE_DEVICE; const source, dest:
 function console_device_add_caret(console: PCONSOLE_DEVICE; width, height, offsetx, offsety: uint32_t): THANDLE; stdcall; public name 'console_device_add_caret';
 function console_device_delete_caret(console: PCONSOLE_DEVICE; handle: THANDLE): uint32_t; stdcall; public name 'console_device_delete_caret';
 function console_device_update_caret(console: PCONSOLE_DEVICE; handle: THANDLE; x, y: uint32_t; visible, blink: BOOL): uint32_t; stdcall; public name 'console_device_update_caret';
+function console_device_update_caret_ex(console: PCONSOLE_DEVICE; handle: THANDLE; x, y, forecolor, backcolor: uint32_t; visible, blink, reverse: BOOL): uint32_t; stdcall; public name 'console_device_update_caret_ex';
 
 function console_device_set_cursor(console: PCONSOLE_DEVICE; width, height: uint32_t; chars: PCHAR): uint32_t; stdcall; public name 'console_device_set_cursor';
 function console_device_update_cursor(console: PCONSOLE_DEVICE; enabled: BOOL; x, y: int32_t; relative: BOOL): uint32_t; stdcall; public name 'console_device_update_cursor';
@@ -2274,6 +2371,10 @@ function console_window_get_cursor_state(handle: WINDOW_HANDLE): CURSOR_STATE; s
 function console_window_set_cursor_state(handle: WINDOW_HANDLE; cursorstate: CURSOR_STATE): uint32_t; stdcall; public name 'console_window_set_cursor_state';
 function console_window_get_cursor_shape(handle: WINDOW_HANDLE): CURSOR_SHAPE; stdcall; public name 'console_window_get_cursor_shape';
 function console_window_set_cursor_shape(handle: WINDOW_HANDLE; cursorshape: CURSOR_SHAPE): uint32_t; stdcall; public name 'console_window_set_cursor_shape';
+function console_window_get_cursor_color(handle: WINDOW_HANDLE): uint32_t; stdcall; public name 'console_window_get_cursor_color';
+function console_window_set_cursor_color(handle: WINDOW_HANDLE; color: uint32_t): uint32_t; stdcall; public name 'console_window_set_cursor_color';
+function console_window_get_cursor_reverse(handle: WINDOW_HANDLE): BOOL; stdcall; public name 'console_window_get_cursor_reverse';
+function console_window_set_cursor_reverse(handle: WINDOW_HANDLE; cursorreverse: BOOL): uint32_t; stdcall; public name 'console_window_set_cursor_reverse';
 
 function console_window_cursor_on(handle: WINDOW_HANDLE): uint32_t; stdcall; public name 'console_window_cursor_on';
 function console_window_cursor_off(handle: WINDOW_HANDLE): uint32_t; stdcall; public name 'console_window_cursor_off';
@@ -2282,14 +2383,17 @@ function console_window_cursor_bar(handle: WINDOW_HANDLE): uint32_t; stdcall; pu
 function console_window_cursor_block(handle: WINDOW_HANDLE): uint32_t; stdcall; public name 'console_window_cursor_block';
 function console_window_cursor_move(handle: WINDOW_HANDLE; x, y: uint32_t): uint32_t; stdcall; public name 'console_window_cursor_move';
 function console_window_cursor_blink(handle: WINDOW_HANDLE; enabled: BOOL): uint32_t; stdcall; public name 'console_window_cursor_blink';
+function console_window_cursor_color(handle: WINDOW_HANDLE; color: uint32_t): uint32_t; stdcall; public name 'console_window_cursor_color';
+function console_window_cursor_reverse(handle: WINDOW_HANDLE; enabled: BOOL): uint32_t; stdcall; public name 'console_window_cursor_reverse';
 
 function console_window_add_history(handle: WINDOW_HANDLE; value: PCHAR): uint32_t; stdcall; public name 'console_window_add_history';
 function console_window_clear_history(handle: WINDOW_HANDLE): uint32_t; stdcall; public name 'console_window_clear_history';
-function console_window_first_history(handle: WINDOW_HANDLE): PCHAR; stdcall; public name 'console_window_first_history';
-function console_window_last_history(handle: WINDOW_HANDLE): PCHAR; stdcall; public name 'console_window_last_history';
-function console_window_next_history(handle: WINDOW_HANDLE): PCHAR; stdcall; public name 'console_window_next_history';
-function console_window_previous_history(handle: WINDOW_HANDLE): PCHAR; stdcall; public name 'console_window_previous_history';
-function console_window_current_history(handle: WINDOW_HANDLE): PCHAR; stdcall; public name 'console_window_current_history';
+
+function console_window_first_history(handle: WINDOW_HANDLE; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'console_window_first_history';
+function console_window_last_history(handle: WINDOW_HANDLE; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'console_window_last_history';
+function console_window_next_history(handle: WINDOW_HANDLE; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'console_window_next_history';
+function console_window_previous_history(handle: WINDOW_HANDLE; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'console_window_previous_history';
+function console_window_current_history(handle: WINDOW_HANDLE; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'console_window_current_history';
 
 function console_window_scroll_up(handle: WINDOW_HANDLE; row, lines: uint32_t): uint32_t; stdcall; public name 'console_window_scroll_up';
 function console_window_scroll_down(handle: WINDOW_HANDLE; row, lines: uint32_t): uint32_t; stdcall; public name 'console_window_scroll_down';
@@ -2311,10 +2415,10 @@ function console_window_write_chr_ex(handle: WINDOW_HANDLE; ch: CHAR; x, y, fore
 
 function console_window_output(handle: WINDOW_HANDLE; const source, dest: TCONSOLE_POINT; buffer: PCONSOLE_CHAR; width, height, skip: uint32_t): uint32_t; stdcall; public name 'console_window_output';
 
-function console_window_read(handle: WINDOW_HANDLE; text: PCHAR): uint32_t; stdcall; public name 'console_window_read';
+function console_window_read(handle: WINDOW_HANDLE; text: PCHAR; var len: uint32_t): uint32_t; stdcall; public name 'console_window_read';
 
-function console_window_read_ln(handle: WINDOW_HANDLE; text: PCHAR): uint32_t; stdcall; public name 'console_window_read_ln';
-function console_window_read_ln_ex(handle: WINDOW_HANDLE; text: PCHAR; prompt: PCHAR; x, y, forecolor, backcolor: uint32_t; scroll, history: BOOL; completion: console_window_completion_cb; data: PVOID): uint32_t; stdcall; public name 'console_window_read_ln_ex';
+function console_window_read_ln(handle: WINDOW_HANDLE; text: PCHAR; var len: uint32_t): uint32_t; stdcall; public name 'console_window_read_ln';
+function console_window_read_ln_ex(handle: WINDOW_HANDLE; text: PCHAR; var len: uint32_t; prompt: PCHAR; x, y, forecolor, backcolor: uint32_t; scroll, history: BOOL; completion: console_window_completion_cb; data: PVOID): uint32_t; stdcall; public name 'console_window_read_ln_ex';
 
 function console_window_read_chr(handle: WINDOW_HANDLE; var ch: CHAR): uint32_t; stdcall; public name 'console_window_read_chr';
 function console_window_read_chr_ex(handle: WINDOW_HANDLE; var ch: CHAR; prompt: PCHAR; x, y, forecolor, backcolor: uint32_t; echo, scroll: BOOL): uint32_t; stdcall; public name 'console_window_read_chr_ex';
@@ -2347,8 +2451,8 @@ procedure console_write(text: PCHAR); stdcall; public name 'console_write';
 procedure console_write_ln(text: PCHAR); stdcall; public name 'console_write_ln';
 procedure console_write_chr(ch: CHAR); stdcall; public name 'console_write_chr';
 
-procedure console_read(text: PCHAR); stdcall; public name 'console_read';
-procedure console_read_ln(text: PCHAR); stdcall; public name 'console_read_ln';
+procedure console_read(text: PCHAR; var len: uint32_t); stdcall; public name 'console_read';
+procedure console_read_ln(text: PCHAR; var len: uint32_t); stdcall; public name 'console_read_ln';
 procedure console_read_chr(var ch: CHAR); stdcall; public name 'console_read_chr';
 
 {==============================================================================}
@@ -2360,7 +2464,12 @@ function console_device_set_default(console: PCONSOLE_DEVICE): uint32_t; stdcall
 function console_device_check(console: PCONSOLE_DEVICE): PCONSOLE_DEVICE; stdcall; public name 'console_device_check';
 function console_device_caret_check(console: PCONSOLE_DEVICE; caret: PCONSOLE_CARET): PCONSOLE_CARET; stdcall; public name 'console_device_caret_check';
 
+function console_type_to_string(consoletype: uint32_t; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'console_type_to_string';
+function console_state_to_string(consolestate: uint32_t; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'console_state_to_string';
+
 function console_device_get_default_font: FONT_HANDLE; stdcall; public name 'console_device_get_default_font';
+
+function console_position_to_string(position: uint32_t; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'console_position_to_string';
 
 {==============================================================================}
 {Text Console Helper Functions}
@@ -2370,6 +2479,9 @@ function console_window_get_default(console: PCONSOLE_DEVICE): WINDOW_HANDLE; st
 function console_window_set_default(console: PCONSOLE_DEVICE; handle: WINDOW_HANDLE): uint32_t; stdcall; public name 'console_window_set_default';
 
 function console_window_check(console: PCONSOLE_DEVICE; window: PCONSOLE_WINDOW): PCONSOLE_WINDOW; stdcall; public name 'console_window_check';
+
+function console_window_state_to_string(windowstate: uint32_t; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'console_window_state_to_string';
+function console_window_mode_to_string(windowmode: uint32_t; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'console_window_mode_to_string';
 
 function console_window_get_default_font: FONT_HANDLE; stdcall; public name 'console_window_get_default_font';
 
@@ -2382,9 +2494,9 @@ function logging_device_start(logging: PLOGGING_DEVICE): uint32_t; stdcall; publ
 function logging_device_stop(logging: PLOGGING_DEVICE): uint32_t; stdcall; public name 'logging_device_stop';
 
 function logging_device_output(logging: PLOGGING_DEVICE; data: PCHAR): uint32_t; stdcall; public name 'logging_device_output';
-function logging_device_output_ex(logging: PLOGGING_DEVICE; facility, severity: uint32_t; const tag, content: PCHAR): uint32_t; stdcall; public name 'logging_device_output_ex';
+function logging_device_output_ex(logging: PLOGGING_DEVICE; facility, severity: uint32_t; tag, content: PCHAR): uint32_t; stdcall; public name 'logging_device_output_ex';
 
-function logging_device_get_target(logging: PLOGGING_DEVICE): PCHAR; stdcall; public name 'logging_device_get_target';
+function logging_device_get_target(logging: PLOGGING_DEVICE; target: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'logging_device_get_target';
 function logging_device_set_target(logging: PLOGGING_DEVICE; target: PCHAR): uint32_t; stdcall; public name 'logging_device_set_target';
 
 function logging_device_create(default: BOOL): PLOGGING_DEVICE; stdcall; public name 'logging_device_create';
@@ -2511,10 +2623,10 @@ function usb_device_get_string_descriptor_ex(device: PUSB_DEVICE; index: uint8_t
 
 function usb_device_read_string_language_ids(device: PUSB_DEVICE): TUSB_STRING_DESCRIPTOR_LANGIDS; stdcall; public name 'usb_device_read_string_language_ids';
 
-function usb_device_read_string_descriptor(device: PUSB_DEVICE; index: uint8_t): PCHAR; stdcall; public name 'usb_device_read_string_descriptor';
-function usb_device_read_string_descriptor_ex(device: PUSB_DEVICE; index: uint8_t; languageid: uint16_t): PCHAR; stdcall; public name 'usb_device_read_string_descriptor_ex';
-function usb_device_read_string_descriptor_w(device: PUSB_DEVICE; index: uint8_t): PWCHAR; stdcall; public name 'usb_device_read_string_descriptor_w';
-function usb_device_read_string_descriptor_ex_w(device: PUSB_DEVICE; index: uint8_t; languageid: uint16_t): PWCHAR; stdcall; public name 'usb_device_read_string_descriptor_ex_w';
+function usb_device_read_string_descriptor(device: PUSB_DEVICE; index: uint8_t; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'usb_device_read_string_descriptor';
+function usb_device_read_string_descriptor_ex(device: PUSB_DEVICE; index: uint8_t; languageid: uint16_t; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'usb_device_read_string_descriptor_ex';
+function usb_device_read_string_descriptor_w(device: PUSB_DEVICE; index: uint8_t; value: PWIDECHAR; len: uint32_t): uint32_t; stdcall; public name 'usb_device_read_string_descriptor_w';
+function usb_device_read_string_descriptor_ex_w(device: PUSB_DEVICE; index: uint8_t; languageid: uint16_t; value: PWIDECHAR; len: uint32_t): uint32_t; stdcall; public name 'usb_device_read_string_descriptor_ex_w';
 
 function usb_device_get_configuration_descriptor(device: PUSB_DEVICE; index: uint8_t; data: PVOID; length: uint16_t): uint32_t; stdcall; public name 'usb_device_get_configuration_descriptor';
 
@@ -3073,6 +3185,14 @@ function pwm_device_set_default(pwm: PPWM_DEVICE): uint32_t; stdcall; public nam
 function pwm_device_check(pwm: PPWM_DEVICE): PPWM_DEVICE; stdcall; public name 'pwm_device_check';
 {$ENDIF}
 {==============================================================================}
+{PCM (I2S) Functions}
+{$IFDEF API_EXPORT_PCM}
+//To Do
+{==============================================================================}
+{PCM (I2S) Helper Functions}
+//To Do
+{$ENDIF}
+{==============================================================================}
 {GPIO Functions}
 {$IFDEF API_EXPORT_GPIO}
 function gpio_device_start(gpio: PGPIO_DEVICE): uint32_t; stdcall; public name 'gpio_device_start';
@@ -3269,8 +3389,8 @@ function font_load(header: PFONT_HEADER; data: PFONT_DATA; size: uint32_t): FONT
 function font_load_ex(header: PFONT_HEADER; data: PFONT_DATA; unicode: PFONT_UNICODE; size: uint32_t; properties: PFONT_PROPERTIES): FONT_HANDLE; stdcall; public name 'font_load_ex';
 function font_unload(handle: FONT_HANDLE): uint32_t; stdcall; public name 'font_unload';
 
-function font_get_name(handle: FONT_HANDLE): PCHAR; stdcall; public name 'font_get_name';
-function font_get_description(handle: FONT_HANDLE): PCHAR; stdcall; public name 'font_get_description';
+function font_get_name(handle: FONT_HANDLE; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'font_get_name';
+function font_get_description(handle: FONT_HANDLE; description: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'font_get_description';
 
 function font_get_width(handle: FONT_HANDLE): uint32_t; stdcall; public name 'font_get_width';
 function font_get_height(handle: FONT_HANDLE): uint32_t; stdcall; public name 'font_get_height';
@@ -3494,8 +3614,8 @@ function keymap_load(header: PKEYMAP_HEADER; data: PKEYMAP_DATA; size: uint32_t)
 function keymap_load_ex(header: PKEYMAP_HEADER; data: PKEYMAP_DATA; capskeys: PKEYMAP_CAPSKEYS; deadkeys: PKEYMAP_DEADKEYS; size: uint32_t; properties: PKEYMAP_PROPERTIES): KEYMAP_HANDLE; stdcall; public name 'keymap_load_ex';
 function keymap_unload(handle: KEYMAP_HANDLE): uint32_t; stdcall; public name 'keymap_unload';
 
-function keymap_get_name(handle: KEYMAP_HANDLE): PCHAR; stdcall; public name 'keymap_get_name';
-function keymap_get_description(handle: KEYMAP_HANDLE): PCHAR; stdcall; public name 'keymap_get_description';
+function keymap_get_name(handle: KEYMAP_HANDLE; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'keymap_get_name';
+function keymap_get_description(handle: KEYMAP_HANDLE; description: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'keymap_get_description';
 
 function keymap_check_flag(handle: KEYMAP_HANDLE; flag: uint32_t): BOOL; stdcall; public name 'keymap_check_flag';
 
@@ -3759,7 +3879,7 @@ function network_device_status_to_notification(status: uint32_t): uint32_t; stdc
 
 function network_event_check(event: PNETWORK_EVENT): PNETWORK_EVENT; stdcall; public name 'network_event_check';
 
-function hardware_address_to_string(const address: THARDWARE_ADDRESS; separator: PCHAR): PCHAR; stdcall; public name 'hardware_address_to_string';
+function hardware_address_to_string(const address: THARDWARE_ADDRESS; separator: PCHAR; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'hardware_address_to_string';
 function string_to_hardware_address(address: PCHAR): THARDWARE_ADDRESS; stdcall; public name 'string_to_hardware_address';
 
 function valid_hardware_address(const address: THARDWARE_ADDRESS): BOOL; stdcall; public name 'valid_hardware_address';
@@ -3776,19 +3896,19 @@ function compare_hardware_multicast(const address: THARDWARE_ADDRESS): BOOL; std
 function timezone_add(data: PTIMEZONE_DATA; default: BOOL): uint32_t; stdcall; public name 'timezone_add';
 function timezone_delete(timezone: PTIMEZONE_ENTRY): uint32_t; stdcall; public name 'timezone_delete';
 
-function timezone_get_name(timezone: PTIMEZONE_ENTRY): PCHAR; stdcall; public name 'timezone_get_name';
-function timezone_get_description(timezone: PTIMEZONE_ENTRY): PCHAR; stdcall; public name 'timezone_get_description';
+function timezone_get_name(timezone: PTIMEZONE_ENTRY; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'timezone_get_name';
+function timezone_get_description(timezone: PTIMEZONE_ENTRY; description: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'timezone_get_description';
 
 function timezone_get_bias(timezone: PTIMEZONE_ENTRY): int32_t; stdcall; public name 'timezone_get_bias';
 function timezone_get_state(timezone: PTIMEZONE_ENTRY): uint32_t; stdcall; public name 'timezone_get_state';
 function timezone_get_active_bias(timezone: PTIMEZONE_ENTRY): int32_t; stdcall; public name 'timezone_get_active_bias';
 
-function timezone_get_standard_name(timezone: PTIMEZONE_ENTRY): PCHAR; stdcall; public name 'timezone_get_standard_name';
+function timezone_get_standard_name(timezone: PTIMEZONE_ENTRY; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'timezone_get_standard_name';
 function timezone_get_standard_bias(timezone: PTIMEZONE_ENTRY): int32_t; stdcall; public name 'timezone_get_standard_bias';
 function timezone_get_standard_date(timezone: PTIMEZONE_ENTRY; next: BOOL): double_t; stdcall; public name 'timezone_get_standard_date';
 function timezone_get_standard_start(timezone: PTIMEZONE_ENTRY): SYSTEMTIME; stdcall; public name 'timezone_get_standard_start';
 
-function timezone_get_daylight_name(timezone: PTIMEZONE_ENTRY): PCHAR; stdcall; public name 'timezone_get_daylight_name';
+function timezone_get_daylight_name(timezone: PTIMEZONE_ENTRY; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'timezone_get_daylight_name';
 function timezone_get_daylight_bias(timezone: PTIMEZONE_ENTRY): int32_t; stdcall; public name 'timezone_get_daylight_bias';
 function timezone_get_daylight_date(timezone: PTIMEZONE_ENTRY; next: BOOL): double_t; stdcall; public name 'timezone_get_daylight_date';
 function timezone_get_daylight_start(timezone: PTIMEZONE_ENTRY): SYSTEMTIME; stdcall; public name 'timezone_get_daylight_start';
@@ -3807,7 +3927,7 @@ function timezone_check(timezone: PTIMEZONE_ENTRY): PTIMEZONE_ENTRY; stdcall; pu
 function timezone_update_offset: uint32_t; stdcall; public name 'timezone_update_offset';
 
 function timezone_start_to_date_time(const start: SYSTEMTIME; year: uint16_t): double_t; stdcall; public name 'timezone_start_to_date_time';
-function timezone_start_to_description(const start: SYSTEMTIME): PCHAR; stdcall; public name 'timezone_start_to_description';
+function timezone_start_to_description(const start: SYSTEMTIME; description: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'timezone_start_to_description';
 {$ENDIF}
 {==============================================================================}
 {Locale Functions}
@@ -3930,13 +4050,13 @@ function fs_get_path_drive(path: PCHAR): uint8_t; stdcall; public name 'fs_get_p
 function fs_get_drive_type(drive: uint8_t): TDRIVE_TYPE; stdcall; public name 'fs_get_drive_type';
 function fs_get_drive_data(drive: uint8_t): TDRIVE_DATA; stdcall; public name 'fs_get_drive_data';
 function fs_get_drive_attr(drive: uint8_t): uint32_t; stdcall; public name 'fs_get_drive_attr';
-function fs_get_drive_label(drive: uint8_t): PCHAR; stdcall; public name 'fs_get_drive_label';
+function fs_get_drive_label(drive: uint8_t; _label: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_drive_label';
 function fs_set_drive_label(drive: uint8_t; _label: PCHAR): BOOL; stdcall; public name 'fs_set_drive_label';
 function fs_get_drive_serial(drive: uint8_t): uint32_t; stdcall; public name 'fs_get_drive_serial';
 function fs_set_drive_serial(drive: uint8_t; serial: uint32_t): BOOL; stdcall; public name 'fs_set_drive_serial';
 function fs_is_drive_valid(drive: uint8_t): BOOL; stdcall; public name 'fs_is_drive_valid';
 function fs_get_valid_drives: uint32_t; stdcall; public name 'fs_get_valid_drives';
-function fs_get_valid_drive_strings: PCHAR; stdcall; public name 'fs_get_valid_drive_strings';
+function fs_get_valid_drive_strings(drives: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_valid_drive_strings';
 function fs_get_drive_free_space(drive: uint8_t): uint32_t; stdcall; public name 'fs_get_drive_free_space';
 function fs_get_drive_free_space_ex(drive: uint8_t): int64_t; stdcall; public name 'fs_get_drive_free_space_ex';
 function fs_get_drive_total_space(drive: uint8_t): uint32_t; stdcall; public name 'fs_get_drive_total_space';
@@ -3952,7 +4072,7 @@ function fs_file_open(filename: PCHAR; mode: int): THANDLE; stdcall; public name
 function fs_file_create(filename: PCHAR): THANDLE; stdcall; public name 'fs_file_create';
 function fs_delete_file(filename: PCHAR): BOOL; stdcall; public name 'fs_delete_file';
 procedure fs_file_close(handle: int); stdcall; public name 'fs_file_close';
-function fs_rename_file(const oldname, newname: PCHAR): BOOL; stdcall; public name 'fs_rename_file';
+function fs_rename_file(oldname, newname: PCHAR): BOOL; stdcall; public name 'fs_rename_file';
 function fs_file_seek(handle: THANDLE; offset, origin: int32_t): int32_t; stdcall; public name 'fs_file_seek';
 function fs_file_flush(handle: int): BOOL; stdcall; public name 'fs_file_flush';
 function fs_file_truncate(handle: int): BOOL; stdcall; public name 'fs_file_truncate';
@@ -3975,8 +4095,8 @@ function fs_file_write(handle: THANDLE; buffer: PVOID; count: int32_t): int32_t;
 {Directory Functions}
 function fs_create_dir(dirname: PCHAR): BOOL; stdcall; public name 'fs_create_dir';
 function fs_remove_dir(dirname: PCHAR): BOOL; stdcall; public name 'fs_remove_dir';
-function fs_rename_dir(const oldname, newname: PCHAR): BOOL; stdcall; public name 'fs_rename_dir';
-function fs_get_current_dir: PCHAR; stdcall; public name 'fs_get_current_dir';
+function fs_rename_dir(oldname, newname: PCHAR): BOOL; stdcall; public name 'fs_rename_dir';
+function fs_get_current_dir(dirname: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_current_dir';
 function fs_set_current_dir(dirname: PCHAR): BOOL; stdcall; public name 'fs_set_current_dir';
 function fs_directory_exists(dirname: PCHAR): BOOL; stdcall; public name 'fs_directory_exists';
 procedure fs_force_directories(dirname: PCHAR); stdcall; public name 'fs_force_directories';
@@ -3988,12 +4108,12 @@ function fs_find_next(var searchrec: SEARCH_REC): int; stdcall; public name 'fs_
 procedure fs_find_close(var searchrec: SEARCH_REC); stdcall; public name 'fs_find_close';
 
 {Additional Functions}
-function fs_file_copy(const sourcefile, destfile: PCHAR; failifexists: BOOL): BOOL; stdcall; public name 'fs_file_copy';
-function fs_file_copy_ex(const sourcefile, destfile: PCHAR; failifexists: BOOL; usesourcedate: BOOL; destdate: int; usesourceattr: BOOL; destattr: int): BOOL; stdcall; public name 'fs_file_copy_ex';
+function fs_file_copy(sourcefile, destfile: PCHAR; failifexists: BOOL): BOOL; stdcall; public name 'fs_file_copy';
+function fs_file_copy_ex(sourcefile, destfile: PCHAR; failifexists: BOOL; usesourcedate: BOOL; destdate: int; usesourceattr: BOOL; destattr: int): BOOL; stdcall; public name 'fs_file_copy_ex';
 
-function fs_get_short_name(filename: PCHAR): PCHAR; stdcall; public name 'fs_get_short_name';
-function fs_get_long_name(filename: PCHAR): PCHAR; stdcall; public name 'fs_get_long_name';
-function fs_get_true_name(filename: PCHAR): PCHAR; stdcall; public name 'fs_get_true_name';
+function fs_get_short_name(filename: PCHAR; shortname: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_short_name';
+function fs_get_long_name(filename: PCHAR; longname: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_long_name';
+function fs_get_true_name(filename: PCHAR; truename: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_true_name';
 
 {Extended Functions}
 function fs_file_seek_ex(handle: THANDLE; const offset: int64_t; origin: int32_t): int64_t; stdcall; public name 'fs_file_seek_ex';
@@ -4019,20 +4139,20 @@ procedure fs_find_close_ex(var searchrec: FILE_SEARCH_REC); stdcall; public name
 {==============================================================================}
 {FileSystem Functions (Win32 Compatibility)}
 {Drive Functions}
-function fs_define_dos_device(const devicename, targetpath: PCHAR; flags: uint32_t): BOOL; stdcall; public name 'fs_define_dos_device';
+function fs_define_dos_device(devicename, targetpath: PCHAR; flags: uint32_t): BOOL; stdcall; public name 'fs_define_dos_device';
 function fs_get_disk_type(rootpath: PCHAR): uint32_t; stdcall; public name 'fs_get_disk_type'; // Equivalent to Win32 GetDriveType
 function fs_get_disk_free_space(rootpath: PCHAR; var sectorspercluster, bytespersector, numberoffreeclusters, totalnumberofclusters: uint32_t): BOOL; stdcall; public name 'fs_get_disk_free_space';
 function fs_get_disk_free_space_ex(pathname: PCHAR; var freebytesavailabletocaller, totalnumberofbytes, totalnumberoffreebytes: uint64_t): BOOL; stdcall; public name 'fs_get_disk_free_space_ex';
 function fs_get_logical_drives: uint32_t; stdcall; public name 'fs_get_logical_drives';
-function fs_get_logical_drive_strings: PCHAR; stdcall; public name 'fs_get_logical_drive_strings';
-function fs_get_volume_information(rootpath: PCHAR; volumename: PCHAR; var volumeserialnumber, maximumcomponentlength, filesystemflags: uint32_t; systemname: PCHAR): BOOL; stdcall; public name 'fs_get_volume_information';
-function fs_query_dos_device(rootpath: PCHAR): PCHAR; stdcall; public name 'fs_query_dos_device';
+function fs_get_logical_drive_strings(drives: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_logical_drive_strings';
+function fs_get_volume_information(rootpath: PCHAR; volumename: PCHAR; volumelen: uint32_t; var volumeserialnumber, maximumcomponentlength, filesystemflags: uint32_t; systemname: PCHAR; systemlen: uint32_t): BOOL; stdcall; public name 'fs_get_volume_information';
+function fs_query_dos_device(rootpath: PCHAR; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_query_dos_device';
 function fs_set_volume_label(volume: PCHAR; _label: PCHAR): BOOL; stdcall; public name 'fs_set_volume_label';
 
 {File Functions}
 function fs_are_file_apis_ansi: BOOL; stdcall; public name 'fs_are_file_apis_ansi';
 function fs_close_file(handle: THANDLE): BOOL; stdcall; public name 'fs_close_file'; // Equivalent to Win32 CloseHandle
-function fs_copy_file(const existingname, newname: PCHAR; failifexists: BOOL): BOOL; stdcall; public name 'fs_copy_file';
+function fs_copy_file(existingname, newname: PCHAR; failifexists: BOOL): BOOL; stdcall; public name 'fs_copy_file';
 function fs_create_file(filename: PCHAR; accessmode, sharemode, createflags, fileattributes: uint32_t): THANDLE; stdcall; public name 'fs_create_file';
 function fs_find_close_file(handle: THANDLE): BOOL; stdcall; public name 'fs_find_close_file'; // Equivalent to Win32 FindClose
 function fs_find_first_file(filename: PCHAR; var finddata: TWin32FindData): THANDLE; stdcall; public name 'fs_find_first_file';
@@ -4041,9 +4161,9 @@ function fs_flush_file_buffers(handle: THANDLE): BOOL; stdcall; public name 'fs_
 function fs_get_file_attributes(filename: PCHAR): uint32_t; stdcall; public name 'fs_get_file_attributes';
 function fs_get_file_information_by_handle(handle: THANDLE; var fileinformation: TByHandleFileInformation): BOOL; stdcall; public name 'fs_get_file_information_by_handle';
 function fs_get_file_size(handle: THANDLE; var filesizehigh: uint32_t): uint32_t; stdcall; public name 'fs_get_file_size';
-function fs_get_full_path_name(filename: PCHAR): PCHAR; stdcall; public name 'fs_get_full_path_name';
-function fs_get_short_path_name(longpath: PCHAR): PCHAR; stdcall; public name 'fs_get_short_path_name';
-function fs_move_file(const existingname, newname: PCHAR): BOOL; stdcall; public name 'fs_move_file';
+function fs_get_full_path_name(filename: PCHAR; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_full_path_name';
+function fs_get_short_path_name(longpath: PCHAR; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_short_path_name';
+function fs_move_file(existingname, newname: PCHAR): BOOL; stdcall; public name 'fs_move_file';
 function fs_read_file(handle: THANDLE; buffer: PVOID; bytestoread: uint32_t; var bytesread: uint32_t): BOOL; stdcall; public name 'fs_read_file';
 function fs_set_file_apis_to_ansi: BOOL; stdcall; public name 'fs_set_file_apis_to_ansi';
 function fs_set_file_apis_to_oem: BOOL; stdcall; public name 'fs_set_file_apis_to_oem';
@@ -4051,16 +4171,16 @@ function fs_set_file_attributes(filename: PCHAR; fileattributes: uint32_t): BOOL
 function fs_set_file_pointer(handle: THANDLE; distancetomove: int32_t; var distancetomovehigh: int32_t; movemethod: uint32_t): uint32_t; stdcall; public name 'fs_set_file_pointer';
 function fs_set_file_pointer_ex(handle: THANDLE; const distancetomove: int64_t; var newfilepointer: int64_t; movemethod: uint32_t): BOOL; stdcall; public name 'fs_set_file_pointer_ex';
 function fs_write_file(handle: THANDLE; buffer: PVOID; bytestowrite: uint32_t; var byteswritten: uint32_t): BOOL; stdcall; public name 'fs_write_file';
-function fs_get_long_path_name(shortpath: PCHAR): PCHAR; stdcall; public name 'fs_get_long_path_name';
+function fs_get_long_path_name(shortpath: PCHAR; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_long_path_name';
 
-function fs_set_file_short_name(const filename, shortname: PCHAR): BOOL; stdcall; public name 'fs_set_file_short_name';
+function fs_set_file_short_name(filename, shortname: PCHAR): BOOL; stdcall; public name 'fs_set_file_short_name';
 function fs_set_file_short_name_ex(handle: THANDLE; shortname: PCHAR): BOOL; stdcall; public name 'fs_set_file_short_name_ex';
-function fs_create_hard_link(const linkname, filename: PCHAR): BOOL; stdcall; public name 'fs_create_hard_link';
-function fs_create_symbolic_link(const linkname, targetname: PCHAR; directory: BOOL): BOOL; stdcall; public name 'fs_create_symbolic_link';
+function fs_create_hard_link(linkname, filename: PCHAR): BOOL; stdcall; public name 'fs_create_hard_link';
+function fs_create_symbolic_link(linkname, targetname: PCHAR; directory: BOOL): BOOL; stdcall; public name 'fs_create_symbolic_link';
 
 {Directory Functions}
 function fs_create_directory(pathname: PCHAR): BOOL; stdcall; public name 'fs_create_directory';
-function fs_get_current_directory: PCHAR; stdcall; public name 'fs_get_current_directory';
+function fs_get_current_directory(pathname: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_current_directory';
 function fs_remove_directory(pathname: PCHAR): BOOL; stdcall; public name 'fs_remove_directory';
 function fs_set_current_directory(pathname: PCHAR): BOOL; stdcall; public name 'fs_set_current_directory';
 
@@ -4165,7 +4285,7 @@ function WsControlEx(proto: uint32_t; action: uint32_t; prequestinfo: PVOID; var
 function WinsockRedirectInput(s: TSOCKET): BOOL; stdcall; public name 'WinsockRedirectInput';
 function WinsockRedirectOutput(s: TSOCKET): BOOL; stdcall; public name 'WinsockRedirectOutput';
 
-function WinsockErrorToString(error: int32_t): PCHAR; stdcall; public name 'WinsockErrorToString';
+function WinsockErrorToString(error: int32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'WinsockErrorToString';
 {$ENDIF}
 {==============================================================================}
 {Winsock2 Functions}
@@ -4325,7 +4445,7 @@ function WsControlEx(proto: uint32_t; action: uint32_t; prequestinfo: PVOID; var
 function Winsock2RedirectInput(s: TSOCKET): BOOL; stdcall; public name 'Winsock2RedirectInput';
 function Winsock2RedirectOutput(s: TSOCKET): BOOL; stdcall; public name 'Winsock2RedirectOutput';
 
-function Winsock2ErrorToString(error: int32_t): PCHAR; stdcall; public name 'Winsock2ErrorToString';
+function Winsock2ErrorToString(error: int32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'Winsock2ErrorToString';
 {$ENDIF}
 {==============================================================================}
 {Iphlpapi Functions}
@@ -4462,7 +4582,7 @@ procedure SetCurrentTime(const time: FILETIME); stdcall; public name 'SetCurrent
 function GetTimeAdjust: int32_t; stdcall; public name 'GetTimeAdjust';
 procedure SetTimeAdjust(adjust: int32_t); stdcall; public name 'SetTimeAdjust';
 
-function GetCurrentTimezone: PCHAR; stdcall; public name 'GetCurrentTimezone';
+function GetCurrentTimezone(name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'GetCurrentTimezone';
 function SetCurrentTimezone(name: PCHAR): BOOL; stdcall; public name 'SetCurrentTimezone';
 
 function GetTimezoneActiveOffset: int32_t; stdcall; public name 'GetTimezoneActiveOffset';
@@ -4471,8 +4591,8 @@ procedure SetTimezoneStandardOffset(offset: int32_t); stdcall; public name 'SetT
 function GetTimezoneDaylightOffset: int32_t; stdcall; public name 'GetTimezoneDaylightOffset';
 procedure SetTimezoneDaylightOffset(offset: int32_t); stdcall; public name 'SetTimezoneDaylightOffset';
 
-function GetTimezoneStandardStart: PCHAR; stdcall; public name 'GetTimezoneStandardStart';
-function GetTimezoneDaylightStart: PCHAR; stdcall; public name 'GetTimezoneDaylightStart';
+function GetTimezoneStandardStart(description: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'GetTimezoneStandardStart';
+function GetTimezoneDaylightStart(description: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'GetTimezoneDaylightStart';
 
 function GetTimezoneStandardDate: double_t; stdcall; public name 'GetTimezoneStandardDate';
 function GetTimezoneDaylightDate: double_t; stdcall; public name 'GetTimezoneDaylightDate';
@@ -4545,13 +4665,13 @@ function GetPathDrive(path: PCHAR): uint8_t; stdcall; public name 'GetPathDrive'
 function GetDriveType(drive: uint8_t): TDRIVE_TYPE; stdcall; public name 'GetDriveType';
 function GetDriveData(drive: uint8_t): TDRIVE_DATA; stdcall; public name 'GetDriveData';
 function GetDriveAttr(drive: uint8_t): uint32_t; stdcall; public name 'GetDriveAttr';
-function GetDriveLabel(drive: uint8_t): PCHAR; stdcall; public name 'GetDriveLabel';
+function GetDriveLabel(drive: uint8_t; _label: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'GetDriveLabel';
 function SetDriveLabel(drive: uint8_t; _label: PCHAR): BOOL; stdcall; public name 'SetDriveLabel';
 function GetDriveSerial(drive: uint8_t): uint32_t; stdcall; public name 'GetDriveSerial';
 function SetDriveSerial(drive: uint8_t; serial: uint32_t): BOOL; stdcall; public name 'SetDriveSerial';
 function IsDriveValid(drive: uint8_t): BOOL; stdcall; public name 'IsDriveValid';
 function GetValidDrives: uint32_t; stdcall; public name 'GetValidDrives';
-function GetValidDriveNames: PCHAR; stdcall; public name 'GetValidDriveNames';
+function GetValidDriveNames(names: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'GetValidDriveNames';
 function GetDriveFreeSpace(drive: uint8_t): uint32_t; stdcall; public name 'GetDriveFreeSpace';
 function GetDriveFreeSpaceEx(drive: uint8_t): int64_t; stdcall; public name 'GetDriveFreeSpaceEx';
 function GetDriveTotalSpace(drive: uint8_t): uint32_t; stdcall; public name 'GetDriveTotalSpace';
@@ -4678,7 +4798,7 @@ function GetCommandLineW: LPWSTR; stdcall; public name 'GetCommandLineW';
 {Command Line Functions (Ultibo)}
 function IsParamPresent(param: PCHAR): BOOL; stdcall; public name 'IsParamPresent';
 function GetParamIndex(param: PCHAR): int; stdcall; public name 'GetParamIndex';
-function GetParamValue(param: PCHAR): PCHAR; stdcall; public name 'GetParamValue';
+function GetParamValue(param: PCHAR; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'GetParamValue';
 
 {==============================================================================}
 {Environment Functions (Compatibility)}
@@ -4712,15 +4832,15 @@ procedure SetLastError(dwerrcode: uint32_t); stdcall; public name 'SetLastError'
 
 {==============================================================================}
 {GUID Functions (Ultibo)}
-function CreateGUID: TGUID; stdcall; public name 'CreateGUID'; // To Do //There is some GUID functionality in the System unit,check,confirm and remove/restructure
-function GUIDToString(const value: TGUID): PCHAR; stdcall; public name 'GUIDToString';
+function CreateGUID: TGUID; stdcall; public name 'CreateGUID';
+function GUIDToString(const value: TGUID; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'GUIDToString';
 function StringToGUID(value: PCHAR): TGUID; stdcall; public name 'StringToGUID';
 function NullGUID(const guid: TGUID): BOOL; stdcall; public name 'NullGUID';
 function CompareGUID(const guid1, guid2: TGUID): BOOL; stdcall; public name 'CompareGUID';
 
 {==============================================================================}
 {SID Functions (Ultibo)}
-function SIDToString(sid: PSID): PCHAR; stdcall; public name 'SIDToString';
+function SIDToString(sid: PSID; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'SIDToString';
 function StringToSID(value: PCHAR): PSID; stdcall; public name 'StringToSID';
 
 {==============================================================================}
@@ -4769,8 +4889,8 @@ function SetThreadLocale(localeid: LCID): BOOL; stdcall; public name 'SetThreadL
 {Locale Functions (Ultibo)}
 {function SetSystemDefaultLCID(localeid: LCID): BOOL; stdcall; public name 'SetSystemDefaultLCID';} {Exported in Locale}
 
-function WideCharToString(buffer: PWCHAR): PCHAR; stdcall; public name 'WideCharToString';
-function WideCharLenToString(buffer: PWCHAR; length: int): PCHAR; stdcall; public name 'WideCharLenToString';
+function WideCharToString(buffer: PWCHAR; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'WideCharToString';
+function WideCharLenToString(buffer: PWCHAR; _length: int; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'WideCharLenToString';
 function StringToWideChar(_string: PCHAR; buffer: PWCHAR; size: int): BOOL; stdcall; public name 'StringToWideChar';
 
 {==============================================================================}
@@ -5107,11 +5227,367 @@ end;
 {==============================================================================}
 {==============================================================================}
 {API Functions}
+function APIStringToPCharAlloc(const Value:String):PChar;
+{Allocates and returns a buffer large enough to hold a copy of the supplied}
+{ string plus a null terminator and copies the string to the buffer}
+{Note: The caller must free the returned buffer}
+begin
+ {}
+ {Allocate Result}
+ Result:=GetMem((Length(Value) + 1) * SizeOf(Char));
+
+ {Copy Value}
+ if Length(Value) > 0 then StrLCopy(Result,PChar(Value),Length(Value));
+
+ {Add Null Terminator}
+ Result[Length(Value)]:=#0;
+end;
+
+{==============================================================================}
+
+function APIStringToPCharBuffer(const Value:String;Buffer:PChar;Len:LongWord):LongWord;
+{Copies the supplied string to the supplied buffer and returns the number of}
+{characters copied to the buffer, not including the null terminator}
+
+{The caller must supply a preallocated Buffer, the value of Len indicates the}
+{number of characters the buffer can hold including the null terminator}
+
+{If the buffer is too small the return value is the size in characters needed}
+{to store the supplied string and the null terminator}
+
+{If an error occurs the return value is zero}
+begin
+ {}
+ Result:=0;
+
+ {Check Buffer}
+ if Buffer = nil then Exit;
+
+ {Check Length}
+ if Len < (Length(Value) + 1) then
+  begin
+   {Return Length Needed}
+   Result:=(Length(Value) + 1);
+  end
+ else
+  begin
+   {Copy Value}
+   if Length(Value) > 0 then StrLCopy(Buffer,PChar(Value),Length(Value));
+
+   {Add Null Terminator}
+   Buffer[Length(Value)]:=#0;
+
+   {Return Length Copied}
+   Result:=Length(Value);
+  end;
+end;
+
+{==============================================================================}
+
+procedure APIStringToPCharBufferLen(const Value:String;Buffer:PChar;var Len:LongWord);
+{Copies the supplied string to the supplied buffer and updates Len with the number of}
+{characters copied to the buffer, not including the null terminator}
+
+{The caller must supply a preallocated Buffer, the value of Len indicates the}
+{number of characters the buffer can hold including the null terminator}
+
+{If the buffer is too small the value returned in Len is the number of characters}
+{copied, not including the null terminator, which will be less than the string}
+begin
+ {}
+ {Check Buffer and Length}
+ if (Buffer = nil) or (Len < 1) then
+  begin
+   {Return Empty}
+   Len:=0;
+  end
+ else
+  begin
+   {Return Length Copied}
+   Len:=Min(Length(Value),Len - 1);
+
+   {Copy Value}
+   if Length(Value) > 0 then StrLCopy(Buffer,PChar(Value),Len);
+
+   {Add Null Terminator}
+   Buffer[Length(Value)]:=#0;
+  end;
+end;
+
+{==============================================================================}
+
+function APIUnicodeStringToPWideCharBuffer(const Value:UnicodeString;Buffer:PWideChar;Len:LongWord):LongWord;
+{Copies the supplied string to the supplied buffer and returns the number of}
+{characters copied to the buffer, not including the null terminator}
+
+{The caller must supply a preallocated Buffer, the value of Len indicates the}
+{number of characters the buffer can hold including the null terminator}
+
+{If the buffer is too small the return value is the size in characters needed}
+{to store the supplied string and the null terminator}
+
+{If an error occurs the return value is zero}
+begin
+ {}
+ Result:=0;
+
+ {Check Buffer}
+ if Buffer = nil then Exit;
+
+ {Check Length}
+ if Len < (Length(Value) + 1) then
+  begin
+   {Return Length Needed}
+   Result:=(Length(Value) + 1);
+  end
+ else
+  begin
+   {Copy Value}
+   if Length(Value) > 0 then StrLCopy(Buffer,PWideChar(Value),Length(Value));
+
+   {Add Null Terminator}
+   Buffer[Length(Value)]:=#0;
+
+   {Return Length Copied}
+   Result:=Length(Value);
+  end;
+end;
 
 {==============================================================================}
 {==============================================================================}
 {Platform Functions}
 {$IFDEF API_EXPORT_PLATFORM}
+{Device Tree Functions}
+function device_tree_valid: BOOL; stdcall;
+{Check if valid Device Tree information was provided by the firmware/bootloader}
+begin
+ {}
+ if Assigned(DeviceTreeValidHandler) then
+  begin
+   Result:=DeviceTreeValidHandler;
+  end
+ else
+  begin
+   Result:=DEVICE_TREE_VALID;
+  end;
+end;
+
+{==============================================================================}
+
+function device_tree_get_base: SIZE_T; stdcall;
+{Get the base address of the Device Tree Blob (Where Applicable)}
+begin
+ {}
+ if Assigned(DeviceTreeGetBaseHandler) then
+  begin
+   Result:=DeviceTreeGetBaseHandler;
+  end
+ else
+  begin
+   Result:=DEVICE_TREE_BASE;
+  end;
+end;
+
+{==============================================================================}
+
+function device_tree_get_size: uint32_t; stdcall;
+{Get the total size of the Device Tree Blob (Where Applicable)}
+begin
+ {}
+ if Assigned(DeviceTreeGetSizeHandler) then
+  begin
+   Result:=DeviceTreeGetSizeHandler;
+  end
+ else
+  begin
+   Result:=DEVICE_TREE_SIZE;
+  end;
+end;
+
+{==============================================================================}
+
+function device_tree_read(path, name: PCHAR; buffer: PVOID; var size: uint32_t): uint32_t; stdcall;
+{Read the raw value of a Device Tree property (Where Applicable)}
+{Path: The path of the requested property}
+{Name: The name of the requested property}
+{Buffer: A pointer to a buffer to receive the raw value}
+{Size: The size in byte of the buffer, updated on return with the actual size of the value}
+{Return: ERROR_SUCCESS if the property value was read or another error code on failure}
+begin
+ {}
+ if Assigned(DeviceTreeReadHandler) then
+  begin
+   Result:=DeviceTreeReadHandler(String(path),String(name),buffer,size);
+  end
+ else
+  begin
+   Result:=ERROR_CALL_NOT_IMPLEMENTED;
+  end;
+end;
+
+{==============================================================================}
+
+function device_tree_read32(path, name: PCHAR; var value: uint32_t): uint32_t; stdcall;
+{Read a 32-bit value from a Device Tree property (Where Applicable)}
+{Path: The path of the requested property}
+{Name: The name of the requested property}
+{Value: The returned value of the property}
+{Return: ERROR_SUCCESS if the property value was read or another error code on failure}
+begin
+ {}
+ if Assigned(DeviceTreeRead32Handler) then
+  begin
+   Result:=DeviceTreeRead32Handler(String(path),String(name),value);
+  end
+ else
+  begin
+   Result:=ERROR_CALL_NOT_IMPLEMENTED;
+  end;
+end;
+
+{==============================================================================}
+
+function device_tree_read64(path, name: PCHAR; var value: uint64_t): uint32_t; stdcall;
+{Read a 64-bit value from a Device Tree property (Where Applicable)}
+{Path: The path of the requested property}
+{Name: The name of the requested property}
+{Value: The returned value of the property}
+{Return: ERROR_SUCCESS if the property value was read or another error code on failure}
+begin
+ {}
+ if Assigned(DeviceTreeRead64Handler) then
+  begin
+   Result:=DeviceTreeRead64Handler(String(path),String(name),value);
+  end
+ else
+  begin
+   Result:=ERROR_CALL_NOT_IMPLEMENTED;
+  end;
+end;
+
+{==============================================================================}
+
+function device_tree_read_string(path, name: PCHAR; value: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Read a string value from a Device Tree property (Where Applicable)}
+{Path: The path of the requested property}
+{Name: The name of the requested property}
+{Value: The returned value of the property}
+{Return: ERROR_SUCCESS if the property value was read or another error code on failure}
+var
+ Buffer:String;
+begin
+ {}
+ if Assigned(DeviceTreeReadStringHandler) then
+  begin
+   Result:=DeviceTreeReadStringHandler(String(path),String(name),Buffer);
+   if Result = ERROR_SUCCESS then APIStringToPCharBuffer(Buffer,value,len);
+  end
+ else
+  begin
+   Result:=ERROR_CALL_NOT_IMPLEMENTED;
+  end;
+end;
+
+{==============================================================================}
+{Boot Functions}
+procedure boot_blink; stdcall;
+{Blink the Activity LED (Where Applicable)}
+{Note: Intended for startup diagnostics when bootstrapping a new board}
+begin
+ {}
+ if Assigned(BootBlinkHandler) then
+  begin
+   BootBlinkHandler;
+  end;
+end;
+
+{==============================================================================}
+
+procedure boot_output(value: uint32_t); stdcall;
+{Output boot time information (Where Applicable)}
+{Note: Intended for startup diagnostics when bootstrapping a new board}
+begin
+ {}
+ if Assigned(BootOutputHandler) then
+  begin
+   BootOutputHandler(Value);
+  end;
+end;
+
+{==============================================================================}
+
+procedure boot_console_start; stdcall;
+{Start the boot time console display (Where Applicable)}
+{Note: Intended for startup diagnostics when bootstrapping a new board}
+begin
+ {}
+ if Assigned(BootConsoleStartHandler) then
+  begin
+   BootConsoleStartHandler;
+  end;
+end;
+
+{==============================================================================}
+
+procedure boot_console_write(value: PCHAR); stdcall;
+{Output text to the boot time console display (Where Applicable)}
+{Note: Intended for startup diagnostics when bootstrapping a new board}
+begin
+ {}
+ if Assigned(BootConsoleWriteHandler) then
+  begin
+   BootConsoleWriteHandler(String(Value));
+  end;
+end;
+
+{==============================================================================}
+
+procedure boot_console_write_ex(value: PCHAR; x, y: uint32_t); stdcall;
+{Output text to the boot time console display at the specified X and Y position (Where Applicable)}
+{Note: Intended for startup diagnostics when bootstrapping a new board}
+begin
+ {}
+ if Assigned(BootConsoleWriteExHandler) then
+  begin
+   BootConsoleWriteExHandler(String(Value),X,Y);
+  end;
+end;
+
+{==============================================================================}
+
+function boot_console_get_x: uint32_t; stdcall;
+{Get the current X position of the boot time console display (Where Applicable)}
+{Note: Intended for startup diagnostics when bootstrapping a new board}
+begin
+ {}
+ if Assigned(BootConsoleGetXHandler) then
+  begin
+   Result:=BootConsoleGetXHandler;
+  end
+ else
+  begin
+   Result:=0;
+  end;
+end;
+
+{==============================================================================}
+
+function boot_console_get_y: uint32_t; stdcall;
+{Get the current Y position of the boot time console display (Where Applicable)}
+{Note: Intended for startup diagnostics when bootstrapping a new board}
+begin
+ {}
+ if Assigned(BootConsoleGetYHandler) then
+  begin
+   Result:=BootConsoleGetYHandler;
+  end
+ else
+  begin
+   Result:=0;
+  end;
+end;
+
+{==============================================================================}
 {LED Functions}
 procedure power_led_enable; stdcall;
 {Enable the Power LED (Where Applicable)}
@@ -5252,7 +5728,14 @@ end;
 function counter_event(callback: counter_event_cb; data: PVOID): uint32_t; stdcall;
 begin
  {}
- //To Do //Callbacks
+ if Assigned(CounterEventHandler) then
+  begin
+   Result:=CounterEventHandler(callback,data);
+  end
+ else
+  begin
+   Result:=ERROR_CALL_NOT_IMPLEMENTED;
+  end;
 end;
 
 {==============================================================================}
@@ -5343,7 +5826,7 @@ begin
  {}
  if Assigned(MailboxReceiveHandler) then
   begin
-   Result:=MailboxReceiveHandler(mailbox, channel);
+   Result:=MailboxReceiveHandler(mailbox,channel);
   end
  else
   begin
@@ -5359,7 +5842,7 @@ begin
  {}
  if Assigned(MailboxSendHandler) then
   begin
-   MailboxSendHandler(mailbox, channel, data);
+   MailboxSendHandler(mailbox,channel,data);
   end;
 end;
 
@@ -5371,7 +5854,7 @@ begin
  {}
  if Assigned(MailboxCallHandler) then
   begin
-   Result:=MailboxCallHandler(mailbox, channel, data, response);
+   Result:=MailboxCallHandler(mailbox,channel,data,response);
   end
  else
   begin
@@ -5387,7 +5870,7 @@ begin
  {}
  if Assigned(MailboxCallExHandler) then
   begin
-   Result:=MailboxCallExHandler(mailbox, channel, data, response, timeout);
+   Result:=MailboxCallExHandler(mailbox,channel,data,response,timeout);
   end
  else
   begin
@@ -5403,7 +5886,7 @@ begin
  {}
  if Assigned(MailboxPropertyCallHandler) then
   begin
-   Result:=MailboxPropertyCallHandler(mailbox, channel, data, response);
+   Result:=MailboxPropertyCallHandler(mailbox,channel,data,response);
   end
  else
   begin
@@ -5419,7 +5902,23 @@ begin
  {}
  if Assigned(MailboxPropertyCallExHandler) then
   begin
-   Result:=MailboxPropertyCallExHandler(mailbox, channel, data, response, timeout);
+   Result:=MailboxPropertyCallExHandler(mailbox,channel,data,response,timeout);
+  end
+ else
+  begin
+   Result:=ERROR_CALL_NOT_IMPLEMENTED;
+  end;
+end;
+
+{==============================================================================}
+
+function mailbox_property_tag(tag: uint32_t; data: PVOID; size: uint32_t): uint32_t; stdcall;
+{Request a property tag (Get/Set) from the mailbox property channel}
+begin
+ {}
+ if Assigned(MailboxPropertyTagHandler) then
+  begin
+   Result:=MailboxPropertyTagHandler(tag,data,size);
   end
  else
   begin
@@ -5498,6 +5997,15 @@ begin
   begin
    Result:=0;
   end;
+end;
+
+{==============================================================================}
+
+function random_read_extended: double_t; stdcall;
+{Note: Replaced by RandomReadDouble}
+begin
+ {}
+ Result:=RandomReadExtended;
 end;
 
 {==============================================================================}
@@ -5885,11 +6393,11 @@ begin
  {}
  if Assigned(GetInterruptEntryHandler) then
   begin
-   Result:=GetInterruptEntryHandler(number, instance, interrupt);
+   Result:=GetInterruptEntryHandler(number,instance,interrupt);
   end
  else
   begin
-   FillChar(Result,SizeOf(TInterruptEntry),0);
+   FillChar(Result,SizeOf(TINTERRUPT_ENTRY),0);
 
    Result:=ERROR_CALL_NOT_IMPLEMENTED;
   end;
@@ -5935,11 +6443,11 @@ begin
  {}
  if Assigned(GetLocalInterruptEntryHandler) then
   begin
-   Result:=GetLocalInterruptEntryHandler(cpuid, number, instance, interrupt);
+   Result:=GetLocalInterruptEntryHandler(cpuid,number,instance,interrupt);
   end
  else
   begin
-   FillChar(Result,SizeOf(TInterruptEntry),0);
+   FillChar(Result,SizeOf(TINTERRUPT_ENTRY),0);
 
    Result:=ERROR_CALL_NOT_IMPLEMENTED;
   end;
@@ -5985,11 +6493,11 @@ begin
  {}
  if Assigned(GetSoftwareInterruptEntryHandler) then
   begin
-   Result:=GetSoftwareInterruptEntryHandler(cpuid, number, instance, interrupt);
+   Result:=GetSoftwareInterruptEntryHandler(cpuid,number,instance,interrupt);
   end
  else
   begin
-   FillChar(Result,SizeOf(TInterruptEntry),0);
+   FillChar(Result,SizeOf(TINTERRUPT_ENTRY),0);
 
    Result:=ERROR_CALL_NOT_IMPLEMENTED;
   end;
@@ -6023,7 +6531,7 @@ begin
   end
  else
   begin
-   FillChar(Result,SizeOf(TSystemCallEntry),0);
+   FillChar(Result,SizeOf(TSYSTEM_CALL_ENTRY),0);
   end;
 end;
 
@@ -6031,6 +6539,8 @@ end;
 {System Functions}
 function system_restart(delay: uint32_t): uint32_t; stdcall;
 {Restart the system}
+{Delay: How long to delay before commencing the restart (Milliseconds)}
+{Return: ERROR_SUCCESS if the restart was successfully initiated or another error code on failure}
 begin
  {}
  Result:=SystemRestart(delay);
@@ -6039,9 +6549,37 @@ end;
 {==============================================================================}
 
 function system_shutdown(delay: uint32_t): uint32_t; stdcall;
+{Shutdown the system}
+{Delay: How long to delay before commencing the shutdown (Milliseconds)}
+{Return: ERROR_SUCCESS if the shutdown was successfully initiated or another error code on failure}
 begin
  {}
  Result:=SystemShutdown(delay);
+end;
+
+{==============================================================================}
+
+function system_register_shutdown(callback: TShutdownCallback; parameter: PVOID; timeout: uint32_t): uint32_t; stdcall;
+{Register a procedure to be called during system shutdown or restart}
+{Callback: The procedure to be called on shutdown or restart}
+{Parameter: A pointer to be passed to the callback procedure}
+{Timeout: Time the shutdown process should wait for this callback to complete (0 for the default timeout) (Milliseconds)}
+{Return: ERROR_SUCCESS if the callback was successfully registered or another error code on failure}
+begin
+ {}
+ Result:=SystemRegisterShutdown(callback,parameter,timeout);
+end;
+
+{==============================================================================}
+
+function system_deregister_shutdown(callback: TShutdownCallback; parameter: PVOID): uint32_t; stdcall;
+{Deregister a procedure from being called during system shutdown or restart}
+{Callback: The procedure previously registered for shutdown or restart}
+{Parameter: The pointer previously registered for the callback procedure}
+{Return: ERROR_SUCCESS if the callback was successfully deregistered or another error code on failure}
+begin
+ {}
+ Result:=SystemDeregisterShutdown(callback,parameter);
 end;
 
 {==============================================================================}
@@ -6059,16 +6597,13 @@ begin
   end
  else
   begin
-   {Get Current Seconds}
-   Result:=ClockSeconds; {Avoid 32 bit overflow}
-   {Get Current Up Time}
-   Result:=TIME_TICKS_TO_1899 + (Result * TIME_TICKS_PER_SECOND);
+   Result:=SystemGetUptime;
   end;
 end;
 
 {==============================================================================}
 
-function system_get_commandline: PCHAR; stdcall;
+function system_get_command_line(commandline: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the current command line}
 var
  Buffer:String;
@@ -6080,18 +6615,10 @@ begin
   end
  else
   begin
-   if cmdline = nil then Buffer:='' else Buffer:=StrPas(cmdline);
+   if cmdline = nil then Buffer:='' else Buffer:=String(cmdline);
   end;
 
- if Length(Buffer) > 0 then
-  begin
-   {Allocate Result}
-   Result:=GetMem(Length(Buffer) + 1);
-   {Copy Result}
-   StrLCopy(Result,PChar(Buffer),Length(Buffer));
-   {Add null}
-   Result[Length(Buffer)]:=#0;
-  end;
+ Result:=APIStringToPCharBuffer(Buffer,commandline,len);
 end;
 
 {==============================================================================}
@@ -6108,6 +6635,59 @@ begin
   begin
    Result:=envp;
   end;
+end;
+
+{==============================================================================}
+
+function system_date_to_string(date: double_t; value: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return the supplied date value as a string in the system defined format}
+{Date: The date in Pascal TDateTime format}
+{Return: The date formatted according to the system date format}
+{Note: Applications should use FormatDateTime or DateTimeToString directly}
+{      This function is intended to provide a uniform and generic date and}
+{      time output from system functions such as logging and debug output}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SystemDateToString(date),value,len);
+end;
+
+{==============================================================================}
+
+function system_time_to_string(time: double_t; value: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return the supplied time value as a string in the system defined format}
+{Time: The time in Pascal TDateTime format}
+{Return: The time formatted according to the system time format}
+{Note: Applications should use FormatDateTime or DateTimeToString directly}
+{      This function is intended to provide a uniform and generic date and}
+{      time output from system functions such as logging and debug output}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SystemTimeToString(time),value,len);
+end;
+
+{==============================================================================}
+
+function system_date_time_to_string(datetime: double_t; value: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return the supplied date and time value as a string in the system defined format}
+{DateTime: The date and time in Pascal TDateTime format}
+{Return: The date and time formatted according to the system date and time format}
+{Note: Applications should use FormatDateTime or DateTimeToString directly}
+{      This function is intended to provide a uniform and generic date and}
+{      time output from system functions such as logging and debug output}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SystemDateTimeToString(datetime),value,len);
+end;
+
+{==============================================================================}
+
+function system_interval_to_string(interval: double_t; value: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return the supplied time interval as a string in the system defined format}
+{Interval: The time interval in Pascal TDateTime format}
+{Return: The time interval formatted according to the system time format}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SystemIntervalToString(interval),value,len);
 end;
 
 {==============================================================================}
@@ -6329,19 +6909,22 @@ end;
 
 {==============================================================================}
 
-function cpu_get_description: PCHAR; stdcall;
+function cpu_get_description(description: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the CPU description of the current CPU}
+var
+ Buffer:String;
 begin
  {}
- //To Do //PCHAR
- (*if Assigned(CPUGetDescriptionHandler) then
+ if Assigned(CPUGetDescriptionHandler) then
   begin
-   Result:=CPUGetDescriptionHandler;
+   Buffer:=CPUGetDescriptionHandler;
   end
  else
   begin
-   Result:='';
-  end;*)
+   Buffer:='';
+  end;
+
+ Result:=APIStringToPCharBuffer(Buffer,description,len);
 end;
 
 {==============================================================================}
@@ -6576,29 +7159,29 @@ end;
 
 {==============================================================================}
 
-function version_get_date: PCHAR; stdcall;
+function version_get_date(date: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the version release date of the currently running system}
 begin
  {}
- //To Do //PCHAR
+ Result:=APIStringToPCharBuffer(VersionGetDate,date,len);
 end;
 
 {==============================================================================}
 
-function version_get_name: PCHAR; stdcall;
+function version_get_name(name: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the version release name of the currently running system}
 begin
  {}
- //To Do //PCHAR
+ Result:=APIStringToPCharBuffer(VersionGetName,name,len);
 end;
 
 {==============================================================================}
 
-function version_get_version: PCHAR; stdcall;
+function version_get_version(version: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the version string of the currently running system}
 begin
  {}
- //To Do //PCHAR
+ Result:=APIStringToPCharBuffer(VersionGetVersion,version,len);
 end;
 
 {==============================================================================}
@@ -6667,19 +7250,38 @@ end;
 
 {==============================================================================}
 
-function board_get_mac_address: PCHAR; stdcall;
+function board_get_mac_address(address: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the current Board MAC address (Where Applicable)}
+var
+ Buffer:String;
 begin
  {}
- //To Do //PCHAR
- (*if Assigned(BoardGetMACAddressHandler) then
+ if Assigned(BoardGetMACAddressHandler) then
   begin
-   Result:=BoardGetMACAddressHandler;
+   Buffer:=BoardGetMACAddressHandler;
   end
  else
   begin
-   Result:='';
-  end;*)
+   Buffer:='';
+  end;
+
+ Result:=APIStringToPCharBuffer(Buffer,address,len);
+end;
+
+{==============================================================================}
+{Chip Functions}
+function chip_get_revision: uint32_t; stdcall;
+{Get the current Chip revision number}
+begin
+ {}
+ if Assigned(ChipGetRevisionHandler) then
+  begin
+   Result:=ChipGetRevisionHandler;
+  end
+ else
+  begin
+   Result:=0;
+  end;
 end;
 
 {==============================================================================}
@@ -6796,6 +7398,38 @@ begin
 end;
 
 {==============================================================================}
+
+function memory_get_section_size: uint32_t; stdcall;
+{Get the section size of system memory (Where Applicable)}
+begin
+ {}
+ if Assigned(MemoryGetSectionSizeHandler) then
+  begin
+   Result:=MemoryGetSectionSizeHandler;
+  end
+ else
+  begin
+   Result:=MEMORY_SECTION_SIZE;
+  end;
+end;
+
+{==============================================================================}
+
+function memory_get_large_section_size: uint32_t; stdcall;
+{Get the large section size of system memory (Where Applicable)}
+begin
+ {}
+ if Assigned(MemoryGetLargeSectionSizeHandler) then
+  begin
+   Result:=MemoryGetLargeSectionSizeHandler;
+  end
+ else
+  begin
+   Result:=MEMORY_LARGESECTION_SIZE;
+  end;
+end;
+
+{==============================================================================}
 {Power Functions}
 function power_on(powerid: uint32_t): uint32_t; stdcall;
 {Power On the specified device}
@@ -6883,18 +7517,12 @@ end;
 
 {==============================================================================}
 {Clock Functions}
-{$IFNDEF CLOCK_TICK_MANUAL}
 function clock_ticks: uint32_t; stdcall;
 {Get the current number of clock ticks (When this reaches CLOCK_TICKS_PER_SECOND then ClockSeconds is incremented and this is reset to zero)}
 {Return: The current number of clock ticks}
 begin
  {}
- Result:=0;
-
- if CLOCK_CYCLES_PER_TICK = 0 then Exit;
- if CLOCK_TICKS_PER_SECOND = 0 then Exit;
-
- Result:=(ClockGetTotal div CLOCK_CYCLES_PER_TICK) mod CLOCK_TICKS_PER_SECOND;
+ Result:=ClockTicks;
 end;
 
 {==============================================================================}
@@ -6904,13 +7532,39 @@ function clock_seconds: uint32_t; stdcall;
 {Return: The current number of clock seconds}
 begin
  {}
- Result:=0;
-
- if CLOCK_FREQUENCY = 0 then Exit;
-
- Result:=ClockGetTotal div CLOCK_FREQUENCY;
+ Result:=ClockSeconds;
 end;
-{$ENDIF}
+
+{==============================================================================}
+
+function clock_milliseconds: int64_t; stdcall;
+{Get the number of clock milliseconds since the system was started}
+{Return: The current number of clock milliseconds}
+begin
+ {}
+ Result:=ClockMilliseconds;
+end;
+
+{==============================================================================}
+
+function clock_microseconds: int64_t; stdcall;
+{Get the number of clock microseconds since the system was started}
+{Return: The current number of clock microseconds}
+begin
+ {}
+ Result:=ClockMicroseconds;
+end;
+
+{==============================================================================}
+
+function clock_nanoseconds: int64_t; stdcall;
+{Get the number of clock nanoseconds since the system was started}
+{Return: The current number of clock nanoseconds}
+begin
+ {}
+ Result:=ClockNanoseconds;
+end;
+
 {==============================================================================}
 
 function clock_get_time: int64_t; stdcall;
@@ -6938,7 +7592,7 @@ function clock_set_time(const time: int64_t; rtc: BOOL): int64_t; stdcall;
  the actual conversion between UTC and local time is handled at a higher level}
 begin
  {}
- Result:=clock_set_time(time,rtc)
+ Result:=ClockSetTime(time,rtc)
 end;
 
 {==============================================================================}
@@ -7090,6 +7744,23 @@ begin
  else
   begin
    Result:=0;
+  end;
+end;
+
+{==============================================================================}
+
+function clock_get_measured_rate(clockid: uint32_t): uint32_t; stdcall;
+{Get the measured or actual clock rate in Hz of the specified Clock}
+begin
+ {}
+ if Assigned(ClockGetMeasuredRateHandler) then
+  begin
+   Result:=ClockGetMeasuredRateHandler(clockId);
+  end
+ else
+  begin
+   {Default to the ClockGetRate value}
+   Result:=ClockGetRate(clockId);
   end;
 end;
 
@@ -7820,6 +8491,60 @@ end;
 
 {==============================================================================}
 
+function framebuffer_get_layer(var layer: int32_t): uint32_t; stdcall;
+{Get the Framebuffer Layer}
+begin
+ {}
+ if Assigned(FramebufferGetLayerHandler) then
+  begin
+   Result:=FramebufferGetLayerHandler(layer);
+  end
+ else
+  begin
+   layer:=0;
+
+   Result:=ERROR_CALL_NOT_IMPLEMENTED;
+  end;
+end;
+
+{==============================================================================}
+
+function framebuffer_set_layer(var layer: int32_t): uint32_t; stdcall;
+{Set the Framebuffer Layer}
+begin
+ {}
+ if Assigned(FramebufferSetLayerHandler) then
+  begin
+   Result:=FramebufferSetLayerHandler(layer);
+  end
+ else
+  begin
+   layer:=0;
+
+   Result:=ERROR_CALL_NOT_IMPLEMENTED;
+  end;
+end;
+
+{==============================================================================}
+
+function framebuffer_test_layer(var layer: int32_t): uint32_t; stdcall;
+{Test the Framebuffer Layer}
+begin
+ {}
+ if Assigned(FramebufferTestLayerHandler) then
+  begin
+   Result:=FramebufferTestLayerHandler(layer);
+  end
+ else
+  begin
+   layer:=0;
+
+   Result:=ERROR_CALL_NOT_IMPLEMENTED;
+  end;
+end;
+
+{==============================================================================}
+
 function framebuffer_test_vsync: uint32_t; stdcall;
 {Test the Framebuffer Vertical Sync (Where Applicable)}
 begin
@@ -7867,8 +8592,96 @@ begin
 end;
 
 {==============================================================================}
+
+function framebuffer_get_num_displays(var numdisplays: uint32_t): uint32_t; stdcall;
+{Get the number of framebuffer displays (Where Applicable)}
+begin
+ {}
+ if Assigned(FramebufferGetNumDisplaysHandler) then
+  begin
+   Result:=FramebufferGetNumDisplaysHandler(numdisplays);
+  end
+ else
+  begin
+   numdisplays:=0;
+
+   Result:=ERROR_CALL_NOT_IMPLEMENTED;
+  end;
+end;
+
+{==============================================================================}
+
+function framebuffer_get_display_id(displaynum: uint32_t): uint32_t; stdcall;
+{Get the display id for the specified display number (Where Applicable)}
+begin
+ {}
+ if Assigned(FramebufferGetDisplayIdHandler) then
+  begin
+   Result:=FramebufferGetDisplayIdHandler(displaynum);
+  end
+ else
+  begin
+   Result:=ERROR_CALL_NOT_IMPLEMENTED;
+  end;
+end;
+
+{==============================================================================}
+
+function framebuffer_set_display_num(displaynum: uint32_t): uint32_t; stdcall;
+{Set the current framebuffer display number (Where Applicable)}
+begin
+ {}
+ if Assigned(FramebufferSetDisplayNumHandler) then
+  begin
+   Result:=FramebufferSetDisplayNumHandler(displaynum);
+  end
+ else
+  begin
+   Result:=ERROR_CALL_NOT_IMPLEMENTED;
+  end;
+end;
+
+{==============================================================================}
+
+function framebuffer_get_display_settings(displaynum: uint32_t; var displaysettings: TDISPLAY_SETTINGS): uint32_t; stdcall;
+{Get the display settings for the specified display number (Where Applicable)}
+begin
+ {}
+ if Assigned(FramebufferGetDisplaySettingsHandler) then
+  begin
+   Result:=FramebufferGetDisplaySettingsHandler(displaynum,displaysettings);
+  end
+ else
+  begin
+   FillChar(displaysettings,SizeOf(TDISPLAY_SETTINGS),0);
+
+   Result:=ERROR_CALL_NOT_IMPLEMENTED;
+  end;
+end;
+
+{==============================================================================}
+
+function framebuffer_display_id_to_name(displayid: uint32_t; name: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Get the name for the specified display id (Where Applicable)}
+var
+ Buffer:String;
+begin
+ {}
+ if Assigned(FramebufferDisplayIdToNameHandler) then
+  begin
+   Buffer:=FramebufferDisplayIdToNameHandler(displayid);
+  end
+ else
+  begin
+   Buffer:='Unknown';
+  end;
+
+ Result:=APIStringToPCharBuffer(Buffer,name,len);
+end;
+
+{==============================================================================}
 {Touch Functions}
-function touch_get_buffer(var address: uint32_t): uint32_t; stdcall;
+function touch_get_buffer(var address: SIZE_T): uint32_t; stdcall;
 {Get the Touchscreen memory buffer (Where Applicable)}
 begin
  {}
@@ -8159,7 +8972,7 @@ function handle_create_ex(name: PCHAR; flags: uint32_t; data: THANDLE; _type: ui
 {Return: The newly created handle entry or nil on failure}
 begin
  {}
- Result:=HandleCreateEx(name,flags,data,_type);
+ Result:=HandleCreateEx(String(name),flags,data,_type);
 end;
 
 {==============================================================================}
@@ -8193,13 +9006,9 @@ function handle_find(name: PCHAR): PHANDLE_ENTRY; stdcall;
 {Find an existing named handle of the supplied type}
 {Name: The name of the handle to find}
 {Return: The handle entry on success or nil on failure}
-var
- Buffer:String;
 begin
  {}
- Buffer:=StrPas(name);
-
- Result:=HandleFind(Buffer);
+ Result:=HandleFind(String(name));
 end;
 
 {==============================================================================}
@@ -8211,7 +9020,6 @@ function handle_enumerate(callback: handle_enumerate_cb; data: PVOID): uint32_t;
 {Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
- //To Do //Callbacks
  Result:=HandleEnumerate(callback,data);
 end;
 
@@ -8221,13 +9029,9 @@ function handle_open(name: PCHAR): THANDLE; stdcall;
 {Open an existing named handle}
 {Name: The name of the handle to open}
 {Return: The handle matching the name or INVALID_HANDLE_VALUE on failure}
-var
- Buffer:String;
 begin
  {}
- Buffer:=StrPas(name);
-
- Result:=HandleOpen(Buffer);
+ Result:=HandleOpen(String(name));
 end;
 
 {==============================================================================}
@@ -8368,7 +9172,6 @@ function gpio_input_event(pin, trigger, timeout: uint32_t; callback: gpio_event_
 {Note: The pin and trigger that caused the event will be passed to the callback function}
 begin
  {}
- //To Do //Callbacks
  if Assigned(GPIOInputEventHandler) then
   begin
    Result:=GPIOInputEventHandler(pin,trigger,timeout,callback,data);
@@ -8396,6 +9199,35 @@ begin
   begin
    Result:=ERROR_CALL_NOT_IMPLEMENTED;
   end;
+end;
+
+{==============================================================================}
+
+function gpio_level_get(pin: uint32_t): uint32_t; stdcall;
+{Get the current level (state) of a GPIO pin}
+{Pin: The pin to get the level for (eg GPIO_PIN_1)}
+{Return: The current level (eg GPIO_LEVEL_HIGH) or GPIO_LEVEL_UNKNOWN on failure}
+{Note: This function is a synonym for GPIOInputGet as in many cases the
+       level can be read from a pin regardless of input or output mode. This
+       may help to make code clearer or easier to understand in some cases}
+begin
+ {}
+ Result:=gpio_input_get(pin);
+end;
+
+{==============================================================================}
+
+function gpio_level_set(pin, level: uint32_t): uint32_t; stdcall;
+{Set the level (state) of a GPIO pin}
+{Pin: The pin to set the level for (eg GPIO_PIN_1)}
+{Level: The level to set the pin to (eg GPIO_LEVEL_HIGH)}
+{Return: ERROR_SUCCESS if completed successfully or another error code on failure}
+{Note: This function is a synonym for GPIOOutputSet as in many cases the
+       level can be set for a pin regardless of input or output mode. This
+       may help to make code clearer or easier to understand in some cases}
+begin
+ {}
+ Result:=gpio_output_set(pin,level);
 end;
 
 {==============================================================================}
@@ -8507,6 +9339,35 @@ begin
   begin
    Result:=ERROR_CALL_NOT_IMPLEMENTED;
   end;
+end;
+
+{==============================================================================}
+
+function virtual_gpio_level_get(pin: uint32_t): uint32_t; stdcall;
+{Get the current level (state) of a virtual GPIO pin}
+{Pin: The pin to get the level for (eg GPIO_PIN_1)}
+{Return: The current level (eg GPIO_LEVEL_HIGH) or GPIO_LEVEL_UNKNOWN on failure}
+{Note: This function is a synonym for VirtualGPIOInputGet as in many cases the
+       level can be read from a pin regardless of input or output mode. This
+       may help to make code clearer or easier to understand in some cases}
+begin
+ {}
+ Result:=virtual_gpio_input_get(Pin);
+end;
+
+{==============================================================================}
+
+function virtual_gpio_level_set(pin, level: uint32_t): uint32_t; stdcall;
+{Set the level (state) of a virtual GPIO pin}
+{Pin: The pin to set the level for (eg GPIO_PIN_1)}
+{Level: The level to set the pin to (eg GPIO_LEVEL_HIGH)}
+{Return: ERROR_SUCCESS if completed successfully or another error code on failure}
+{Note: This function is a synonym for VirtualGPIOOutputSet as in many cases the
+       level can be set for a pin regardless of input or output mode. This
+       may help to make code clearer or easier to understand in some cases}
+begin
+ {}
+ Result:=virtual_gpio_output_set(Pin,Level);
 end;
 
 {==============================================================================}
@@ -8847,6 +9708,29 @@ begin
 end;
 
 {==============================================================================}
+
+function spi_get_description(id: uint32_t; description: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return the device description of an SPI device}
+{Id: The Id number of the SPI device as shown in the official documentation}
+{Return: The correct device description suitable for passing to SPIDeviceFindByDescription}
+{Note: The Id number supplied to this function may differ from the Ultibo device id value}
+var
+ Buffer:String;
+begin
+ {}
+ if Assigned(SPIGetDescriptionHandler) then
+  begin
+   Buffer:=SPIGetDescriptionHandler(id);
+  end
+ else
+  begin
+   Buffer:='';
+  end;
+
+ Result:=APIStringToPCharBuffer(Buffer,description,len);
+end;
+
+{==============================================================================}
 {I2C Functions}
 function i2c_available: BOOL; stdcall;
 {Check if an I2C device is available}
@@ -9058,6 +9942,52 @@ begin
 end;
 
 {==============================================================================}
+
+function i2c_get_description(id: uint32_t; description: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Get the device description of an I2C device}
+{Id: The Id number of the I2C device as shown in the official documentation}
+{Return: The correct device description suitable for passing to I2CDeviceFindByDescription}
+{Note: The Id number supplied to this function may differ from the Ultibo device id value}
+var
+ Buffer:String;
+begin
+ {}
+ if Assigned(I2CGetDescriptionHandler) then
+  begin
+   Buffer:=I2CGetDescriptionHandler(id);
+  end
+ else
+  begin
+   Buffer:='';
+  end;
+
+ Result:=APIStringToPCharBuffer(Buffer,description,len);
+end;
+
+{==============================================================================}
+
+function i2c_slave_get_description(id: uint32_t; description: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Get the device description of an I2C slave device}
+{Id: The Id number of the I2C slave device as shown in the official documentation}
+{Return: The correct device description suitable for passing to I2CSlaveFindByDescription}
+{Note: The Id number supplied to this function may differ from the Ultibo device id value}
+var
+ Buffer:String;
+begin
+ {}
+ if Assigned(I2CSlaveGetDescriptionHandler) then
+  begin
+   Buffer:=I2CSlaveGetDescriptionHandler(id);
+  end
+ else
+  begin
+   Buffer:='';
+  end;
+
+ Result:=APIStringToPCharBuffer(Buffer,description,len);
+end;
+
+{==============================================================================}
 {PWM Functions}
 function pwm_available: BOOL; stdcall;
 {Check if a PWM device is available}
@@ -9207,6 +10137,30 @@ begin
 end;
 
 {==============================================================================}
+
+function pwm_get_description(id, channel: uint32_t; description: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Get the device description of an PWM device}
+{Id: The Id number of the PWM device as shown in the official documentation}
+{Channel: The channel number of the PWM device as shown in the official documentation}
+{Return: The correct device description suitable for passing to PWMDeviceFindByDescription}
+{Note: The Id number supplied to this function may differ from the Ultibo device id value}
+var
+ Buffer:String;
+begin
+ {}
+ if Assigned(PWMGetDescriptionHandler) then
+  begin
+   Buffer:=PWMGetDescriptionHandler(id,channel);
+  end
+ else
+  begin
+   Buffer:='';
+  end;
+
+ Result:=APIStringToPCharBuffer(Buffer,description,len);
+end;
+
+{==============================================================================}
 {RTC Functions}
 function rtc_available: BOOL; stdcall;
 {Check if a Real Time Clock (RTC) device is available}
@@ -9258,6 +10212,29 @@ begin
   begin
    Result:=0;
   end;
+end;
+
+{==============================================================================}
+{UART Functions}
+function uart_get_description(id: uint32_t; description: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Get the device description of a UART device}
+{Id: The Id number of the UART device as shown in the official documentation}
+{Return: The correct device description suitable for passing to UARTDeviceFindByDescription}
+{Note: The Id number supplied to this function may differ from the Ultibo device id value}
+var
+ Buffer:String;
+begin
+ {}
+ if Assigned(UARTGetDescriptionHandler) then
+  begin
+   Buffer:=UARTGetDescriptionHandler(id);
+  end
+ else
+  begin
+   Buffer:='';
+  end;
+
+ Result:=APIStringToPCharBuffer(Buffer,description,len);
 end;
 
 {==============================================================================}
@@ -10256,6 +11233,54 @@ end;
 
 {==============================================================================}
 
+function page_table_get_levels: uint32_t; stdcall;
+{Get the number of page table levels for the current platform}
+begin
+ {}
+ if Assigned(PageTableGetLevelsHandler) then
+  begin
+   Result:=PageTableGetLevelsHandler;
+  end
+ else
+  begin
+   Result:=PAGE_TABLE_LEVELS;
+  end;
+end;
+
+{==============================================================================}
+
+function page_directory_get_base: SIZE_T; stdcall;
+{Get the base address of the first level page directory (Where applicable)}
+begin
+ {}
+ if Assigned(PageDirectoryGetBaseHandler) then
+  begin
+   Result:=PageDirectoryGetBaseHandler;
+  end
+ else
+  begin
+   Result:=PAGE_DIRECTORY_BASE;
+  end;
+end;
+
+{==============================================================================}
+
+function page_directory_get_size: uint32_t; stdcall;
+{Get the size of the first level page directory (Where applicable)}
+begin
+ {}
+ if Assigned(PageDirectoryGetSizeHandler) then
+  begin
+   Result:=PageDirectoryGetSizeHandler;
+  end
+ else
+  begin
+   Result:=PAGE_DIRECTORY_SIZE;
+  end;
+end;
+
+{==============================================================================}
+
 function page_table_get_base: SIZE_T; stdcall;
 {Get the base address of the first level page table}
 begin
@@ -10298,7 +11323,7 @@ begin
   end
  else
   begin
-   FillChar(Entry,SizeOf(TPageTableEntry),0);
+   FillChar(Entry,SizeOf(TPAGE_TABLE_ENTRY),0);
   end;
 end;
 
@@ -10592,7 +11617,7 @@ begin
  {}
  if Assigned(ConsoleGetKeyHandler) then
   begin
-   Result:=ConsoleGetKeyHandler(ch, userdata);
+   Result:=ConsoleGetKeyHandler(ch,userdata);
   end
  else
   begin
@@ -10609,7 +11634,7 @@ begin
  {}
  if Assigned(ConsolePeekKeyHandler) then
   begin
-   Result:=ConsolePeekKeyHandler(ch, userdata);
+   Result:=ConsolePeekKeyHandler(ch,userdata);
   end
  else
   begin
@@ -10626,7 +11651,7 @@ begin
  {}
  if Assigned(ConsoleWriteCharHandler) then
   begin
-   Result:=ConsoleWriteCharHandler(ch, userdata);
+   Result:=ConsoleWriteCharHandler(ch,userdata);
   end
  else
   begin
@@ -10641,7 +11666,7 @@ begin
  {}
  if Assigned(ConsoleReadCharHandler) then
   begin
-   Result:=ConsoleReadCharHandler(ch, userdata);
+   Result:=ConsoleReadCharHandler(ch,userdata);
   end
  else
   begin
@@ -10658,7 +11683,7 @@ begin
  {}
  if Assigned(ConsoleReadWideCharHandler) then
   begin
-   Result:=ConsoleReadWideCharHandler(ch, userdata);
+   Result:=ConsoleReadWideCharHandler(ch,userdata);
   end
  else
   begin
@@ -10690,7 +11715,7 @@ begin
  {}
  if Assigned(ConsoleShowMouseHandler) then
   begin
-   Result:=ConsoleShowMouseHandler(x, y, userdata);
+   Result:=ConsoleShowMouseHandler(x,y,userdata);
   end
  else
   begin
@@ -10705,7 +11730,7 @@ begin
  {}
  if Assigned(ConsoleReadMouseHandler) then
   begin
-   Result:=ConsoleReadMouseHandler(x, y, buttons, userdata);
+   Result:=ConsoleReadMouseHandler(x,y,buttons, userdata);
   end
  else
   begin
@@ -10751,18 +11776,21 @@ end;
 
 {==============================================================================}
 {Name Functions}
-function host_get_name: PCHAR; stdcall;
+function host_get_name(name: PCHAR; len: uint32_t): uint32_t; stdcall;
+var
+ Buffer:String;
 begin
  {}
- //To Do //PCHAR
- (*if Assigned(HostGetNameHandler) then
+ if Assigned(HostGetNameHandler) then
   begin
-   Result:=HostGetNameHandler;
+   Buffer:=HostGetNameHandler;
   end
  else
   begin
-   Result:=HOST_NAME;
-  end;*)
+   Buffer:=HOST_NAME;
+  end;
+
+ Result:=APIStringToPCharBuffer(Buffer,name,len);
 end;
 
 {==============================================================================}
@@ -10772,7 +11800,7 @@ var
  Buffer:String;
 begin
  {}
- Buffer:=StrPas(name);
+ Buffer:=String(name);
 
  if Assigned(HostSetNameHandler) then
   begin
@@ -10792,18 +11820,21 @@ end;
 
 {==============================================================================}
 
-function host_get_domain: PCHAR; stdcall;
+function host_get_domain(domain: PCHAR; len: uint32_t): uint32_t; stdcall;
+var
+ Buffer:String;
 begin
  {}
- //To Do //PCHAR
- (*if Assigned(HostGetDomainHandler) then
+ if Assigned(HostGetDomainHandler) then
   begin
-   Result:=HostGetDomainHandler;
+   Buffer:=HostGetDomainHandler;
   end
  else
   begin
-   Result:=HOST_DOMAIN;
-  end;*)
+   Buffer:=HOST_DOMAIN;
+  end;
+
+ Result:=APIStringToPCharBuffer(Buffer,domain,len);
 end;
 
 {==============================================================================}
@@ -10813,7 +11844,7 @@ var
  Buffer:String;
 begin
  {}
- Buffer:=StrPas(domain);
+ Buffer:=String(domain);
 
  if Assigned(HostSetDomainHandler) then
   begin
@@ -10834,15 +11865,11 @@ end;
 {==============================================================================}
 {Module Functions}
 function module_load(name: PCHAR): THANDLE; stdcall;
-var
- Buffer:String;
 begin
  {}
  if Assigned(ModuleLoadHandler) then
   begin
-   Buffer:=StrPas(name);
-
-   Result:=ModuleLoadHandler(Buffer);
+   Result:=ModuleLoadHandler(String(name));
   end
  else
   begin
@@ -10867,32 +11894,31 @@ end;
 
 {==============================================================================}
 
-function module_get_name(handle: THANDLE): PCHAR; stdcall;
+function module_get_name(handle: THANDLE; name: PCHAR; len: uint32_t): uint32_t; stdcall;
+var
+ Buffer:String;
 begin
  {}
- //To Do //PCHAR
- (*if Assigned(ModuleGetNameHandler) then
+ if Assigned(ModuleGetNameHandler) then
   begin
-   Result:=ModuleGetNameHandler(handle);
+   Buffer:=ModuleGetNameHandler(handle);
   end
  else
   begin
-   Result:='';
-  end;*)
+   Buffer:='';
+  end;
+
+ Result:=APIStringToPCharBuffer(Buffer,name,len);
 end;
 
 {==============================================================================}
 {Symbol Functions}
 function symbol_add(handle: THANDLE; name: PCHAR; address: SIZE_T): BOOL; stdcall;
-var
- Buffer:String;
 begin
  {}
  if Assigned(SymbolAddHandler) then
   begin
-   Buffer:=StrPas(name);
-
-   Result:=SymbolAddHandler(handle,Buffer,address);
+   Result:=SymbolAddHandler(handle,String(name),address);
   end
  else
   begin
@@ -10903,15 +11929,11 @@ end;
 {==============================================================================}
 
 function symbol_remove(handle: THANDLE; name: PCHAR): BOOL; stdcall;
-var
- Buffer:String;
 begin
  {}
  if Assigned(SymbolRemoveHandler) then
   begin
-   Buffer:=StrPas(name);
-
-   Result:=SymbolRemoveHandler(handle,Buffer);
+   Result:=SymbolRemoveHandler(handle,String(name));
   end
  else
   begin
@@ -10922,15 +11944,11 @@ end;
 {==============================================================================}
 
 function symbol_get_address(handle: THANDLE; name: PCHAR): SIZE_T; stdcall;
-var
- Buffer:String;
 begin
  {}
  if Assigned(SymbolGetAddressHandler) then
   begin
-   Buffer:=StrPas(name);
-
-   Result:=SymbolGetAddressHandler(handle,Buffer);
+   Result:=SymbolGetAddressHandler(handle,String(name));
   end
  else
   begin
@@ -10941,32 +11959,22 @@ end;
 {==============================================================================}
 {Logging Functions}
 procedure logging_output(text: PCHAR); stdcall;
-var
- Buffer:String;
 begin
  {}
  if Assigned(LoggingOutputHandler) then
   begin
-   Buffer:=StrPas(text);
-
-   LoggingOutputHandler(Buffer);
+   LoggingOutputHandler(String(text));
   end;
 end;
 
 {==============================================================================}
 
 procedure logging_output_ex(facility, severity: uint32_t; tag, content: PCHAR); stdcall;
-var
- TagBuffer:String;
- ContentBuffer:String;
 begin
  {}
  if Assigned(LoggingOutputExHandler) then
   begin
-   TagBuffer:=StrPas(tag);
-   ContentBuffer:=StrPas(content);
-
-   LoggingOutputExHandler(facility,severity,TagBuffer,ContentBuffer);
+   LoggingOutputExHandler(facility,severity,String(tag),String(content));
   end;
 end;
 
@@ -10983,7 +11991,25 @@ begin
   end
  else
   begin
-   Result:=31 - CountLeadingZeros(value);
+   Result:=0; {No default behaviour, a default handler must be registered by Platform}
+  end;
+end;
+
+{==============================================================================}
+
+function last_bit_set(value: uint32_t): uint32_t; stdcall;
+{Find the last set bit in a nonzero 32 bit value}
+{Returns 31 for MSB and 0 for LSB (0xFFFFFFFF / -1 if no bits are set)}
+{Note: Similar in operation to the ffs() builtin, equivalent to ffs() - 1}
+begin
+ {}
+ if Assigned(LastBitSetHandler) then
+  begin
+   Result:=LastBitSetHandler(value);
+  end
+ else
+  begin
+   Result:=0; {No default behaviour, a default handler must be registered by Platform}
   end;
 end;
 
@@ -11000,7 +12026,24 @@ begin
   end
  else
   begin
-   Result:=32;
+   Result:=0; {No default behaviour, a default handler must be registered by Platform}
+  end;
+end;
+
+{==============================================================================}
+
+function count_trailing_zeros(value: uint32_t): uint32_t; stdcall;
+{Count the number of trailing 0 bits in a nonzero 32 bit value}
+{Returns 32 if no bits are set}
+begin
+ {}
+ if Assigned(CountTrailingZerosHandler) then
+  begin
+   Result:=CountTrailingZerosHandler(value);
+  end
+ else
+  begin
+   Result:=0; {No default behaviour, a default handler must be registered by Platform}
   end;
 end;
 
@@ -12653,7 +13696,7 @@ function thread_create(startproc: thread_start_proc; stacksize, priority: uint32
           the thread creation behaviour and understand that you also need to handle the additional RTL setup}
 begin
  {}
- Result:=ThreadCreateEx(startproc,stacksize,priority,SCHEDULER_CPU_MASK,SchedulerThreadNext,name,parameter);
+ Result:=ThreadCreateEx(startproc,stacksize,priority,SCHEDULER_CPU_MASK,SchedulerGetThreadNext,name,parameter);
 end;
 
 {==============================================================================}
@@ -12726,14 +13769,13 @@ end;
 
 {==============================================================================}
 
-function thread_get_name(thread: THREAD_HANDLE): PCHAR; stdcall;
+function thread_get_name(thread: THREAD_HANDLE; name: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the name of a Thread}
 {Thread: Handle of thread to get}
 {Return: Name of thread or empty string on failure}
 begin
  {}
- //To Do //PCHAR
- //Result:=ThreadGetName(thread);
+ Result:=APIStringToPCharBuffer(ThreadGetName(thread),name,len);
 end;
 
 {==============================================================================}
@@ -12742,13 +13784,9 @@ function thread_set_name(thread: THREAD_HANDLE; name: PCHAR): uint32_t; stdcall;
 {Set the name of a Thread}
 {Thread: Handle of thread to set}
 {Return: ERROR_SUCCESS if completed or another error code on failure}
-var
- Buffer:String;
 begin
  {}
- Buffer:=StrPas(name);
-
- Result:=ThreadSetName(thread,Buffer);
+ Result:=ThreadSetName(thread,String(name));
 end;
 
 {==============================================================================}
@@ -15443,7 +16481,7 @@ function device_create: PDEVICE; stdcall;
 {Return: Pointer to new Device entry or nil if device could not be created}
 begin
  {}
- Result:=DeviceCreateEx(SizeOf(TDevice));
+ Result:=DeviceCreateEx(SizeOf(TDEVICE));
 end;
 
 {==============================================================================}
@@ -15470,14 +16508,13 @@ end;
 
 {==============================================================================}
 
-function device_get_name(device: PDEVICE): PCHAR; stdcall;
+function device_get_name(device: PDEVICE; name: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the name of the supplied Device}
 {Device: The device to get the name from}
 {Return: The name of the device or a blank string on error}
 begin
  {}
- //To Do //PCHAR
- //Result:=DeviceGetName(device);
+ Result:=APIStringToPCharBuffer(DeviceGetName(device),name,len);
 end;
 
 {==============================================================================}
@@ -15487,25 +16524,20 @@ function device_set_name(device: PDEVICE; name: PCHAR): uint32_t; stdcall;
 {Device: The device to set the name for}
 {Name: The device name to set}
 {Return: ERROR_SUCCESS if completed or another error code on failure}
-var
- Buffer:String;
 begin
  {}
- Buffer:=StrPas(name);
-
- Result:=DeviceSetName(device,Buffer);
+ Result:=DeviceSetName(device,String(name));
 end;
 
 {==============================================================================}
 
-function device_get_description(device: PDEVICE): PCHAR; stdcall;
+function device_get_description(device: PDEVICE; name: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the description of the supplied Device}
 {Device: The device to get the description from}
 {Return: The description of the device or a blank string on error}
 begin
  {}
- //To Do //PCHAR
- //Result:=DeviceGetDescription(device);
+ Result:=APIStringToPCharBuffer(DeviceGetDescription(device),name,len);
 end;
 
 {==============================================================================}
@@ -15515,13 +16547,9 @@ function device_set_description(device: PDEVICE; description: PCHAR): uint32_t; 
 {Device: The device to set the description for}
 {Description: The device description to set}
 {Return: ERROR_SUCCESS if completed or another error code on failure}
-var
- Buffer:String;
 begin
  {}
- Buffer:=StrPas(description);
-
- Result:=DeviceSetDescription(device,Buffer);
+ Result:=DeviceSetDescription(device,String(description));
 end;
 
 {==============================================================================}
@@ -15575,13 +16603,9 @@ function device_find_by_name(name: PCHAR): PDEVICE; stdcall;
 {Find a device by name in the device table}
 {Name: The name of the device to find (eg Timer0)}
 {Return: Pointer to device entry or nil if not found}
-var
- Buffer:String;
 begin
  {}
- Buffer:=StrPas(name);
-
- Result:=DeviceFindByName(Buffer);
+ Result:=DeviceFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -15590,13 +16614,9 @@ function device_find_by_description(description: PCHAR): PDEVICE; stdcall;
 {Find a device by description in the device table}
 {Description: The description of the device to find (eg BCM2836 ARM Timer)}
 {Return: Pointer to device entry or nil if not found}
-var
- Buffer:String;
 begin
  {}
- Buffer:=StrPas(description);
-
- Result:=DeviceFindByDescription(Buffer);
+ Result:=DeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -15668,7 +16688,7 @@ function driver_create: PDRIVER; stdcall;
 {Return: Pointer to new Driver entry or nil if driver could not be created}
 begin
  {}
- Result:=DriverCreateEx(SizeOf(TDriver));
+ Result:=DriverCreateEx(SizeOf(TDRIVER));
 end;
 
 {==============================================================================}
@@ -15695,14 +16715,13 @@ end;
 
 {==============================================================================}
 
-function driver_get_name(driver: PDRIVER): PCHAR; stdcall;
+function driver_get_name(driver: PDRIVER; name: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the name of the supplied Driver}
 {Driver: The driver to get the name from}
 {Return: The name of the driver or a blank string on error}
 begin
  {}
- //To Do //PCHAR
- //Result:=DriverGetName(driver);
+ Result:=APIStringToPCharBuffer(DriverGetName(driver),name,len);
 end;
 
 {==============================================================================}
@@ -15712,13 +16731,9 @@ function driver_set_name(driver: PDRIVER; name: PCHAR): uint32_t; stdcall;
 {Driver: The driver to set the name for}
 {Name: The driver name to set}
 {Return: ERROR_SUCCESS if completed or another error code on failure}
-var
- Buffer:String;
 begin
  {}
- Buffer:=StrPas(name);
-
- Result:=DriverSetName(driver,Buffer);
+ Result:=DriverSetName(driver,String(name));
 end;
 
 {==============================================================================}
@@ -15761,13 +16776,9 @@ function driver_find_by_name(name: PCHAR): PDRIVER; stdcall;
 {Find a driver by name in the driver table}
 {Name: The name of the driver to find (eg USB Hub Driver)}
 {Return: Pointer to driver entry or nil if not found}
-var
- Buffer:String;
 begin
  {}
- Buffer:=StrPas(name);
-
- Result:=DriverFindByName(Buffer);
+ Result:=DriverFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -15899,7 +16910,7 @@ function clock_device_create: PCLOCK_DEVICE; stdcall;
 {Return: Pointer to new Clock entry or nil if Clock could not be created}
 begin
  {}
- Result:=ClockDeviceCreateEx(SizeOf(TClockDevice));
+ Result:=ClockDeviceCreateEx(SizeOf(TCLOCK_DEVICE));
 end;
 
 {==============================================================================}
@@ -15963,13 +16974,9 @@ function clock_device_find_by_name(name: PCHAR): PCLOCK_DEVICE; stdcall;
 {Find a clock device by name in the clock table}
 {Name: The name of the clock to find (eg Clock0)}
 {Return: Pointer to clock device entry or nil if not found}
-var
- Buffer:String;
 begin
  {}
- Buffer:=StrPas(name);
-
- Result:=ClockDeviceFindByName(Buffer);
+ Result:=ClockDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -15978,13 +16985,9 @@ function clock_device_find_by_description(description: PCHAR): PCLOCK_DEVICE; st
 {Find a clock device by description in the clock table}
 {Description: The description of the clock to find (eg BCM2836 ARM Timer Clock)}
 {Return: Pointer to clock device entry or nil if not found}
-var
- Buffer:String;
 begin
  {}
- Buffer:=StrPas(description);
-
- Result:=ClockDeviceFindByDescription(Buffer);
+ Result:=ClockDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -16175,7 +17178,7 @@ function timer_device_create: PTIMER_DEVICE; stdcall;
 {Return: Pointer to new Timer entry or nil if Timer could not be created}
 begin
  {}
- Result:=TimerDeviceCreateEx(SizeOf(TTimerDevice));
+ Result:=TimerDeviceCreateEx(SizeOf(TTIMER_DEVICE));
 end;
 
 {==============================================================================}
@@ -16239,13 +17242,9 @@ function timer_device_find_by_name(name: PCHAR): PTIMER_DEVICE; stdcall;
 {Find a timer device by name in the timer table}
 {Name: The name of the timer to find (eg Timer0)}
 {Return: Pointer to timer device entry or nil if not found}
-var
- Buffer:String;
 begin
  {}
- Buffer:=StrPas(name);
-
- Result:=TimerDeviceFindByName(Buffer);
+ Result:=TimerDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -16254,13 +17253,9 @@ function timer_device_find_by_description(description: PCHAR): PTIMER_DEVICE; st
 {Find a timer device by description in the timer table}
 {Description: The description of the timer to find (eg BCM2836 ARM Timer)}
 {Return: Pointer to timer device entry or nil if not found}
-var
- Buffer:String;
 begin
  {}
- Buffer:=StrPas(description);
-
- Result:=TimerDeviceFindByDescription(Buffer);
+ Result:=TimerDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -16360,7 +17355,7 @@ function random_device_create: PRANDOM_DEVICE; stdcall;
 {Return: Pointer to new Random entry or nil if Random could not be created}
 begin
  {}
- Result:=RandomDeviceCreateEx(SizeOf(TRandomDevice));
+ Result:=RandomDeviceCreateEx(SizeOf(TRANDOM_DEVICE));
 end;
 
 {==============================================================================}
@@ -16412,25 +17407,17 @@ end;
 {==============================================================================}
 
 function random_device_find_by_name(name: PCHAR): PRANDOM_DEVICE; stdcall;
-var
- Buffer:String;
 begin
  {}
- Buffer:=StrPas(name);
-
- Result:=RandomDeviceFindByName(Buffer);
+ Result:=RandomDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
 
 function random_device_find_by_description(description: PCHAR): PRANDOM_DEVICE; stdcall;
-var
- Buffer:String;
 begin
  {}
- Buffer:=StrPas(description);
-
- Result:=RandomDeviceFindByDescription(Buffer);
+ Result:=RandomDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -16512,7 +17499,7 @@ function mailbox_device_create: PMAILBOX_DEVICE; stdcall;
 {Return: Pointer to new Mailbox entry or nil if Mailbox could not be created}
 begin
  {}
- Result:=MailboxDeviceCreateEx(SizeOf(TMailboxDevice));
+ Result:=MailboxDeviceCreateEx(SizeOf(TMAILBOX_DEVICE));
 end;
 
 {==============================================================================}
@@ -16564,25 +17551,17 @@ end;
 {==============================================================================}
 
 function mailbox_device_find_by_name(name: PCHAR): PMAILBOX_DEVICE; stdcall;
-var
- Buffer:String;
 begin
  {}
- Buffer:=StrPas(name);
-
- Result:=MailboxDeviceFindByName(Buffer);
+ Result:=MailboxDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
 
 function mailbox_device_find_by_description(description: PCHAR): PMAILBOX_DEVICE; stdcall;
-var
- Buffer:String;
 begin
  {}
- Buffer:=StrPas(description);
-
- Result:=MailboxDeviceFindByDescription(Buffer);
+ Result:=MailboxDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -16656,7 +17635,7 @@ function watchdog_device_create: PWATCHDOG_DEVICE; stdcall;
 {Return: Pointer to new Watchdog entry or nil if Watchdog could not be created}
 begin
  {}
- Result:=WatchdogDeviceCreateEx(SizeOf(TWatchdogDevice));
+ Result:=WatchdogDeviceCreateEx(SizeOf(TWATCHDOG_DEVICE));
 end;
 
 {==============================================================================}
@@ -16708,25 +17687,17 @@ end;
 {==============================================================================}
 
 function watchdog_device_find_by_name(name: PCHAR): PWATCHDOG_DEVICE; stdcall;
-var
- Buffer:String;
 begin
  {}
- Buffer:=StrPas(name);
-
- Result:=WatchdogDeviceFindByName(Buffer);
+ Result:=WatchdogDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
 
 function watchdog_device_find_by_description(description: PCHAR): PWATCHDOG_DEVICE; stdcall;
-var
- Buffer:String;
 begin
  {}
- Buffer:=StrPas(description);
-
- Result:=WatchdogDeviceFindByDescription(Buffer);
+ Result:=WatchdogDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -17170,7 +18141,7 @@ function console_device_draw_text(console: PCONSOLE_DEVICE; handle: FONT_HANDLE;
 {Note: Forecolor and Backcolor must be specified in the default color format (See COLOR_FORMAT_DEFAULT)}
 begin
  {}
- Result:=ConsoleDeviceDrawText(console,handle,text,x,y,forecolor,backcolor,len);
+ Result:=ConsoleDeviceDrawText(console,handle,String(text),x,y,forecolor,backcolor,len);
 end;
 
 {==============================================================================}
@@ -17365,6 +18336,26 @@ end;
 
 {==============================================================================}
 
+function console_device_update_caret_ex(console: PCONSOLE_DEVICE; handle: THANDLE; x, y, forecolor, backcolor: uint32_t; visible, blink, reverse: BOOL): uint32_t; stdcall;
+{Update an existing carets position, colors, visibility, blink or reverse}
+{Console: The console device to update the caret on}
+{Handle: The handle of the caret to update (as returned from ConsoleDeviceAddCaret)}
+{X: The X position of the caret (Pixels for CONSOLE_MODE_PIXEL / Characters for CONSOLE_MODE_CHARACTER)}
+{Y: The Y position of the caret (Pixels for CONSOLE_MODE_PIXEL / Characters for CONSOLE_MODE_CHARACTER)}
+{Forecolor: The cursor foreground color if set or COLOR_NONE to disable}
+{Backcolor: The cursor background color if set or COLOR_NONE to disable}
+{Visible: If true then show the caret else hide it}
+{Blink: If true then blink the caret at the default blink rate}
+{Reverse: If true then enable reverse color else enable inverse color}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+{Note: Forecolor and Backcolor must be specified in the default color format (See COLOR_FORMAT_DEFAULT)}
+begin
+ {}
+ Result:=ConsoleDeviceUpdateCaretEx(console,handle,x,y,forecolor,backcolor,visible,blink,reverse);
+end;
+
+{==============================================================================}
+
 function console_device_set_cursor(console: PCONSOLE_DEVICE; width, height: uint32_t; chars: PCHAR): uint32_t; stdcall;
 {Set the mouse cursor properties of a console device (CONSOLE_MODE_CHARACTER only)}
 {Console: The console device to set the cursor}
@@ -17554,7 +18545,7 @@ function console_device_find_by_name(name: PCHAR): PCONSOLE_DEVICE; stdcall;
 {Return: Pointer to console device entry or nil if not found}
 begin
  {}
- Result:=ConsoleDeviceFindByName(name);
+ Result:=ConsoleDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -17565,7 +18556,7 @@ function console_device_find_by_description(description: PCHAR): PCONSOLE_DEVICE
 {Return: Pointer to console device entry or nil if not found}
 begin
  {}
- Result:=ConsoleDeviceFindByDescription(description);
+ Result:=ConsoleDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -18308,6 +19299,54 @@ end;
 
 {==============================================================================}
 
+function console_window_get_cursor_color(handle: WINDOW_HANDLE): uint32_t; stdcall;
+{Get the current cursor color of an existing console window}
+{Handle: The handle of the window to get cursor color for}
+{Return: The cursor color of the window (eg COLOR_WHITE)}
+{Note: Color will be returned in the default color format (See COLOR_FORMAT_DEFAULT)}
+begin
+ {}
+ Result:=ConsoleWindowGetCursorColor(handle);
+end;
+
+{==============================================================================}
+
+function console_window_set_cursor_color(handle: WINDOW_HANDLE; color: uint32_t): uint32_t; stdcall;
+{Set the current cursor color of an existing console window}
+{Handle: The handle of the window to set the cursor color for}
+{Color: The cursor color to set (eg COLOR_WHITE)}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+{Note: Color must be specified in the default color format (See COLOR_FORMAT_DEFAULT)}
+begin
+ {}
+ Result:=ConsoleWindowSetCursorColor(handle,color);
+end;
+
+{==============================================================================}
+
+function console_window_get_cursor_reverse(handle: WINDOW_HANDLE): BOOL; stdcall;
+{Get the current cursor reverse state of an existing console window}
+{Handle: The handle of the window to get reverse state for}
+{Return: True if reverse color is enabled, False if inverse color is enabled}
+begin
+ {}
+ Result:=ConsoleWindowGetCursorReverse(handle);
+end;
+
+{==============================================================================}
+
+function console_window_set_cursor_reverse(handle: WINDOW_HANDLE; cursorreverse: BOOL): uint32_t; stdcall;
+{Set the current cursor reverse state of an existing console window}
+{Handle: The handle of the window to set the reverse state for}
+{CursorReverse: True to enable reverse color, False to enable inverse color}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=ConsoleWindowSetCursorReverse(handle,cursorreverse);
+end;
+
+{==============================================================================}
+
 function console_window_cursor_on(handle: WINDOW_HANDLE): uint32_t; stdcall;
 {Enable the cursor on an existing console window}
 {Handle: The handle of the window to enable the cursor for}
@@ -18389,6 +19428,31 @@ end;
 
 {==============================================================================}
 
+function console_window_cursor_color(handle: WINDOW_HANDLE; color: uint32_t): uint32_t; stdcall;
+{Set the color of the cursor on an existing console window}
+{Handle: The handle of the window to set the color for}
+{Color: The cursor color to set (eg COLOR_WHITE)}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+{Note: Color must be specified in the default color format (See COLOR_FORMAT_DEFAULT)}
+begin
+ {}
+ Result:=ConsoleWindowCursorColor(handle,color);
+end;
+
+{==============================================================================}
+
+function console_window_cursor_reverse(handle: WINDOW_HANDLE; enabled: BOOL): uint32_t; stdcall;
+{Set the reverse state of the cursor on an existing console window}
+{Handle: The handle of the window to set the reverse state for}
+{Enabled: True if the cursor shows in reverse colors, False if it shows in inverse colors}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=ConsoleWindowCursorReverse(handle,enabled);
+end;
+
+{==============================================================================}
+
 function console_window_add_history(handle: WINDOW_HANDLE; value: PCHAR): uint32_t; stdcall;
 {Add a value to the command history table of an existing console window}
 {Handle: The handle of the window to add to}
@@ -18397,7 +19461,7 @@ function console_window_add_history(handle: WINDOW_HANDLE; value: PCHAR): uint32
 {Note: When the number of entries in the table reaches the maximum the first entry will be removed}
 begin
  {}
- Result:=ConsoleWindowAddHistory(handle,value);
+ Result:=ConsoleWindowAddHistory(handle,String(value));
 end;
 
 {==============================================================================}
@@ -18413,64 +19477,59 @@ end;
 
 {==============================================================================}
 
-function console_window_first_history(handle: WINDOW_HANDLE): PCHAR; stdcall;
+function console_window_first_history(handle: WINDOW_HANDLE; value: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the first (oldest) command history value from an existing console window}
 {Handle: The handle of the window to get from}
 {Return: The command history value or an empty string on failure}
 begin
  {}
- //To Do //PCHAR
- //Result:=ConsoleWindowFirstHistory(handle);
+ Result:=APIStringToPCharBuffer(ConsoleWindowFirstHistory(handle),value,len);
 end;
 
 {==============================================================================}
 
-function console_window_last_history(handle: WINDOW_HANDLE): PCHAR; stdcall;
+function console_window_last_history(handle: WINDOW_HANDLE; value: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the last (most recent) command history value from an existing console window}
 {Handle: The handle of the window to get from}
 {Return: The command history value or an empty string on failure}
 begin
  {}
- //To Do //PCHAR
- //Result:=ConsoleWindowLastHistory(handle);
+ Result:=APIStringToPCharBuffer(ConsoleWindowLastHistory(handle),value,len);
 end;
 
 {==============================================================================}
 
-function console_window_next_history(handle: WINDOW_HANDLE): PCHAR; stdcall;
+function console_window_next_history(handle: WINDOW_HANDLE; value: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the next (after current) command history value from an existing console window}
 {Handle: The handle of the window to get from}
 {Return: The command history value or an empty string on failure}
 begin
  {}
- //To Do //PCHAR
- //Result:=ConsoleWindowNextHistory(handle);
+ Result:=APIStringToPCharBuffer(ConsoleWindowNextHistory(handle),value,len);
 end;
 
 {==============================================================================}
 
-function console_window_previous_history(handle: WINDOW_HANDLE): PCHAR; stdcall;
+function console_window_previous_history(handle: WINDOW_HANDLE; value: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the next (before current) command history value from an existing console window}
 {Handle: The handle of the window to get from}
 {Return: The command history value or an empty string on failure}
 {Note: If there is no current history value the last value is returned}
 begin
  {}
- //To Do //PCHAR
- //Result:=ConsoleWindowPreviousHistory(handle);
+ Result:=APIStringToPCharBuffer(ConsoleWindowPreviousHistory(handle),value,len);
 end;
 
 {==============================================================================}
 
-function console_window_current_history(handle: WINDOW_HANDLE): PCHAR; stdcall;
+function console_window_current_history(handle: WINDOW_HANDLE; value: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the current command history value from an existing console window}
 {Handle: The handle of the window to get from}
 {Return: The command history value or an empty string on failure}
 {Note: If there is no current history value the last value is returned}
 begin
  {}
- //To Do //PCHAR
- //Result:=ConsoleWindowCurrentHistory(handle);
+ Result:=APIStringToPCharBuffer(ConsoleWindowCurrentHistory(handle),value,len);
 end;
 
 {==============================================================================}
@@ -18571,7 +19630,7 @@ function console_window_write(handle: WINDOW_HANDLE; text: PCHAR): uint32_t; std
 {Note: The window will not scroll up at the end of the line}
 begin
  {}
- Result:=ConsoleWindowWrite(handle,text);
+ Result:=ConsoleWindowWrite(handle,String(text));
 end;
 
 {==============================================================================}
@@ -18589,7 +19648,7 @@ function console_window_write_ex(handle: WINDOW_HANDLE; text: PCHAR; x, y, forec
 {Note: The window will not scroll up at the end of the line}
 begin
  {}
- Result:=ConsoleWindowWriteEx(handle,text,x,y,forecolor,backcolor);
+ Result:=ConsoleWindowWriteEx(handle,String(text),x,y,forecolor,backcolor);
 end;
 
 {==============================================================================}
@@ -18602,7 +19661,7 @@ function console_window_write_ln(handle: WINDOW_HANDLE; text: PCHAR): uint32_t; 
 {Note: The window will scroll up at the end of the line}
 begin
  {}
- Result:=ConsoleWindowWriteLn(handle,text);
+ Result:=ConsoleWindowWriteLn(handle,String(text));
 end;
 
 {==============================================================================}
@@ -18620,7 +19679,7 @@ function console_window_write_ln_ex(handle: WINDOW_HANDLE; text: PCHAR; x, y, fo
 {Note: The window will scroll up at the end of the line}
 begin
  {}
- Result:=ConsoleWindowWriteLnEx(handle,text,x,y,forecolor,backcolor);
+ Result:=ConsoleWindowWriteLnEx(handle,String(text),x,y,forecolor,backcolor);
 end;
 
 {==============================================================================}
@@ -18672,35 +19731,39 @@ end;
 
 {==============================================================================}
 
-function console_window_read(handle: WINDOW_HANDLE; text: PCHAR): uint32_t; stdcall;
+function console_window_read(handle: WINDOW_HANDLE; text: PCHAR; var len: uint32_t): uint32_t; stdcall;
 {Read text input from the console and echo to an existing console window at the current position in the current color}
 {Handle: The handle of the window to echo input to}
 {Text: The text read from the console on return}
 {Return: ERROR_SUCCESS if completed or another error code on failure}
 {Note: The console window will not scroll up on return}
+var
+ Buffer:String;
 begin
  {}
- //To Do //PCHAR
- //Result:=ConsoleWindowRead(handle,text);
+ Result:=ConsoleWindowRead(handle,Buffer);
+ if Result = ERROR_SUCCESS then APIStringToPCharBufferLen(Buffer,text,len);
 end;
 
 {==============================================================================}
 
-function console_window_read_ln(handle: WINDOW_HANDLE; text: PCHAR): uint32_t; stdcall;
+function console_window_read_ln(handle: WINDOW_HANDLE; text: PCHAR; var len: uint32_t): uint32_t; stdcall;
 {Read text input from the console and echo to an existing console window at the current position in the current color}
 {Handle: The handle of the window to echo input to}
 {Text: The text read from the console on return}
 {Return: ERROR_SUCCESS if completed or another error code on failure}
 {Note: The console window will scroll up one line on return}
+var
+ Buffer:String;
 begin
  {}
- //To Do //PCHAR
- //Result:=ConsoleWindowReadLn(handle,text);
+ Result:=ConsoleWindowReadLn(handle,Buffer);
+ if Result = ERROR_SUCCESS then APIStringToPCharBufferLen(Buffer,text,len);
 end;
 
 {==============================================================================}
 
-function console_window_read_ln_ex(handle: WINDOW_HANDLE; text: PCHAR; prompt: PCHAR; x, y, forecolor, backcolor: uint32_t; scroll, history: BOOL; completion: console_window_completion_cb; data: PVOID): uint32_t; stdcall;
+function console_window_read_ln_ex(handle: WINDOW_HANDLE; text: PCHAR; var len: uint32_t; prompt: PCHAR; x, y, forecolor, backcolor: uint32_t; scroll, history: BOOL; completion: console_window_completion_cb; data: PVOID): uint32_t; stdcall;
 {Read text input from the console and echo to an existing console window at the specified position in the specified color}
 {Handle: The handle of the window to echo input to}
 {Text: The text read from the console on return}
@@ -18713,10 +19776,12 @@ function console_window_read_ln_ex(handle: WINDOW_HANDLE; text: PCHAR; prompt: P
 {History: If true then support console history buffer using Up, Down and F3 keys}
 {Return: ERROR_SUCCESS if completed or another error code on failure}
 {Note: Supports common line editing behaviour including Home, End, Left, Right, Up, Down, Insert, Backspace and Delete}
+var
+ Buffer:String;
 begin
  {}
- //To Do //PCHAR
- //Result:=ConsoleWindowReadLnEx(handle,text,prompt,x,y,forecolor,backcolor,scroll,history,completion,data);
+ Result:=ConsoleWindowReadLnEx(handle,Buffer,String(prompt),x,y,forecolor,backcolor,scroll,history,completion,data);
+ if Result = ERROR_SUCCESS then APIStringToPCharBufferLen(Buffer,text,len);
 end;
 
 {==============================================================================}
@@ -18748,7 +19813,7 @@ function console_window_read_chr_ex(handle: WINDOW_HANDLE; var ch: CHAR; prompt:
 {Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
- Result:=ConsoleWindowReadChrEx(handle,ch,prompt,x,y,forecolor,backcolor,echo,scroll);
+ Result:=ConsoleWindowReadChrEx(handle,ch,String(prompt),x,y,forecolor,backcolor,echo,scroll);
 end;
 
 {==============================================================================}
@@ -18978,7 +20043,7 @@ procedure console_write(text: PCHAR); stdcall;
 {Note: The window will not scroll up at the end of the line}
 begin
  {}
- ConsoleWrite(text);
+ ConsoleWrite(String(text));
 end;
 
 {==============================================================================}
@@ -18989,7 +20054,7 @@ procedure console_write_ln(text: PCHAR); stdcall;
 {Note: The window will scroll up at the end of the line}
 begin
  {}
- ConsoleWriteLn(text);
+ ConsoleWriteLn(String(text));
 end;
 
 {==============================================================================}
@@ -19004,24 +20069,28 @@ end;
 
 {==============================================================================}
 
-procedure console_read(text: PCHAR); stdcall;
+procedure console_read(text: PCHAR; var len: uint32_t); stdcall;
 {Read text from console input and echo to the screen}
 {Text: The text read from the console input}
+var
+ Buffer:String;
 begin
  {}
- //To Do //PCHAR
- //ConsoleRead(text);
+ ConsoleRead(Buffer);
+ APIStringToPCharBufferLen(Buffer,text,len);
 end;
 
 {==============================================================================}
 
-procedure console_read_ln(text: PCHAR); stdcall;
+procedure console_read_ln(text: PCHAR; var len: uint32_t); stdcall;
 {Read text from console input and echo to the screen}
 {Text: The text read from the console input}
+var
+ Buffer:String;
 begin
  {}
- //To Do //PCHAR
- //ConsoleReadLn(text);
+ ConsoleReadLn(Buffer);
+ APIStringToPCharBufferLen(Buffer,text,len);
 end;
 
 {==============================================================================}
@@ -19084,11 +20153,37 @@ end;
 
 {==============================================================================}
 
+function console_type_to_string(consoletype: uint32_t; value: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a Console type value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(ConsoleTypeToString(consoletype),value,len);
+end;
+
+{==============================================================================}
+
+function console_state_to_string(consolestate: uint32_t; value: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a Console state value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(ConsoleStateToString(consolestate),value,len);
+end;
+
+{==============================================================================}
+
 function console_device_get_default_font: FONT_HANDLE; stdcall;
 {Get the default console font}
 begin
  {}
  Result:=ConsoleDeviceGetDefaultFont;
+end;
+
+{==============================================================================}
+
+function console_position_to_string(position: uint32_t; value: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(ConsolePositionToString(position),value,len);
 end;
 
 {==============================================================================}
@@ -19149,6 +20244,24 @@ end;
 
 {==============================================================================}
 
+function console_window_state_to_string(windowstate: uint32_t; value: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a Console Window state value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(ConsoleWindowStateToString(windowstate),value,len);
+end;
+
+{==============================================================================}
+
+function console_window_mode_to_string(windowmode: uint32_t; value: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a Console Window mode value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(ConsoleWindowModeToString(windowmode),value,len);
+end;
+
+{==============================================================================}
+
 function console_window_get_default_font: FONT_HANDLE; stdcall;
 {Get the default console window font}
 begin
@@ -19192,24 +20305,23 @@ end;
 function logging_device_output(logging: PLOGGING_DEVICE; data: PCHAR): uint32_t; stdcall;
 begin
  {}
- Result:=LoggingDeviceOutput(logging,data);
+ Result:=LoggingDeviceOutput(logging,String(data));
 end;
 
 {==============================================================================}
 
-function logging_device_output_ex(logging: PLOGGING_DEVICE; facility, severity: uint32_t; const tag, content: PCHAR): uint32_t; stdcall;
+function logging_device_output_ex(logging: PLOGGING_DEVICE; facility, severity: uint32_t; tag, content: PCHAR): uint32_t; stdcall;
 begin
  {}
- Result:=LoggingDeviceOutputEx(logging,facility,severity,tag,content);
+ Result:=LoggingDeviceOutputEx(logging,facility,severity,String(tag),String(content));
 end;
 
 {==============================================================================}
 
-function logging_device_get_target(logging: PLOGGING_DEVICE): PCHAR; stdcall;
+function logging_device_get_target(logging: PLOGGING_DEVICE; target: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=LoggingDeviceGetTarget(logging);
+ Result:=APIStringToPCharBuffer(LoggingDeviceGetTarget(logging),target,len);
 end;
 
 {==============================================================================}
@@ -19217,7 +20329,7 @@ end;
 function logging_device_set_target(logging: PLOGGING_DEVICE; target: PCHAR): uint32_t; stdcall;
 begin
  {}
- Result:=LoggingDeviceSetTarget(logging,target);
+ Result:=LoggingDeviceSetTarget(logging,String(target));
 end;
 
 {==============================================================================}
@@ -19297,7 +20409,7 @@ end;
 function logging_device_find_by_name(name: PCHAR): PLOGGING_DEVICE; stdcall;
 begin
  {}
- Result:=LoggingDeviceFindByName(name);
+ Result:=LoggingDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -19305,7 +20417,7 @@ end;
 function logging_device_find_by_description(description: PCHAR): PLOGGING_DEVICE; stdcall;
 begin
  {}
- Result:=LoggingDeviceFindByDescription(description);
+ Result:=LoggingDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -19926,20 +21038,19 @@ end;
 
 {==============================================================================}
 
-function usb_device_read_string_descriptor(device: PUSB_DEVICE; index: uint8_t): PCHAR; stdcall;
+function usb_device_read_string_descriptor(device: PUSB_DEVICE; index: uint8_t; value: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the content of the specified string descriptor from the specified device}
 {Device: The USB device to read the string descriptor from}
 {Index: The index of the string descriptor to read}
 {Return: The ANSI string content of the string descriptor or an empty string on failure}
 begin
  {}
- //To Do //PCHAR
- //Result:=USBDeviceReadStringDescriptor(device,index);
+ Result:=APIStringToPCharBuffer(USBDeviceReadStringDescriptor(device,index),value,len);
 end;
 
 {==============================================================================}
 
-function usb_device_read_string_descriptor_ex(device: PUSB_DEVICE; index: uint8_t; languageid: uint16_t): PCHAR; stdcall;
+function usb_device_read_string_descriptor_ex(device: PUSB_DEVICE; index: uint8_t; languageid: uint16_t; value: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the content of the specified string descriptor from the specified device}
 {Device: The USB device to read the string descriptor from}
 {Index: The index of the string descriptor to read}
@@ -19947,26 +21058,24 @@ function usb_device_read_string_descriptor_ex(device: PUSB_DEVICE; index: uint8_
 {Return: The ANSI string content of the string descriptor or an empty string on failure}
 begin
  {}
- //To Do //PCHAR
- //Result:=USBDeviceReadStringDescriptorEx(device,index,languageid);
+ Result:=APIStringToPCharBuffer(USBDeviceReadStringDescriptorEx(device,index,languageid),value,len);
 end;
 
 {==============================================================================}
 
-function usb_device_read_string_descriptor_w(device: PUSB_DEVICE; index: uint8_t): PWCHAR; stdcall;
+function usb_device_read_string_descriptor_w(device: PUSB_DEVICE; index: uint8_t; value: PWIDECHAR; len: uint32_t): uint32_t; stdcall;
 {Get the content of the specified string descriptor from the specified device}
 {Device: The USB device to read the string descriptor from}
 {Index: The index of the string descriptor to read}
 {Return: The Unicode string content of the string descriptor or an empty string on failure}
 begin
  {}
- //To Do //PCHAR
- //Result:=USBDeviceReadStringDescriptorW(device,index);
+ Result:=APIUnicodeStringToPWideCharBuffer(USBDeviceReadStringDescriptorW(device,index),value,len);
 end;
 
 {==============================================================================}
 
-function usb_device_read_string_descriptor_ex_w(device: PUSB_DEVICE; index: uint8_t; languageid: uint16_t): PWCHAR; stdcall;
+function usb_device_read_string_descriptor_ex_w(device: PUSB_DEVICE; index: uint8_t; languageid: uint16_t; value: PWIDECHAR; len: uint32_t): uint32_t; stdcall;
 {Get the content of the specified string descriptor from the specified device}
 {Device: The USB device to read the string descriptor from}
 {Index: The index of the string descriptor to read}
@@ -19974,8 +21083,7 @@ function usb_device_read_string_descriptor_ex_w(device: PUSB_DEVICE; index: uint
 {Return: The Unicode string content of the string descriptor or an empty string on failure}
 begin
  {}
- //To Do //PCHAR
- //Result:=USBDeviceReadStringDescriptorExW(device,index,languageid);
+ Result:=APIUnicodeStringToPWideCharBuffer(USBDeviceReadStringDescriptorExW(device,index,languageid),value,len);
 end;
 
 {==============================================================================}
@@ -20353,7 +21461,7 @@ end;
 function usb_device_find_by_name(name: PCHAR): PUSB_DEVICE; stdcall;
 begin
  {}
- Result:=USBDeviceFindByName(name);
+ Result:=USBDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -20361,7 +21469,7 @@ end;
 function usb_device_find_by_description(description: PCHAR): PUSB_DEVICE; stdcall;
 begin
  {}
- Result:=USBDeviceFindByDescription(description);
+ Result:=USBDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -20441,7 +21549,7 @@ end;
 function usb_driver_find_by_name(name: PCHAR): PUSB_DRIVER; stdcall;
 begin
  {}
- Result:=USBDriverFindByName(name);
+ Result:=USBDriverFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -20525,7 +21633,7 @@ end;
 function usb_host_find_by_name(name: PCHAR): PUSB_HOST; stdcall;
 begin
  {}
- Result:=USBHostFindByName(name);
+ Result:=USBHostFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -20533,7 +21641,7 @@ end;
 function usb_host_find_by_description(description: PCHAR): PUSB_HOST; stdcall;
 begin
  {}
- Result:=USBHostFindByDescription(description);
+ Result:=USBHostFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -20891,7 +21999,7 @@ end;
 function usb_hub_find_by_name(name: PCHAR): PUSB_HUB; stdcall;
 begin
  {}
- Result:=USBHubFindByName(name);
+ Result:=USBHubFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -20899,7 +22007,7 @@ end;
 function usb_hub_find_by_description(description: PCHAR): PUSB_HUB; stdcall;
 begin
  {}
- Result:=USBHubFindByDescription(description);
+ Result:=USBHubFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -21850,7 +22958,7 @@ end;
 function mmc_device_find_by_name(name: PCHAR): PMMC_DEVICE; stdcall;
 begin
  {}
- Result:=MMCDeviceFindByName(name);
+ Result:=MMCDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -21858,7 +22966,7 @@ end;
 function mmc_device_find_by_description(description: PCHAR): PMMC_DEVICE; stdcall;
 begin
  {}
- Result:=MMCDeviceFindByDescription(description);
+ Result:=MMCDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -22762,7 +23870,7 @@ end;
 function spi_device_find_by_name(name: PCHAR): PSPI_DEVICE; stdcall;
 begin
  {}
- Result:=SPIDeviceFindByName(name);
+ Result:=SPIDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -22770,7 +23878,7 @@ end;
 function spi_device_find_by_description(description: PCHAR): PSPI_DEVICE; stdcall;
 begin
  {}
- Result:=SPIDeviceFindByDescription(description);
+ Result:=SPIDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -23048,7 +24156,7 @@ end;
 function i2c_device_find_by_name(name: PCHAR): PI2C_DEVICE; stdcall;
 begin
  {}
- Result:=I2CDeviceFindByName(name);
+ Result:=I2CDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -23056,7 +24164,7 @@ end;
 function i2c_device_find_by_description(description: PCHAR): PI2C_DEVICE; stdcall;
 begin
  {}
- Result:=I2CDeviceFindByDescription(description);
+ Result:=I2CDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -23367,7 +24475,7 @@ end;
 function pwm_device_find_by_name(name: PCHAR): PPWM_DEVICE; stdcall;
 begin
  {}
- Result:=PWMDeviceFindByName(name);
+ Result:=PWMDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -23375,7 +24483,7 @@ end;
 function pwm_device_find_by_description(description: PCHAR): PPWM_DEVICE; stdcall;
 begin
  {}
- Result:=PWMDeviceFindByDescription(description);
+ Result:=PWMDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -23429,6 +24537,15 @@ begin
  {}
  Result:=PWMDeviceCheck(pwm);
 end;
+{$ENDIF}
+{==============================================================================}
+{==============================================================================}
+{PCM (I2S) Functions}
+{$IFDEF API_EXPORT_PCM}
+//To Do
+{==============================================================================}
+{PCM (I2S) Helper Functions}
+//To Do
 {$ENDIF}
 {==============================================================================}
 {==============================================================================}
@@ -23694,7 +24811,7 @@ function gpio_device_find_by_name(name: PCHAR): PGPIO_DEVICE; stdcall;
 {Return: Pointer to GPIO device entry or nil if not found}
 begin
  {}
- Result:=GPIODeviceFindByName(name);
+ Result:=GPIODeviceFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -23705,7 +24822,7 @@ function gpio_device_find_by_description(description: PCHAR): PGPIO_DEVICE; stdc
 {Return: Pointer to GPIO device entry or nil if not found}
 begin
  {}
- Result:=GPIODeviceFindByDescription(description);
+ Result:=GPIODeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -24033,7 +25150,7 @@ function uart_device_find_by_name(name: PCHAR): PUART_DEVICE; stdcall;
 {Return: Pointer to UART device entry or nil if not found}
 begin
  {}
- Result:=UARTDeviceFindByName(name);
+ Result:=UARTDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -24044,7 +25161,7 @@ function uart_device_find_by_description(description: PCHAR): PUART_DEVICE; stdc
 {Return: Pointer to UART device entry or nil if not found}
 begin
  {}
- Result:=UARTDeviceFindByDescription(description);
+ Result:=UARTDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -24365,7 +25482,7 @@ function serial_device_find_by_name(name: PCHAR): PSERIAL_DEVICE; stdcall;
 {Return: Pointer to serial device entry or nil if not found}
 begin
  {}
- Result:=SerialDeviceFindByName(name);
+ Result:=SerialDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -24376,7 +25493,7 @@ function serial_device_find_by_description(description: PCHAR): PSERIAL_DEVICE; 
 {Return: Pointer to serial device entry or nil if not found}
 begin
  {}
- Result:=SerialDeviceFindByDescription(description);
+ Result:=SerialDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -24627,7 +25744,7 @@ end;
 function rtc_device_find_by_name(name: PCHAR): PRTC_DEVICE; stdcall;
 begin
  {}
- Result:=RTCDeviceFindByName(name);
+ Result:=RTCDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -24635,7 +25752,7 @@ end;
 function rtc_device_find_by_description(description: PCHAR): PRTC_DEVICE; stdcall;
 begin
  {}
- Result:=RTCDeviceFindByDescription(description);
+ Result:=RTCDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -24754,20 +25871,18 @@ end;
 
 {==============================================================================}
 
-function font_get_name(handle: FONT_HANDLE): PCHAR; stdcall;
+function font_get_name(handle: FONT_HANDLE; name: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=FontGetName(handle);
+ Result:=APIStringToPCharBuffer(FontGetName(handle),name,len);
 end;
 
 {==============================================================================}
 
-function font_get_description(handle: FONT_HANDLE): PCHAR; stdcall;
+function font_get_description(handle: FONT_HANDLE; description: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=FontGetDescription(handle);
+ Result:=APIStringToPCharBuffer(FontGetDescription(handle),description,len);
 end;
 
 {==============================================================================}
@@ -24815,7 +25930,7 @@ end;
 function font_text_width(handle: FONT_HANDLE; text: PCHAR): uint32_t; stdcall;
 begin
  {}
- Result:=FontTextWidth(handle,text);
+ Result:=FontTextWidth(handle,String(text));
 end;
 
 {==============================================================================}
@@ -24823,7 +25938,7 @@ end;
 function font_text_height(handle: FONT_HANDLE; text: PCHAR): uint32_t; stdcall;
 begin
  {}
- Result:=FontTextHeight(handle,text);
+ Result:=FontTextHeight(handle,String(text));
 end;
 
 {==============================================================================}
@@ -24831,7 +25946,7 @@ end;
 function font_find_by_name(name: PCHAR): FONT_HANDLE; stdcall;
 begin
  {}
- Result:=FontFindByName(name);
+ Result:=FontFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -24839,7 +25954,7 @@ end;
 function font_find_by_description(description: PCHAR): FONT_HANDLE; stdcall;
 begin
  {}
- Result:=FontFindByDescription(description);
+ Result:=FontFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -24855,7 +25970,7 @@ end;
 function psf_font_load(filename: PCHAR): FONT_HANDLE; stdcall;
 begin
  {}
- Result:=PSFFontLoad(filename);
+ Result:=PSFFontLoad(String(filename));
 end;
 
 {==============================================================================}
@@ -25367,7 +26482,7 @@ function framebuffer_device_find_by_name(name: PCHAR): PFRAMEBUFFER_DEVICE; stdc
 {Return: Pointer to framebuffer device entry or nil if not found}
 begin
  {}
- Result:=FramebufferDeviceFindByName(name);
+ Result:=FramebufferDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -25378,7 +26493,7 @@ function framebuffer_device_find_by_description(description: PCHAR): PFRAMEBUFFE
 {Return: Pointer to framebuffer device entry or nil if not found}
 begin
  {}
- Result:=FramebufferDeviceFindByDescription(description);
+ Result:=FramebufferDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -26307,7 +27422,7 @@ function graphics_window_draw_text(handle: WINDOW_HANDLE; text: PCHAR; x, y: uin
 {Note: For Graphics Console functions, Viewport is based on screen pixels not characters}
 begin
  {}
- Result:=GraphicsWindowDrawText(handle,text,x,y);
+ Result:=GraphicsWindowDrawText(handle,String(text),x,y);
 end;
 
 {==============================================================================}
@@ -26325,7 +27440,7 @@ function graphics_window_draw_text_ex(handle: WINDOW_HANDLE; font: FONT_HANDLE; 
 {Note: For Graphics Console functions, Viewport is based on screen pixels not characters}
 begin
  {}
- Result:=GraphicsWindowDrawTextEx(handle,font,text,x,y,forecolor,backcolor);
+ Result:=GraphicsWindowDrawTextEx(handle,font,String(text),x,y,forecolor,backcolor);
 end;
 
 {==============================================================================}
@@ -26528,26 +27643,24 @@ end;
 
 {==============================================================================}
 
-function keymap_get_name(handle: KEYMAP_HANDLE): PCHAR; stdcall;
+function keymap_get_name(handle: KEYMAP_HANDLE; name: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the name of the specified keymap}
 {Handle: The handle of the keymap to get the name for}
 {Return: The name of the keymap (eg US)}
 begin
  {}
- //To Do //PCHAR
- //Result:=KeymapGetName(handle);
+ Result:=APIStringToPCharBuffer(KeymapGetName(handle),name,len);
 end;
 
 {==============================================================================}
 
-function keymap_get_description(handle: KEYMAP_HANDLE): PCHAR; stdcall;
+function keymap_get_description(handle: KEYMAP_HANDLE; description: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the description of the specified keymap}
 {Handle: The handle of the keymap to get the description for}
 {Return: The description of the keymap (eg US English)}
 begin
  {}
- //To Do //PCHAR
- //Result:=KeymapGetDescription(handle);
+ Result:=APIStringToPCharBuffer(KeymapGetDescription(handle),description,len);
 end;
 
 {==============================================================================}
@@ -26660,7 +27773,7 @@ function keymap_find_by_name(name: PCHAR): KEYMAP_HANDLE; stdcall;
 {Return: The handle of the matching keymap or INVALID_HANDLE_VALUE if not found}
 begin
  {}
- Result:=KeymapFindByName(name);
+ Result:=KeymapFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -26671,7 +27784,7 @@ function keymap_find_by_description(description: PCHAR): KEYMAP_HANDLE; stdcall;
 {Return: The handle of the matching keymap or INVALID_HANDLE_VALUE if not found}
 begin
  {}
- Result:=KeymapFindByDescription(description);
+ Result:=KeymapFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -26940,7 +28053,7 @@ function keyboard_device_find_by_name(name: PCHAR): PKEYBOARD_DEVICE; stdcall;
 {Return: Pointer to keyboard device entry or nil if not found}
 begin
  {}
- Result:=KeyboardDeviceFindByName(name);
+ Result:=KeyboardDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -26951,7 +28064,7 @@ function keyboard_device_find_by_description(description: PCHAR): PKEYBOARD_DEVI
 {Return: Pointer to keyboard device entry or nil if not found}
 begin
  {}
- Result:=KeyboardDeviceFindByDescription(description);
+ Result:=KeyboardDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -27232,7 +28345,7 @@ function mouse_device_find_by_name(name: PCHAR): PMOUSE_DEVICE; stdcall;
 {Return: Pointer to mouse device entry or nil if not found}
 begin
  {}
- Result:=MouseDeviceFindByName(name);
+ Result:=MouseDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -27243,7 +28356,7 @@ function mouse_device_find_by_description(description: PCHAR): PMOUSE_DEVICE; st
 {Return: Pointer to mouse device entry or nil if not found}
 begin
  {}
- Result:=MouseDeviceFindByDescription(description);
+ Result:=MouseDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -27488,7 +28601,7 @@ end;
 function touch_device_find_by_name(name: PCHAR): PTOUCH_DEVICE; stdcall;
 begin
  {}
- Result:=TouchDeviceFindByName(name);
+ Result:=TouchDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -27496,7 +28609,7 @@ end;
 function touch_device_find_by_description(description: PCHAR): PTOUCH_DEVICE; stdcall;
 begin
  {}
- Result:=TouchDeviceFindByDescription(description);
+ Result:=TouchDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -27715,7 +28828,7 @@ end;
 function storage_device_find_by_name(name: PCHAR): PSTORAGE_DEVICE; stdcall;
 begin
  {}
- Result:=StorageDeviceFindByName(name);
+ Result:=StorageDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -27723,7 +28836,7 @@ end;
 function storage_device_find_by_description(description: PCHAR): PSTORAGE_DEVICE; stdcall;
 begin
  {}
- Result:=StorageDeviceFindByDescription(description);
+ Result:=StorageDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -27970,7 +29083,7 @@ end;
 function network_device_find_by_name(name: PCHAR): PNETWORK_DEVICE; stdcall;
 begin
  {}
- Result:=NetworkDeviceFindByName(name);
+ Result:=NetworkDeviceFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -27978,7 +29091,7 @@ end;
 function network_device_find_by_description(description: PCHAR): PNETWORK_DEVICE; stdcall;
 begin
  {}
- Result:=NetworkDeviceFindByDescription(description);
+ Result:=NetworkDeviceFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -28106,11 +29219,10 @@ end;
 
 {==============================================================================}
 
-function hardware_address_to_string(const address: THARDWARE_ADDRESS; separator: PCHAR): PCHAR; stdcall;
+function hardware_address_to_string(const address: THARDWARE_ADDRESS; separator: PCHAR; value: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=HardwareAddressToString(address,separator);
+ Result:=APIStringToPCharBuffer(HardwareAddressToString(address,String(separator)),value,len);
 end;
 
 {==============================================================================}
@@ -28118,7 +29230,7 @@ end;
 function string_to_hardware_address(address: PCHAR): THARDWARE_ADDRESS; stdcall;
 begin
  {}
- Result:=StringToHardwareAddress(address);
+ Result:=StringToHardwareAddress(String(address));
 end;
 
 {==============================================================================}
@@ -28190,20 +29302,18 @@ end;
 
 {==============================================================================}
 
-function timezone_get_name(timezone: PTIMEZONE_ENTRY): PCHAR; stdcall;
+function timezone_get_name(timezone: PTIMEZONE_ENTRY; name: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=TimezoneGetName(timezone);
+ Result:=APIStringToPCharBuffer(TimezoneGetName(timezone),name,len);
 end;
 
 {==============================================================================}
 
-function timezone_get_description(timezone: PTIMEZONE_ENTRY): PCHAR; stdcall;
+function timezone_get_description(timezone: PTIMEZONE_ENTRY; description: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=TimezoneGetDescription(timezone);
+ Result:=APIStringToPCharBuffer(TimezoneGetDescription(timezone),description,len);
 end;
 
 {==============================================================================}
@@ -28232,11 +29342,10 @@ end;
 
 {==============================================================================}
 
-function timezone_get_standard_name(timezone: PTIMEZONE_ENTRY): PCHAR; stdcall;
+function timezone_get_standard_name(timezone: PTIMEZONE_ENTRY; name: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=TimezoneGetStandardName(timezone);
+ Result:=APIStringToPCharBuffer(TimezoneGetStandardName(timezone),name,len);
 end;
 
 {==============================================================================}
@@ -28265,11 +29374,10 @@ end;
 
 {==============================================================================}
 
-function timezone_get_daylight_name(timezone: PTIMEZONE_ENTRY): PCHAR; stdcall;
+function timezone_get_daylight_name(timezone: PTIMEZONE_ENTRY; name: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=TimezoneGetDaylightName(timezone);
+ Result:=APIStringToPCharBuffer(TimezoneGetDaylightName(timezone),name,len);
 end;
 
 {==============================================================================}
@@ -28300,7 +29408,7 @@ end;
 function timezone_find(name: PCHAR): PTIMEZONE_ENTRY; stdcall;
 begin
  {}
- Result:=TimezoneFind(name);
+ Result:=TimezoneFind(String(name));
 end;
 
 {==============================================================================}
@@ -28366,12 +29474,11 @@ end;
 
 {==============================================================================}
 
-function timezone_start_to_description(const start: SYSTEMTIME): PCHAR; stdcall;
+function timezone_start_to_description(const start: SYSTEMTIME; description: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the description of the start date of a timezone}
 begin
  {}
- //To Do //PCHAR
- //Result:=TimezoneStartToDescription(start);
+ Result:=APIStringToPCharBuffer(TimezoneStartToDescription(start),description,len);
 end;
 {$ENDIF}
 {==============================================================================}
@@ -29025,7 +30132,7 @@ function fs_get_path_drive(path: PCHAR): uint8_t; stdcall;
 {No Volume Support}
 begin
  {}
- Result:=FSGetPathDrive(path);
+ Result:=FSGetPathDrive(String(path));
 end;
 
 {==============================================================================}
@@ -29057,12 +30164,11 @@ end;
 
 {==============================================================================}
 
-function fs_get_drive_label(drive: uint8_t): PCHAR; stdcall;
+function fs_get_drive_label(drive: uint8_t; _label: PCHAR; len: uint32_t): uint32_t; stdcall;
 {No Volume Support}
 begin
  {}
- //To Do //PCHAR
- //Result:=FSGetDriveLabel(drive);
+ Result:=APIStringToPCharBuffer(FSGetDriveLabel(drive),_label,len);
 end;
 
 {==============================================================================}
@@ -29071,7 +30177,7 @@ function fs_set_drive_label(drive: uint8_t; _label: PCHAR): BOOL; stdcall;
 {No Volume Support}
 begin
  {}
- Result:=FSSetDriveLabel(drive,_label);
+ Result:=FSSetDriveLabel(drive,String(_label));
 end;
 
 {==============================================================================}
@@ -29112,12 +30218,11 @@ end;
 
 {==============================================================================}
 
-function fs_get_valid_drive_strings: PCHAR; stdcall;
+function fs_get_valid_drive_strings(drives: PCHAR; len: uint32_t): uint32_t; stdcall;
 {No Volume Support}
 begin
  {}
- //To Do //PCHAR
- //Result:=FSGetValidDriveStrings;
+ Result:=APIStringToPCharBuffer(FSGetValidDriveStrings,drives,len);
 end;
 
 {==============================================================================}
@@ -29161,7 +30266,7 @@ end;
 function fs_get_drive_information(path: PCHAR; var clustersize: uint32_t; var totalclustercount, freeclustercount: int64_t): BOOL; stdcall;
 begin
  {}
- Result:=FSGetDriveInformation(path,clustersize,totalclustercount,freeclustercount);
+ Result:=FSGetDriveInformation(String(path),clustersize,totalclustercount,freeclustercount);
 end;
 
 {==============================================================================}
@@ -29179,7 +30284,7 @@ function fs_set_current_drive(drive: PCHAR): BOOL; stdcall;
 {No Volume Support}
 begin
  {}
- Result:=FSSetCurrentDrive(drive);
+ Result:=FSSetCurrentDrive(String(drive));
 end;
 
 {==============================================================================}
@@ -29187,7 +30292,7 @@ end;
 function fs_file_open(filename: PCHAR; mode: int): THANDLE; stdcall;
 begin
  {}
- Result:=FSFileOpen(filename,mode);
+ Result:=FSFileOpen(String(filename),mode);
 end;
 
 {==============================================================================}
@@ -29195,7 +30300,7 @@ end;
 function fs_file_create(filename: PCHAR): THANDLE; stdcall;
 begin
  {}
- Result:=FSFileCreate(filename);
+ Result:=FSFileCreate(String(filename));
 end;
 
 {==============================================================================}
@@ -29203,7 +30308,7 @@ end;
 function fs_delete_file(filename: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSDeleteFile(filename);
+ Result:=FSDeleteFile(String(filename));
 end;
 
 {==============================================================================}
@@ -29216,10 +30321,10 @@ end;
 
 {==============================================================================}
 
-function fs_rename_file(const oldname, newname: PCHAR): BOOL; stdcall;
+function fs_rename_file(oldname, newname: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSRenameFile(oldname,newname);
+ Result:=FSRenameFile(String(oldname),String(newname));
 end;
 
 {==============================================================================}
@@ -29283,7 +30388,7 @@ end;
 function fs_file_age(filename: PCHAR): int; stdcall;
 begin
  {}
- Result:=FSFileAge(filename);
+ Result:=FSFileAge(String(filename));
 end;
 
 {==============================================================================}
@@ -29291,7 +30396,7 @@ end;
 function fs_file_exists(filename: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSFileExists(filename);
+ Result:=FSFileExists(String(filename));
 end;
 
 {==============================================================================}
@@ -29299,7 +30404,7 @@ end;
 function fs_file_get_attr(filename: PCHAR): int; stdcall;
 begin
  {}
- Result:=FSFileGetAttr(filename);
+ Result:=FSFileGetAttr(String(filename));
 end;
 
 {==============================================================================}
@@ -29315,7 +30420,7 @@ end;
 function fs_file_set_attr(filename: PCHAR; attr: int): int; stdcall;
 begin
  {}
- Result:=FSFileSetAttr(filename,attr);
+ Result:=FSFileSetAttr(String(filename),attr);
 end;
 
 {==============================================================================}
@@ -29347,7 +30452,7 @@ end;
 function fs_create_dir(dirname: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSCreateDir(dirname);
+ Result:=FSCreateDir(String(dirname));
 end;
 
 {==============================================================================}
@@ -29355,25 +30460,24 @@ end;
 function fs_remove_dir(dirname: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSRemoveDir(dirname);
+ Result:=FSRemoveDir(String(dirname));
 end;
 
 {==============================================================================}
 
-function fs_rename_dir(const oldname, newname: PCHAR): BOOL; stdcall;
+function fs_rename_dir(oldname, newname: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSRenameDir(oldname,newname);
+ Result:=FSRenameDir(String(oldname),String(newname));
 end;
 
 {==============================================================================}
 
-function fs_get_current_dir: PCHAR; stdcall;
+function fs_get_current_dir(dirname: PCHAR; len: uint32_t): uint32_t; stdcall;
 {No Volume Support}
 begin
  {}
- //To Do //PCHAR
- //Result:=FSGetCurrentDir;
+ Result:=APIStringToPCharBuffer(FSGetCurrentDir,dirname,len);
 end;
 
 {==============================================================================}
@@ -29381,7 +30485,7 @@ end;
 function fs_set_current_dir(dirname: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSSetCurrentDir(dirname);
+ Result:=FSSetCurrentDir(String(dirname));
 end;
 
 {==============================================================================}
@@ -29389,7 +30493,7 @@ end;
 function fs_directory_exists(dirname: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSDirectoryExists(dirname);
+ Result:=FSDirectoryExists(String(dirname));
 end;
 
 {==============================================================================}
@@ -29397,7 +30501,7 @@ end;
 procedure fs_force_directories(dirname: PCHAR); stdcall;
 begin
  {}
- FSForceDirectories(dirname);
+ FSForceDirectories(String(dirname));
 end;
 
 {==============================================================================}
@@ -29405,7 +30509,7 @@ end;
 procedure fs_delete_tree(dirname: PCHAR); stdcall;
 begin
  {}
- FSDeleteTree(dirname);
+ FSDeleteTree(String(dirname));
 end;
 
 {==============================================================================}
@@ -29413,7 +30517,7 @@ end;
 function fs_find_first(path: PCHAR; attr: int; var searchrec: SEARCH_REC): int; stdcall;
 begin
  {}
- Result:=FSFindFirst(path,attr,searchrec);
+ Result:=FSFindFirst(String(path),attr,searchrec);
 end;
 
 {==============================================================================}
@@ -29434,45 +30538,42 @@ end;
 
 {==============================================================================}
 {Additional Functions}
-function fs_file_copy(const sourcefile, destfile: PCHAR; failifexists: BOOL): BOOL; stdcall;
+function fs_file_copy(sourcefile, destfile: PCHAR; failifexists: BOOL): BOOL; stdcall;
 begin
  {}
- Result:=FSFileCopy(sourcefile,destfile,failifexists);
+ Result:=FSFileCopy(String(sourcefile),String(destfile),failifexists);
 end;
 
 {==============================================================================}
 
-function fs_file_copy_ex(const sourcefile, destfile: PCHAR; failifexists: BOOL; usesourcedate: BOOL; destdate: int; usesourceattr: BOOL; destattr: int): BOOL; stdcall;
+function fs_file_copy_ex(sourcefile, destfile: PCHAR; failifexists: BOOL; usesourcedate: BOOL; destdate: int; usesourceattr: BOOL; destattr: int): BOOL; stdcall;
 begin
  {}
- Result:=FSFileCopyEx(sourcefile,destfile,failifexists,usesourcedate,destdate,usesourceattr,destattr);
+ Result:=FSFileCopyEx(String(sourcefile),String(destfile),failifexists,usesourcedate,destdate,usesourceattr,destattr);
 end;
 
 {==============================================================================}
 
-function fs_get_short_name(filename: PCHAR): PCHAR; stdcall;
+function fs_get_short_name(filename: PCHAR; shortname: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=FSGetShortName(filename);
+ Result:=APIStringToPCharBuffer(FSGetShortName(String(filename)),shortname,len);
 end;
 
 {==============================================================================}
 
-function fs_get_long_name(filename: PCHAR): PCHAR; stdcall;
+function fs_get_long_name(filename: PCHAR; longname: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=FSGetLongName(filename);
+ Result:=APIStringToPCharBuffer(FSGetLongName(String(filename)),longname,len);
 end;
 
 {==============================================================================}
 
-function fs_get_true_name(filename: PCHAR): PCHAR; stdcall;
+function fs_get_true_name(filename: PCHAR; truename: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=FSGetTrueName(filename);
+ Result:=APIStringToPCharBuffer(FSGetTrueName(String(filename)),truename,len);
 end;
 
 {==============================================================================}
@@ -29512,7 +30613,7 @@ end;
 function fs_file_age_ex(filename: PCHAR): FILETIME; stdcall;
 begin
  {}
- Result:=FSFileAgeEx(filename);
+ Result:=FSFileAgeEx(String(filename));
 end;
 
 {==============================================================================}
@@ -29560,7 +30661,7 @@ end;
 function fs_find_first_ex(path: PCHAR; var searchrec: FILE_SEARCH_REC): int; stdcall;
 begin
  {}
- Result:=FSFindFirstEx(path,searchrec);
+ Result:=FSFindFirstEx(String(path),searchrec);
 end;
 
 {==============================================================================}
@@ -29582,10 +30683,10 @@ end;
 {==============================================================================}
 {FileSystem Functions (Win32 Compatibility)}
 {Drive Functions}
-function fs_define_dos_device(const devicename, targetpath: PCHAR; flags: uint32_t): BOOL; stdcall;
+function fs_define_dos_device(devicename, targetpath: PCHAR; flags: uint32_t): BOOL; stdcall;
 begin
  {}
- Result:=FSDefineDosDevice(devicename,targetpath,flags);
+ Result:=FSDefineDosDevice(String(devicename),String(targetpath),flags);
 end;
 
 {==============================================================================}
@@ -29593,7 +30694,7 @@ end;
 function fs_get_disk_type(rootpath: PCHAR): uint32_t; stdcall; // Equivalent to Win32 GetDriveType
 begin
  {}
- Result:=FSGetDiskType(rootpath);
+ Result:=FSGetDiskType(String(rootpath));
 end;
 
 {==============================================================================}
@@ -29601,7 +30702,7 @@ end;
 function fs_get_disk_free_space(rootpath: PCHAR; var sectorspercluster, bytespersector, numberoffreeclusters, totalnumberofclusters: uint32_t): BOOL; stdcall;
 begin
  {}
- Result:=FSGetDiskFreeSpace(rootpath,sectorspercluster,bytespersector,numberoffreeclusters,totalnumberofclusters);
+ Result:=FSGetDiskFreeSpace(String(rootpath),sectorspercluster,bytespersector,numberoffreeclusters,totalnumberofclusters);
 end;
 
 {==============================================================================}
@@ -29609,7 +30710,7 @@ end;
 function fs_get_disk_free_space_ex(pathname: PCHAR; var freebytesavailabletocaller, totalnumberofbytes, totalnumberoffreebytes: uint64_t): BOOL; stdcall;
 begin
  {}
- Result:=FSGetDiskFreeSpaceEx(pathname,freebytesavailabletocaller,totalnumberofbytes,totalnumberoffreebytes);
+ Result:=FSGetDiskFreeSpaceEx(String(pathname),freebytesavailabletocaller,totalnumberofbytes,totalnumberoffreebytes);
 end;
 
 {==============================================================================}
@@ -29622,29 +30723,34 @@ end;
 
 {==============================================================================}
 
-function fs_get_logical_drive_strings: PCHAR; stdcall;
+function fs_get_logical_drive_strings(drives: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=FSGetLogicalDriveStrings;
+ Result:=APIStringToPCharBuffer(FSGetLogicalDriveStrings,drives,len);
 end;
 
 {==============================================================================}
 
-function fs_get_volume_information(rootpath: PCHAR; volumename: PCHAR; var volumeserialnumber, maximumcomponentlength, filesystemflags: uint32_t; systemname: PCHAR): BOOL; stdcall;
+function fs_get_volume_information(rootpath: PCHAR; volumename: PCHAR; volumelen: uint32_t; var volumeserialnumber, maximumcomponentlength, filesystemflags: uint32_t; systemname: PCHAR; systemlen: uint32_t): BOOL; stdcall;
+var
+ VolumeBuffer:String;
+ SystemBuffer:String;
 begin
  {}
- //To Do //PCHAR
- //Result:=FSGetVolumeInformation(rootpath,volumename,volumeserialnumber,maximumcomponentlength,filesystemflags,systemname);
+ Result:=FSGetVolumeInformation(String(rootpath),VolumeBuffer,volumeserialnumber,maximumcomponentlength,filesystemflags,SystemBuffer);
+ if Result then
+  begin
+   APIStringToPCharBuffer(VolumeBuffer,volumename,volumelen);
+   APIStringToPCharBuffer(SystemBuffer,systemname,systemlen);
+  end;
 end;
 
 {==============================================================================}
 
-function fs_query_dos_device(rootpath: PCHAR): PCHAR; stdcall;
+function fs_query_dos_device(rootpath: PCHAR; name: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=FSQueryDosDevice(rootpath);
+ Result:=APIStringToPCharBuffer(FSQueryDosDevice(String(rootpath)),name,len);
 end;
 
 {==============================================================================}
@@ -29652,7 +30758,7 @@ end;
 function fs_set_volume_label(volume: PCHAR; _label: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSSetVolumeLabel(volume,_label);
+ Result:=FSSetVolumeLabel(String(volume),String(_label));
 end;
 
 {==============================================================================}
@@ -29673,10 +30779,10 @@ end;
 
 {==============================================================================}
 
-function fs_copy_file(const existingname, newname: PCHAR; failifexists: BOOL): BOOL; stdcall;
+function fs_copy_file(existingname, newname: PCHAR; failifexists: BOOL): BOOL; stdcall;
 begin
  {}
- Result:=FSCopyFile(existingname,newname,failifexists);
+ Result:=FSCopyFile(String(existingname),String(newname),failifexists);
 end;
 
 {==============================================================================}
@@ -29684,7 +30790,7 @@ end;
 function fs_create_file(filename: PCHAR; accessmode, sharemode, createflags, fileattributes: uint32_t): THANDLE; stdcall;
 begin
  {}
- Result:=FSCreateFile(filename,accessmode,sharemode,createflags,fileattributes);
+ Result:=FSCreateFile(String(filename),accessmode,sharemode,createflags,fileattributes);
 end;
 
 {==============================================================================}
@@ -29700,7 +30806,7 @@ end;
 function fs_find_first_file(filename: PCHAR; var finddata: TWin32FindData): THANDLE; stdcall;
 begin
  {}
- Result:=FSFindFirstFile(filename,finddata);
+ Result:=FSFindFirstFile(String(filename),finddata);
 end;
 
 {==============================================================================}
@@ -29724,7 +30830,7 @@ end;
 function fs_get_file_attributes(filename: PCHAR): uint32_t; stdcall;
 begin
  {}
- Result:=FSGetFileAttributes(filename);
+ Result:=FSGetFileAttributes(String(filename));
 end;
 
 {==============================================================================}
@@ -29745,28 +30851,26 @@ end;
 
 {==============================================================================}
 
-function fs_get_full_path_name(filename: PCHAR): PCHAR; stdcall;
+function fs_get_full_path_name(filename: PCHAR; name: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=FSGetFullPathName(filename);
+ Result:=APIStringToPCharBuffer(FSGetFullPathName(String(filename)),name,len);
 end;
 
 {==============================================================================}
 
-function fs_get_short_path_name(longpath: PCHAR): PCHAR; stdcall;
+function fs_get_short_path_name(longpath: PCHAR; name: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=FSGetShortPathName(longpath);
+ Result:=APIStringToPCharBuffer(FSGetShortPathName(String(longpath)),name,len);
 end;
 
 {==============================================================================}
 
-function fs_move_file(const existingname, newname: PCHAR): BOOL; stdcall;
+function fs_move_file(existingname, newname: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSMoveFile(existingname,newname);
+ Result:=FSMoveFile(String(existingname),String(newname));
 end;
 
 {==============================================================================}
@@ -29798,7 +30902,7 @@ end;
 function fs_set_file_attributes(filename: PCHAR; fileattributes: uint32_t): BOOL; stdcall;
 begin
  {}
- Result:=FSSetFileAttributes(filename,fileattributes);
+ Result:=FSSetFileAttributes(String(filename),fileattributes);
 end;
 
 {==============================================================================}
@@ -29827,19 +30931,18 @@ end;
 
 {==============================================================================}
 
-function fs_get_long_path_name(shortpath: PCHAR): PCHAR; stdcall;
+function fs_get_long_path_name(shortpath: PCHAR; name: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=FSGetLongPathName(shortpath);
+ Result:=APIStringToPCharBuffer(FSGetLongPathName(String(shortpath)),name,len);
 end;
 
 {==============================================================================}
 
-function fs_set_file_short_name(const filename, shortname: PCHAR): BOOL; stdcall;
+function fs_set_file_short_name(filename, shortname: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSSetFileShortName(filename,shortname);
+ Result:=FSSetFileShortName(String(filename),String(shortname));
 end;
 
 {==============================================================================}
@@ -29847,23 +30950,23 @@ end;
 function fs_set_file_short_name_ex(handle: THANDLE; shortname: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSSetFileShortNameEx(handle,shortname);
+ Result:=FSSetFileShortNameEx(handle,String(shortname));
 end;
 
 {==============================================================================}
 
-function fs_create_hard_link(const linkname, filename: PCHAR): BOOL; stdcall;
+function fs_create_hard_link(linkname, filename: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSCreateHardLink(linkname,filename);
+ Result:=FSCreateHardLink(String(linkname),String(filename));
 end;
 
 {==============================================================================}
 
-function fs_create_symbolic_link(const linkname, targetname: PCHAR; directory: BOOL): BOOL; stdcall;
+function fs_create_symbolic_link(linkname, targetname: PCHAR; directory: BOOL): BOOL; stdcall;
 begin
  {}
- Result:=FSCreateSymbolicLink(linkname,targetname,directory);
+ Result:=FSCreateSymbolicLink(String(linkname),String(targetname),directory);
 end;
 
 {==============================================================================}
@@ -29871,16 +30974,15 @@ end;
 function fs_create_directory(pathname: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSCreateDirectory(pathname);
+ Result:=FSCreateDirectory(String(pathname));
 end;
 
 {==============================================================================}
 
-function fs_get_current_directory: PCHAR; stdcall;
+function fs_get_current_directory(pathname: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=FSGetCurrentDirectory;
+ Result:=APIStringToPCharBuffer(FSGetCurrentDirectory,pathname,len);
 end;
 
 {==============================================================================}
@@ -29888,7 +30990,7 @@ end;
 function fs_remove_directory(pathname: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSRemoveDirectory(pathname);
+ Result:=FSRemoveDirectory(String(pathname));
 end;
 
 {==============================================================================}
@@ -29896,7 +30998,7 @@ end;
 function fs_set_current_directory(pathname: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSSetCurrentDirectory(pathname);
+ Result:=FSSetCurrentDirectory(String(pathname));
 end;
 
 {==============================================================================}
@@ -30520,11 +31622,10 @@ end;
 
 {==============================================================================}
 
-function WinsockErrorToString(error: int32_t): PCHAR; stdcall;
+function WinsockErrorToString(error: int32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=Winsock.WinsockErrorToString(error);
+ Result:=APIStringToPCharBuffer(Winsock.WinsockErrorToString(error),_string,len);
 end;
 {$ENDIF}
 {==============================================================================}
@@ -31553,11 +32654,10 @@ end;
 
 {==============================================================================}
 
-function Winsock2ErrorToString(error: int32_t): PCHAR; stdcall;
+function Winsock2ErrorToString(error: int32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=Winsock2.Winsock2ErrorToString(error);
+ Result:=APIStringToPCharBuffer(Winsock2.Winsock2ErrorToString(error),_string,len);
 end;
 {$ENDIF}
 {==============================================================================}
@@ -32336,12 +33436,11 @@ end;
 
 {==============================================================================}
 
-function GetCurrentTimezone: PCHAR; stdcall;
+function GetCurrentTimezone(name: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the name of the current Timezone}
 begin
  {}
- //To Do //PCHAR
- //Result:=Ultibo.GetCurrentTimezone;
+ Result:=APIStringToPCharBuffer(Ultibo.GetCurrentTimezone,name,len);
 end;
 
 {==============================================================================}
@@ -32350,7 +33449,7 @@ function SetCurrentTimezone(name: PCHAR): BOOL; stdcall;
 {Set the current Timezone by name}
 begin
  {}
- Result:=Ultibo.SetCurrentTimezone(name);
+ Result:=Ultibo.SetCurrentTimezone(String(name));
 end;
 
 {==============================================================================}
@@ -32400,22 +33499,20 @@ end;
 
 {==============================================================================}
 
-function GetTimezoneStandardStart: PCHAR; stdcall;
+function GetTimezoneStandardStart(description: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the description of the standard time start for the current Timezone}
 begin
  {}
- //To Do //PCHAR
- //Result:=Ultibo.GetTimezoneStandardStart;
+ Result:=APIStringToPCharBuffer(Ultibo.GetTimezoneStandardStart,description,len);
 end;
 
 {==============================================================================}
 
-function GetTimezoneDaylightStart: PCHAR; stdcall;
+function GetTimezoneDaylightStart(description: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the description of the daylight time start for the current Timezone}
 begin
  {}
- //To Do //PCHAR
- //Result:=Ultibo.GetTimezoneDaylightStart;
+ Result:=APIStringToPCharBuffer(Ultibo.GetTimezoneDaylightStart,description,len);
 end;
 
 {==============================================================================}
@@ -32821,7 +33918,7 @@ end;
 function GetPathDrive(path: PCHAR): uint8_t; stdcall;
 begin
  {}
- Result:=Ultibo.GetPathDrive(path);
+ Result:=Ultibo.GetPathDrive(String(path));
 end;
 
 {==============================================================================}
@@ -32850,11 +33947,10 @@ end;
 
 {==============================================================================}
 
-function GetDriveLabel(drive: uint8_t): PCHAR; stdcall;
+function GetDriveLabel(drive: uint8_t; _label: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=Ultibo.GetDriveLabel(drive);
+ Result:=APIStringToPCharBuffer(Ultibo.GetDriveLabel(drive),_label,len);
 end;
 
 {==============================================================================}
@@ -32862,7 +33958,7 @@ end;
 function SetDriveLabel(drive: uint8_t; _label: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=Ultibo.SetDriveLabel(drive,_label);
+ Result:=Ultibo.SetDriveLabel(drive,String(_label));
 end;
 
 {==============================================================================}
@@ -32899,11 +33995,10 @@ end;
 
 {==============================================================================}
 
-function GetValidDriveNames: PCHAR; stdcall;
+function GetValidDriveNames(names: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=Ultibo.GetValidDriveNames;
+ Result:=APIStringToPCharBuffer(Ultibo.GetValidDriveNames,names,len);
 end;
 
 {==============================================================================}
@@ -32943,7 +34038,7 @@ end;
 function GetDriveInformation(path: PCHAR; var clustersize: uint32_t; var totalclustercount, freeclustercount: int64_t): BOOL; stdcall;
 begin
  {}
- Result:=Ultibo.GetDriveInformation(path,clustersize,totalclustercount,freeclustercount);
+ Result:=Ultibo.GetDriveInformation(String(path),clustersize,totalclustercount,freeclustercount);
 end;
 
 {==============================================================================}
@@ -32959,7 +34054,7 @@ end;
 function SetCurrentDrive(drive: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=Ultibo.SetCurrentDrive(drive);
+ Result:=Ultibo.SetCurrentDrive(String(drive));
 end;
 
 {==============================================================================}
@@ -33560,7 +34655,7 @@ function IsParamPresent(param: PCHAR): BOOL; stdcall;
 {Check if the specified parameter is present in the command line}
 begin
  {}
- Result:=Ultibo.IsParamPresent(param);
+ Result:=Ultibo.IsParamPresent(String(param));
 end;
 
 {==============================================================================}
@@ -33569,17 +34664,16 @@ function GetParamIndex(param: PCHAR): int; stdcall;
 {Get the index of the specified parameter in the command line}
 begin
  {}
- Result:=Ultibo.GetParamIndex(param);
+ Result:=Ultibo.GetParamIndex(String(param));
 end;
 
 {==============================================================================}
 
-function GetParamValue(param: PCHAR): PCHAR; stdcall;
+function GetParamValue(param: PCHAR; value: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Get the value of the specified parameter from the command line}
 begin
  {}
- //To Do //PCHAR
- //Result:=Ultibo.GetParamValue(param);
+ Result:=APIStringToPCharBuffer(Ultibo.GetParamValue(String(param)),value,len);
 end;
 
 {==============================================================================}
@@ -33735,11 +34829,10 @@ end;
 
 {==============================================================================}
 
-function GUIDToString(const value: TGUID): PCHAR; stdcall;
+function GUIDToString(const value: TGUID; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=Ultibo.GUIDToString(value);
+ Result:=APIStringToPCharBuffer(Ultibo.GUIDToString(value),_string,len);
 end;
 
 {==============================================================================}
@@ -33747,7 +34840,7 @@ end;
 function StringToGUID(value: PCHAR): TGUID; stdcall;
 begin
  {}
- Result:=Ultibo.StringToGUID(value);
+ Result:=Ultibo.StringToGUID(String(value));
 end;
 
 {==============================================================================}
@@ -33768,11 +34861,10 @@ end;
 
 {==============================================================================}
 {SID Functions (Ultibo)}
-function SIDToString(sid: PSID): PCHAR; stdcall;
+function SIDToString(sid: PSID; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- //To Do //PCHAR
- //Result:=Ultibo.SIDToString(sid);
+ Result:=APIStringToPCharBuffer(Ultibo.SIDToString(sid),_string,len);
 end;
 
 {==============================================================================}
@@ -33780,7 +34872,7 @@ end;
 function StringToSID(value: PCHAR): PSID; stdcall;
 begin
  {}
- Result:=Ultibo.StringToSID(value);
+ Result:=Ultibo.StringToSID(String(value));
 end;
 
 {==============================================================================}
@@ -33923,7 +35015,7 @@ function GenerateNameHash(name: PCHAR; size: int): uint32_t; stdcall;
 {Note: Case Insensitive Hash}
 begin
  {}
- Result:=Ultibo.GenerateNameHash(name,size);
+ Result:=Ultibo.GenerateNameHash(String(name),size);
 end;
 
 {==============================================================================}
@@ -33932,7 +35024,7 @@ function GenerateStringHash(value: PCHAR; casesensitive: BOOL): uint32_t; stdcal
 {Sum of (byte value + 1) * (position + 257) for all bytes in string}
 begin
  {}
- Result:=Ultibo.GenerateStringHash(value, casesensitive);
+ Result:=Ultibo.GenerateStringHash(String(value),casesensitive);
 end;
 
 {==============================================================================}
@@ -33953,25 +35045,23 @@ end;
 
 {==============================================================================}
 {Locale Functions (Ultibo)}
-function WideCharToString(buffer: PWCHAR): PCHAR; stdcall;
+function WideCharToString(buffer: PWCHAR; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
 {A replacement for WideCharToString in System unit to allow cross platform compatibility}
 {Note: The WideStringManager installed by the Unicode unit should make the System version equivalent}
 begin
  {}
- //To Do //PCHAR
- //Result:=Ultibo.WideCharToString(buffer);
+ Result:=APIStringToPCharBuffer(Ultibo.WideCharToString(buffer),_string,len);
 end;
 
 {==============================================================================}
 
-function WideCharLenToString(buffer: PWCHAR; length: int): PCHAR; stdcall;
+function WideCharLenToString(buffer: PWCHAR; _length: int; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
 {A replacement for WideCharLenToString in System unit to allow cross platform compatibility}
 {Note: Length is the size of the Buffer in WideChars (not Bytes)}
 {Note: The WideStringManager installed by the Unicode unit should make the System version equivalent}
 begin
  {}
- //To Do //PCHAR
- //Result:=Ultibo.WideCharLenToString(buffer,length);
+ Result:=APIStringToPCharBuffer(Ultibo.WideCharLenToString(buffer,_length),_string,len);
 end;
 
 {==============================================================================}
@@ -33982,7 +35072,7 @@ function StringToWideChar(_string: PCHAR; buffer: PWCHAR; size: int): BOOL; stdc
 {Note: The WideStringManager installed by the Unicode unit should make the System version equivalent}
 begin
  {}
- Result:=Ultibo.StringToWideChar(_string,buffer,size);
+ Result:=Ultibo.StringToWideChar(String(_string),buffer,size);
 end;
 
 {==============================================================================}
