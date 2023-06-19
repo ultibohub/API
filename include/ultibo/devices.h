@@ -30,6 +30,7 @@
 extern "C" {
 #endif
 
+#include "ultibo/globaltypes.h"
 #include "ultibo/globalconst.h"
 #include "ultibo/platform.h"
 
@@ -68,39 +69,11 @@ extern "C" {
 
 #define DEVICE_BUS_MAX	19
 
-/* Device Bus Names */
-const char *DEVICE_BUS_NAMES[] = {
-  "DEVICE_BUS_NONE",
-  "DEVICE_BUS_PCI",
-  "DEVICE_BUS_USB",
-  "DEVICE_BUS_ISA",
-  "DEVICE_BUS_PS2",
-  "DEVICE_BUS_FIREWIRE",
-  "DEVICE_BUS_SD",
-  "DEVICE_BUS_MMC",
-  "DEVICE_BUS_ATA",
-  "DEVICE_BUS_IDE",
-  "DEVICE_BUS_SCSI",
-  "DEVICE_BUS_ATAPI",
-  "DEVICE_BUS_SATA",
-  "DEVICE_BUS_SERIAL",
-  "DEVICE_BUS_SPI",
-  "DEVICE_BUS_MMIO",
-  "DEVICE_BUS_PCIE",
-  "DEVICE_BUS_I2C",
-  "DEVICE_BUS_VIRTIO",
-  "DEVICE_BUS_BLUETOOTH"};
-
 /* Device States */
 #define DEVICE_STATE_UNREGISTERED	0
 #define DEVICE_STATE_REGISTERED	1
 
 #define DEVICE_STATE_MAX	1
-
-/* Device State Names */
-const char *DEVICE_STATE_NAMES[] = {
-  "DEVICE_STATE_UNREGISTERED",
-  "DEVICE_STATE_REGISTERED"};
 
 /* Device Ids */
 #define DEVICE_ID_ANY	0xFFFFFFFF // Any Device (Pass to DeviceFind to match all devices)
@@ -180,70 +153,6 @@ const char *DEVICE_STATE_NAMES[] = {
 
 #define DEVICE_CLASS_ANY	0xFFFFFFFF // Any Device (Pass to DeviceFind or DeviceEnumerate to match all devices)
 
-/* Device Class Names */
-const char *DEVICE_CLASS_NAMES[] = {
-  "DEVICE_CLASS_NONE",
-  "DEVICE_CLASS_USBHOST",
-  "DEVICE_CLASS_PCIHOST",
-  "DEVICE_CLASS_USB",
-  "DEVICE_CLASS_PCI",
-  "DEVICE_CLASS_NETWORK",
-  "DEVICE_CLASS_STORAGE",
-  "DEVICE_CLASS_FILESYSTEM",
-  "DEVICE_CLASS_PROTOCOL", 
-  "DEVICE_CLASS_KEYBOARD", 
-  "DEVICE_CLASS_MOUSE",      
-  "DEVICE_CLASS_BLUETOOTH", 
-  "DEVICE_CLASS_SERIAL",    
-  "DEVICE_CLASS_AUDIO",       
-  "DEVICE_CLASS_VIDEO",        
-  "DEVICE_CLASS_SCSI",         
-  "DEVICE_CLASS_ATA",           
-  "DEVICE_CLASS_IMAGE",          
-  "DEVICE_CLASS_PRINTER",        
-  "DEVICE_CLASS_COMMUNICATIONS", 
-  "DEVICE_CLASS_SMART_CARD",    
-  "DEVICE_CLASS_MONITOR",       
-  "DEVICE_CLASS_DISPLAY",        
-  "DEVICE_CLASS_AUDIOVIDEO",     
-  "DEVICE_CLASS_IRDA",           
-  "DEVICE_CLASS_SPI",            
-  "DEVICE_CLASS_I2C",            
-  "DEVICE_CLASS_UART",           
-  "DEVICE_CLASS_MMC",            
-  "DEVICE_CLASS_SD",             
-  "DEVICE_CLASS_SDHCI",          
-  "DEVICE_CLASS_DFU",            
-  "DEVICE_CLASS_GPIO",           
-  "DEVICE_CLASS_MAILBOX",        
-  "DEVICE_CLASS_OPENGL",         
-  "DEVICE_CLASS_DVB",            
-  "DEVICE_CLASS_DAB",            
-  "DEVICE_CLASS_DMA",            
-  "DEVICE_CLASS_SCSIHOST",       
-  "DEVICE_CLASS_ATAHOST",        
-  "DEVICE_CLASS_TIMER",          
-  "DEVICE_CLASS_RANDOM",         
-  "DEVICE_CLASS_FRAMEBUFFER",    
-  "DEVICE_CLASS_WATCHDOG",       
-  "DEVICE_CLASS_CLOCK",          
-  "DEVICE_CLASS_CONSOLE",        
-  "DEVICE_CLASS_RTC",
-  "DEVICE_CLASS_USBHUB",
-  "DEVICE_CLASS_LOGGING",
-  "DEVICE_CLASS_PCM",
-  "DEVICE_CLASS_PWM",
-  "DEVICE_CLASS_1WIRE",
-  "DEVICE_CLASS_CLOCK_MANAGER",
-  "DEVICE_CLASS_CODEC",
-  "DEVICE_CLASS_TOUCH",
-  "DEVICE_CLASS_MEMORY",
-  "DEVICE_CLASS_GENERIC",
-  "DEVICE_CLASS_VIRTIO",
-  "DEVICE_CLASS_BLUETOOTHHOST",
-  "DEVICE_CLASS_JOYSTICK",
-  "DEVICE_CLASS_HID"};
-
 /* Device Notification Flags */
 #define DEVICE_NOTIFICATION_NONE	0x00000000 // Pass to DeviceNotification to cancel an existing Notification
 #define DEVICE_NOTIFICATION_REGISTER	0x00000001
@@ -314,11 +223,6 @@ const char *DEVICE_CLASS_NAMES[] = {
 
 #define DRIVER_STATE_MAX	1
 
-/* Driver State Names */
-const char *DRIVER_STATE_NAMES[] = {
-  "DRIVER_STATE_UNREGISTERED",
-  "DRIVER_STATE_REGISTERED"};
-
 /* Driver Ids */
 #define DRIVER_ID_ANY	0xFFFFFFFF // Any Driver (Pass to DriverFind to match all drivers)
 
@@ -334,16 +238,6 @@ const char *DRIVER_STATE_NAMES[] = {
 #define DRIVER_CLASS_MAX	6
 
 #define DRIVER_CLASS_ANY	0xFFFFFFFF // Any Driver (Pass to DriverFind or DriverEnumerate to match all drivers)
-
-/* Driver Class Names */
-const char *DRIVER_CLASS_NAMES[] = {
-  "DRIVER_CLASS_NONE",
-  "DRIVER_CLASS_USB",
-  "DRIVER_CLASS_PCI",
-  "DRIVER_CLASS_SDIO",
-  "DRIVER_CLASS_BLUETOOTH",
-  "DRIVER_CLASS_VIRTIO",
-  "DRIVER_CLASS_HID"};
 
 /* ============================================================================== */
 /* Host specific constants */
@@ -361,11 +255,6 @@ const char *DRIVER_CLASS_NAMES[] = {
 
 #define HOST_STATE_MAX	1
 
-/* Host State Names */
-const char *HOST_STATE_NAMES[] = {
-  "HOST_STATE_UNREGISTERED",
-  "HOST_STATE_REGISTERED"};
-
 /* Host Ids */
 #define HOST_ID_ANY	0xFFFFFFFF // Any Host (Pass to HostFind to match all hosts)
 
@@ -379,14 +268,6 @@ const char *HOST_STATE_NAMES[] = {
 #define HOST_CLASS_MAX	4
 
 #define HOST_CLASS_ANY	0xFFFFFFFF // Any Host (Pass to HostFind or HostEnumerate to match all hosts)
-
-/* Host Class Names */
-const char *HOST_CLASS_NAMES[] = {
-  "HOST_CLASS_NONE",
-  "HOST_CLASS_USB",
-  "HOST_CLASS_PCI",
-  "HOST_CLASS_SD",
-  "HOST_CLASS_BLUETOOTH"};
 
 /* ============================================================================== */
 /* Clock specific constants */
@@ -579,7 +460,7 @@ struct _DEVICE
 typedef _DEVICE_FIRMWARE DEVICE_FIRMWARE;
 
 /* Device Firmware Handler */
-typedef uint32_t STDCALL (*device_firmware_handler_proc)(DEVICE_FIRMWARE *firmware, uint32_t action, HANDLE *handle, void *buffer, uint32_t *value);
+typedef uint32_t STDCALL (*device_firmware_handler)(DEVICE_FIRMWARE *firmware, uint32_t action, HANDLE *handle, void *buffer, uint32_t *value);
 
 typedef _FIRMWARE_HANDLE FIRMWARE_HANDLE;
 
@@ -591,7 +472,7 @@ struct _DEVICE_FIRMWARE
 	uint32_t size; // For block (memory) based firmware, the size passed to Create or 0 for other firmware types
 	void *buffer; // For block (memory) based firmware, the buffer passed to Create or nil for other firmware types
 	FIRMWARE_HANDLE *handles; // List of currently open handles for this firmware
-	device_firmware_handler_cb handler; // The device specific callback for the handler which provides this firmware
+	device_firmware_handler handler; // The device specific callback for the handler which provides this firmware
 	// Internal Properties
 	DEVICE_FIRMWARE *prev; // Previous entry in Device Firmware table
 	DEVICE_FIRMWARE *next; // Next entry in Device Firmware table
@@ -994,7 +875,7 @@ uint32_t STDCALL device_notification(DEVICE *device, uint32_t deviceclass, devic
 
 BOOL STDCALL device_firmware_create(uint32_t deviceclass, char *name, void *buffer, uint32_t size);
 
-HANDLE STDCALL device_firmware_register(uint32_t deviceclass, char *name, device_firmware_handler_cb handler);
+HANDLE STDCALL device_firmware_register(uint32_t deviceclass, char *name, device_firmware_handler handler);
 uint32_t STDCALL device_firmware_deregister(HANDLE handle);
 
 DEVICE_FIRMWARE * STDCALL device_firmware_find(uint32_t deviceclass, char *name);

@@ -8,6 +8,8 @@ Note: This is an early pre-release of the API for testing only, many items are n
 
 The includes directory contains header files for interfaces to the following Ultibo APIs
 
+* ultibo/console.h - 
+* ultibo/devices.h - 
 * ultibo/globalconst.h - 
 * ultibo/globaltypes.h - 
 * ultibo/platform.h - 

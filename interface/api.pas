@@ -437,7 +437,7 @@ type
  PNOTIFIER_RETRY = PNotifierRetry;
  device_enumerate_cb = TDeviceEnumerate;
  device_notification_cb = TDeviceNotification;
- device_firmware_handler_cb = TDeviceFirmwareHandler;
+ device_firmware_handler = TDeviceFirmwareHandler;
  
  {Driver Types}
  driver_enumerate_cb = TDriverEnumerate;
@@ -2032,7 +2032,7 @@ function device_notification(device: PDEVICE; deviceclass: uint32_t; callback: d
 
 function device_firmware_create(deviceclass: uint32_t; name: PCHAR; buffer: PVOID; size: uint32_t): BOOL; stdcall; public name 'device_firmware_create';
 
-function device_firmware_register(deviceclass: uint32_t; name: PCHAR; handler: device_firmware_handler_cb): THANDLE; stdcall; public name 'device_firmware_register';
+function device_firmware_register(deviceclass: uint32_t; name: PCHAR; handler: device_firmware_handler): THANDLE; stdcall; public name 'device_firmware_register';
 function device_firmware_deregister(handle: THANDLE): uint32_t; stdcall; public name 'device_firmware_deregister';
 
 function device_firmware_find(deviceclass: uint32_t; name: PCHAR): PDEVICE_FIRMWARE; stdcall; public name 'device_firmware_find';
@@ -2392,8 +2392,8 @@ function console_window_set_x(handle: WINDOW_HANDLE; x: uint32_t): uint32_t; std
 function console_window_get_y(handle: WINDOW_HANDLE): uint32_t; stdcall; public name 'console_window_get_y';
 function console_window_set_y(handle: WINDOW_HANDLE; y: uint32_t): uint32_t; stdcall; public name 'console_window_set_y';
 
-function console_window_get_x_y(handle: WINDOW_HANDLE; var x, y: uint32_t): uint32_t; stdcall; public name 'console_window_get_x_y';
-function console_window_set_x_y(handle: WINDOW_HANDLE; x, y: uint32_t): uint32_t; stdcall; public name 'console_window_set_x_y';
+function console_window_get_xy(handle: WINDOW_HANDLE; var x, y: uint32_t): uint32_t; stdcall; public name 'console_window_get_xy';
+function console_window_set_xy(handle: WINDOW_HANDLE; x, y: uint32_t): uint32_t; stdcall; public name 'console_window_set_xy';
 
 function console_window_get_point(handle: WINDOW_HANDLE): TCONSOLE_POINT; stdcall; public name 'console_window_get_point';
 function console_window_set_point(handle: WINDOW_HANDLE; const point: TCONSOLE_POINT): uint32_t; stdcall; public name 'console_window_set_point';
@@ -2413,8 +2413,8 @@ function console_window_set_backcolor(handle: WINDOW_HANDLE; color: uint32_t): u
 function console_window_get_font(handle: WINDOW_HANDLE): FONT_HANDLE; stdcall; public name 'console_window_get_font';
 function console_window_set_font(handle: WINDOW_HANDLE; font: FONT_HANDLE): uint32_t; stdcall; public name 'console_window_set_font';
 
-function console_window_get_cursor_x_y(handle: WINDOW_HANDLE; var x, y: uint32_t): uint32_t; stdcall; public name 'console_window_get_cursor_x_y';
-function console_window_set_cursor_x_y(handle: WINDOW_HANDLE; x, y: uint32_t): uint32_t; stdcall; public name 'console_window_set_cursor_x_y';
+function console_window_get_cursor_xy(handle: WINDOW_HANDLE; var x, y: uint32_t): uint32_t; stdcall; public name 'console_window_get_cursor_xy';
+function console_window_set_cursor_xy(handle: WINDOW_HANDLE; x, y: uint32_t): uint32_t; stdcall; public name 'console_window_set_cursor_xy';
 function console_window_get_cursor_mode(handle: WINDOW_HANDLE): CURSOR_MODE; stdcall; public name 'console_window_get_cursor_mode';
 function console_window_set_cursor_mode(handle: WINDOW_HANDLE; cursormode: CURSOR_MODE): uint32_t; stdcall; public name 'console_window_set_cursor_mode';
 function console_window_get_cursor_blink(handle: WINDOW_HANDLE): BOOL; stdcall; public name 'console_window_get_cursor_blink';
@@ -2440,7 +2440,6 @@ function console_window_cursor_reverse(handle: WINDOW_HANDLE; enabled: BOOL): ui
 
 function console_window_add_history(handle: WINDOW_HANDLE; value: PCHAR): uint32_t; stdcall; public name 'console_window_add_history';
 function console_window_clear_history(handle: WINDOW_HANDLE): uint32_t; stdcall; public name 'console_window_clear_history';
-
 function console_window_first_history(handle: WINDOW_HANDLE; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'console_window_first_history';
 function console_window_last_history(handle: WINDOW_HANDLE; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'console_window_last_history';
 function console_window_next_history(handle: WINDOW_HANDLE; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'console_window_next_history';
@@ -2481,7 +2480,7 @@ procedure console_clr_eol; stdcall; public name 'console_clr_eol';
 procedure console_clr_scr; stdcall; public name 'console_clr_scr';
 procedure console_delay(ms: uint16_t); stdcall; public name 'console_delay';
 procedure console_del_line; stdcall; public name 'console_del_line';
-procedure console_goto_x_y(x, y: int); stdcall; public name 'console_goto_x_y';
+procedure console_goto_xy(x, y: int); stdcall; public name 'console_goto_xy';
 procedure console_high_video; stdcall; public name 'console_high_video';
 procedure console_ins_line; stdcall; public name 'console_ins_line';
 function console_keypressed: BOOL; stdcall; public name 'console_keypressed';
@@ -3600,8 +3599,8 @@ function graphics_window_set_backcolor(handle: WINDOW_HANDLE; color: uint32_t): 
 function graphics_window_get_font(handle: WINDOW_HANDLE): FONT_HANDLE; stdcall; public name 'graphics_window_get_font';
 function graphics_window_set_font(handle: WINDOW_HANDLE; font: FONT_HANDLE): uint32_t; stdcall; public name 'graphics_window_set_font';
 
-function graphics_window_get_cursor_x_y(handle: WINDOW_HANDLE; var x, y: uint32_t): uint32_t; stdcall; public name 'graphics_window_get_cursor_x_y';
-function graphics_window_set_cursor_x_y(handle: WINDOW_HANDLE; x, y: uint32_t): uint32_t; stdcall; public name 'graphics_window_set_cursor_x_y';
+function graphics_window_get_cursor_xy(handle: WINDOW_HANDLE; var x, y: uint32_t): uint32_t; stdcall; public name 'graphics_window_get_cursor_xy';
+function graphics_window_set_cursor_xy(handle: WINDOW_HANDLE; x, y: uint32_t): uint32_t; stdcall; public name 'graphics_window_set_cursor_xy';
 function graphics_window_get_cursor_mode(handle: WINDOW_HANDLE): CURSOR_MODE; stdcall; public name 'graphics_window_get_cursor_mode';
 function graphics_window_set_cursor_mode(handle: WINDOW_HANDLE; cursormode: CURSOR_MODE): uint32_t; stdcall; public name 'graphics_window_set_cursor_mode';
 function graphics_window_get_cursor_blink(handle: WINDOW_HANDLE): BOOL; stdcall; public name 'graphics_window_get_cursor_blink';
@@ -16740,7 +16739,7 @@ end;
 
 {==============================================================================}
 
-function device_firmware_register(deviceclass: uint32_t; name: PCHAR; handler: device_firmware_handler_cb): THANDLE; stdcall;
+function device_firmware_register(deviceclass: uint32_t; name: PCHAR; handler: device_firmware_handler): THANDLE; stdcall;
 {Register a new device firmware handler for acquiring device specific firmware}
 {DeviceClass: The class of device this firmware applies to (eg DEVICE_CLASS_NETWORK)(or DEVICE_CLASS_ANY for all devices)}
 {Name: The name of the device firmware, device specific may be a filename, a device model, id or type}
@@ -19396,7 +19395,7 @@ end;
 
 {==============================================================================}
 
-function console_window_get_x_y(handle: WINDOW_HANDLE; var x, y: uint32_t): uint32_t; stdcall;
+function console_window_get_xy(handle: WINDOW_HANDLE; var x, y: uint32_t): uint32_t; stdcall;
 {Get the current X and Y positions of an existing console window}
 {Handle: The handle of the window to get X and Y for}
 {X: The returned X value}
@@ -19410,7 +19409,7 @@ end;
 
 {==============================================================================}
 
-function console_window_set_x_y(handle: WINDOW_HANDLE; x, y: uint32_t): uint32_t; stdcall;
+function console_window_set_xy(handle: WINDOW_HANDLE; x, y: uint32_t): uint32_t; stdcall;
 {Set the current X and Y positions of an existing console window}
 {Handle: The handle of the window to set X and Y for}
 {X: The new X value}
@@ -19578,7 +19577,7 @@ end;
 
 {==============================================================================}
 
-function console_window_get_cursor_x_y(handle: WINDOW_HANDLE; var x, y: uint32_t): uint32_t; stdcall;
+function console_window_get_cursor_xy(handle: WINDOW_HANDLE; var x, y: uint32_t): uint32_t; stdcall;
 {Get the current cursor X and Y positions of an existing console window}
 {Handle: The handle of the window to get cursor X and Y for}
 {X: The returned cursor X value}
@@ -19592,7 +19591,7 @@ end;
 
 {==============================================================================}
 
-function console_window_set_cursor_x_y(handle: WINDOW_HANDLE; x, y: uint32_t): uint32_t; stdcall;
+function console_window_set_cursor_xy(handle: WINDOW_HANDLE; x, y: uint32_t): uint32_t; stdcall;
 {Set the current cursor X and Y positions of an existing console window}
 {Handle: The handle of the window to set cursor X and Y for}
 {X: The new cursor X value}
@@ -20257,7 +20256,7 @@ end;
 
 {==============================================================================}
 
-procedure console_goto_x_y(x, y: int); stdcall;
+procedure console_goto_xy(x, y: int); stdcall;
 {Compatible with RTL Crt unit function GotoXY}
 {See: http://www.freepascal.org/docs-html-3.0.0/rtl/crt/gotoxy.html}
 {Note: For CRT Console functions, X and Y are based on character rows and columns not screen pixels}
@@ -27479,7 +27478,7 @@ end;
 
 {==============================================================================}
 
-function graphics_window_get_cursor_x_y(handle: WINDOW_HANDLE; var x, y: uint32_t): uint32_t; stdcall;
+function graphics_window_get_cursor_xy(handle: WINDOW_HANDLE; var x, y: uint32_t): uint32_t; stdcall;
 {Get the current cursor X and Y positions of an existing console window}
 {Handle: The handle of the window to get cursor X and Y for}
 {X: The returned cursor X value}
@@ -27493,7 +27492,7 @@ end;
 
 {==============================================================================}
 
-function graphics_window_set_cursor_x_y(handle: WINDOW_HANDLE; x, y: uint32_t): uint32_t; stdcall;
+function graphics_window_set_cursor_xy(handle: WINDOW_HANDLE; x, y: uint32_t): uint32_t; stdcall;
 {Set the current cursor X and Y positions of an existing console window}
 {Handle: The handle of the window to set cursor X and Y for}
 {X: The new cursor X value}

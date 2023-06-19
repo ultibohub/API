@@ -30,6 +30,7 @@
 extern "C" {
 #endif
 
+#include "ultibo/globaltypes.h"
 #include "ultibo/globalconst.h"
 
 /* ============================================================================== */
