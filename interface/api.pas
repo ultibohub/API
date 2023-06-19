@@ -432,9 +432,13 @@ type
 type
  {Devices}
  {Device Types}
+ PDEVICE_FIRMWARE = PDeviceFirmware;
+ PNOTIFIER_TASK = PNotifierTask;
+ PNOTIFIER_RETRY = PNotifierRetry;
  device_enumerate_cb = TDeviceEnumerate;
  device_notification_cb = TDeviceNotification;
-
+ device_firmware_handler_cb = TDeviceFirmwareHandler;
+ 
  {Driver Types}
  driver_enumerate_cb = TDriverEnumerate;
 
@@ -2019,16 +2023,39 @@ function device_deregister(device: PDEVICE): uint32_t; stdcall; public name 'dev
 function device_find(deviceclass, deviceid: uint32_t): PDEVICE; stdcall; public name 'device_find';
 function device_find_by_devicedata(devicedata: PVOID): PDEVICE; stdcall; public name 'device_find_by_devicedata';
 function device_find_by_name(name: PCHAR): PDEVICE; stdcall; public name 'device_find_by_name';
+function device_find_by_name_ex(deviceclass: uint32_t; name: PCHAR): PDEVICE; stdcall; public name 'device_find_by_name_ex';
 function device_find_by_description(description: PCHAR): PDEVICE; stdcall; public name 'device_find_by_description';
+function device_find_by_description_ex(deviceclass: uint32_t; description: PCHAR): PDEVICE; stdcall; public name 'device_find_by_description_ex';
 function device_enumerate(deviceclass: uint32_t; callback: device_enumerate_cb; data: PVOID): uint32_t; stdcall; public name 'device_enumerate';
 
 function device_notification(device: PDEVICE; deviceclass: uint32_t; callback: device_notification_cb; data: PVOID; notification, flags: uint32_t): uint32_t; stdcall; public name 'device_notification';
+
+function device_firmware_create(deviceclass: uint32_t; name: PCHAR; buffer: PVOID; size: uint32_t): BOOL; stdcall; public name 'device_firmware_create';
+
+function device_firmware_register(deviceclass: uint32_t; name: PCHAR; handler: device_firmware_handler_cb): THANDLE; stdcall; public name 'device_firmware_register';
+function device_firmware_deregister(handle: THANDLE): uint32_t; stdcall; public name 'device_firmware_deregister';
+
+function device_firmware_find(deviceclass: uint32_t; name: PCHAR): PDEVICE_FIRMWARE; stdcall; public name 'device_firmware_find';
+function device_firmware_find_by_handle(handle: THANDLE): PDEVICE_FIRMWARE; stdcall; public name 'device_firmware_find_by_handle';
+
+function device_firmware_open(deviceclass: uint32_t; name: PCHAR; timeout: uint32_t; var handle: THANDLE): uint32_t; stdcall; public name 'device_firmware_open';
+function device_firmware_close(handle: THANDLE): uint32_t; stdcall; public name 'device_firmware_close';
+
+function device_firmware_size(handle: THANDLE): int32_t; stdcall; public name 'device_firmware_size';
+function device_firmware_seek(handle: THANDLE; position: int32_t): int32_t; stdcall; public name 'device_firmware_seek';
+function device_firmware_read(handle: THANDLE; buffer: PVOID; count: int32_t): int32_t; stdcall; public name 'device_firmware_read';
+
+function device_firmware_acquire(deviceclass: uint32_t; name: PCHAR; timeout: uint32_t; var handle: THANDLE; var buffer: PVOID; var size: uint32_t): uint32_t; stdcall; public name 'device_firmware_acquire';
+function device_firmware_release(handle: THANDLE; buffer: PVOID; size: uint32_t): uint32_t; stdcall; public name 'device_firmware_release';
 
 function notifier_allocate(device: PDEVICE; deviceclass: uint32_t; callback: device_notification_cb; data: PVOID; notification, flags: uint32_t): PNOTIFIER; stdcall; public name 'notifier_allocate';
 function notifier_release(notifier: PNOTIFIER): uint32_t; stdcall; public name 'notifier_release';
 
 function notifier_find(device: PDEVICE; deviceclass: uint32_t; callback: device_notification_cb; data: PVOID): PNOTIFIER; stdcall; public name 'notifier_find';
 function notifier_notify(device: PDEVICE; notification: uint32_t): uint32_t; stdcall; public name 'notifier_notify';
+
+procedure notifier_retry(retry: PNOTIFIER_RETRY); stdcall; public name 'notifier_retry';
+procedure notifier_worker(task: PNOTIFIER_TASK); stdcall; public name 'notifier_worker';
 
 {==============================================================================}
 {Driver Functions}
@@ -2117,6 +2144,7 @@ function random_device_read_word(random: PRANDOM_DEVICE): uint16_t; stdcall; pub
 function random_device_read_longword(random: PRANDOM_DEVICE): uint32_t; stdcall; public name 'random_device_read_longword';
 function random_device_read_quadword(random: PRANDOM_DEVICE): int64_t; stdcall; public name 'random_device_read_quadword';
 function random_device_read_double(random: PRANDOM_DEVICE): double_t; stdcall; public name 'random_device_read_double';
+function random_device_read_extended(random: PRANDOM_DEVICE): double_t; stdcall; public name 'random_device_read_extended';
 
 function random_device_create: PRANDOM_DEVICE; stdcall; public name 'random_device_create';
 function random_device_create_ex(size: uint32_t): PRANDOM_DEVICE; stdcall; public name 'random_device_create_ex';
@@ -2187,10 +2215,19 @@ function device_check(device: PDEVICE): PDEVICE; stdcall; public name 'device_ch
 function notifier_get_count: uint32_t; stdcall; public name 'notifier_get_count';
 function notifier_check(notifier: PNOTIFIER): PNOTIFIER; stdcall; public name 'notifier_check';
 
+function device_bus_to_string(devicebus: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'device_bus_to_string';
+function device_state_to_string(devicestate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'device_state_to_string';
+function device_class_to_string(deviceclass: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'device_class_to_string';
+
+function notification_to_string(notification: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'notification_to_string';
+
 {==============================================================================}
 {Driver Helper Functions}
 function driver_get_count: uint32_t; stdcall; public name 'driver_get_count';
 function driver_check(driver: PDRIVER): PDRIVER; stdcall; public name 'driver_check';
+
+function driver_state_to_string(driverstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'driver_state_to_string';
+function driver_class_to_string(driverclass: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'driver_class_to_string';
 
 {==============================================================================}
 {Clock Device Helper Functions}
@@ -2199,12 +2236,18 @@ function clock_device_get_default: PCLOCK_DEVICE; stdcall; public name 'clock_de
 function clock_device_set_default(clock: PCLOCK_DEVICE): uint32_t; stdcall; public name 'clock_device_set_default';
 function clock_device_check(clock: PCLOCK_DEVICE): PCLOCK_DEVICE; stdcall; public name 'clock_device_check';
 
+function clock_type_to_string(clocktype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'clock_type_to_string';
+function clock_state_to_string(clockstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'clock_state_to_string';
+
 {==============================================================================}
 {Timer Device Helper Functions}
 function timer_device_get_count: uint32_t; stdcall; public name 'timer_device_get_count';
 function timer_device_get_default: PTIMER_DEVICE; stdcall; public name 'timer_device_get_default';
 function timer_device_set_default(timer: PTIMER_DEVICE): uint32_t; stdcall; public name 'timer_device_set_default';
 function timer_device_check(timer: PTIMER_DEVICE): PTIMER_DEVICE; stdcall; public name 'timer_device_check';
+
+function timer_type_to_string(timertype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'timer_type_to_string';
+function timer_state_to_string(timerstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'timer_state_to_string';
 
 function timer_device_create_waiter(timer: PTIMER_DEVICE; callback: timer_cb; data: PVOID): PTIMER_WAITER; stdcall; public name 'timer_device_create_waiter';
 function timer_device_destroy_waiter(timer: PTIMER_DEVICE; waiter: PTIMER_WAITER): uint32_t; stdcall; public name 'timer_device_destroy_waiter';
@@ -2219,6 +2262,9 @@ function random_device_get_default: PRANDOM_DEVICE; stdcall; public name 'random
 function random_device_set_default(random: PRANDOM_DEVICE): uint32_t; stdcall; public name 'random_device_set_default';
 function random_device_check(random: PRANDOM_DEVICE): PRANDOM_DEVICE; stdcall; public name 'random_device_check';
 
+function random_type_to_string(randomtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'random_type_to_string';
+function random_state_to_string(randomstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'random_state_to_string';
+
 {==============================================================================}
 {Mailbox Device Helper Functions}
 function mailbox_device_get_count: uint32_t; stdcall; public name 'mailbox_device_get_count';
@@ -2226,12 +2272,18 @@ function mailbox_device_get_default: PMAILBOX_DEVICE; stdcall; public name 'mail
 function mailbox_device_set_default(mailbox: PMAILBOX_DEVICE): uint32_t; stdcall; public name 'mailbox_device_set_default';
 function mailbox_device_check(mailbox: PMAILBOX_DEVICE): PMAILBOX_DEVICE; stdcall; public name 'mailbox_device_check';
 
+function mailbox_type_to_string(mailboxtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'mailbox_type_to_string';
+function mailbox_state_to_string(mailboxstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'mailbox_state_to_string';
+
 {==============================================================================}
 {Watchdog Device Helper Functions}
 function watchdog_device_get_count: uint32_t; stdcall; public name 'watchdog_device_get_count';
 function watchdog_device_get_default: PWATCHDOG_DEVICE; stdcall; public name 'watchdog_device_get_default';
 function watchdog_device_set_default(watchdog: PWATCHDOG_DEVICE): uint32_t; stdcall; public name 'watchdog_device_set_default';
 function watchdog_device_check(watchdog: PWATCHDOG_DEVICE): PWATCHDOG_DEVICE; stdcall; public name 'watchdog_device_check';
+
+function watchdog_type_to_string(watchdogtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'watchdog_type_to_string';
+function watchdog_state_to_string(watchdogstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'watchdog_state_to_string';
 {$ENDIF}
 {==============================================================================}
 {Console Functions}
@@ -16579,7 +16631,7 @@ end;
 function device_find(deviceclass, deviceid: uint32_t): PDEVICE; stdcall;
 {Find a device by ID in the device table}
 {DeviceClass: The class of the device to find (DEVICE_CLASS_ANY for all classes)}
-{DeviceId: The ID number of the device to find}
+{DeviceId: The ID number of the device to find (DEVICE_ID_ANY for all devices)}
 {Return: Pointer to device entry or nil if not found}
 begin
  {}
@@ -16610,6 +16662,18 @@ end;
 
 {==============================================================================}
 
+function device_find_by_name_ex(deviceclass: uint32_t; name: PCHAR): PDEVICE; stdcall;
+{Find a device by class and name in the device table}
+{DeviceClass: The class of the device to find (eg DEVICE_CLASS_USB) (DEVICE_CLASS_ANY for all classes)}
+{Name: The name of the device to find (eg USB0)}
+{Return: Pointer to device entry or nil if not found}
+begin
+ {}
+ Result:=DeviceFindByNameEx(deviceclass,String(name));
+end;
+
+{==============================================================================}
+
 function device_find_by_description(description: PCHAR): PDEVICE; stdcall;
 {Find a device by description in the device table}
 {Description: The description of the device to find (eg BCM2836 ARM Timer)}
@@ -16617,6 +16681,18 @@ function device_find_by_description(description: PCHAR): PDEVICE; stdcall;
 begin
  {}
  Result:=DeviceFindByDescription(String(description));
+end;
+
+{==============================================================================}
+
+function device_find_by_description_ex(deviceclass: uint32_t; description: PCHAR): PDEVICE; stdcall;
+{Find a device by class and description in the device table}
+{DeviceClass: The class of the device to find (eg DEVICE_CLASS_USB) (DEVICE_CLASS_ANY for all classes)}
+{Description: The description of the device to find (eg BCM2836 ARM Timer)}
+{Return: Pointer to device entry or nil if not found}
+begin
+ {}
+ Result:=DeviceFindByDescriptionEx(deviceclass,String(description));
 end;
 
 {==============================================================================}
@@ -16645,6 +16721,165 @@ function device_notification(device: PDEVICE; deviceclass: uint32_t; callback: d
 begin
  {}
  Result:=DeviceNotification(device,deviceclass,callback,data,notification,flags);
+end;
+
+{==============================================================================}
+
+function device_firmware_create(deviceclass: uint32_t; name: PCHAR; buffer: PVOID; size: uint32_t): BOOL; stdcall;
+{Create a new block (memory) based firmware entry using the standard block firmware handler}
+{DeviceClass: The class of device this firmware applies to (eg DEVICE_CLASS_NETWORK)(or DEVICE_CLASS_ANY for all devices)}
+{Buffer: A pointer to a block of memory containing the firmware to be provided to requesting devices}
+{Size: The size in bytes of the block pointed to by buffer}
+{Return: True if the new firmware entry was added or False on failure}
+{Note: Can be used by device drivers to register built in firmware as a device firmware provider}
+{Note: The supplied buffer can be statically or dynamically allocated but must not be freed once the device firmware has been created}
+begin
+ {}
+ Result:=DeviceFirmwareCreate(deviceclass,String(name),buffer,size);
+end;
+
+{==============================================================================}
+
+function device_firmware_register(deviceclass: uint32_t; name: PCHAR; handler: device_firmware_handler_cb): THANDLE; stdcall;
+{Register a new device firmware handler for acquiring device specific firmware}
+{DeviceClass: The class of device this firmware applies to (eg DEVICE_CLASS_NETWORK)(or DEVICE_CLASS_ANY for all devices)}
+{Name: The name of the device firmware, device specific may be a filename, a device model, id or type}
+{Handler: The handler function which is to be called when a device requests this firmware}
+{Return: A handle for the new firmware handler on success or INVALID_HANDLE_VALUE on failure}
+{Note: Used by device firmware providers to register firmware for device drivers}
+begin
+ {}
+ Result:=DeviceFirmwareRegister(deviceclass,String(name),handler);
+end;
+
+{==============================================================================}
+
+function device_firmware_deregister(handle: THANDLE): uint32_t; stdcall;
+{Deregister an existing device firmware handler}
+{Handle: The handle returned by Register}
+{Return: ERROR_SUCCESS on completion or another error code on failure}
+{Note: Used by device firmware providers to deregister firmware for device drivers}
+begin
+ {}
+ Result:=DeviceFirmwareDeregister(handle);
+end;
+
+{==============================================================================}
+
+function device_firmware_find(deviceclass: uint32_t; name: PCHAR): PDEVICE_FIRMWARE; stdcall;
+{Find an existing device firmware handler for a specified device}
+{DeviceClass: The class of device for the firmware (eg DEVICE_CLASS_NETWORK)(or DEVICE_CLASS_ANY for any class)}
+{Name: The name of the device firmware which is a device specific value such as a filename, a device model, id or type}
+{Return: A pointer to the device firmware entry which contains the details of the handler}
+{Note: Used internally to locate compatible firmware for a device firmware open request}
+begin
+ {}
+ Result:=DeviceFirmwareFind(deviceclass,String(name));
+end;
+
+{==============================================================================}
+
+function device_firmware_find_by_handle(handle: THANDLE): PDEVICE_FIRMWARE; stdcall;
+{Find an existing device firmware handler from a returned handle}
+{Handle: A handle to the firmware returned by Open or Acquire}
+{Return: A pointer to the device firmware entry which contains the details of the handler}
+{Note: Used internally to locate referenced firmware for a device firmware request}
+begin
+ {}
+ Result:=DeviceFirmwareFindByHandle(handle);
+end;
+
+{==============================================================================}
+
+function device_firmware_open(deviceclass: uint32_t; name: PCHAR; timeout: uint32_t; var handle: THANDLE): uint32_t; stdcall;
+{Open the firmware for a specified device from a registered handler}
+{DeviceClass: The class of device for the firmware (eg DEVICE_CLASS_NETWORK)(or DEVICE_CLASS_ANY for any class)}
+{Name: The name of the device firmware which is a device specific value such as a filename, a device model, id or type}
+{Timeout: Number of milliseconds to wait for the device firmware to be ready (0 to not wait, INFINITE to wait forever)}
+{Handle: A variable to receive a handle to the firmware on return}
+{Return: ERROR_SUCCESS on completion, ERROR_NOT_FOUND if no handler can supply firmware or another error code on failure}
+{Note: A handler may return ERROR_NOT_READY if the firmware may be accepted but is not available yet}
+begin
+ {}
+ Result:=DeviceFirmwareOpen(deviceclass,String(name),timeout,handle);
+end;
+
+{==============================================================================}
+
+function device_firmware_close(handle: THANDLE): uint32_t; stdcall;
+{Close a handle to the firmware for a specified device from a registered handler}
+{Handle: The handle to the firmware as returned by Open}
+{Return: ERROR_SUCCESS on completion, ERROR_NOT_FOUND if no handler accepts this firmware or another error code on failure}
+begin
+ {}
+ Result:=DeviceFirmwareClose(handle);
+end;
+
+{==============================================================================}
+
+function device_firmware_size(handle: THANDLE): int32_t; stdcall;
+{Return the size of the firmware for a specified device from a registered handler}
+{Handle: The handle to the firmware as returned by Open}
+{Return: The size of the firmware on success or -1 on failure}
+begin
+ {}
+ Result:=DeviceFirmwareSize(handle);
+end;
+
+{==============================================================================}
+
+function device_firmware_seek(handle: THANDLE; position: int32_t): int32_t; stdcall;
+{Seek to a position within the firmware for a specified device from a registered handler}
+{Handle: The handle to the firmware as returned by Open}
+{Position: The byte position within the firmware to seek to}
+{Return: The new position within the firmware on success or -1 on failure}
+begin
+ {}
+ Result:=DeviceFirmwareSeek(handle,position);
+end;
+
+{==============================================================================}
+
+function device_firmware_read(handle: THANDLE; buffer: PVOID; count: int32_t): int32_t; stdcall;
+{Read into a buffer from the firmware for a specified device from a registered handler}
+{Handle: The handle to the firmware as returned by Open}
+{Buffer: A pointer to a buffer to receive the data}
+{Count: The maximum number of bytes to be read}
+{Return: The number of bytes read on success or -1 on failure}
+begin
+ {}
+ Result:=DeviceFirmwareRead(handle,buffer,count);
+end;
+
+{==============================================================================}
+
+function device_firmware_acquire(deviceclass: uint32_t; name: PCHAR; timeout: uint32_t; var handle: THANDLE; var buffer: PVOID; var size: uint32_t): uint32_t; stdcall;
+{Acquire a memory block containing the firmware for a specified device from a registered handler}
+{DeviceClass: The class of device for the firmware (eg DEVICE_CLASS_NETWORK)(or DEVICE_CLASS_ANY for any class)}
+{Name: The name of the device firmware which is a device specific value such as a filename, a device model, id or type}
+{Timeout: Number of milliseconds to wait for the device firmware to be ready (0 to not wait, INFINITE to wait forever)}
+{Handle: A variable to receive a handle to the firmware on return}
+{Buffer: A variable to receive a pointer to the block of memory containing the firmware on return}
+{Size: A variable to receive the size of the memory block pointed to by buffer on return}
+{Return: ERROR_SUCCESS on completion, ERROR_NOT_FOUND if no handler can supply firmware or another error code on failure}
+{Note: A handler may return ERROR_NOT_READY if the firmware may be accepted but is not available yet}
+{Note: A handler may return ERROR_MORE_DATA if the size of the firmware is larger than can be returned in a single buffer}
+begin
+ {}
+ Result:=DeviceFirmwareAcquire(deviceclass,String(name),timeout,handle,buffer,size);
+end;
+
+{==============================================================================}
+
+function device_firmware_release(handle: THANDLE; buffer: PVOID; size: uint32_t): uint32_t; stdcall;
+{Release a memory block containing the firmware for a specified device from a registered handler}
+{Handle: The handle to the firmware as returned by Acquire}
+{Buffer: The pointer to the block of memory containing the firmware as returned by Acquire}
+{Size: The size of the memory block as returned by Acquire}
+{Return: ERROR_SUCCESS on completion, ERROR_NOT_FOUND if no handler accepts this firmware or another error code on failure}
+begin
+ {}
+ Result:=DeviceFirmwareRelease(handle,buffer,size);
 end;
 
 {==============================================================================}
@@ -16679,6 +16914,22 @@ function notifier_notify(device: PDEVICE; notification: uint32_t): uint32_t; std
 begin
  {}
  Result:=NotifierNotify(device,notification);
+end;
+
+{==============================================================================}
+
+procedure notifier_retry(retry: PNOTIFIER_RETRY); stdcall;
+begin
+ {}
+ NotifierRetry(retry);
+end;
+
+{==============================================================================}
+
+procedure notifier_worker(task: PNOTIFIER_TASK); stdcall;
+begin
+ {}
+ NotifierWorker(task);
 end;
 
 {==============================================================================}
@@ -17076,8 +17327,9 @@ end;
 function timer_device_event(timer: PTIMER_DEVICE; flags: uint32_t; callback: timer_cb; data: PVOID): uint32_t; stdcall;
 {Schedule a function to be called when the current interval expires on the specified Timer device}
 {Timer: The Timer device to schedule the callback for}
+{Flags: The flags to control the event (eg TIMER_EVENT_FLAG_REPEAT)}
 {Callback: The function to be called when the interval expires}
-{Data: A pointer to be pass to the function when the interval expires (Optional)}
+{Data: A pointer to be passed to the function when the interval expires (Optional)}
 {Return: ERROR_SUCCESS if the callback was scheduled successfully or another error code on failure}
 begin
  {}
@@ -17343,6 +17595,15 @@ end;
 {==============================================================================}
 
 function random_device_read_double(random: PRANDOM_DEVICE): double_t; stdcall;
+begin
+ {}
+ Result:=RandomDeviceReadDouble(random);
+end;
+
+{==============================================================================}
+
+function random_device_read_extended(random: PRANDOM_DEVICE): double_t; stdcall;
+{Note: Replaced by RandomDeviceReadDouble}
 begin
  {}
  Result:=RandomDeviceReadDouble(random);
@@ -17753,6 +18014,38 @@ begin
 end;
 
 {==============================================================================}
+
+function device_bus_to_string(devicebus: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(DeviceBusToString(devicebus),_string,len);
+end;
+
+{==============================================================================}
+
+function device_state_to_string(devicestate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(DeviceStateToString(devicestate),_string,len);
+end;
+
+{==============================================================================}
+
+function device_class_to_string(deviceclass: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(DeviceClassToString(deviceclass),_string,len);
+end;
+
+{==============================================================================}
+
+function notification_to_string(notification: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(NotificationToString(notification),_string,len);
+end;
+
+{==============================================================================}
 {Driver Helper Functions}
 function driver_get_count: uint32_t; stdcall;
 {Get the current driver count}
@@ -17768,6 +18061,22 @@ function driver_check(driver: PDRIVER): PDRIVER; stdcall;
 begin
  {}
  Result:=DriverCheck(driver);
+end;
+
+{==============================================================================}
+
+function driver_state_to_string(driverstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(DriverStateToString(driverstate),_string,len);
+end;
+
+{==============================================================================}
+
+function driver_class_to_string(driverclass: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(DriverClassToString(driverclass),_string,len);
 end;
 
 {==============================================================================}
@@ -17807,6 +18116,24 @@ begin
 end;
 
 {==============================================================================}
+
+function clock_type_to_string(clocktype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a Clock type value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(ClockTypeToString(clocktype),_string,len);
+end;
+
+{==============================================================================}
+
+function clock_state_to_string(clockstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a Clock state value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(ClockStateToString(clockstate),_string,len);
+end;
+
+{==============================================================================}
 {Timer Device Helper Functions}
 function timer_device_get_count: uint32_t; stdcall;
 {Get the current timer device count}
@@ -17840,6 +18167,24 @@ function timer_device_check(timer: PTIMER_DEVICE): PTIMER_DEVICE; stdcall;
 begin
  {}
  Result:=TimerDeviceCheck(timer);
+end;
+
+{==============================================================================}
+
+function timer_type_to_string(timertype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a Timer type value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(TimerTypeToString(timertype),_string,len);
+end;
+
+{==============================================================================}
+
+function timer_state_to_string(timerstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a Timer state value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(TimerStateToString(timerstate),_string,len);
 end;
 
 {==============================================================================}
@@ -17927,6 +18272,24 @@ begin
 end;
 
 {==============================================================================}
+
+function random_type_to_string(randomtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a Random type value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(RandomTypeToString(randomtype),_string,len);
+end;
+
+{==============================================================================}
+
+function random_state_to_string(randomstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a Random state value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(RandomStateToString(randomstate),_string,len);
+end;
+
+{==============================================================================}
 {Mailbox Device Helper Functions}
 function mailbox_device_get_count: uint32_t; stdcall;
 {Get the current mailbox device count}
@@ -17963,6 +18326,24 @@ begin
 end;
 
 {==============================================================================}
+
+function mailbox_type_to_string(mailboxtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a Mailbox type value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(MailboxTypeToString(mailboxtype),_string,len);
+end;
+
+{==============================================================================}
+
+function mailbox_state_to_string(mailboxstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a Mailbox state value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(MailboxStateToString(mailboxstate),_string,len);
+end;
+
+{==============================================================================}
 {Watchdog Device Helper Functions}
 function watchdog_device_get_count: uint32_t; stdcall;
 {Get the current watchdog device count}
@@ -17996,6 +18377,24 @@ function watchdog_device_check(watchdog: PWATCHDOG_DEVICE): PWATCHDOG_DEVICE; st
 begin
  {}
  Result:=WatchdogDeviceCheck(watchdog);
+end;
+
+{==============================================================================}
+
+function watchdog_type_to_string(watchdogtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a Watchdog type value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(WatchdogTypeToString(watchdogtype),_string,len);
+end;
+
+{==============================================================================}
+
+function watchdog_state_to_string(watchdogstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a Watchdog state value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(WatchdogStateToString(watchdogstate),_string,len);
 end;
 {$ENDIF}
 {==============================================================================}
