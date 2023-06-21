@@ -279,21 +279,11 @@ extern "C" {
 
 #define CLOCK_TYPE_MAX	1
 
-/* Clock Type Names */
-const char *CLOCK_TYPE_NAMES[] = {
-  "CLOCK_TYPE_NONE",
-  "CLOCK_TYPE_HARDWARE"};
-
 /* Clock Device States */
 #define CLOCK_STATE_DISABLED	0
 #define CLOCK_STATE_ENABLED	1
 
 #define CLOCK_STATE_MAX	1
-
-/* Clock State Names */
-const char *CLOCK_STATE_NAMES[] = {
-  "CLOCK_STATE_DISABLED",
-  "CLOCK_STATE_ENABLED"};
 
 /* Clock Device Flags */
 #define CLOCK_FLAG_NONE	0x00000000
@@ -310,21 +300,11 @@ const char *CLOCK_STATE_NAMES[] = {
 
 #define TIMER_TYPE_MAX	1
 
-/* Timer Type Names */
-const char *TIMER_TYPE_NAMES[] = {
-  "TIMER_TYPE_NONE",
-  "TIMER_TYPE_HARDWARE"};
-
 /* Timer Device States */
 #define TIMER_STATE_DISABLED	0
 #define TIMER_STATE_ENABLED	1
 
 #define TIMER_STATE_MAX	1
-
-/* Timer State Names */
-const char *TIMER_STATE_NAMES[] = {
-  "TIMER_STATE_DISABLED",
-  "TIMER_STATE_ENABLED"};
 
 /* Timer Device Flags */
 #define TIMER_FLAG_NONE	0x00000000
@@ -349,22 +329,11 @@ const char *TIMER_STATE_NAMES[] = {
 
 #define RANDOM_TYPE_MAX	2
 
-/* Random Type Names */
-const char *RANDOM_TYPE_NAMES[] = {
-  "RANDOM_TYPE_NONE",
-  "RANDOM_TYPE_HARDWARE",
-  "RANDOM_TYPE_SOFTWARE"};
-
 /* Random Device States */
 #define RANDOM_STATE_DISABLED	0
 #define RANDOM_STATE_ENABLED	1
 
 #define RANDOM_STATE_MAX	1
-
-/* Random State Names */
-const char *RANDOM_STATE_NAMES[] = {
-  "RANDOM_STATE_DISABLED",
-  "RANDOM_STATE_ENABLED"};
 
 /* Random Device Flags */
 #define RANDOM_FLAG_NONE	0x00000000
@@ -380,22 +349,11 @@ const char *RANDOM_STATE_NAMES[] = {
 
 #define MAILBOX_TYPE_MAX	2
 
-/* Mailbox Type Names */
-const char *MAILBOX_TYPE_NAMES[] = {
-  "MAILBOX_TYPE_NONE",
-  "MAILBOX_TYPE_GPU",
-  "MAILBOX_TYPE_LOCAL"};
-
 /* Mailbox Device States */
 #define MAILBOX_STATE_DISABLED	0
 #define MAILBOX_STATE_ENABLED	1
 
 #define MAILBOX_STATE_MAX	1
-
-/* Mailbox State Names */
-const char *MAILBOX_STATE_NAMES[] = {
-  "MAILBOX_STATE_DISABLED",
-  "MAILBOX_STATE_ENABLED"};
 
 /* Mailbox Device Flags */
 #define MAILBOX_FLAG_NONE	0x00000000
@@ -410,21 +368,11 @@ const char *MAILBOX_STATE_NAMES[] = {
 
 #define WATCHDOG_TYPE_MAX	1
 
-/* Watchdog Type Names */
-const char *WATCHDOG_TYPE_NAMES[] = {
-  "WATCHDOG_TYPE_NONE",
-  "WATCHDOG_TYPE_HARDWARE"};
-
 /* Watchdog Device States */
 #define WATCHDOG_STATE_DISABLED	0
 #define WATCHDOG_STATE_ENABLED	1
 
 #define WATCHDOG_STATE_MAX	1
-
-/* Watchdog State Names */
-const char *WATCHDOG_STATE_NAMES[] = {
-  "WATCHDOG_STATE_DISABLED",
-  "WATCHDOG_STATE_ENABLED"};
 
 /* Watchdog Device Flags */
 #define WATCHDOG_FLAG_NONE	0x00000000
