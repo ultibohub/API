@@ -428,6 +428,14 @@ type
  PHEAP_SNAPSHOT = PHeapSnapshot;
 {$ENDIF}
 
+{$IFDEF API_EXPORT_DEVICE_TREE}
+type
+ {Device Tree}
+ {Device Tree Types}
+ dtb_log_output_cb = TDTBLogOutput;
+ dtb_decode_value_cb = TDTBDecodeValue;
+{$ENDIF}
+
 {$IFDEF API_EXPORT_DEVICES}
 type
  {Devices}
@@ -2002,7 +2010,42 @@ function destroy_heap_snapshot(snapshot: PHEAP_SNAPSHOT): uint32_t; stdcall; pub
 {==============================================================================}
 {Device Tree Functions}
 {$IFDEF API_EXPORT_DEVICE_TREE}
-//To Do
+function device_tree_validate(address: SIZE_T; var size: uint32_t): BOOL; stdcall; public name 'device_tree_validate';
+
+function device_tree_next_node(parent, previous: THANDLE): THANDLE; stdcall; public name 'device_tree_next_node';
+function device_tree_next_property(node, previous: THANDLE): THANDLE; stdcall; public name 'device_tree_next_property';
+
+function device_tree_get_node(path: PCHAR; parent: THANDLE): THANDLE; stdcall; public name 'device_tree_get_node';
+function device_tree_get_property(node: THANDLE; name: PCHAR): THANDLE; stdcall; public name 'device_tree_get_property';
+
+function device_tree_get_node_name(handle: THANDLE; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'device_tree_get_node_name';
+function device_tree_split_node_name(handle: THANDLE; nodename: PCHAR; namelen: uint32_t; unitaddress: PCHAR; addresslen: uint32_t): uint32_t; stdcall; public name 'device_tree_split_node_name';
+
+function device_tree_get_node_parent(handle: THANDLE): THANDLE; stdcall; public name 'device_tree_get_node_parent';
+function device_tree_get_node_reg_cells(handle: THANDLE; var address, size: uint32_t): BOOL; stdcall; public name 'device_tree_get_node_reg_cells';
+function device_tree_get_node_range_cells(handle: THANDLE; var parentaddress, nodeaddress, nodesize: uint32_t): BOOL; stdcall; public name 'device_tree_get_node_range_cells';
+
+function device_tree_get_property_name(handle: THANDLE; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'device_tree_get_property_name';
+function device_tree_split_property_name(handle: THANDLE; uniqueprefix: PCHAR; prefixlen: uint32_t; propertyname: PCHAR; namelen: uint32_t): uint32_t; stdcall; public name 'device_tree_split_property_name';
+
+function device_tree_get_property_value(handle: THANDLE): PVOID; stdcall; public name 'device_tree_get_property_value';
+function device_tree_get_property_length(handle: THANDLE): uint32_t; stdcall; public name 'device_tree_get_property_length';
+
+function device_tree_get_property_string(handle: THANDLE; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'device_tree_get_property_string';
+function device_tree_get_property_longword(handle: THANDLE): uint32_t; stdcall; public name 'device_tree_get_property_longword';
+function device_tree_get_property_quadword(handle: THANDLE): uint64_t; stdcall; public name 'device_tree_get_property_quadword';
+
+{==============================================================================}
+{Device Tree Helper Functions}
+function device_tree_get_boot_args: PCHAR; stdcall; public name 'device_tree_get_boot_args';
+function device_tree_get_ramdisk(var address: SIZE_T; var size: uint64_t): BOOL; stdcall; public name 'device_tree_get_ramdisk';
+function device_tree_get_memory(index: uint32_t; {$IFDEF CPU32}var range: uint32_t; {$ENDIF CPU32}var address: SIZE_T; var size: uint64_t): BOOL; stdcall; public name 'device_tree_get_memory';
+function device_tree_get_reservation(index: uint32_t; var address: SIZE_T; var size: uint64_t): BOOL; stdcall; public name 'device_tree_get_reservation';
+
+{$IFDEF DEVICE_TREE_ENUMERATION}
+function device_tree_log_tree: uint32_t; stdcall; public name 'device_tree_log_tree';
+function device_tree_log_tree_ex(node: THANDLE; output: dtb_log_output_cb; decode: dtb_decode_value_cb; data: PVOID): uint32_t; stdcall; public name 'device_tree_log_tree_ex';
+{$ENDIF DEVICE_TREE_ENUMERATION}
 {$ENDIF}
 {==============================================================================}
 {Devices Functions}
@@ -3483,7 +3526,7 @@ function framebuffer_device_read(framebuffer: PFRAMEBUFFER_DEVICE; x, y: uint32_
 function framebuffer_device_write(framebuffer: PFRAMEBUFFER_DEVICE; x, y: uint32_t; buffer: PVOID; len, flags: uint32_t): uint32_t; stdcall; public name 'framebuffer_device_write';
 
 function framebuffer_device_mark(framebuffer: PFRAMEBUFFER_DEVICE; x, y, width, height, flags: uint32_t): uint32_t; stdcall; public name 'framebuffer_device_mark';
-function framebuffer_device_commit(framebuffer: PFRAMEBUFFER_DEVICE; address, size, flags: uint32_t): uint32_t; stdcall; public name 'framebuffer_device_commit';
+function framebuffer_device_commit(framebuffer: PFRAMEBUFFER_DEVICE; address: SIZE_T; size, flags: uint32_t): uint32_t; stdcall; public name 'framebuffer_device_commit';
 
 function framebuffer_device_get_rect(framebuffer: PFRAMEBUFFER_DEVICE; x, y: uint32_t; buffer: PVOID; width, height, skip, flags: uint32_t): uint32_t; stdcall; public name 'framebuffer_device_get_rect';
 function framebuffer_device_put_rect(framebuffer: PFRAMEBUFFER_DEVICE; x, y: uint32_t; buffer: PVOID; width, height, skip, flags: uint32_t): uint32_t; stdcall; public name 'framebuffer_device_put_rect';
@@ -3537,8 +3580,18 @@ function framebuffer_device_check(framebuffer: PFRAMEBUFFER_DEVICE): PFRAMEBUFFE
 
 function framebuffer_device_swap(value: uint32_t): uint32_t; stdcall; public name 'framebuffer_device_swap';
 
+function framebuffer_type_to_string(framebuffertype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'framebuffer_type_to_string';
+function framebuffer_state_to_string(framebufferstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'framebuffer_state_to_string';
+
 procedure framebuffer_device_hide_cursor(framebuffer: PFRAMEBUFFER_DEVICE); stdcall; public name 'framebuffer_device_hide_cursor';
 procedure framebuffer_device_show_cursor(framebuffer: PFRAMEBUFFER_DEVICE); stdcall; public name 'framebuffer_device_show_cursor';
+
+function framebuffer_cursor_to_string(state: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'framebuffer_cursor_to_string';
+
+function framebuffer_depth_to_string(depth: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'framebuffer_depth_to_string';
+function framebuffer_order_to_string(order: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'framebuffer_order_to_string';
+function framebuffer_mode_to_string(mode: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'framebuffer_mode_to_string';
+function framebuffer_rotation_to_string(rotation: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'framebuffer_rotation_to_string';
 {$ENDIF}
 {==============================================================================}
 {Graphics Console Functions}
@@ -16527,7 +16580,307 @@ end;
 {==============================================================================}
 {Device Tree Functions}
 {$IFDEF API_EXPORT_DEVICE_TREE}
-//To Do
+function device_tree_validate(address: SIZE_T; var size: uint32_t): BOOL; stdcall;
+{Check the data at the supplied address to determine if it is a valid Device Tree Blob}
+{Address: The address to be validated}
+{Size: On return contains the total size of the Device Tree Blob if valid}
+{Return: True if the address points to a valid Device Tree Blob, False if not}
+{Note: Does not overwrite passed Size unless the DTB is valid}
+begin
+ {}
+ Result:=DeviceTreeValidate(address,size);
+end;
+
+{==============================================================================}
+
+function device_tree_next_node(parent, previous: THANDLE): THANDLE; stdcall;
+{Find the next DTB node within the Device Tree}
+{Parent: Handle of the parent node to search in, INVALID_HANDLE_VALUE to search the entire tree}
+{Previous: Handle of the node to start from, INVALID_HANDLE_VALUE to start from the root node}
+{Return: The handle of the next node in the tree or INVALID_HANDLE_VALUE if no node was found}
+begin
+ {}
+ Result:=DeviceTreeNextNode(parent,previous);
+end;
+
+{==============================================================================}
+
+function device_tree_next_property(node, previous: THANDLE): THANDLE; stdcall;
+{Find the next DTB property within the specified node of the Device Tree}
+{Node: Handle of the node to search in}
+{Previous: Handle of the property to start from, INVALID_HANDLE_VALUE to start from the first property}
+{Return: The handle of the next property in the node or INVALID_HANDLE_VALUE if no property was found}
+begin
+ {}
+ Result:=DeviceTreeNextProperty(node,previous);
+end;
+
+{==============================================================================}
+
+function device_tree_get_node(path: PCHAR; parent: THANDLE): THANDLE; stdcall;
+{Get the handle of the node matching the specified path, optionally within a specified parent}
+{Path: The path of the node to find, relative to parent node or fully qualified if parent not specified (eg /chosen or /cpus/cpu0)}
+{Parent: Handle of the parent node to search in, INVALID_HANDLE_VALUE to search the entire tree}
+{Return: The handle of the node which matches the path or INVALID_HANDLE_VALUE if no node was found}
+begin
+ {}
+ Result:=DeviceTreeGetNode(path,parent);
+end;
+
+{==============================================================================}
+
+function device_tree_get_property(node: THANDLE; name: PCHAR): THANDLE; stdcall;
+{Get the handle of the property matching the specified name}
+{Node: Handle of the node to search in}
+{Name: The name of the node to find (eg compatible)}
+{Return: The handle of the property which matches the name or INVALID_HANDLE_VALUE if no property was found}
+begin
+ {}
+ Result:=DeviceTreeGetProperty(node,name);
+end;
+
+{==============================================================================}
+
+function device_tree_get_node_name(handle: THANDLE; name: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Get the name of the specified node}
+{Handle: The handle of the node to get the name of}
+{Return: The name of the specified node or an empty string if the node was not valid}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(DeviceTreeGetNodeName(handle),name,len);
+end;
+
+{==============================================================================}
+
+function device_tree_split_node_name(handle: THANDLE; nodename: PCHAR; namelen: uint32_t; unitaddress: PCHAR; addresslen: uint32_t): uint32_t; stdcall;
+{Split the name of a node into node name and unit address}
+{Handle: The handle of the node to split the name of}
+{NodeName: The node name on return or an empty string if the node was not valid}
+{UnitAddress: The unit address on return (If applicable)}
+var
+ Name:String;
+ Address:String;
+begin
+ {}
+ DeviceTreeSplitNodeName(handle,Name,Address);
+ 
+ Result:=APIStringToPCharBuffer(Name,nodename,namelen);
+ if Result > namelen then Exit;
+ 
+ Result:=APIStringToPCharBuffer(Address,unitaddress,addresslen);
+end;
+
+{==============================================================================}
+
+function device_tree_get_node_parent(handle: THANDLE): THANDLE; stdcall;
+{Get the parent node of the specified node}
+{Handle: The handle of the node to get the parent of}
+{Return: The handle of the parent node or INVALID_HANDLE_VALUE if the node was not valid}
+begin
+ {}
+ Result:=DeviceTreeGetNodeParent(handle);
+end;
+
+{==============================================================================}
+
+function device_tree_get_node_reg_cells(handle: THANDLE; var address, size: uint32_t): BOOL; stdcall;
+{Get the #address-cells and #size-cells values that apply to reg properties of the specified node}
+{Handle: The handle of the node to get the cell sizes for}
+{Address: The #address-cells value on return (or the default value if not found)}
+{Size: The #size-cells value on return (or the default value if not found)}
+{Return: True if the cell sizes were found or False if the node was not valid}
+{Note: The address and size values applicable to a given node will be those
+       from a parent node, not those found in the node itself (if present)}
+{Note: Used by early stage boot stage processing which must limit the use of strings
+       and other memory allocations. This function uses a memory compare for names}
+begin
+ {}
+ Result:=DeviceTreeGetNodeRegCells(handle,address,size);
+end;
+
+{==============================================================================}
+
+function device_tree_get_node_range_cells(handle: THANDLE; var parentaddress, nodeaddress, nodesize: uint32_t): BOOL; stdcall;
+{Get the #address-cells and #size-cells values that apply to range properties of the specified node}
+{Handle: The handle of the node to get the cell sizes for}
+{ParentAddress: The #address-cells value from the parent on return (or the default value if not found)}
+{NodeAddress: The #address-cells value from this node on return (or the default value if not found)}
+{NodeSize: The #size-cells value from this node on return (or the default value if not found)}
+{Return: True if the cell sizes were found or False if the node was not valid}
+{Note: Range properties use the address value from the parent node and the address and size values
+       from the node itself to determine the size of each range}
+{Note: Used by early stage boot stage processing which must limit the use of strings
+       and other memory allocations. This function uses a memory compare for names}
+begin
+ {}
+ Result:=DeviceTreeGetNodeRangeCells(handle,parentaddress,nodeaddress,nodesize);
+end;
+
+{==============================================================================}
+
+function device_tree_get_property_name(handle: THANDLE; name: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Get the name of the specified property}
+{Handle: The handle of the property to get the name of}
+{Return: The name of the specified property or an empty string if the property was not valid}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(DeviceTreeGetPropertyName(handle),name,len);
+end;
+
+{==============================================================================}
+
+function device_tree_split_property_name(handle: THANDLE; uniqueprefix: PCHAR; prefixlen: uint32_t; propertyname: PCHAR; namelen: uint32_t): uint32_t; stdcall;
+{Split the name of a property into property name and unique prefix}
+{Handle: The handle of the property to split the name of}
+{UniquePrefix: The unique prefix on return (If applicable)}
+{PropertyName: The property name on return or an empty string if the property was not valid}
+var
+ Prefix:String;
+ Name:String;
+begin
+ {}
+ DeviceTreeSplitPropertyName(handle,Prefix,Name);
+ 
+ Result:=APIStringToPCharBuffer(Prefix,uniqueprefix,prefixlen);
+ if Result > namelen then Exit;
+ 
+ Result:=APIStringToPCharBuffer(Name,propertyname,namelen);
+end;
+
+{==============================================================================}
+
+function device_tree_get_property_value(handle: THANDLE): PVOID; stdcall;
+{Get a pointer to the raw value of the specified property}
+{Handle: The handle of the property to get the value of}
+{Return: A pointer to the specified property value or nil if the property was not valid}
+{Note: The returned value points to the memory block where device tree is stored and should not be modified or freed}
+begin
+ {}
+ Result:=DeviceTreeGetPropertyValue(handle);
+end;
+
+{==============================================================================}
+
+function device_tree_get_property_length(handle: THANDLE): uint32_t; stdcall;
+{Get the length of the raw value of the specified property}
+{Handle: The handle of the property to get the value lenth of}
+{Return: The length of the specified property value in bytes or -1 if the property was not valid}
+begin
+ {}
+ Result:=DeviceTreeGetPropertyLength(handle);
+end;
+
+{==============================================================================}
+
+function device_tree_get_property_string(handle: THANDLE; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Get the value of the specified property as a string}
+{Handle: The handle of the property to get the value of}
+{Return: A string representation of the value or an empty string if the property was not valid}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(DeviceTreeGetPropertyString(handle),_string,len);
+end;
+
+{==============================================================================}
+
+function device_tree_get_property_longword(handle: THANDLE): uint32_t; stdcall;
+{Get the value of the specified property as a longword}
+{Handle: The handle of the property to get the value of}
+{Return: A longword representation of the value or 0 if the property was not valid}
+begin
+ {}
+ Result:=DeviceTreeGetPropertyLongWord(handle);
+end;
+
+{==============================================================================}
+
+function device_tree_get_property_quadword(handle: THANDLE): uint64_t; stdcall;
+{Get the value of the specified property as a quadword}
+{Handle: The handle of the property to get the value of}
+{Return: A quadword representation of the value or 0 if the property was not valid}
+begin
+ {}
+ Result:=DeviceTreeGetPropertyQuadWord(handle);
+end;
+
+{==============================================================================}
+{Device Tree Helper Functions}
+function device_tree_get_boot_args: PCHAR; stdcall; public name 'device_tree_get_boot_args';
+{Return a character pointer to the location of the command line in the device tree blob}
+{Note: Intended primarily for use by early boot stage processing which must limit the use of strings
+       and other memory allocations. For normal use see DeviceTreeGetNode and DeviceTreeGetProperty}
+begin
+ {}
+ Result:=DeviceTreeGetBootArgs;
+end;
+
+{==============================================================================}
+
+function device_tree_get_ramdisk(var address: SIZE_T; var size: uint64_t): BOOL; stdcall;
+{Return the address and size of the initial ram disk specified in the device tree blob}
+{Address: Used to return the address value}
+{Size: Used to return the size value}
+{Return: True if an initial ram disk was specified in the device tree, False if not}
+{Note: Intended primarily for use by early boot stage processing which must limit the use of strings
+       and other memory allocations. For normal use see DeviceTreeGetNode and DeviceTreeGetProperty}
+begin
+ {}
+ Result:=DeviceTreeGetRamdisk(address,size);
+end;
+
+{==============================================================================}
+
+function device_tree_get_memory(index: uint32_t; {$IFDEF CPU32}var range: uint32_t; {$ENDIF CPU32}var address: SIZE_T; var size: uint64_t): BOOL; stdcall;
+{Return the address and size of a memory block specified in the device tree blob}
+{Index: The index of the memory block to return (The first block is 0)}
+{Range: Used to return the page range value (If applicable)}
+{Address: Used to return the address value}
+{Size: Used to return the size value}
+{Return: True if the memory block requested was found in the device tree, False if not}
+{Note: Intended primarily for use by early boot stage processing which must limit the use of strings
+       and other memory allocations. For normal use see DeviceTreeGetNode and DeviceTreeGetProperty}
+begin
+ {}
+ Result:=DeviceTreeGetMemory(index,{$IFDEF CPU32}range,{$ENDIF CPU32}address,size);
+end;
+
+{==============================================================================}
+
+function device_tree_get_reservation(index: uint32_t; var address: SIZE_T; var size: uint64_t): BOOL; stdcall;
+{Return the address and size of a memory reservation specified in the device tree blob}
+{Index: The index of the memory reservation to return (The first reservation is 0)}
+{Address: Used to return the address value}
+{Size: Used to return the size value}
+{Return: True if the memory reservation requested was found in the device tree, False if not}
+begin
+ {}
+ Result:=DeviceTreeGetReservation(index,address,size);
+end;
+
+{==============================================================================}
+{$IFDEF DEVICE_TREE_ENUMERATION}
+function device_tree_log_tree: uint32_t; stdcall; public name 'device_tree_log_tree';
+{Print information about all nodes and properties in the device tree}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=DeviceTreeLogTree;
+end;
+
+{==============================================================================}
+
+function device_tree_log_tree_ex(node: THANDLE; output: dtb_log_output_cb; decode: dtb_decode_value_cb; data: PVOID): uint32_t; stdcall; 
+{Print information about one or all nodes and properties in the device tree with custom value decode callback}
+{Node: The node to print information about (INVALID_HANDLE_VALUE for all nodes)}
+{Output: The log output callback to print information to (nil to use the default output)}
+{Decode: The callback to decode a value into a string (nil to use the default decode)}
+{Data: A pointer to caller specific data which should be passed to the callbacks (Optional)}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=DeviceTreeLogTreeEx(node,output,decode,data);
+end;
+{$ENDIF DEVICE_TREE_ENUMERATION}
 {$ENDIF}
 {==============================================================================}
 {==============================================================================}
@@ -26519,7 +26872,7 @@ end;
 
 {==============================================================================}
 
-function framebuffer_device_commit(framebuffer: PFRAMEBUFFER_DEVICE; address, size, flags: uint32_t): uint32_t; stdcall;
+function framebuffer_device_commit(framebuffer: PFRAMEBUFFER_DEVICE; address: SIZE_T; size, flags: uint32_t): uint32_t; stdcall;
 {Commit a region written to the framebuffer and signal the device to take any neccessary actions}
 {Framebuffer: The framebuffer device to commit}
 {Address: The starting address of the commit}
@@ -26973,6 +27326,24 @@ end;
 
 {==============================================================================}
 
+function framebuffer_type_to_string(framebuffertype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a Framebuffer type value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(FramebufferTypeToString(framebuffertype),_string,len);
+end;
+
+{==============================================================================}
+
+function framebuffer_state_to_string(framebufferstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a Framebuffer state value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(FramebufferStateToString(framebufferstate),_string,len);
+end;
+
+{==============================================================================}
+
 procedure framebuffer_device_hide_cursor(framebuffer: PFRAMEBUFFER_DEVICE); stdcall;
 {Restore the framebuffer area under the cursor from the cursor buffer}
 {Note: Caller must hold the framebuffer lock}
@@ -26993,6 +27364,47 @@ begin
  {}
  FramebufferDeviceShowCursor(framebuffer);
 end;
+
+{==============================================================================}
+
+function framebuffer_cursor_to_string(state: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(FramebufferCursorToString(state),_string,len);
+end;
+
+{==============================================================================}
+
+function framebuffer_depth_to_string(depth: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(FramebufferDepthToString(depth),_string,len);
+end;
+
+{==============================================================================}
+
+function framebuffer_order_to_string(order: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(FramebufferOrderToString(order),_string,len);
+end;
+
+{==============================================================================}
+
+function framebuffer_mode_to_string(mode: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(FramebufferModeToString(mode),_string,len);
+end;
+
+{==============================================================================}
+
+function framebuffer_rotation_to_string(rotation: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(FramebufferRotationToString(rotation),_string,len);
+end;
+
 {$ENDIF}
 {==============================================================================}
 {==============================================================================}
