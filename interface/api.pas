@@ -446,7 +446,7 @@ type
  device_enumerate_cb = TDeviceEnumerate;
  device_notification_cb = TDeviceNotification;
  device_firmware_handler = TDeviceFirmwareHandler;
- 
+
  {Driver Types}
  driver_enumerate_cb = TDriverEnumerate;
 
@@ -3302,6 +3302,9 @@ function gpio_device_input_cancel(gpio: PGPIO_DEVICE; pin: uint32_t): uint32_t; 
 
 function gpio_device_output_set(gpio: PGPIO_DEVICE; pin, level: uint32_t): uint32_t; stdcall; public name 'gpio_device_output_set';
 
+function gpio_device_level_get(gpio: PGPIO_DEVICE; pin: uint32_t): uint32_t; stdcall; public name 'gpio_device_level_get';
+function gpio_device_level_set(gpio: PGPIO_DEVICE; pin, level: uint32_t): uint32_t; stdcall; public name 'gpio_device_level_set';
+
 function gpio_device_pull_get(gpio: PGPIO_DEVICE; pin: uint32_t): uint32_t; stdcall; public name 'gpio_device_pull_get';
 function gpio_device_pull_select(gpio: PGPIO_DEVICE; pin, mode: uint32_t): uint32_t; stdcall; public name 'gpio_device_pull_select';
 
@@ -3333,11 +3336,20 @@ function gpio_device_set_default(gpio: PGPIO_DEVICE): uint32_t; stdcall; public 
 
 function gpio_device_check(gpio: PGPIO_DEVICE): PGPIO_DEVICE; stdcall; public name 'gpio_device_check';
 
+function gpio_state_to_string(gpiostate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'gpio_state_to_string';
+
 function gpio_device_create_event(gpio: PGPIO_DEVICE; pin: PGPIO_PIN; callback: gpio_event_cb; data: PVOID; timeout: uint32_t): PGPIO_EVENT; stdcall; public name 'gpio_device_create_event';
 function gpio_device_destroy_event(gpio: PGPIO_DEVICE; event: PGPIO_EVENT): uint32_t; stdcall; public name 'gpio_device_destroy_event';
 
 function gpio_device_register_event(gpio: PGPIO_DEVICE; pin: PGPIO_PIN; event: PGPIO_EVENT): uint32_t; stdcall; public name 'gpio_device_register_event';
 function gpio_device_deregister_event(gpio: PGPIO_DEVICE; pin: PGPIO_PIN; event: PGPIO_EVENT): uint32_t; stdcall; public name 'gpio_device_deregister_event';
+
+function gpio_pin_to_string(pin: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'gpio_pin_to_string';
+function gpio_level_to_string(level: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'gpio_level_to_string';
+function gpio_trigger_to_string(trigger: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'gpio_trigger_to_string';
+
+function gpio_pull_to_string(value: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'gpio_pull_to_string';
+function gpio_function_to_string(value: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'gpio_function_to_string';
 {$ENDIF}
 {==============================================================================}
 {UART Functions}
@@ -16663,10 +16675,10 @@ var
 begin
  {}
  DeviceTreeSplitNodeName(handle,Name,Address);
- 
+
  Result:=APIStringToPCharBuffer(Name,nodename,namelen);
  if Result > namelen then Exit;
- 
+
  Result:=APIStringToPCharBuffer(Address,unitaddress,addresslen);
 end;
 
@@ -16740,10 +16752,10 @@ var
 begin
  {}
  DeviceTreeSplitPropertyName(handle,Prefix,Name);
- 
+
  Result:=APIStringToPCharBuffer(Prefix,uniqueprefix,prefixlen);
  if Result > namelen then Exit;
- 
+
  Result:=APIStringToPCharBuffer(Name,propertyname,namelen);
 end;
 
@@ -16869,7 +16881,7 @@ end;
 
 {==============================================================================}
 
-function device_tree_log_tree_ex(node: THANDLE; output: dtb_log_output_cb; decode: dtb_decode_value_cb; data: PVOID): uint32_t; stdcall; 
+function device_tree_log_tree_ex(node: THANDLE; output: dtb_log_output_cb; decode: dtb_decode_value_cb; data: PVOID): uint32_t; stdcall;
 {Print information about one or all nodes and properties in the device tree with custom value decode callback}
 {Node: The node to print information about (INVALID_HANDLE_VALUE for all nodes)}
 {Output: The log output callback to print information to (nil to use the default output)}
@@ -25385,6 +25397,7 @@ function gpio_device_input_event(gpio: PGPIO_DEVICE; pin, trigger, flags, timeou
 {GPIO: The GPIO device to schedule the callback for}
 {Pin: The pin to schedule the state change for (eg GPIO_PIN_1)}
 {Trigger: The trigger event which will cause the function to be called (eg GPIO_TRIGGER_HIGH)}
+{Flags: The flags to control the event (eg GPIO_EVENT_FLAG_REPEAT)}
 {Timeout: The number of milliseconds before the scheduled trigger expires (INFINITE to never expire)}
 {Callback: The function to be called when the trigger occurs}
 {Data: A pointer to be pass to the function when the trigger occurs (Optional)}
@@ -25418,6 +25431,37 @@ function gpio_device_output_set(gpio: PGPIO_DEVICE; pin, level: uint32_t): uint3
 begin
  {}
  Result:=GPIODeviceOutputSet(gpio,pin,level);
+end;
+
+{==============================================================================}
+
+function gpio_device_level_get(gpio: PGPIO_DEVICE; pin: uint32_t): uint32_t; stdcall;
+{Get the current level (state) of a pin on the specified GPIO device}
+{GPIO: The GPIO device to get from}
+{Pin: The pin to get the level for (eg GPIO_PIN_1)}
+{Return: The current level (eg GPIO_LEVEL_HIGH) or GPIO_LEVEL_UNKNOWN on failure}
+{Note: This function is a synonym for GPIODeviceInputGet as in many cases the
+       level can be read from a pin regardless of input or output mode. This
+       may help to make code clearer or easier to understand in some cases}
+begin
+ {}
+ Result:=GPIODeviceLevelGet(gpio,pin);
+end;
+
+{==============================================================================}
+
+function gpio_device_level_set(gpio: PGPIO_DEVICE; pin, level: uint32_t): uint32_t; stdcall;
+{Set the level (state) of a pin on the specified GPIO device}
+{GPIO: The GPIO device to set for}
+{Pin: The pin to set the level for (eg GPIO_PIN_1)}
+{Level: The level to set the pin to (eg GPIO_LEVEL_HIGH)}
+{Return: ERROR_SUCCESS if completed successfully or another error code on failure}
+{Note: This function is a synonym for GPIODeviceOutputSet as in many cases the
+       level can be set for a pin regardless of input or output mode. This
+       may help to make code clearer or easier to understand in some cases}
+begin
+ {}
+ Result:=GPIODeviceLevelSet(gpio,pin,level);
 end;
 
 {==============================================================================}
@@ -25646,6 +25690,15 @@ end;
 
 {==============================================================================}
 
+function gpio_state_to_string(gpiostate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a GPIO state value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(GPIOStateToString(gpiostate),_string,len);
+end;
+
+{==============================================================================}
+
 function gpio_device_create_event(gpio: PGPIO_DEVICE; pin: PGPIO_PIN; callback: gpio_event_cb; data: PVOID; timeout: uint32_t): PGPIO_EVENT; stdcall;
 {Create a new event using the supplied parameters}
 {Note: Event must be registered by calling GPIODeviceRegisterEvent}
@@ -25686,6 +25739,46 @@ function gpio_device_deregister_event(gpio: PGPIO_DEVICE; pin: PGPIO_PIN; event:
 begin
  {}
  Result:=GPIODeviceDeregisterEvent(gpio,pin,event);
+end;
+
+{==============================================================================}
+
+function gpio_pin_to_string(pin: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(GPIOPinToString(pin),_string,len);
+end;
+
+{==============================================================================}
+
+function gpio_level_to_string(level: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(GPIOLevelToString(level),_string,len);
+end;
+
+{==============================================================================}
+
+function gpio_trigger_to_string(trigger: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(GPIOTriggerToString(trigger),_string,len);
+end;
+
+{==============================================================================}
+
+function gpio_pull_to_string(value: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(GPIOPullToString(value),_string,len);
+end;
+
+{==============================================================================}
+
+function gpio_function_to_string(value: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(GPIOFunctionToString(value),_string,len);
 end;
 {$ENDIF}
 {==============================================================================}
