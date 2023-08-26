@@ -735,6 +735,7 @@ type
  PTOUCH_DEVICE = PTouchDevice;
  PTOUCH_PROPERTIES = PTouchProperties;
 
+ touch_event_cb = TTouchEvent;
  touch_enumerate_cb = TTouchEnumerate;
  touch_notification_cb = TTouchNotification;
 {$ENDIF}
@@ -3442,6 +3443,10 @@ function uart_device_set_default(uart: PUART_DEVICE): uint32_t; stdcall; public 
 
 function uart_device_check(uart: PUART_DEVICE): PUART_DEVICE; stdcall; public name 'uart_device_check';
 
+function uart_type_to_string(uarttype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'uart_type_to_string';
+function uart_mode_to_string(uartmode: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'uart_mode_to_string';
+function uart_state_to_string(uartstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'uart_state_to_string';
+
 {==============================================================================}
 {UART Serial Helper Functions}
 function uart_serial_device_receive(uart: PUART_DEVICE): uint32_t; stdcall; public name 'uart_serial_device_receive';
@@ -3950,7 +3955,7 @@ function touch_device_rotation_to_string(rotation: uint32_t; _string: PCHAR; len
 
 function touch_device_resolve_rotation(rotation: uint32_t): uint32_t; stdcall; public name 'touch_device_resolve_rotation';
 
-function touch_device_set_callback(touch: PTOUCH_DEVICE; event: TTouchEvent; parameter: PVOID): uint32_t; stdcall; public name 'touch_device_set_callback';
+function touch_device_set_callback(touch: PTOUCH_DEVICE; event: touch_event_cb; parameter: PVOID): uint32_t; stdcall; public name 'touch_device_set_callback';
 
 function touch_insert_data(touch: PTOUCH_DEVICE; data: PTOUCH_DATA; signal: BOOL): uint32_t; stdcall; public name 'touch_insert_data';
 {$ENDIF}
@@ -26531,6 +26536,33 @@ begin
 end;
 
 {==============================================================================}
+
+function uart_type_to_string(uarttype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a UART type value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(UARTTypeToString(uarttype),_string,len);
+end;
+
+{==============================================================================}
+
+function uart_mode_to_string(uartmode: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a UART mode to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(UARTModeToString(uartmode),_string,len);
+end;
+
+{==============================================================================}
+
+function uart_state_to_string(uartstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a UART state value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(UARTStateToString(uartstate),_string,len);
+end;
+
+{==============================================================================}
 {UART Serial Helper Functions}
 function uart_serial_device_receive(uart: PUART_DEVICE): uint32_t; stdcall;
 {Read data from a UART device into the receive buffer of the associated Serial device}
@@ -30128,7 +30160,7 @@ end;
 
 {==============================================================================}
 
-function touch_device_set_callback(touch: PTOUCH_DEVICE; event: TTouchEvent; parameter: PVOID): uint32_t; stdcall;
+function touch_device_set_callback(touch: PTOUCH_DEVICE; event: touch_event_cb; parameter: PVOID): uint32_t; stdcall;
 {Set the event callback function for the specified touch device}
 {Touch: The touch device to set the event callback for}
 {Event: The event callback function to be called when touch data is received}
