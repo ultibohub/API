@@ -3272,8 +3272,8 @@ function pwm_device_stop(pwm: PPWM_DEVICE): uint32_t; stdcall; public name 'pwm_
 
 function pwm_device_write(pwm: PPWM_DEVICE; value: uint32_t): uint32_t; stdcall; public name 'pwm_device_write';
 
-function pwm_device_get_g_p_i_o(pwm: PPWM_DEVICE): uint32_t; stdcall; public name 'pwm_device_get_g_p_i_o';
-function pwm_device_set_g_p_i_o(pwm: PPWM_DEVICE; gpio: uint32_t): uint32_t; stdcall; public name 'pwm_device_set_g_p_i_o';
+function pwm_device_get_gpio(pwm: PPWM_DEVICE): uint32_t; stdcall; public name 'pwm_device_get_gpio';
+function pwm_device_set_gpio(pwm: PPWM_DEVICE; gpio: uint32_t): uint32_t; stdcall; public name 'pwm_device_set_gpio';
 function pwm_device_get_mode(pwm: PPWM_DEVICE): uint32_t; stdcall; public name 'pwm_device_get_mode';
 function pwm_device_set_mode(pwm: PPWM_DEVICE; mode: uint32_t): uint32_t; stdcall; public name 'pwm_device_set_mode';
 function pwm_device_get_range(pwm: PPWM_DEVICE): uint32_t; stdcall; public name 'pwm_device_get_range';
@@ -3309,6 +3309,11 @@ function pwm_device_get_default: PPWM_DEVICE; stdcall; public name 'pwm_device_g
 function pwm_device_set_default(pwm: PPWM_DEVICE): uint32_t; stdcall; public name 'pwm_device_set_default';
 
 function pwm_device_check(pwm: PPWM_DEVICE): PPWM_DEVICE; stdcall; public name 'pwm_device_check';
+
+function pwm_type_to_string(pwmtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'pwm_type_to_string';
+function pwm_state_to_string(pwmstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'pwm_state_to_string';
+function pwm_mode_to_string(pwmmode: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'pwm_mode_to_string';
+function pwm_polarity_to_string(pwmpolarity: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'pwm_polarity_to_string';
 {$ENDIF}
 {==============================================================================}
 {PCM (I2S) Functions}
@@ -25303,7 +25308,7 @@ end;
 
 {==============================================================================}
 
-function pwm_device_get_g_p_i_o(pwm: PPWM_DEVICE): uint32_t; stdcall;
+function pwm_device_get_gpio(pwm: PPWM_DEVICE): uint32_t; stdcall;
 {Get the GPIO pin used by the specified PWM device}
 {PWM: The PWM device to get the GPIO pin from}
 {Return: The current GPIO pin or GPIO_PIN_UNKNOWN on failure}
@@ -25314,7 +25319,7 @@ end;
 
 {==============================================================================}
 
-function pwm_device_set_g_p_i_o(pwm: PPWM_DEVICE; gpio: uint32_t): uint32_t; stdcall;
+function pwm_device_set_gpio(pwm: PPWM_DEVICE; gpio: uint32_t): uint32_t; stdcall;
 {Set the GPIO pin used by the specified PWM device}
 {PWM: The PWM device to set the GPIO pin for}
 {GPIO: The GPIO pin to set (eg GPIO_PIN_12)}
@@ -25579,6 +25584,42 @@ function pwm_device_check(pwm: PPWM_DEVICE): PPWM_DEVICE; stdcall;
 begin
  {}
  Result:=PWMDeviceCheck(pwm);
+end;
+
+{==============================================================================}
+
+function pwm_type_to_string(pwmtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a PWM type value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(PWMTypeToString(pwmtype),_string,len);
+end;
+
+{==============================================================================}
+
+function pwm_state_to_string(pwmstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a PWM state value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(PWMStateToString(pwmstate),_string,len);
+end;
+
+{==============================================================================}
+
+function pwm_mode_to_string(pwmmode: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a PWM mode value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(PWMModeToString(pwmmode),_string,len);
+end;
+
+{==============================================================================}
+
+function pwm_polarity_to_string(pwmpolarity: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a PWM polarity value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(PWMPolarityToString(pwmpolarity),_string,len);
 end;
 {$ENDIF}
 {==============================================================================}
