@@ -3477,6 +3477,9 @@ function serial_device_set_default(serial: PSERIAL_DEVICE): uint32_t; stdcall; p
 
 function serial_device_check(serial: PSERIAL_DEVICE): PSERIAL_DEVICE; stdcall; public name 'serial_device_check';
 
+function serial_type_to_string(serialtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'serial_type_to_string';
+function serial_state_to_string(serialstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'serial_state_to_string';
+
 function serial_device_redirect_input(serial: PSERIAL_DEVICE): BOOL; stdcall; public name 'serial_device_redirect_input';
 function serial_device_redirect_output(serial: PSERIAL_DEVICE): BOOL; stdcall; public name 'serial_device_redirect_output';
 
@@ -26721,6 +26724,24 @@ function serial_device_check(serial: PSERIAL_DEVICE): PSERIAL_DEVICE; stdcall;
 begin
  {}
  Result:=SerialDeviceCheck(serial);
+end;
+
+{==============================================================================}
+
+function serial_type_to_string(serialtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a Serial type value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SerialTypeToString(serialtype),_string,len);
+end;
+
+{==============================================================================}
+
+function serial_state_to_string(serialstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a Serial state value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SerialStateToString(serialstate),_string,len);
 end;
 
 {==============================================================================}
