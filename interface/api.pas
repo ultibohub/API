@@ -4199,7 +4199,7 @@ function tft_framebuffer_allocate(framebuffer: PFRAMEBUFFER_DEVICE; properties: 
 function tft_framebuffer_release(framebuffer: PFRAMEBUFFER_DEVICE): uint32_t; stdcall; public name 'tft_framebuffer_release';
 
 function tft_framebuffer_mark(framebuffer: PFRAMEBUFFER_DEVICE; x, y, width, height, flags: uint32_t): uint32_t; stdcall; public name 'tft_framebuffer_mark';
-function tft_framebuffer_commit(framebuffer: PFRAMEBUFFER_DEVICE; address, size, flags: uint32_t): uint32_t; stdcall; public name 'tft_framebuffer_commit';
+function tft_framebuffer_commit(framebuffer: PFRAMEBUFFER_DEVICE; address: SIZE_T; size, flags: uint32_t): uint32_t; stdcall; public name 'tft_framebuffer_commit';
 
 procedure tft_framebuffer_update_display(framebuffer: PTFT_FRAMEBUFFER); stdcall; public name 'tft_framebuffer_update_display';
 {$ENDIF}
@@ -31437,7 +31437,7 @@ end;
 
 {==============================================================================}
 
-function tft_framebuffer_commit(framebuffer: PFRAMEBUFFER_DEVICE; address, size, flags: uint32_t): uint32_t; stdcall;
+function tft_framebuffer_commit(framebuffer: PFRAMEBUFFER_DEVICE; address: SIZE_T; size, flags: uint32_t): uint32_t; stdcall;
 {Implementation of FramebufferDeviceCommit API for TFT Framebuffer}
 {Note: Not intended to be called directly by applications, use FramebufferDeviceCommit instead}
 begin
