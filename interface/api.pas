@@ -3833,7 +3833,7 @@ function keyboard_flush: uint32_t; stdcall; public name 'keyboard_flush';
 
 function keyboard_device_get(keyboard: PKEYBOARD_DEVICE; var keycode: uint16_t): uint32_t; stdcall; public name 'keyboard_device_get';
 function keyboard_device_read(keyboard: PKEYBOARD_DEVICE; buffer: PVOID; size: uint32_t; var count: uint32_t): uint32_t; stdcall; public name 'keyboard_device_read';
-function keyboard_device_control(keyboard: PKEYBOARD_DEVICE; request: int; argument1: uint32_t; var argument2: uint32_t): uint32_t; stdcall; public name 'keyboard_device_control';
+function keyboard_device_control(keyboard: PKEYBOARD_DEVICE; request: int; argument1: SIZE_T; var argument2: SIZE_T): uint32_t; stdcall; public name 'keyboard_device_control';
 
 function keyboard_device_set_state(keyboard: PKEYBOARD_DEVICE; state: uint32_t): uint32_t; stdcall; public name 'keyboard_device_set_state';
 
@@ -3856,6 +3856,9 @@ function keyboard_device_notification(keyboard: PKEYBOARD_DEVICE; callback: keyb
 function keyboard_get_count: uint32_t; stdcall; public name 'keyboard_get_count';
 
 function keyboard_device_check(keyboard: PKEYBOARD_DEVICE): PKEYBOARD_DEVICE; stdcall; public name 'keyboard_device_check';
+
+function keyboard_device_type_to_string(keyboardtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'keyboard_device_type_to_string';
+function keyboard_device_state_to_string(keyboardstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'keyboard_device_state_to_string';
 
 function keyboard_device_state_to_notification(state: uint32_t): uint32_t; stdcall; public name 'keyboard_device_state_to_notification';
 
@@ -16891,7 +16894,7 @@ end;
 
 {==============================================================================}
 {Device Tree Helper Functions}
-function device_tree_get_boot_args: PCHAR; stdcall; public name 'device_tree_get_boot_args';
+function device_tree_get_boot_args: PCHAR; stdcall;
 {Return a character pointer to the location of the command line in the device tree blob}
 {Note: Intended primarily for use by early boot stage processing which must limit the use of strings
        and other memory allocations. For normal use see DeviceTreeGetNode and DeviceTreeGetProperty}
@@ -16945,7 +16948,7 @@ end;
 
 {==============================================================================}
 {$IFDEF DEVICE_TREE_ENUMERATION}
-function device_tree_log_tree: uint32_t; stdcall; public name 'device_tree_log_tree';
+function device_tree_log_tree: uint32_t; stdcall;
 {Print information about all nodes and properties in the device tree}
 {Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
@@ -29377,7 +29380,7 @@ end;
 
 {==============================================================================}
 
-function keyboard_device_control(keyboard: PKEYBOARD_DEVICE; request: int; argument1: uint32_t; var argument2: uint32_t): uint32_t; stdcall;
+function keyboard_device_control(keyboard: PKEYBOARD_DEVICE; request: int; argument1: SIZE_T; var argument2: SIZE_T): uint32_t; stdcall;
 {Perform a control request on the specified keyboard device}
 {Keyboard: The keyboard device to control}
 {Request: The request code for the operation (eg KEYBOARD_CONTROL_GET_FLAG)}
@@ -29530,6 +29533,22 @@ function keyboard_device_check(keyboard: PKEYBOARD_DEVICE): PKEYBOARD_DEVICE; st
 begin
  {}
  Result:=KeyboardDeviceCheck(keyboard);
+end;
+
+{==============================================================================}
+
+function keyboard_device_type_to_string(keyboardtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(KeyboardDeviceTypeToString(keyboardtype),_string,len);
+end;
+
+{==============================================================================}
+
+function keyboard_device_state_to_string(keyboardstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(KeyboardDeviceStateToString(keyboardstate),_string,len);
 end;
 
 {==============================================================================}

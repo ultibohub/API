@@ -18,6 +18,7 @@ The includes directory contains header files for interfaces to the following Ult
 * ultibo/gpio.h - 
 * ultibo/graphicsconsole.h - 
 * ultibo/i2c.h - 
+* ultibo/keyboard.h - 
 * ultibo/mouse.h - 
 * ultibo/platform.h - 
 * ultibo/pwm.h - 
