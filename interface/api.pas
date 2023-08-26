@@ -3165,6 +3165,9 @@ function spi_device_set_clock_polarity(spi: PSPI_DEVICE; clockpolarity: uint32_t
 function spi_device_get_select_polarity(spi: PSPI_DEVICE; chipselect: uint16_t): uint32_t; stdcall; public name 'spi_device_get_select_polarity';
 function spi_device_set_select_polarity(spi: PSPI_DEVICE; chipselect: uint16_t; selectpolarity: uint32_t): uint32_t; stdcall; public name 'spi_device_set_select_polarity';
 
+function spi_device_get_byte_delay(spi: PSPI_DEVICE): uint32_t; stdcall; public name 'spi_device_get_byte_delay';
+function spi_device_set_byte_delay(spi: PSPI_DEVICE; delay: uint32_t): uint32_t; stdcall; public name 'spi_device_set_byte_delay';
+
 function spi_device_properties(spi: PSPI_DEVICE; properties: PSPI_PROPERTIES): uint32_t; stdcall; public name 'spi_device_properties';
 function spi_device_get_properties(spi: PSPI_DEVICE; properties: PSPI_PROPERTIES): uint32_t; stdcall; public name 'spi_device_get_properties';
 
@@ -3189,6 +3192,15 @@ function spi_device_get_default: PSPI_DEVICE; stdcall; public name 'spi_device_g
 function spi_device_set_default(spi: PSPI_DEVICE): uint32_t; stdcall; public name 'spi_device_set_default';
 
 function spi_device_check(spi: PSPI_DEVICE): PSPI_DEVICE; stdcall; public name 'spi_device_check';
+
+function spi_type_to_string(spitype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'spi_type_to_string';
+function spi_state_to_string(spistate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'spi_state_to_string';
+
+function spi_chip_select_to_string(chipselect: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'spi_chip_select_to_string';
+function spi_mode_to_string(mode: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'spi_mode_to_string';
+function spi_clock_phase_to_string(phase: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'spi_clock_phase_to_string';
+function spi_clock_polarity_to_string(polarity: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'spi_clock_polarity_to_string';
+function spi_select_polarity_to_string(polarity: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'spi_select_polarity_to_string';
 {$ENDIF}
 {==============================================================================}
 {I2C Functions}
@@ -24595,6 +24607,29 @@ end;
 
 {==============================================================================}
 
+function spi_device_get_byte_delay(spi: PSPI_DEVICE): uint32_t; stdcall;
+{Get the delay between bytes written for the specified SPI device}
+{SPI: The SPI device to get the byte delay from}
+{Return: The byte delay in microseconds, 0 if not set or on failure}
+begin
+ {}
+ Result:=SPIDeviceGetByteDelay(spi);
+end;
+
+{==============================================================================}
+
+function spi_device_set_byte_delay(spi: PSPI_DEVICE; delay: uint32_t): uint32_t; stdcall;
+{Set the delay between bytes written for the specified SPI device}
+{SPI: The SPI device to set byte delay for}
+{Delay: The byte delay to set in microseconds}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=SPIDeviceSetByteDelay(spi,delay);
+end;
+
+{==============================================================================}
+
 function spi_device_properties(spi: PSPI_DEVICE; properties: PSPI_PROPERTIES): uint32_t; stdcall;
 {Get the properties for the specified SPI device}
 {SPI: The SPI device to get properties from}
@@ -24643,6 +24678,8 @@ end;
 
 function spi_device_destroy(spi: PSPI_DEVICE): uint32_t; stdcall;
 {Destroy an existing SPI entry}
+{SPI: The SPI device to destroy}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
  Result:=SPIDeviceDestroy(spi);
@@ -24652,6 +24689,8 @@ end;
 
 function spi_device_register(spi: PSPI_DEVICE): uint32_t; stdcall;
 {Register a new SPI in the SPI table}
+{SPI: The SPI device to register}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
  Result:=SPIDeviceRegister(spi);
@@ -24660,7 +24699,9 @@ end;
 {==============================================================================}
 
 function spi_device_deregister(spi: PSPI_DEVICE): uint32_t; stdcall;
-{Deregister a SPI from the SPI table}
+{Deregister an SPI from the SPI table}
+{SPI: The SPI device to deregister}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
  Result:=SPIDeviceDeregister(spi);
@@ -24669,6 +24710,9 @@ end;
 {==============================================================================}
 
 function spi_device_find(spiid: uint32_t): PSPI_DEVICE; stdcall;
+{Find an SPI device by ID in the SPI table}
+{SPIId: The ID number of the SPI device to find}
+{Return: Pointer to SPI device entry or nil if not found}
 begin
  {}
  Result:=SPIDeviceFind(spiid);
@@ -24677,6 +24721,9 @@ end;
 {==============================================================================}
 
 function spi_device_find_by_name(name: PCHAR): PSPI_DEVICE; stdcall;
+{Find an SPI device by name in the device table}
+{Name: The name of the SPI device to find (eg SPI0)}
+{Return: Pointer to SPI device entry or nil if not found}
 begin
  {}
  Result:=SPIDeviceFindByName(String(name));
@@ -24685,6 +24732,9 @@ end;
 {==============================================================================}
 
 function spi_device_find_by_description(description: PCHAR): PSPI_DEVICE; stdcall;
+{Find an SPI device by description in the device table}
+{Description: The description of the SPI to find (eg BCM2837 SPI0 Master)}
+{Return: Pointer to SPI device entry or nil if not found}
 begin
  {}
  Result:=SPIDeviceFindByDescription(String(description));
@@ -24693,6 +24743,10 @@ end;
 {==============================================================================}
 
 function spi_device_enumerate(callback: spi_enumerate_cb; data: PVOID): uint32_t; stdcall;
+{Enumerate all SPI devices in the SPI table}
+{Callback: The callback function to call for each SPI device in the table}
+{Data: A private data pointer to pass to callback for each SPI device in the table}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
  Result:=SPIDeviceEnumerate(callback,data);
@@ -24701,6 +24755,12 @@ end;
 {==============================================================================}
 
 function spi_device_notification(spi: PSPI_DEVICE; callback: spi_notification_cb; data: PVOID; notification, flags: uint32_t): uint32_t; stdcall;
+{Register a notification for SPI device changes}
+{Device: The SPI device to notify changes for (Optional, pass nil for all SPI devices)}
+{Callback: The function to call when a notification event occurs}
+{Data: A private data pointer to pass to callback when a notification event occurs}
+{Notification: The events to register for notification of (eg DEVICE_NOTIFICATION_REGISTER)}
+{Flags: The flags to control the notification (eg NOTIFIER_FLAG_WORKER)}
 begin
  {}
  Result:=SPIDeviceNotification(spi,callback,data,notification,flags);
@@ -24740,6 +24800,64 @@ function spi_device_check(spi: PSPI_DEVICE): PSPI_DEVICE; stdcall;
 begin
  {}
  Result:=SPIDeviceCheck(spi);
+end;
+
+{==============================================================================}
+
+function spi_type_to_string(spitype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert an SPI type value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SPITypeToString(spitype),_string,len);
+end;
+
+{==============================================================================}
+
+function spi_state_to_string(spistate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert an SPI state value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SPIStateToString(spistate),_string,len);
+end;
+
+{==============================================================================}
+
+function spi_chip_select_to_string(chipselect: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SPIChipSelectToString(chipselect),_string,len);
+end;
+
+{==============================================================================}
+
+function spi_mode_to_string(mode: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SPIModeToString(mode),_string,len);
+end;
+
+{==============================================================================}
+
+function spi_clock_phase_to_string(phase: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SPIClockPhaseToString(phase),_string,len);
+end;
+
+{==============================================================================}
+
+function spi_clock_polarity_to_string(polarity: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SPIClockPolarityToString(polarity),_string,len);
+end;
+
+{==============================================================================}
+
+function spi_select_polarity_to_string(polarity: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SPISelectPolarityToString(polarity),_string,len);
 end;
 {$ENDIF}
 {==============================================================================}

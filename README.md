@@ -21,6 +21,7 @@ The includes directory contains header files for interfaces to the following Ult
 * ultibo/platform.h - 
 * ultibo/pwm.h - 
 * ultibo/serial.h - 
+* ultibo/spi.h - 
 
 In addition to the Ultibo interface headers a small number of headers that expose functionality not normally available in the Newlib C library are also provided
 
