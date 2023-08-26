@@ -724,6 +724,7 @@ type
 type
  PMOUSE_DATA = PMouseData;
  PMOUSE_DEVICE = PMouseDevice;
+ PMOUSE_PROPERTIES = PMouseProperties;
 
  mouse_enumerate_cb = TMouseEnumerate;
  mouse_notification_cb = TMouseNotification;
@@ -3876,10 +3877,10 @@ function mouse_write(buffer: PVOID; size, count: uint32_t): uint32_t; stdcall; p
 function mouse_flush: uint32_t; stdcall; public name 'mouse_flush';
 
 function mouse_device_read(mouse: PMOUSE_DEVICE; buffer: PVOID; size: uint32_t; var count: uint32_t): uint32_t; stdcall; public name 'mouse_device_read';
-function mouse_device_control(mouse: PMOUSE_DEVICE; request: int; argument1: uint32_t; var argument2: uint32_t): uint32_t; stdcall; public name 'mouse_device_control';
+function mouse_device_update(mouse: PMOUSE_DEVICE): uint32_t; stdcall; public name 'mouse_device_update';
+function mouse_device_control(mouse: PMOUSE_DEVICE; request: int; argument1: SIZE_T; var argument2: SIZE_T): uint32_t; stdcall; public name 'mouse_device_control';
 
-//To Do //mouse_device_update
-//To Do //mouse_device_get_properties
+function mouse_device_get_properties(mouse: PMOUSE_DEVICE; properties: PMOUSE_PROPERTIES): uint32_t; stdcall; public name 'mouse_device_get_properties';
 
 function mouse_device_set_state(mouse: PMOUSE_DEVICE; state: uint32_t): uint32_t; stdcall; public name 'mouse_device_set_state';
 
@@ -3903,7 +3904,14 @@ function mouse_get_count: uint32_t; stdcall; public name 'mouse_get_count';
 
 function mouse_device_check(mouse: PMOUSE_DEVICE): PMOUSE_DEVICE; stdcall; public name 'mouse_device_check';
 
+function mouse_device_type_to_string(mousetype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'mouse_device_type_to_string';
+function mouse_device_state_to_string(mousestate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'mouse_device_state_to_string';
+
+function mouse_device_rotation_to_string(rotation: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'mouse_device_rotation_to_string';
+
 function mouse_device_state_to_notification(state: uint32_t): uint32_t; stdcall; public name 'mouse_device_state_to_notification';
+
+function mouse_device_resolve_rotation(rotation: uint32_t): uint32_t; stdcall; public name 'mouse_device_resolve_rotation';
 
 function mouse_insert_data(mouse: PMOUSE_DEVICE; data: PMOUSE_DATA; signal: BOOL): uint32_t; stdcall; public name 'mouse_insert_data';
 {$ENDIF}
@@ -29661,7 +29669,19 @@ end;
 
 {==============================================================================}
 
-function mouse_device_control(mouse: PMOUSE_DEVICE; request: int; argument1: uint32_t; var argument2: uint32_t): uint32_t; stdcall;
+function mouse_device_update(mouse: PMOUSE_DEVICE): uint32_t; stdcall;
+{Request the specified mouse device to update the current configuration}
+{Mouse: The mouse device to update}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+{Note: Items updated can include rotation, maximum X, Y and wheel and flags (If supported)}
+begin
+ {}
+ Result:=MouseDeviceUpdate(mouse);
+end;
+
+{==============================================================================}
+
+function mouse_device_control(mouse: PMOUSE_DEVICE; request: int; argument1: SIZE_T; var argument2: SIZE_T): uint32_t; stdcall;
 {Perform a control request on the specified mouse device}
 {Mouse: The mouse device to control}
 {Request: The request code for the operation (eg MOUSE_CONTROL_GET_FLAG)}
@@ -29671,6 +29691,18 @@ function mouse_device_control(mouse: PMOUSE_DEVICE; request: int; argument1: uin
 begin
  {}
  Result:=MouseDeviceControl(mouse,request,argument1,argument2);
+end;
+
+{==============================================================================}
+
+function mouse_device_get_properties(mouse: PMOUSE_DEVICE; properties: PMOUSE_PROPERTIES): uint32_t; stdcall;
+{Get the properties for the specified mouse device}
+{Mouse: The mouse device to get properties from}
+{Properties: Pointer to a TMouseProperties structure to fill in}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=MouseDeviceGetProperties(mouse,properties);
 end;
 
 {==============================================================================}
@@ -29818,11 +29850,46 @@ end;
 
 {==============================================================================}
 
+function mouse_device_type_to_string(mousetype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(MouseDeviceTypeToString(mousetype),_string,len);
+end;
+
+{==============================================================================}
+
+function mouse_device_state_to_string(mousestate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(MouseDeviceStateToString(mousestate),_string,len);
+end;
+
+{==============================================================================}
+
+function mouse_device_rotation_to_string(rotation: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return a string describing the supplied mouse rotation value}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(MouseDeviceRotationToString(rotation),_string,len);
+end;
+
+{==============================================================================}
+
 function mouse_device_state_to_notification(state: uint32_t): uint32_t; stdcall;
 {Convert a Mouse state value into the notification code for device notifications}
 begin
  {}
  Result:=MouseDeviceStateToNotification(state);
+end;
+
+{==============================================================================}
+
+function mouse_device_resolve_rotation(rotation: uint32_t): uint32_t; stdcall;
+{Resolve a value of 0, 90, 180 or 270 to a mouse rotation constant (eg MOUSE_ROTATION_180)}
+{Note: Also accepts passing the mouse rotation constant values directly}
+begin
+ {}
+ Result:=MouseDeviceResolveRotation(rotation);
 end;
 
 {==============================================================================}
