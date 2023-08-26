@@ -17,6 +17,7 @@ The includes directory contains header files for interfaces to the following Ult
 * ultibo/globaltypes.h - 
 * ultibo/gpio.h - 
 * ultibo/graphicsconsole.h - 
+* ultibo/i2c.h - 
 * ultibo/platform.h - 
 
 In addition to the Ultibo interface headers a small number of headers that expose functionality not normally available in the Newlib C library are also provided

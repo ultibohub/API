@@ -3225,12 +3225,44 @@ function i2c_device_enumerate(callback: i2c_enumerate_cb; data: PVOID): uint32_t
 function i2c_device_notification(i2c: PI2C_DEVICE; callback: i2c_notification_cb; data: PVOID; notification, flags: uint32_t): uint32_t; stdcall; public name 'i2c_device_notification';
 
 {==============================================================================}
+{I2C Slave Functions}
+function i2c_slave_start(i2c: PI2C_DEVICE): uint32_t; stdcall; public name 'i2c_slave_start';
+function i2c_slave_stop(i2c: PI2C_DEVICE): uint32_t; stdcall; public name 'i2c_slave_stop';
+
+function i2c_slave_read(i2c: PI2C_DEVICE; buffer: PVOID; size: uint32_t; var count: uint32_t): uint32_t; stdcall; public name 'i2c_slave_read';
+function i2c_slave_write(i2c: PI2C_DEVICE; buffer: PVOID; size: uint32_t; var count: uint32_t): uint32_t; stdcall; public name 'i2c_slave_write';
+
+function i2c_slave_get_address(i2c: PI2C_DEVICE): uint16_t; stdcall; public name 'i2c_slave_get_address';
+function i2c_slave_set_address(i2c: PI2C_DEVICE; address: uint16_t): uint32_t; stdcall; public name 'i2c_slave_set_address';
+
+function i2c_slave_get_properties(i2c: PI2C_DEVICE; properties: PI2C_PROPERTIES): uint32_t; stdcall; public name 'i2c_slave_get_properties';
+
+function i2c_slave_create: PI2C_DEVICE; stdcall; public name 'i2c_slave_create';
+function i2c_slave_create_ex(size: uint32_t): PI2C_DEVICE; stdcall; public name 'i2c_slave_create_ex';
+function i2c_slave_destroy(i2c: PI2C_DEVICE): uint32_t; stdcall; public name 'i2c_slave_destroy';
+
+function i2c_slave_register(i2c: PI2C_DEVICE): uint32_t; stdcall; public name 'i2c_slave_register';
+function i2c_slave_deregister(i2c: PI2C_DEVICE): uint32_t; stdcall; public name 'i2c_slave_deregister';
+
+function i2c_slave_find(i2cid: uint32_t): PI2C_DEVICE; stdcall; public name 'i2c_slave_find';
+function i2c_slave_find_by_name(name: PCHAR): PI2C_DEVICE; stdcall; public name 'i2c_slave_find_by_name';
+function i2c_slave_find_by_description(description: PCHAR): PI2C_DEVICE; stdcall; public name 'i2c_slave_find_by_description';
+
+{==============================================================================}
 {I2C Helper Functions}
 function i2c_get_count: uint32_t; stdcall; public name 'i2c_get_count';
 function i2c_device_get_default: PI2C_DEVICE; stdcall; public name 'i2c_device_get_default';
 function i2c_device_set_default(i2c: PI2C_DEVICE): uint32_t; stdcall; public name 'i2c_device_set_default';
 
 function i2c_device_check(i2c: PI2C_DEVICE): PI2C_DEVICE; stdcall; public name 'i2c_device_check';
+
+function i2c_device_is_slave(i2c: PI2C_DEVICE): BOOL; stdcall; public name 'i2c_device_is_slave';
+
+function i2c_type_to_string(i2ctype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'i2c_type_to_string';
+function i2c_state_to_string(i2cstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'i2c_state_to_string';
+
+function i2c_is7bit_address(address: uint16_t): BOOL; stdcall; public name 'i2c_is7bit_address';
+function i2c_is10bit_address(address: uint16_t): BOOL; stdcall; public name 'i2c_is10bit_address';
 {$ENDIF}
 {==============================================================================}
 {PWM Functions}
@@ -24889,6 +24921,8 @@ end;
 
 function i2c_device_destroy(i2c: PI2C_DEVICE): uint32_t; stdcall;
 {Destroy an existing I2C entry}
+{I2C: The I2C device to destroy}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
  Result:=I2CDeviceDestroy(i2c);
@@ -24898,6 +24932,8 @@ end;
 
 function i2c_device_register(i2c: PI2C_DEVICE): uint32_t; stdcall;
 {Register a new I2C in the I2C table}
+{I2C: The I2C device to register}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
  Result:=I2CDeviceRegister(i2c);
@@ -24906,7 +24942,9 @@ end;
 {==============================================================================}
 
 function i2c_device_deregister(i2c: PI2C_DEVICE): uint32_t; stdcall;
-{Deregister a I2C from the I2C table}
+{Deregister an I2C from the I2C table}
+{I2C: The I2C device to deregister}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
  Result:=I2CDeviceDeregister(i2c);
@@ -24915,6 +24953,9 @@ end;
 {==============================================================================}
 
 function i2c_device_find(i2cid: uint32_t): PI2C_DEVICE; stdcall;
+{Find an I2C device by ID in the I2C table}
+{I2CId: The ID number of the I2C device to find}
+{Return: Pointer to I2C device entry or nil if not found}
 begin
  {}
  Result:=I2CDeviceFind(i2cid);
@@ -24923,6 +24964,9 @@ end;
 {==============================================================================}
 
 function i2c_device_find_by_name(name: PCHAR): PI2C_DEVICE; stdcall;
+{Find an I2C device by name in the device table}
+{Name: The name of the I2C device to find (eg I2C0)}
+{Return: Pointer to I2C device entry or nil if not found}
 begin
  {}
  Result:=I2CDeviceFindByName(String(name));
@@ -24931,6 +24975,9 @@ end;
 {==============================================================================}
 
 function i2c_device_find_by_description(description: PCHAR): PI2C_DEVICE; stdcall;
+{Find an I2C device by description in the device table}
+{Description: The description of the I2C to find (eg BCM2837 BSC1 Master I2C)}
+{Return: Pointer to I2C device entry or nil if not found}
 begin
  {}
  Result:=I2CDeviceFindByDescription(String(description));
@@ -24939,6 +24986,10 @@ end;
 {==============================================================================}
 
 function i2c_device_enumerate(callback: i2c_enumerate_cb; data: PVOID): uint32_t; stdcall;
+{Enumerate all I2C devices in the I2C table}
+{Callback: The callback function to call for each I2C device in the table}
+{Data: A private data pointer to pass to callback for each I2C device in the table}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
  Result:=I2CDeviceEnumerate(callback,data);
@@ -24947,9 +24998,187 @@ end;
 {==============================================================================}
 
 function i2c_device_notification(i2c: PI2C_DEVICE; callback: i2c_notification_cb; data: PVOID; notification, flags: uint32_t): uint32_t; stdcall;
+{Register a notification for I2C device changes}
+{Device: The I2C device to notify changes for (Optional, pass nil for all I2C devices)}
+{Callback: The function to call when a notification event occurs}
+{Data: A private data pointer to pass to callback when a notification event occurs}
+{Notification: The events to register for notification of (eg DEVICE_NOTIFICATION_REGISTER)}
+{Flags: The flags to control the notification (eg NOTIFIER_FLAG_WORKER)}
 begin
  {}
  Result:=I2CDeviceNotification(i2c,callback,data,notification,flags);
+end;
+
+{==============================================================================}
+{I2C Slave Functions}
+function i2c_slave_start(i2c: PI2C_DEVICE): uint32_t; stdcall;
+{Start the specified I2C slave ready for reading and writing}
+{I2C: The I2C slave to start}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=I2CSlaveStart(i2c);
+end;
+
+{==============================================================================}
+
+function i2c_slave_stop(i2c: PI2C_DEVICE): uint32_t; stdcall;
+{Stop the specified I2C slave and terminate reading and writing}
+{I2C: The I2C slave to stop}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=I2CSlaveStop(i2c);
+end;
+
+{==============================================================================}
+
+function i2c_slave_read(i2c: PI2C_DEVICE; buffer: PVOID; size: uint32_t; var count: uint32_t): uint32_t; stdcall;
+{Read data from the specified I2C slave}
+{I2C: The I2C slave to read from}
+{Buffer: Pointer to a buffer to receive the data}
+{Size: The size of the buffer}
+{Count: The number of bytes read on return}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=I2CSlaveRead(i2c,buffer,size,count);
+end;
+
+{==============================================================================}
+
+function i2c_slave_write(i2c: PI2C_DEVICE; buffer: PVOID; size: uint32_t; var count: uint32_t): uint32_t; stdcall;
+{Write data to the specified I2C slave}
+{I2C: The I2C slave to write to}
+{Buffer: Pointer to a buffer of data to transmit}
+{Size: The size of the buffer}
+{Count: The number of bytes written on return}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=I2CSlaveWrite(i2c,buffer,size,count);
+end;
+
+{==============================================================================}
+
+function i2c_slave_get_address(i2c: PI2C_DEVICE): uint16_t; stdcall;
+{Get the address for the specified I2C slave}
+{I2C: The I2C slave to get the address from}
+{Return: The address or I2C_ADDRESS_INVALID on failure}
+begin
+ {}
+ Result:=I2CSlaveGetAddress(i2c);
+end;
+
+{==============================================================================}
+
+function i2c_slave_set_address(i2c: PI2C_DEVICE; address: uint16_t): uint32_t; stdcall;
+{Set the address for the specified I2C slave}
+{I2C: The I2C slave to set the address for}
+{Address: The address to set}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=I2CSlaveSetAddress(i2c,address);
+end;
+
+{==============================================================================}
+
+function i2c_slave_get_properties(i2c: PI2C_DEVICE; properties: PI2C_PROPERTIES): uint32_t; stdcall;
+{Get the properties for the specified I2C slave}
+{I2C: The I2C slave to get properties from}
+{Properties: Pointer to a TI2CProperties structure to fill in}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=I2CSlaveGetProperties(i2c,properties);
+end;
+
+{==============================================================================}
+
+function i2c_slave_create: PI2C_DEVICE; stdcall;
+{Create a new I2C slave entry}
+{Return: Pointer to new I2C slave entry or nil if I2C could not be created}
+begin
+ {}
+ Result:=I2CSlaveCreate;
+end;
+
+{==============================================================================}
+
+function i2c_slave_create_ex(size: uint32_t): PI2C_DEVICE; stdcall;
+{Create a new I2C slave entry}
+{Size: Size in bytes to allocate for new I2C (Including the I2C slave entry)}
+{Return: Pointer to new I2C slave entry or nil if I2C could not be created}
+begin
+ {}
+ Result:=I2CSlaveCreateEx(size);
+end;
+
+{==============================================================================}
+
+function i2c_slave_destroy(i2c: PI2C_DEVICE): uint32_t; stdcall;
+{Destroy an existing I2C slave entry}
+{I2C: The I2C slave to destroy}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=I2CSlaveDestroy(i2c);
+end;
+
+{==============================================================================}
+
+function i2c_slave_register(i2c: PI2C_DEVICE): uint32_t; stdcall;
+{Register a new I2C slave in the I2C table}
+{I2C: The I2C slave to register}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=I2CSlaveRegister(i2c);
+end;
+
+{==============================================================================}
+
+function i2c_slave_deregister(i2c: PI2C_DEVICE): uint32_t; stdcall;
+{Deregister an I2C slave from the I2C table}
+{I2C: The I2C slave to deregister}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=I2CSlaveDeregister(i2c);
+end;
+
+{==============================================================================}
+
+function i2c_slave_find(i2cid: uint32_t): PI2C_DEVICE; stdcall;
+{Find an I2C slave by ID in the I2C table}
+{I2CId: The ID number of the I2C slave to find}
+{Return: Pointer to I2C slave entry or nil if not found}
+begin
+ {}
+ Result:=I2CSlaveFind(i2cid);
+end;
+
+{==============================================================================}
+
+function i2c_slave_find_by_name(name: PCHAR): PI2C_DEVICE; stdcall;
+{Find an I2C slave by name in the device table}
+{Name: The name of the I2C slave to find (eg I2CSlave0)}
+{Return: Pointer to I2C slave entry or nil if not found}
+begin
+ {}
+ Result:=I2CSlaveFindByName(String(name));
+end;
+
+{==============================================================================}
+
+function i2c_slave_find_by_description(description: PCHAR): PI2C_DEVICE; stdcall;
+{Find an I2C slave by description in the device table}
+{Description: The description of the I2C slave to find (eg BCM2837 I2C Slave)}
+{Return: Pointer to I2C slave entry or nil if not found}
+begin
+ {}
+ Result:=I2CSlaveFindByDescription(String(description));
 end;
 
 {==============================================================================}
@@ -24986,6 +25215,51 @@ function i2c_device_check(i2c: PI2C_DEVICE): PI2C_DEVICE; stdcall;
 begin
  {}
  Result:=I2CDeviceCheck(i2c);
+end;
+
+{==============================================================================}
+
+function i2c_device_is_slave(i2c: PI2C_DEVICE): BOOL; stdcall;
+{Check if the supplied I2C is a slave device}
+begin
+ {}
+ Result:=I2CDeviceIsSlave(i2c);
+end;
+
+{==============================================================================}
+
+function i2c_type_to_string(i2ctype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert an I2C type value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(I2CTypeToString(i2ctype),_string,len);
+end;
+
+{==============================================================================}
+
+function i2c_state_to_string(i2cstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert an I2C state value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(I2CStateToString(i2cstate),_string,len);
+end;
+
+{==============================================================================}
+
+function i2c_is7bit_address(address: uint16_t): BOOL; stdcall;
+{Determine if the supplied address is a 7bit address}
+begin
+ {}
+ Result:=I2CIs7BitAddress(address);
+end;
+
+{==============================================================================}
+
+function i2c_is10bit_address(address: uint16_t): BOOL; stdcall;
+{Determine if the supplied address is a 10bit address}
+begin
+ {}
+ Result:=I2CIs10BitAddress(address);
 end;
 {$ENDIF}
 {==============================================================================}
