@@ -3385,6 +3385,7 @@ function gpio_device_set_default(gpio: PGPIO_DEVICE): uint32_t; stdcall; public 
 
 function gpio_device_check(gpio: PGPIO_DEVICE): PGPIO_DEVICE; stdcall; public name 'gpio_device_check';
 
+function gpio_type_to_string(gpiotype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'gpio_type_to_string';
 function gpio_state_to_string(gpiostate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'gpio_state_to_string';
 
 function gpio_device_create_event(gpio: PGPIO_DEVICE; pin: PGPIO_PIN; callback: gpio_event_cb; data: PVOID; timeout: uint32_t): PGPIO_EVENT; stdcall; public name 'gpio_device_create_event';
@@ -3913,10 +3914,9 @@ function touch_device_read(touch: PTOUCH_DEVICE; buffer: PVOID; size, flags: uin
 function touch_device_write(touch: PTOUCH_DEVICE; buffer: PVOID; size, count: uint32_t): uint32_t; stdcall; public name 'touch_device_write';
 
 function touch_device_flush(touch: PTOUCH_DEVICE): uint32_t; stdcall; public name 'touch_device_flush';
+function touch_device_update(touch: PTOUCH_DEVICE): uint32_t; stdcall; public name 'touch_device_update';
 
-//To Do //touch_device_update
-
-function touch_device_control(touch: PTOUCH_DEVICE; request: int; argument1: uint32_t; var argument2: uint32_t): uint32_t; stdcall; public name 'touch_device_control';
+function touch_device_control(touch: PTOUCH_DEVICE; request: int; argument1: SIZE_T; var argument2: SIZE_T): uint32_t; stdcall; public name 'touch_device_control';
 
 function touch_device_properties(touch: PTOUCH_DEVICE; properties: PTOUCH_PROPERTIES): uint32_t; stdcall; public name 'touch_device_properties';
 function touch_device_get_properties(touch: PTOUCH_DEVICE; properties: PTOUCH_PROPERTIES): uint32_t; stdcall; public name 'touch_device_get_properties';
@@ -3942,6 +3942,15 @@ function touch_device_get_default: PTOUCH_DEVICE; stdcall; public name 'touch_de
 function touch_device_set_default(touch: PTOUCH_DEVICE): uint32_t; stdcall; public name 'touch_device_set_default';
 
 function touch_device_check(touch: PTOUCH_DEVICE): PTOUCH_DEVICE; stdcall; public name 'touch_device_check';
+
+function touch_device_type_to_string(touchtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'touch_device_type_to_string';
+function touch_device_state_to_string(touchstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'touch_device_state_to_string';
+
+function touch_device_rotation_to_string(rotation: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'touch_device_rotation_to_string';
+
+function touch_device_resolve_rotation(rotation: uint32_t): uint32_t; stdcall; public name 'touch_device_resolve_rotation';
+
+function touch_device_set_callback(touch: PTOUCH_DEVICE; event: TTouchEvent; parameter: PVOID): uint32_t; stdcall; public name 'touch_device_set_callback';
 
 function touch_insert_data(touch: PTOUCH_DEVICE; data: PTOUCH_DATA; signal: BOOL): uint32_t; stdcall; public name 'touch_insert_data';
 {$ENDIF}
@@ -26126,6 +26135,15 @@ end;
 
 {==============================================================================}
 
+function gpio_type_to_string(gpiotype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a GPIO type value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(GPIOTypeToString(gpiotype),_string,len);
+end;
+
+{==============================================================================}
+
 function gpio_state_to_string(gpiostate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
 {Convert a GPIO state value to a string}
 begin
@@ -29866,7 +29884,19 @@ end;
 
 {==============================================================================}
 
-function touch_device_control(touch: PTOUCH_DEVICE; request: int; argument1: uint32_t; var argument2: uint32_t): uint32_t; stdcall;
+function touch_device_update(touch: PTOUCH_DEVICE): uint32_t; stdcall;
+{Request the specified touch device to update the current configuration}
+{Touch: The Touch device to update}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+{Note: Items updated can include rotation, maximum X and Y and flags (If supported)}
+begin
+ {}
+ Result:=TouchDeviceUpdate(touch);
+end;
+
+{==============================================================================}
+
+function touch_device_control(touch: PTOUCH_DEVICE; request: int; argument1: SIZE_T; var argument2: SIZE_T): uint32_t; stdcall;
 {Perform a control request on the specified touch device}
 {Touch: The Touch device to control}
 {Request: The request code for the operation (eg TOUCH_CONTROL_GET_FLAG)}
@@ -29928,6 +29958,8 @@ end;
 
 function touch_device_destroy(touch: PTOUCH_DEVICE): uint32_t; stdcall;
 {Destroy an existing Touch device entry}
+{Touch: The Touch device to destroy}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
  Result:=TouchDeviceDestroy(touch);
@@ -29937,6 +29969,8 @@ end;
 
 function touch_device_register(touch: PTOUCH_DEVICE): uint32_t; stdcall;
 {Register a new Touch device in the Touch device table}
+{Touch: The Touch device to register}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
  Result:=TouchDeviceRegister(touch);
@@ -29945,7 +29979,9 @@ end;
 {==============================================================================}
 
 function touch_device_deregister(touch: PTOUCH_DEVICE): uint32_t; stdcall;
-{Deregister an Touch device from the Touch device table}
+{Deregister a Touch device from the Touch device table}
+{Touch: The Touch device to deregister}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
  Result:=TouchDeviceDeregister(touch);
@@ -29954,6 +29990,9 @@ end;
 {==============================================================================}
 
 function touch_device_find(touchid: uint32_t): PTOUCH_DEVICE; stdcall;
+{Find a Touch device by ID in the Touch device table}
+{TouchId: The ID number of the Touch device to find}
+{Return: Pointer to Touch device entry or nil if not found}
 begin
  {}
  Result:=TouchDeviceFind(touchid);
@@ -29962,6 +30001,9 @@ end;
 {==============================================================================}
 
 function touch_device_find_by_name(name: PCHAR): PTOUCH_DEVICE; stdcall;
+{Find a Touch device by name in the device table}
+{Name: The name of the Touch device to find (eg Touch0)}
+{Return: Pointer to Touch device entry or nil if not found}
 begin
  {}
  Result:=TouchDeviceFindByName(String(name));
@@ -29970,6 +30012,9 @@ end;
 {==============================================================================}
 
 function touch_device_find_by_description(description: PCHAR): PTOUCH_DEVICE; stdcall;
+{Find a Touch device by description in the device table}
+{Description: The description of the Touch to find (eg USB Touchscreen)}
+{Return: Pointer to Touch device entry or nil if not found}
 begin
  {}
  Result:=TouchDeviceFindByDescription(String(description));
@@ -29978,6 +30023,10 @@ end;
 {==============================================================================}
 
 function touch_device_enumerate(callback: touch_enumerate_cb; data: PVOID): uint32_t; stdcall;
+{Enumerate all Touch devices in the Touch device table}
+{Callback: The callback function to call for each Touch device in the table}
+{Data: A private data pointer to pass to callback for each Touch device in the table}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
  Result:=TouchDeviceEnumerate(callback,data);
@@ -29986,6 +30035,13 @@ end;
 {==============================================================================}
 
 function touch_device_notification(touch: PTOUCH_DEVICE; callback: touch_notification_cb; data: PVOID; notification, flags: uint32_t): uint32_t; stdcall;
+{Register a notification for Touch device changes}
+{Touch: The Touch device to notify changes for (Optional, pass nil for all Touch devices)}
+{Callback: The function to call when a notification event occurs}
+{Data: A private data pointer to pass to callback when a notification event occurs}
+{Notification: The events to register for notification of (eg DEVICE_NOTIFICATION_REGISTER)}
+{Flags: The flags to control the notification (eg NOTIFIER_FLAG_WORKER)}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
  Result:=TouchDeviceNotification(touch,callback,data,notification,flags);
@@ -29995,6 +30051,7 @@ end;
 {Touch Helper Functions}
 function touch_get_count: uint32_t; stdcall;
 {Get the current Touch device count}
+{Return: The number of Touch devices}
 begin
  {}
  Result:=TouchGetCount;
@@ -30004,6 +30061,7 @@ end;
 
 function touch_device_get_default: PTOUCH_DEVICE; stdcall;
 {Get the current default Touch device}
+{Return: Pointer to default Touch device entry}
 begin
  {}
  Result:=TouchDeviceGetDefault;
@@ -30013,6 +30071,8 @@ end;
 
 function touch_device_set_default(touch: PTOUCH_DEVICE): uint32_t; stdcall;
 {Set the current default Touch device}
+{Touch: The Touch device to set as default}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
  Result:=TouchDeviceSetDefault(touch);
@@ -30022,9 +30082,63 @@ end;
 
 function touch_device_check(touch: PTOUCH_DEVICE): PTOUCH_DEVICE; stdcall;
 {Check if the supplied Touch device is in the Touch device table}
+{Touch: The Touch device to check}
+{Return: Pointer to Touch device entry or nil if not found}
 begin
  {}
  Result:=TouchDeviceCheck(touch);
+end;
+
+{==============================================================================}
+
+function touch_device_type_to_string(touchtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return a string describing the Touch device type (eg TOUCH_TYPE_CAPACITIVE)}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(TouchDeviceTypeToString(touchtype),_string,len);
+end;
+
+{==============================================================================}
+
+function touch_device_state_to_string(touchstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return a string describing the Touch device state (eg TOUCH_STATE_ENABLED)}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(TouchDeviceStateToString(touchstate),_string,len);
+end;
+
+{==============================================================================}
+
+function touch_device_rotation_to_string(rotation: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return a string describing the supplied touch rotation value}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(TouchDeviceRotationToString(rotation),_string,len);
+end;
+
+{==============================================================================}
+
+function touch_device_resolve_rotation(rotation: uint32_t): uint32_t; stdcall;
+{Resolve a value of 0, 90, 180 or 270 to a touch rotation constant (eg TOUCH_ROTATION_180)}
+{Note: Also accepts passing the touch rotation constant values directly}
+begin
+ {}
+ Result:=TouchDeviceResolveRotation(rotation);
+end;
+
+{==============================================================================}
+
+function touch_device_set_callback(touch: PTOUCH_DEVICE; event: TTouchEvent; parameter: PVOID): uint32_t; stdcall;
+{Set the event callback function for the specified touch device}
+{Touch: The touch device to set the event callback for}
+{Event: The event callback function to be called when touch data is received}
+{Parameter: A pointer to private data to be passed to the callback with each event}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+{Note: This function also clears the TOUCH_FLAG_MOUSE_DATA flag because the event}
+{      callback is not compatible with receiving touch events as mouse data}
+begin
+ {}
+ Result:=TouchDeviceSetCallback(touch,event,parameter);
 end;
 
 {==============================================================================}

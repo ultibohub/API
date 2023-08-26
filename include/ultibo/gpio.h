@@ -41,9 +41,13 @@ extern "C" {
 /* GPIO Device Types */
 #define GPIO_TYPE_NONE	0
 
+#define GPIO_TYPE_MAX	0
+
 /* GPIO Device States */
 #define GPIO_STATE_DISABLED	0
 #define GPIO_STATE_ENABLED	1
+
+#define GPIO_STATE_MAX	1
 
 /* GPIO Device Flags */
 #define GPIO_FLAG_NONE	0x00000000
@@ -238,6 +242,7 @@ uint32_t STDCALL gpio_device_set_default(GPIO_DEVICE *gpio);
 
 GPIO_DEVICE * STDCALL gpio_device_check(GPIO_DEVICE *gpio);
 
+uint32_t STDCALL gpio_type_to_string(uint32_t gpiotype, char *string, uint32_t len);
 uint32_t STDCALL gpio_state_to_string(uint32_t gpiostate, char *string, uint32_t len);
 
 GPIO_EVENT * STDCALL gpio_device_create_event(GPIO_DEVICE *gpio, GPIO_PIN *pin, gpio_event_cb callback, void *data, uint32_t timeout);

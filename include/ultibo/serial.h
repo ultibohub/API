@@ -50,11 +50,15 @@ extern "C" {
 #define SERIAL_TYPE_UART	1
 #define SERIAL_TYPE_USB	2
 
+#define SERIAL_TYPE_MAX	2
+
 /* Serial Device States */
 #define SERIAL_STATE_CLOSED	0
 #define SERIAL_STATE_CLOSING	1
 #define SERIAL_STATE_OPENING	2
 #define SERIAL_STATE_OPEN	3
+
+#define SERIAL_STATE_MAX	3
 
 /* Serial Device Flags */
 #define SERIAL_FLAG_NONE	0x00000000

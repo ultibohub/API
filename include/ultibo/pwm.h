@@ -41,9 +41,13 @@ extern "C" {
 /* PWM Device Types */
 #define PWM_TYPE_NONE	0
 
+#define PWM_TYPE_MAX	0
+
 /* PWM Device States */
 #define PWM_STATE_DISABLED	0
 #define PWM_STATE_ENABLED	1
+
+#define PWM_STATE_MAX	1
 
 /* PWM Device Flags */
 #define PWM_FLAG_NONE	0x00000000
@@ -58,9 +62,13 @@ extern "C" {
 #define PWM_MODE_BALANCED	1 // Balanced mode (Device specific)
 #define PWM_MODE_SERIALIZED	2 // Serialized mode (Device specific)
 
+#define PWM_MODE_MAX	2
+
 /* PWM Polarity Values */
 #define PWM_POLARITY_NORMAL	0
 #define PWM_POLARITY_INVERSE	1
+
+#define PWM_POLARITY_MAX	1
 
 /* ============================================================================== */
 /* PWM specific types */

@@ -44,9 +44,13 @@ extern "C" {
 #define SPI_TYPE_MASTER	1
 #define SPI_TYPE_SLAVE	2
 
+#define SPI_TYPE_MAX	2
+
 /* SPI Device States */
 #define SPI_STATE_DISABLED	0
 #define SPI_STATE_ENABLED	1
+
+#define SPI_STATE_MAX	1
 
 /* SPI Device Flags */
 #define SPI_FLAG_NONE	0x00000000
@@ -177,7 +181,7 @@ struct _SPI_DEVICE
 	uint32_t selectpolarity; // Default Chip Select Polarity (eg SPI_CS_POLARITY_LOW)
 	uint32_t bytedelay; // Delay between bytes written (Microseconds)
 	SPI_PROPERTIES properties; // Device properties
-	SPI_CHIP_SELECT chipselects[SPI_CS_MAX]; // Chip selects
+	SPI_CHIP_SELECT chipselects[SPI_CS_MAX + 1]; // Chip selects
 	// Internal Properties
 	SPI_DEVICE *prev; // Previous entry in SPI table
 	SPI_DEVICE *next; // Next entry in SPI table

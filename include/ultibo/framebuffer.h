@@ -43,9 +43,13 @@ extern "C" {
 #define FRAMEBUFFER_TYPE_HARDWARE	1
 #define FRAMEBUFFER_TYPE_VIRTUAL	2
 
+#define FRAMEBUFFER_TYPE_MAX	2
+
 /* Framebuffer Device States */
 #define FRAMEBUFFER_STATE_DISABLED	0
 #define FRAMEBUFFER_STATE_ENABLED	1
+
+#define FRAMEBUFFER_STATE_MAX	1
 
 /* Framebuffer Cursor States */
 #define FRAMEBUFFER_CURSOR_DISABLED	0

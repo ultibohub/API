@@ -44,9 +44,13 @@ extern "C" {
 #define I2C_TYPE_MASTER	1
 #define I2C_TYPE_SLAVE	2
 
+#define I2C_TYPE_MAX	2
+
 /* I2C Device States */
 #define I2C_STATE_DISABLED	0
 #define I2C_STATE_ENABLED	1
+
+#define I2C_STATE_MAX	1
 
 /* I2C Device Flags */
 #define I2C_FLAG_NONE	0x00000000
