@@ -142,6 +142,7 @@ typedef uint32_t STDCALL (*framebuffer_device_wait_sync_proc)(FRAMEBUFFER_DEVICE
 
 typedef uint32_t STDCALL (*framebuffer_device_get_offset_proc)(FRAMEBUFFER_DEVICE *framebuffer, uint32_t *x, uint32_t *y);
 typedef uint32_t STDCALL (*framebuffer_device_set_offset_proc)(FRAMEBUFFER_DEVICE *framebuffer, uint32_t x, uint32_t y, BOOL pan);
+typedef uint32_t STDCALL (*framebuffer_device_set_offset_ex_proc)(FRAMEBUFFER_DEVICE *framebuffer, uint32_t x, uint32_t y, BOOL pan, BOOL _switch);
 
 typedef uint32_t STDCALL (*framebuffer_device_get_palette_proc)(FRAMEBUFFER_DEVICE *framebuffer, FRAMEBUFFER_PALETTE *palette);
 typedef uint32_t STDCALL (*framebuffer_device_set_palette_proc)(FRAMEBUFFER_DEVICE *framebuffer, FRAMEBUFFER_PALETTE *palette);
@@ -178,6 +179,7 @@ struct _FRAMEBUFFER_DEVICE
 	framebuffer_device_wait_sync_proc devicewaitsync; // A device specific DeviceWaitSync method implementing a standard framebuffer device interface (Optional)
 	framebuffer_device_get_offset_proc devicegetoffset; // A device specific DeviceGetOffset method implementing a standard framebuffer device interface (Optional)
 	framebuffer_device_set_offset_proc devicesetoffset; // A device specific DeviceSetOffset method implementing a standard framebuffer device interface (Optional)
+	framebuffer_device_set_offset_ex_proc devicesetoffsetex; // A device specific DeviceSetOffsetEx method implementing a standard framebuffer device interface (Optional)
 	framebuffer_device_get_palette_proc devicegetpalette; // A device specific DeviceGetPalette method implementing a standard framebuffer device interface (Optional)
 	framebuffer_device_set_palette_proc devicesetpalette; // A device specific DeviceSetPalette method implementing a standard framebuffer device interface (Optional)
 	framebuffer_device_set_backlight_proc devicesetbacklight; // A device specific DeviceSetBacklight method implementing a standard framebuffer device interface (Optional)
@@ -260,6 +262,7 @@ uint32_t STDCALL framebuffer_device_wait_sync(FRAMEBUFFER_DEVICE *framebuffer);
 
 uint32_t STDCALL framebuffer_device_get_offset(FRAMEBUFFER_DEVICE *framebuffer, uint32_t *x, uint32_t *y);
 uint32_t STDCALL framebuffer_device_set_offset(FRAMEBUFFER_DEVICE *framebuffer, uint32_t x, uint32_t y, BOOL pan);
+uint32_t STDCALL framebuffer_device_set_offset_ex(FRAMEBUFFER_DEVICE *framebuffer, uint32_t x, uint32_t y, BOOL pan, BOOL _switch);
 
 uint32_t STDCALL framebuffer_device_get_palette(FRAMEBUFFER_DEVICE *framebuffer, FRAMEBUFFER_PALETTE *palette);
 uint32_t STDCALL framebuffer_device_set_palette(FRAMEBUFFER_DEVICE *framebuffer, FRAMEBUFFER_PALETTE *palette);

@@ -3611,6 +3611,7 @@ function framebuffer_device_wait_sync(framebuffer: PFRAMEBUFFER_DEVICE): uint32_
 
 function framebuffer_device_get_offset(framebuffer: PFRAMEBUFFER_DEVICE; var x, y: uint32_t): uint32_t; stdcall; public name 'framebuffer_device_get_offset';
 function framebuffer_device_set_offset(framebuffer: PFRAMEBUFFER_DEVICE; x, y: uint32_t; pan: BOOL): uint32_t; stdcall; public name 'framebuffer_device_set_offset';
+function framebuffer_device_set_offset_ex(framebuffer: PFRAMEBUFFER_DEVICE; x, y: uint32_t; pan, switch: BOOL): uint32_t; stdcall; public name 'framebuffer_device_set_offset_ex';
 
 function framebuffer_device_get_palette(framebuffer: PFRAMEBUFFER_DEVICE; palette: PFRAMEBUFFER_PALETTE): uint32_t; stdcall; public name 'framebuffer_device_get_palette';
 function framebuffer_device_set_palette(framebuffer: PFRAMEBUFFER_DEVICE; palette: PFRAMEBUFFER_PALETTE): uint32_t; stdcall; public name 'framebuffer_device_set_palette';
@@ -27653,6 +27654,25 @@ end;
 
 {==============================================================================}
 
+function framebuffer_device_set_offset_ex(framebuffer: PFRAMEBUFFER_DEVICE; x, y: uint32_t; pan, switch: BOOL): uint32_t; stdcall;
+{Set the virtual offset X and Y of a framebuffer device}
+{Framebuffer: The framebuffer device to set the offset for}
+{X: The X (Column) offset value in pixels to set}
+{Y: The Y (Row) offset value in pixels to set}
+{Pan: If True then pan the display without updating the Offset X and/or Y}
+{Switch: If False then update the Offset X and/or Y without moving the display}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+{Note: X and Y are relative to the virtual buffer and NOT the physical screen (Where applicable)}
+{Note: Not all framebuffer devices support X and/or Y offset, returns ERROR_CALL_NOT_IMPLEMENTED if not supported}
+{      Devices that support offset X should set the flag FRAMEBUFFER_FLAG_OFFSETX}
+{      Devices that support offset Y should set the flag FRAMEBUFFER_FLAG_OFFSETY}
+begin
+ {}
+ Result:=FramebufferDeviceSetOffsetEx(framebuffer,x,y,pan,switch);
+end;
+
+{==============================================================================}
+
 function framebuffer_device_get_palette(framebuffer: PFRAMEBUFFER_DEVICE; palette: PFRAMEBUFFER_PALETTE): uint32_t; stdcall;
 {Get the 8 bit color palette from a framebuffer device}
 {Framebuffer: The framebuffer device to get the palette from}
@@ -28012,7 +28032,6 @@ begin
  {}
  Result:=APIStringToPCharBuffer(FramebufferRotationToString(rotation),_string,len);
 end;
-
 {$ENDIF}
 {==============================================================================}
 {==============================================================================}
