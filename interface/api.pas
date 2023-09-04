@@ -750,7 +750,13 @@ type
 {$ENDIF}
 
 {$IFDEF API_EXPORT_JOYSTICK}
-// To Do
+ PJOYSTICK_DATA = PJoystickData;
+ PJOYSTICK_DEVICE = PJoystickDevice;
+ PJOYSTICK_PROPERTIES = PJoystickProperties;
+ 
+ joystick_event_cb = TJoystickEvent;
+ joystick_enumerate_cb = TJoystickEnumerate;
+ joystick_notification_cb = TJoystickNotification;
 {$ENDIF}
 
 {$IFDEF API_EXPORT_STORAGE}
@@ -4141,10 +4147,66 @@ function touch_insert_data(touch: PTOUCH_DEVICE; data: PTOUCH_DATA; signal: BOOL
 {==============================================================================}
 {Joystick Functions}
 {$IFDEF API_EXPORT_JOYSTICK}
-//To Do
+function joystick_device_start(joystick: PJOYSTICK_DEVICE): uint32_t; stdcall; public name 'joystick_device_start';
+function joystick_device_stop(joystick: PJOYSTICK_DEVICE): uint32_t; stdcall; public name 'joystick_device_stop';
+
+function joystick_device_peek(joystick: PJOYSTICK_DEVICE): uint32_t; stdcall; public name 'joystick_device_peek';
+
+function joystick_device_read(joystick: PJOYSTICK_DEVICE; buffer: PVOID; size, flags: uint32_t; var count: uint32_t): uint32_t; stdcall; public name 'joystick_device_read';
+function joystick_device_write(joystick: PJOYSTICK_DEVICE; buffer: PVOID; size, count: uint32_t): uint32_t; stdcall; public name 'joystick_device_write';
+
+function joystick_device_flush(joystick: PJOYSTICK_DEVICE): uint32_t; stdcall; public name 'joystick_device_flush';
+function joystick_device_update(joystick: PJOYSTICK_DEVICE): uint32_t; stdcall; public name 'joystick_device_update';
+
+function joystick_device_control(joystick: PJOYSTICK_DEVICE; request: int; argument1: SIZE_T; var argument2: SIZE_T): uint32_t; stdcall; public name 'joystick_device_control';
+
+function joystick_device_get_properties(joystick: PJOYSTICK_DEVICE; properties: PJOYSTICK_PROPERTIES): uint32_t; stdcall; public name 'joystick_device_get_properties';
+
+function joystick_device_set_state(joystick: PJOYSTICK_DEVICE; state: uint32_t): uint32_t; stdcall; public name 'joystick_device_set_state';
+
+function joystick_device_create: PJOYSTICK_DEVICE; stdcall; public name 'joystick_device_create';
+function joystick_device_create_ex(size: uint32_t): PJOYSTICK_DEVICE; stdcall; public name 'joystick_device_create_ex';
+function joystick_device_destroy(joystick: PJOYSTICK_DEVICE): uint32_t; stdcall; public name 'joystick_device_destroy';
+
+function joystick_device_register(joystick: PJOYSTICK_DEVICE): uint32_t; stdcall; public name 'joystick_device_register';
+function joystick_device_deregister(joystick: PJOYSTICK_DEVICE): uint32_t; stdcall; public name 'joystick_device_deregister';
+
+function joystick_device_find(joystickid: uint32_t): PJOYSTICK_DEVICE; stdcall; public name 'joystick_device_find';
+function joystick_device_find_by_name(name: PCHAR): PJOYSTICK_DEVICE; stdcall; public name 'joystick_device_find_by_name';
+function joystick_device_find_by_description(description: PCHAR): PJOYSTICK_DEVICE; stdcall; public name 'joystick_device_find_by_description';
+function joystick_device_enumerate(callback: joystick_enumerate_cb; data: PVOID): uint32_t; stdcall; public name 'joystick_device_enumerate';
+
+function joystick_device_notification(joystick: PJOYSTICK_DEVICE; callback: joystick_notification_cb; data: PVOID; notification, flags: uint32_t): uint32_t; stdcall; public name 'joystick_device_notification';
+
 {==============================================================================}
 {Joystick Helper Functions}
-//To Do
+function joystick_get_count: uint32_t; stdcall; public name 'joystick_get_count';
+function joystick_device_get_default: PJOYSTICK_DEVICE; stdcall; public name 'joystick_device_get_default';
+function joystick_device_set_default(joystick: PJOYSTICK_DEVICE): uint32_t; stdcall; public name 'joystick_device_set_default';
+
+function joystick_device_check(joystick: PJOYSTICK_DEVICE): PJOYSTICK_DEVICE; stdcall; public name 'joystick_device_check';
+
+function joystick_device_axis_to_string(name: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'joystick_device_axis_to_string';
+function joystick_device_hat_to_string(name: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'joystick_device_hat_to_string';
+function joystick_device_button_to_string(name: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'joystick_device_button_to_string';
+
+function joystick_device_type_to_string(joysticktype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'joystick_device_type_to_string';
+function joystick_device_state_to_string(joystickstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'joystick_device_state_to_string';
+
+function joystick_device_state_to_notification(state: uint32_t): uint32_t; stdcall; public name 'joystick_device_state_to_notification';
+
+function joystick_device_get_axis(joystick: PJOYSTICK_DEVICE; index: uint32_t): uint32_t; stdcall; public name 'joystick_device_get_axis';
+function joystick_device_set_axis(joystick: PJOYSTICK_DEVICE; index, name: uint32_t): uint32_t; stdcall; public name 'joystick_device_set_axis';
+
+function joystick_device_get_hat(joystick: PJOYSTICK_DEVICE; index: uint32_t): uint32_t; stdcall; public name 'joystick_device_get_hat';
+function joystick_device_set_hat(joystick: PJOYSTICK_DEVICE; index, name: uint32_t): uint32_t; stdcall; public name 'joystick_device_set_hat';
+
+function joystick_device_get_button(joystick: PJOYSTICK_DEVICE; index: uint32_t): uint32_t; stdcall; public name 'joystick_device_get_button';
+function joystick_device_set_button(joystick: PJOYSTICK_DEVICE; index, name: uint32_t): uint32_t; stdcall; public name 'joystick_device_set_button';
+
+function joystick_device_set_callback(joystick: PJOYSTICK_DEVICE; event: joystick_event_cb; parameter: PVOID): uint32_t; stdcall; public name 'joystick_device_set_callback';
+
+function joystick_insert_data(joystick: PJOYSTICK_DEVICE; data: PJOYSTICK_DATA; signal: BOOL): uint32_t; stdcall; public name 'joystick_insert_data';
 {$ENDIF}
 {==============================================================================}
 {Storage Functions}
@@ -31461,10 +31523,438 @@ end;
 {==============================================================================}
 {Joystick Functions}
 {$IFDEF API_EXPORT_JOYSTICK}
-//To Do
+function joystick_device_start(joystick: PJOYSTICK_DEVICE): uint32_t; stdcall;
+{Start the specified Joystick device ready for receiving events}
+{Joystick: The Joystick device to start}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=JoystickDeviceStart(joystick);
+end;
+
+{==============================================================================}
+
+function joystick_device_stop(joystick: PJOYSTICK_DEVICE): uint32_t; stdcall;
+{Stop the specified Joystick device and terminate receiving events}
+{Joystick: The Joystick device to stop}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=JoystickDeviceStop(joystick);
+end;
+
+{==============================================================================}
+
+function joystick_device_peek(joystick: PJOYSTICK_DEVICE): uint32_t; stdcall;
+{Peek at the buffer of the specified joystick device to see if any data packets are ready}
+{Joystick: The Joystick device to peek at}
+{Return: ERROR_SUCCESS if packets are ready, ERROR_NO_MORE_ITEMS if not or another error code on failure}
+begin
+ {}
+ Result:=JoystickDevicePeek(joystick);
+end;
+
+{==============================================================================}
+
+function joystick_device_read(joystick: PJOYSTICK_DEVICE; buffer: PVOID; size, flags: uint32_t; var count: uint32_t): uint32_t; stdcall;
+{Read joystick data packets from the buffer of the specified joystick device}
+{Joystick: The Joystick device to read from}
+{Buffer: Pointer to a buffer to copy the joystick data packets to}
+{Size: The size of the buffer in bytes (Must be at least TJoystickData or greater)}
+{Flags: The flags for the behaviour of the read (eg JOYSTICK_FLAG_NON_BLOCK)}
+{Count: The number of joystick data packets copied to the buffer}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=JoystickDeviceRead(joystick,buffer,size,flags,count);
+end;
+
+{==============================================================================}
+
+function joystick_device_write(joystick: PJOYSTICK_DEVICE; buffer: PVOID; size, count: uint32_t): uint32_t; stdcall;
+{Write joystick data packets to the buffer of the specified joystick device}
+{Joystick: The Joystick device to write to}
+{Buffer: Pointer to a buffer to copy the joystick data packets from}
+{Size: The size of the buffer in bytes (Must be at least TJoystickData or greater)}
+{Count: The number of joystick data packets to copy from the buffer}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=JoystickDeviceWrite(joystick,buffer,size,count);
+end;
+
+{==============================================================================}
+
+function joystick_device_flush(joystick: PJOYSTICK_DEVICE): uint32_t; stdcall;
+{Flush the contents of the buffer of the specified joystick device}
+{Joystick: The Joystick device to flush}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=JoystickDeviceFlush(joystick);
+end;
+
+{==============================================================================}
+
+function joystick_device_update(joystick: PJOYSTICK_DEVICE): uint32_t; stdcall;
+{Request the specified Joystick device to update the current configuration}
+{Joystick: The Joystick device to update}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+{Note: Items updated can include rotation, maximum X and Y and flags (If supported)}
+begin
+ {}
+ Result:=JoystickDeviceUpdate(joystick);
+end;
+
+{==============================================================================}
+
+function joystick_device_control(joystick: PJOYSTICK_DEVICE; request: int; argument1: SIZE_T; var argument2: SIZE_T): uint32_t; stdcall;
+{Perform a control request on the specified Joystick device}
+{Joystick: The Joystick device to control}
+{Request: The request code for the operation (eg JOYSTICK_CONTROL_GET_FLAG)}
+{Argument1: The first argument for the operation (Dependent on request code)}
+{Argument2: The second argument for the operation (Dependent on request code)}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=JoystickDeviceControl(joystick,request,argument1,argument2);
+end;
+
+{==============================================================================}
+
+function joystick_device_get_properties(joystick: PJOYSTICK_DEVICE; properties: PJOYSTICK_PROPERTIES): uint32_t; stdcall;
+{Get the properties for the specified Joystick device}
+{Joystick: The Joystick device to get properties from}
+{Properties: Pointer to a TJoystickProperties structure to fill in}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=JoystickDeviceGetProperties(joystick,properties);
+end;
+
+{==============================================================================}
+
+function joystick_device_set_state(joystick: PJOYSTICK_DEVICE; state: uint32_t): uint32_t; stdcall;
+{Set the state of the specified joystick and send a notification}
+{Joystick: The joystick to set the state for}
+{State: The new state to set and notify}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=JoystickDeviceSetState(joystick,state);
+end;
+
+{==============================================================================}
+
+function joystick_device_create: PJOYSTICK_DEVICE; stdcall;
+{Create a new Joystick device entry}
+{Return: Pointer to new Joystick device entry or nil if Joystick device could not be created}
+begin
+ {}
+ Result:=JoystickDeviceCreate;
+end;
+
+{==============================================================================}
+
+function joystick_device_create_ex(size: uint32_t): PJOYSTICK_DEVICE; stdcall;
+{Create a new Joystick device entry}
+{Size: Size in bytes to allocate for new Joystick device (Including the Joystick device entry)}
+{Return: Pointer to new Joystick device entry or nil if Joystick device could not be created}
+begin
+ {}
+ Result:=JoystickDeviceCreateEx(size);
+end;
+
+{==============================================================================}
+
+function joystick_device_destroy(joystick: PJOYSTICK_DEVICE): uint32_t; stdcall;
+{Destroy an existing Joystick device entry}
+{Joystick: The Joystick device to destroy}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=JoystickDeviceDestroy(joystick);
+end;
+
+{==============================================================================}
+
+function joystick_device_register(joystick: PJOYSTICK_DEVICE): uint32_t; stdcall;
+{Register a new Joystick device in the Joystick device table}
+{Joystick: The Joystick device to register}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=JoystickDeviceRegister(joystick);
+end;
+
+{==============================================================================}
+
+function joystick_device_deregister(joystick: PJOYSTICK_DEVICE): uint32_t; stdcall;
+{Deregister a Joystick device from the Joystick device table}
+{Joystick: The Joystick device to deregister}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=JoystickDeviceDeregister(joystick);
+end;
+
+{==============================================================================}
+
+function joystick_device_find(joystickid: uint32_t): PJOYSTICK_DEVICE; stdcall;
+{Find a Joystick device by ID in the Joystick device table}
+{JoystickId: The ID number of the Joystick device to find}
+{Return: Pointer to Joystick device entry or nil if not found}
+begin
+ {}
+ Result:=JoystickDeviceFind(joystickid);
+end;
+
+{==============================================================================}
+
+function joystick_device_find_by_name(name: PCHAR): PJOYSTICK_DEVICE; stdcall;
+{Find a Joystick device by name in the device table}
+{Name: The name of the Joystick device to find (eg Joystick0)}
+{Return: Pointer to Joystick device entry or nil if not found}
+begin
+ {}
+ Result:=JoystickDeviceFindByName(String(name));
+end;
+
+{==============================================================================}
+
+function joystick_device_find_by_description(description: PCHAR): PJOYSTICK_DEVICE; stdcall;
+{Find a Joystick device by description in the device table}
+{Description: The description of the Joystick to find (eg USB Gamepad)}
+{Return: Pointer to Joystick device entry or nil if not found}
+begin
+ {}
+ Result:=JoystickDeviceFindByDescription(String(description));
+end;
+
+{==============================================================================}
+
+function joystick_device_enumerate(callback: joystick_enumerate_cb; data: PVOID): uint32_t; stdcall;
+{Enumerate all Joystick devices in the Joystick device table}
+{Callback: The callback function to call for each Joystick device in the table}
+{Data: A private data pointer to pass to callback for each Joystick device in the table}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=JoystickDeviceEnumerate(callback,data);
+end;
+
+{==============================================================================}
+
+function joystick_device_notification(joystick: PJOYSTICK_DEVICE; callback: joystick_notification_cb; data: PVOID; notification, flags: uint32_t): uint32_t; stdcall;
+{Register a notification for Joystick device changes}
+{Joystick: The Joystick device to notify changes for (Optional, pass nil for all Joystick devices)}
+{Callback: The function to call when a notification event occurs}
+{Data: A private data pointer to pass to callback when a notification event occurs}
+{Notification: The events to register for notification of (eg DEVICE_NOTIFICATION_REGISTER)}
+{Flags: The flags to control the notification (eg NOTIFIER_FLAG_WORKER)}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=JoystickDeviceNotification(joystick,callback,data,notification,flags);
+end;
+
 {==============================================================================}
 {Joystick Helper Functions}
-//To Do
+function joystick_get_count: uint32_t; stdcall;
+{Get the current Joystick device count}
+{Return: The number of Joystick devices}
+begin
+ {}
+ Result:=JoystickGetCount;
+end;
+
+{==============================================================================}
+
+function joystick_device_get_default: PJOYSTICK_DEVICE; stdcall;
+{Get the current default Joystick device}
+{Return: Pointer to default Joystick device entry}
+begin
+ {}
+ Result:=JoystickDeviceGetDefault;
+end;
+
+{==============================================================================}
+
+function joystick_device_set_default(joystick: PJOYSTICK_DEVICE): uint32_t; stdcall;
+{Set the current default Joystick device}
+{Joystick: The Joystick device to set as default}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=JoystickDeviceSetDefault(joystick);
+end;
+
+{==============================================================================}
+
+function joystick_device_check(joystick: PJOYSTICK_DEVICE): PJOYSTICK_DEVICE; stdcall;
+{Check if the supplied Joystick device is in the Joystick device table}
+{Joystick: The Joystick device to check}
+{Return: Pointer to Joystick device entry or nil if not found}
+begin
+ {}
+ Result:=JoystickDeviceCheck(joystick);
+end;
+
+{==============================================================================}
+
+function joystick_device_axis_to_string(name: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return a string describing a Joystick or Gamepad Axis (eg JOYSTICK_AXIS_X)}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(JoystickDeviceAxisToString(name),_string,len);
+end;
+
+{==============================================================================}
+
+function joystick_device_hat_to_string(name: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return a string describing a Joystick or Gamepad Hat (eg JOYSTICK_HAT_POV)}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(JoystickDeviceHatToString(name),_string,len);
+end;
+
+{==============================================================================}
+
+function joystick_device_button_to_string(name: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return a string describing a Joystick or Gamepad Button (eg GAMEPAD_BUTTON_UP)}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(JoystickDeviceButtonToString(name),_string,len);
+end;
+
+{==============================================================================}
+
+function joystick_device_type_to_string(joysticktype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return a string describing the Joystick device type (eg JOYSTICK_TYPE_JOYSTICK)}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(JoystickDeviceTypeToString(joysticktype),_string,len);
+end;
+
+{==============================================================================}
+
+function joystick_device_state_to_string(joystickstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return a string describing the Joystick device state (eg JOYSTICK_STATE_ENABLED)}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(JoystickDeviceStateToString(joystickstate),_string,len);
+end;
+
+{==============================================================================}
+
+function joystick_device_state_to_notification(state: uint32_t): uint32_t; stdcall;
+{Convert a Joystick state value into the notification code for device notifications}
+begin
+ {}
+ Result:=JoystickDeviceStateToNotification(state);
+end;
+
+{==============================================================================}
+
+function joystick_device_get_axis(joystick: PJOYSTICK_DEVICE; index: uint32_t): uint32_t; stdcall;
+{Get the name (identifier) of an Axis on the specified Joystick}
+{Joystick: The Joystick device to get the name from}
+{Index: The index of the Axis in the Joystick properties (First Axis is 0)}
+{Return: The current name of the Axis (eg GAMEPAD_AXIS_LEFT_X)}
+begin
+ {}
+ Result:=JoystickDeviceGetAxis(joystick,index);
+end;
+
+{==============================================================================}
+
+function joystick_device_set_axis(joystick: PJOYSTICK_DEVICE; index, name: uint32_t): uint32_t; stdcall;
+{Set the name (identifier) of an Axis on the specified Joystick}
+{Joystick: The Joystick device to set the name for}
+{Index: The index of the Axis in the Joystick properties (First Axis is 0)}
+{Name: The name (identifier) to set for the Axis (eg JOYSTICK_AXIS_X}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=JoystickDeviceSetAxis(joystick,index,name);
+end;
+
+{==============================================================================}
+
+function joystick_device_get_hat(joystick: PJOYSTICK_DEVICE; index: uint32_t): uint32_t; stdcall;
+{Get the name (identifier) of a Hat on the specified Joystick}
+{Joystick: The Joystick device to get the name from}
+{Index: The index of the Hat in the Joystick properties (First Hat is 0)}
+{Return: The current name of the Hat (eg GAMEPAD_HAT_POV)}
+begin
+ {}
+ Result:=JoystickDeviceGetHat(joystick,index);
+end;
+
+{==============================================================================}
+
+function joystick_device_set_hat(joystick: PJOYSTICK_DEVICE; index, name: uint32_t): uint32_t; stdcall;
+{Set the name (identifier) of a Hat on the specified Joystick}
+{Joystick: The Joystick device to set the name for}
+{Index: The index of the Hat in the Joystick properties (First Hat is 0)}
+{Name: The name (identifier) to set for the Hat (eg JOYSTICK_HAT_POV)}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=JoystickDeviceSetHat(joystick,index,name);
+end;
+
+{==============================================================================}
+
+function joystick_device_get_button(joystick: PJOYSTICK_DEVICE; index: uint32_t): uint32_t; stdcall;
+{Get the name (identifier) of a Button on the specified Joystick}
+{Joystick: The Joystick device to get the name from}
+{Index: The index of the Button in the Joystick properties (First Button is 0)}
+{Return: The current name of the Button (eg GAMEPAD_BUTTON_B)}
+begin
+ {}
+ Result:=JoystickDeviceGetButton(joystick,index);
+end;
+
+{==============================================================================}
+
+function joystick_device_set_button(joystick: PJOYSTICK_DEVICE; index, name: uint32_t): uint32_t; stdcall;
+{Set the name (identifier) of a Button on the specified Joystick}
+{Joystick: The Joystick device to set the name for}
+{Index: The index of the Button in the Joystick properties (First Button is 0)}
+{Name: The name (identifier) to set for the Button (eg GAMEPAD_BUTTON_LT)}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=JoystickDeviceSetButton(joystick,index,name);
+end;
+
+{==============================================================================}
+
+function joystick_device_set_callback(joystick: PJOYSTICK_DEVICE; event: joystick_event_cb; parameter: PVOID): uint32_t; stdcall;
+{Set the event callback function for the specified Joystick}
+{Joystick: The Joystick device to set the event callback for}
+{Event: The event callback function to be called when Joystick data is received}
+{Parameter: A pointer to private data to be passed to the callback with each event}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=JoystickDeviceSetCallback(joystick,event,parameter);
+end;
+
+{==============================================================================}
+
+function joystick_insert_data(joystick: PJOYSTICK_DEVICE; data: PJOYSTICK_DATA; signal: BOOL): uint32_t; stdcall;
+{Insert a TJoystickData entry into the joystick device buffer}
+{Joystick: The joystick device to insert data for}
+{Data: The TJoystickData entry to insert}
+{Signal: If True then signal that new data is available in the buffer}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+{Note: Caller must hold the joystick device lock}
+begin
+ {}
+ Result:=JoystickInsertData(joystick,data,signal);
+end;
 {$ENDIF}
 {==============================================================================}
 {==============================================================================}
