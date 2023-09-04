@@ -589,6 +589,14 @@ type
 
  sdhci_enumerate_cb = TSDHCIEnumerate;
  sdhci_notification_cb = TSDHCINotification;
+
+ PSDIO_FUNCTION = PSDIOFunction;
+ PSDIO_DRIVER = PSDIODriver;
+
+ sdio_interrupt_handler = TSDIOInterruptHandler;
+ sdio_function_enumerate_cb = TSDIOFunctionEnumerate;
+
+ sdio_driver_enumerate_cb = TSDIODriverEnumerate;
 {$ENDIF}
 
 {$IFDEF API_EXPORT_SPI}
@@ -2960,7 +2968,9 @@ function mmc_device_erase_blocks(mmc: PMMC_DEVICE; const start, count: int64_t):
 function mmc_device_go_idle(mmc: PMMC_DEVICE): uint32_t; stdcall; public name 'mmc_device_go_idle';
 
 function mmc_device_set_clock(mmc: PMMC_DEVICE; clock: uint32_t): uint32_t; stdcall; public name 'mmc_device_set_clock';
+function mmc_device_set_timing(mmc: PMMC_DEVICE; timing: uint32_t): uint32_t; stdcall; public name 'mmc_device_set_timing';
 function mmc_device_set_bus_width(mmc: PMMC_DEVICE; width: uint32_t): uint32_t; stdcall; public name 'mmc_device_set_bus_width';
+
 function mmc_device_set_block_length(mmc: PMMC_DEVICE; length: uint32_t): uint32_t; stdcall; public name 'mmc_device_set_block_length';
 function mmc_device_set_block_count(mmc: PMMC_DEVICE; count: uint32_t; relative: BOOL): uint32_t; stdcall; public name 'mmc_device_set_block_count';
 function mmc_device_set_driver_stage(mmc: PMMC_DEVICE; driverstage: uint32_t): uint32_t; stdcall; public name 'mmc_device_set_driver_stage';
@@ -2971,7 +2981,10 @@ function mmc_device_select_card(mmc: PMMC_DEVICE): uint32_t; stdcall; public nam
 function mmc_device_deselect_card(mmc: PMMC_DEVICE): uint32_t; stdcall; public name 'mmc_device_deselect_card';
 
 function mmc_device_switch(mmc: PMMC_DEVICE; setting, index, value: uint8_t; timeout: uint32_t): uint32_t; stdcall; public name 'mmc_device_switch';
-//function mmc_device_switch_ex(mmc: PMMC_DEVICE;  //To Do //TestingEMMC
+function mmc_device_switch_ex(mmc: PMMC_DEVICE; setting, index, value: uint8_t; timeout, timing: uint32_t; sendstatus, retrycrcerror: BOOL): uint32_t; stdcall; public name 'mmc_device_switch_ex';
+
+function mmc_device_poll_for_busy(mmc: PMMC_DEVICE; timeout, command: uint32_t): uint32_t; stdcall; public name 'mmc_device_poll_for_busy';
+function mmc_device_poll_for_busy_ex(mmc: PMMC_DEVICE; timeout, command: uint32_t; sendstatus, retrycrcerror: BOOL): uint32_t; stdcall; public name 'mmc_device_poll_for_busy_ex';
 
 function mmc_device_send_card_status(mmc: PMMC_DEVICE): uint32_t; stdcall; public name 'mmc_device_send_card_status';
 
@@ -3052,18 +3065,105 @@ function sd_device_send_application_command(mmc: PMMC_DEVICE; command: PMMC_COMM
 
 {==============================================================================}
 {SDIO Functions}
+//Device Methods
 function sdio_device_reset(mmc: PMMC_DEVICE): uint32_t; stdcall; public name 'sdio_device_reset';
+
+function sdio_device_enable_wide_bus(mmc: PMMC_DEVICE): uint32_t; stdcall; public name 'sdio_device_enable_wide_bus';
+function sdio_device_disable_wide_bus(mmc: PMMC_DEVICE): uint32_t; stdcall; public name 'sdio_device_disable_wide_bus';
+
+function sdio_device_enable_highspeed(mmc: PMMC_DEVICE): uint32_t; stdcall; public name 'sdio_device_enable_highspeed';
+function sdio_device_switch_highspeed(mmc: PMMC_DEVICE; enable: BOOL): uint32_t; stdcall; public name 'sdio_device_switch_highspeed';
 
 function sdio_device_send_operation_condition(mmc: PMMC_DEVICE; probe: BOOL): uint32_t; stdcall; public name 'sdio_device_send_operation_condition';
 
 function sdio_device_read_write_direct(mmc: PMMC_DEVICE; write: BOOL; operation, address: uint32_t; input: uint8_t; output: Puint8_t): uint32_t; stdcall; public name 'sdio_device_read_write_direct';
 function sdio_device_read_write_extended(mmc: PMMC_DEVICE; write: BOOL; operation, address: uint32_t; increment: BOOL; buffer: PVOID; blockcount, blocksize: uint32_t): uint32_t; stdcall; public name 'sdio_device_read_write_extended';
 
+function sdio_device_read_byte(mmc: PMMC_DEVICE; address: uint32_t; output: Puint8_t): uint32_t; stdcall; public name 'sdio_device_read_byte';
+function sdio_device_write_byte(mmc: PMMC_DEVICE; address: uint32_t; input: uint8_t): uint32_t; stdcall; public name 'sdio_device_write_byte';
+
+function sdio_device_read_cccr(mmc: PMMC_DEVICE): uint32_t; stdcall; public name 'sdio_device_read_cccr';
+
+function sdio_device_read_fbr(func: PSDIO_FUNCTION): uint32_t; stdcall; public name 'sdio_device_read_fbr';
+
+function sdio_device_read_cis(mmc: PMMC_DEVICE; func: PSDIO_FUNCTION): uint32_t; stdcall; public name 'sdio_device_read_cis';
+
+function sdio_device_read_common_cis(mmc: PMMC_DEVICE): uint32_t; stdcall; public name 'sdio_device_read_common_cis';
+function sdio_device_read_function_cis(func: PSDIO_FUNCTION): uint32_t; stdcall; public name 'sdio_device_read_function_cis';
+
+function sdio_device_process_interrupts(mmc: PMMC_DEVICE): uint32_t; stdcall; public name 'sdio_device_process_interrupts';
+function sdio_device_register_interrupt(mmc: PMMC_DEVICE; func: PSDIO_FUNCTION; handler: sdio_interrupt_handler): uint32_t; stdcall; public name 'sdio_device_register_interrupt';
+function sdio_device_deregister_interrupt(mmc: PMMC_DEVICE; func: PSDIO_FUNCTION): uint32_t; stdcall; public name 'sdio_device_deregister_interrupt';
+
+function sdio_device_bind_functions(mmc: PMMC_DEVICE): uint32_t; stdcall; public name 'sdio_device_bind_functions';
+function sdio_device_unbind_functions(mmc: PMMC_DEVICE; driver: PSDIO_DRIVER): uint32_t; stdcall; public name 'sdio_device_unbind_functions';
+
+//Function Methods
+function sdio_function_allocate(mmc: PMMC_DEVICE; number: uint32_t): PSDIO_FUNCTION; stdcall; public name 'sdio_function_allocate';
+function sdio_function_release(func: PSDIO_FUNCTION): uint32_t; stdcall; public name 'sdio_function_release';
+
+function sdio_function_find(mmc: PMMC_DEVICE; number: uint32_t): PSDIO_FUNCTION; stdcall; public name 'sdio_function_find';
+function sdio_function_find_by_id(mmc: PMMC_DEVICE; vendorid, deviceid: uint16_t): PSDIO_FUNCTION; stdcall; public name 'sdio_function_find_by_id';
+function sdio_function_enumerate(mmc: PMMC_DEVICE; callback: sdio_function_enumerate_cb; data: PVOID): uint32_t; stdcall; public name 'sdio_function_enumerate';
+
+function sdio_function_bind(func: PSDIO_FUNCTION; driver: PSDIO_DRIVER): uint32_t; stdcall; public name 'sdio_function_bind';
+function sdio_function_unbind(func: PSDIO_FUNCTION; driver: PSDIO_DRIVER): uint32_t; stdcall; public name 'sdio_function_unbind';
+
+function sdio_function_enable(func: PSDIO_FUNCTION): uint32_t; stdcall; public name 'sdio_function_enable';
+function sdio_function_disable(func: PSDIO_FUNCTION): uint32_t; stdcall; public name 'sdio_function_disable';
+
+function sdio_function_set_block_size(func: PSDIO_FUNCTION; blocksize: uint32_t): uint32_t; stdcall; public name 'sdio_function_set_block_size';
+
+function sdio_function_read_write_extended(func: PSDIO_FUNCTION; write: BOOL; address: uint32_t; increment: BOOL; buffer: PVOID; size: uint32_t): uint32_t; stdcall; public name 'sdio_function_read_write_extended';
+
+function sdio_function_read(func: PSDIO_FUNCTION; address: uint32_t; buffer: PVOID; size: uint32_t): uint32_t; stdcall; public name 'sdio_function_read';
+function sdio_function_write(func: PSDIO_FUNCTION; address: uint32_t; buffer: PVOID; size: uint32_t): uint32_t; stdcall; public name 'sdio_function_write';
+
+function sdio_function_read_byte(func: PSDIO_FUNCTION; address: uint32_t; output: Puint8_t): uint32_t; stdcall; public name 'sdio_function_read_byte';
+function sdio_function_write_byte(func: PSDIO_FUNCTION; address: uint32_t; input: uint8_t): uint32_t; stdcall; public name 'sdio_function_write_byte';
+function sdio_function_write_read_byte(func: PSDIO_FUNCTION; address: uint32_t; input: uint8_t; output: Puint8_t): uint32_t; stdcall; public name 'sdio_function_write_read_byte';
+
+function sdio_function_read_word(func: PSDIO_FUNCTION; address: uint32_t; output: Puint16_t): uint32_t; stdcall; public name 'sdio_function_read_word';
+function sdio_function_write_word(func: PSDIO_FUNCTION; address: uint32_t; input: uint16_t): uint32_t; stdcall; public name 'sdio_function_write_word';
+
+function sdio_function_read_long(func: PSDIO_FUNCTION; address: uint32_t; output: Puint32_t): uint32_t; stdcall; public name 'sdio_function_read_long';
+function sdio_function_write_long(func: PSDIO_FUNCTION; address: uint32_t; input: uint32_t): uint32_t; stdcall; public name 'sdio_function_write_long';
+
+function sdio_function_register_interrupt(func: PSDIO_FUNCTION; handler: sdio_interrupt_handler): uint32_t; stdcall; public name 'sdio_function_register_interrupt';
+function sdio_function_deregister_interrupt(func: PSDIO_FUNCTION): uint32_t; stdcall; public name 'sdio_function_deregister_interrupt';
+
+//Host Methods
+function sdio_host_dispatch_interrupt(sdhci: PSDHCI_HOST; irq, fiq: BOOL): uint32_t; stdcall; public name 'sdio_host_dispatch_interrupt';
+
+//Driver Methods
+function sdio_driver_create: PSDIO_DRIVER; stdcall; public name 'sdio_driver_create';
+function sdio_driver_create_ex(size: uint32_t): PSDIO_DRIVER; stdcall; public name 'sdio_driver_create_ex';
+function sdio_driver_destroy(driver: PSDIO_DRIVER): uint32_t; stdcall; public name 'sdio_driver_destroy';
+
+function sdio_driver_register(driver: PSDIO_DRIVER): uint32_t; stdcall; public name 'sdio_driver_register';
+function sdio_driver_deregister(driver: PSDIO_DRIVER): uint32_t; stdcall; public name 'sdio_driver_deregister';
+
+function sdio_driver_find(driverid: uint32_t): PSDIO_DRIVER; stdcall; public name 'sdio_driver_find';
+function sdio_driver_find_by_name(name: PCHAR): PSDIO_DRIVER; stdcall; public name 'sdio_driver_find_by_name';
+function sdio_driver_enumerate(callback: sdio_driver_enumerate_cb; data: PVOID): uint32_t; stdcall; public name 'sdio_driver_enumerate';
+
 {==============================================================================}
 {SDHCI Functions}
 function sdhci_host_reset(sdhci: PSDHCI_HOST; mask: uint8_t): uint32_t; stdcall; public name 'sdhci_host_reset';
+function sdhci_host_hardware_reset(sdhci: PSDHCI_HOST): uint32_t; stdcall; public name 'sdhci_host_hardware_reset';
+
 function sdhci_host_set_power(sdhci: PSDHCI_HOST; power: uint16_t): uint32_t; stdcall; public name 'sdhci_host_set_power';
 function sdhci_host_set_clock(sdhci: PSDHCI_HOST; clock: uint32_t): uint32_t; stdcall; public name 'sdhci_host_set_clock';
+function sdhci_host_set_timing(sdhci: PSDHCI_HOST; timing: uint32_t): uint32_t; stdcall; public name 'sdhci_host_set_timing';
+function sdhci_host_set_bus_width(sdhci: PSDHCI_HOST; buswidth: uint32_t): uint32_t; stdcall; public name 'sdhci_host_set_bus_width';
+
+function sdhci_host_prepare_dma(sdhci: PSDHCI_HOST; command: PMMC_COMMAND): uint32_t; stdcall; public name 'sdhci_host_prepare_dma';
+function sdhci_host_start_dma(sdhci: PSDHCI_HOST; command: PMMC_COMMAND): uint32_t; stdcall; public name 'sdhci_host_start_dma';
+function sdhci_host_stop_dma(sdhci: PSDHCI_HOST; command: PMMC_COMMAND): uint32_t; stdcall; public name 'sdhci_host_stop_dma';
+procedure sdhci_host_complete_dma(request: PDMA_REQUEST); stdcall; public name 'sdhci_host_complete_dma'; // $IFDEF i386
+
+function sdhci_host_setup_card_irq(sdhci: PSDHCI_HOST; enable: LONGBOOL): uint32_t; stdcall; public name 'sdhci_host_setup_card_irq';
+function sdhci_host_complete_card_irq(sdhci: PSDHCI_HOST): uint32_t; stdcall; public name 'sdhci_host_complete_card_irq';
 
 function sdhci_host_transfer_pio(sdhci: PSDHCI_HOST): uint32_t; stdcall; public name 'sdhci_host_transfer_pio';
 function sdhci_host_transfer_dma(sdhci: PSDHCI_HOST): uint32_t; stdcall; public name 'sdhci_host_transfer_dma';
@@ -3077,6 +3177,11 @@ function sdhci_host_data_interrupt(sdhci: PSDHCI_HOST; interruptmask: uint32_t):
 function sdhci_host_start(sdhci: PSDHCI_HOST): uint32_t; stdcall; public name 'sdhci_host_start';
 function sdhci_host_stop(sdhci: PSDHCI_HOST): uint32_t; stdcall; public name 'sdhci_host_stop';
 
+function sdhci_host_lock(sdhci: PSDHCI_HOST): uint32_t; stdcall; public name 'sdhci_host_lock';
+function sdhci_host_unlock(sdhci: PSDHCI_HOST): uint32_t; stdcall; public name 'sdhci_host_unlock';
+
+function sdhci_host_signal(sdhci: PSDHCI_HOST; semaphore: SEMAPHORE_HANDLE): uint32_t; stdcall; public name 'sdhci_host_signal';
+
 function sdhci_host_read_byte(sdhci: PSDHCI_HOST; reg: uint32_t): uint8_t; stdcall; public name 'sdhci_host_read_byte';
 function sdhci_host_read_word(sdhci: PSDHCI_HOST; reg: uint32_t): uint16_t; stdcall; public name 'sdhci_host_read_word';
 function sdhci_host_read_long(sdhci: PSDHCI_HOST; reg: uint32_t): uint32_t; stdcall; public name 'sdhci_host_read_long';
@@ -3086,6 +3191,13 @@ procedure sdhci_host_write_long(sdhci: PSDHCI_HOST; reg: uint32_t; value: uint32
 
 function sdhci_host_set_clock_divider(sdhci: PSDHCI_HOST; index: int; divider: uint32_t): uint32_t; stdcall; public name 'sdhci_host_set_clock_divider';
 function sdhci_host_set_control_register(sdhci: PSDHCI_HOST): uint32_t; stdcall; public name 'sdhci_host_set_control_register';
+
+function sdhci_host_get_adma_address(sdhci: PSDHCI_HOST): SIZE_T; stdcall; public name 'sdhci_host_get_adma_address';
+procedure sdhci_host_set_adma_address(sdhci: PSDHCI_HOST; address: SIZE_T); stdcall; public name 'sdhci_host_set_adma_address';
+function sdhci_host_get_sdma_address(sdhci: PSDHCI_HOST; command: PMMC_COMMAND): SIZE_T; stdcall; public name 'sdhci_host_get_sdma_address';
+procedure sdhci_host_set_sdma_address(sdhci: PSDHCI_HOST; address: SIZE_T); stdcall; public name 'sdhci_host_set_sdma_address';
+
+procedure sdhci_host_write_adma_descriptor(sdhci: PSDHCI_HOST; var descriptor: PVOID; command, len: uint16_t; address: SIZE_T); stdcall; public name 'sdhci_host_write_adma_descriptor';
 
 function sdhci_host_create: PSDHCI_HOST; stdcall; public name 'sdhci_host_create';
 function sdhci_host_create_ex(size: uint32_t): PSDHCI_HOST; stdcall; public name 'sdhci_host_create_ex';
@@ -3106,6 +3218,9 @@ function mmc_get_count: uint32_t; stdcall; public name 'mmc_get_count';
 function mmc_device_check(mmc: PMMC_DEVICE): PMMC_DEVICE; stdcall; public name 'mmc_device_check';
 
 function mmc_is_sd(mmc: PMMC_DEVICE): BOOL; stdcall; public name 'mmc_is_sd';
+function mmc_is_sdio(mmc: PMMC_DEVICE): BOOL; stdcall; public name 'mmc_is_sdio';
+
+function mmc_get_sdhci(mmc: PMMC_DEVICE): PSDHCI_HOST; stdcall; public name 'mmc_get_sdhci';
 
 function mmc_get_cid_value(mmc: PMMC_DEVICE; version, value: uint32_t): uint32_t; stdcall; public name 'mmc_get_cid_value';
 function mmc_get_csd_value(mmc: PMMC_DEVICE; value: uint32_t): uint32_t; stdcall; public name 'mmc_get_csd_value';
@@ -3114,6 +3229,25 @@ function mmc_extract_bits(buffer: PVOID; start, size: uint32_t): uint32_t; stdca
 function mmc_extract_bits_ex(buffer: PVOID; length, start, size: uint32_t): uint32_t; stdcall; public name 'mmc_extract_bits_ex';
 
 function mmc_is_multi_command(command: uint16_t): BOOL; stdcall; public name 'mmc_is_multi_command';
+
+function mmc_is_non_removable(mmc: PMMC_DEVICE): BOOL; stdcall; public name 'mmc_is_non_removable';
+function mmc_has_extended_csd(mmc: PMMC_DEVICE): BOOL; stdcall; public name 'mmc_has_extended_csd';
+function mmc_has_set_block_count(mmc: PMMC_DEVICE): BOOL; stdcall; public name 'mmc_has_set_block_count';
+function mmc_has_auto_block_count(mmc: PMMC_DEVICE): BOOL; stdcall; public name 'mmc_has_auto_block_count';
+function mmc_has_auto_command_stop(mmc: PMMC_DEVICE): BOOL; stdcall; public name 'mmc_has_auto_command_stop';
+
+function mmc_status_to_string(status: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'mmc_status_to_string';
+
+function mmc_version_to_string(version: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'mmc_version_to_string';
+function mmc_timing_to_string(timing: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'mmc_timing_to_string';
+function mmc_bus_width_to_string(buswidth: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'mmc_bus_width_to_string';
+function mmc_driver_type_to_string(drivertype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'mmc_driver_type_to_string';
+function mmc_signal_voltage_to_string(signalvoltage: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'mmc_signal_voltage_to_string';
+
+function mmc_device_type_to_string(mmctype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'mmc_device_type_to_string';
+function mmc_device_state_to_string(mmcstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'mmc_device_state_to_string';
+
+function mmc_device_state_to_notification(state: uint32_t): uint32_t; stdcall; public name 'mmc_device_state_to_notification';
 
 {==============================================================================}
 {SD Helper Functions}
@@ -3125,8 +3259,27 @@ function sd_get_scr_value(mmc: PMMC_DEVICE; value: uint32_t): uint32_t; stdcall;
 function sd_get_ssr_value(mmc: PMMC_DEVICE; value: uint32_t): uint32_t; stdcall; public name 'sd_get_ssr_value';
 function sd_get_switch_value(mmc: PMMC_DEVICE; value: uint32_t): uint32_t; stdcall; public name 'sd_get_switch_value';
 
+function sd_version_to_string(version: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'sd_version_to_string';
+function sd_bus_width_to_string(buswidth: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'sd_bus_width_to_string';
+
 {==============================================================================}
 {SDIO Helper Functions}
+function sdio_driver_get_count: uint32_t; stdcall; public name 'sdio_driver_get_count';
+
+function sdio_driver_check(driver: PSDIO_DRIVER): PSDIO_DRIVER; stdcall; public name 'sdio_driver_check';
+
+function sdio_device_get_max_clock(mmc: PMMC_DEVICE): uint32_t; stdcall; public name 'sdio_device_get_max_clock';
+
+function sdio_function_get_mmc(func: PSDIO_FUNCTION): PMMC_DEVICE; stdcall; public name 'sdio_function_get_mmc';
+function sdio_function_get_sdhci(func: PSDIO_FUNCTION): PSDHCI_HOST; stdcall; public name 'sdio_function_get_sdhci';
+
+function sdio_version_to_string(version: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'sdio_version_to_string';
+
+function sdio_function_state_to_string(sdiostate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'sdio_function_state_to_string';
+function sdio_function_status_to_string(sdiostatus: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'sdio_function_status_to_string';
+
+function sdio_function_state_to_notification(state: uint32_t): uint32_t; stdcall; public name 'sdio_function_state_to_notification';
+function sdio_function_status_to_notification(status: uint32_t): uint32_t; stdcall; public name 'sdio_function_status_to_notification';
 
 {==============================================================================}
 {SDHCI Helper Functions}
@@ -3135,12 +3288,26 @@ function sdhci_get_count: uint32_t; stdcall; public name 'sdhci_get_count';
 function sdhci_host_check(sdhci: PSDHCI_HOST): PSDHCI_HOST; stdcall; public name 'sdhci_host_check';
 
 function sdhci_is_spi(sdhci: PSDHCI_HOST): BOOL; stdcall; public name 'sdhci_is_spi';
+function sdhci_has_dma(sdhci: PSDHCI_HOST): BOOL; stdcall; public name 'sdhci_has_dma';
+function sdhci_has_cm_d23(sdhci: PSDHCI_HOST): BOOL; stdcall; public name 'sdhci_has_cm_d23';
+function sdhci_auto_cm_d12(sdhci: PSDHCI_HOST): BOOL; stdcall; public name 'sdhci_auto_cm_d12';
+function sdhci_auto_cm_d23(sdhci: PSDHCI_HOST): BOOL; stdcall; public name 'sdhci_auto_cm_d23';
 
 function sdhci_get_version(sdhci: PSDHCI_HOST): uint16_t; stdcall; public name 'sdhci_get_version';
 
 function sdhci_get_command(command: uint16_t): uint16_t; stdcall; public name 'sdhci_get_command';
 function sdhci_make_command(command, flags: uint16_t): uint16_t; stdcall; public name 'sdhci_make_command';
 function sdhci_make_block_size(dma, blocksize: uint16_t): uint16_t; stdcall; public name 'sdhci_make_block_size';
+
+function sdhci_version_to_string(version: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'sdhci_version_to_string';
+function sdhci_power_to_string(power: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'sdhci_power_to_string';
+
+function sdhci_device_type_to_string(sdhcitype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'sdhci_device_type_to_string';
+function sdhci_host_type_to_string(sdhcitype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'sdhci_host_type_to_string';
+function sdhci_device_state_to_string(sdhcistate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'sdhci_device_state_to_string';
+function sdhci_host_state_to_string(sdhcistate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'sdhci_host_state_to_string';
+
+function sdhci_host_state_to_notification(state: uint32_t): uint32_t; stdcall; public name 'sdhci_host_state_to_notification';
 {$ENDIF}
 {==============================================================================}
 {SPI Functions}
@@ -23498,6 +23665,14 @@ end;
 
 {==============================================================================}
 
+function mmc_device_set_timing(mmc: PMMC_DEVICE; timing: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=MMCDeviceSetTiming(mmc,timing);
+end;
+
+{==============================================================================}
+
 function mmc_device_set_bus_width(mmc: PMMC_DEVICE; width: uint32_t): uint32_t; stdcall;
 {Reference: Section 3.4 of SD Host Controller Simplified Specification V3.0 partA2_300.pdf}
 begin
@@ -23556,9 +23731,50 @@ end;
 {==============================================================================}
 
 function mmc_device_switch(mmc: PMMC_DEVICE; setting, index, value: uint8_t; timeout: uint32_t): uint32_t; stdcall;
+{Modifies an Extended CSD register for the specificed MMC device}
+{MMC: The MMC Device to modify}
+{Setting: The Extended CSD command set (eg EXT_CSD_CMD_SET_NORMAL)}
+{Index: The index of the Extended CSD register to be set}
+{Value: The value to be set in the Extended CSD register}
+{Timeout: Command timeout in milliseconds}
 begin
  {}
  Result:=MMCDeviceSwitch(mmc,setting,index,value,timeout);
+end;
+
+{==============================================================================}
+
+function mmc_device_switch_ex(mmc: PMMC_DEVICE; setting, index, value: uint8_t; timeout, timing: uint32_t; sendstatus, retrycrcerror: BOOL): uint32_t; stdcall;
+{Modifies an Extended CSD register for the specificed MMC device}
+{MMC: The MMC Device to modify}
+{Setting: The Extended CSD command set (eg EXT_CSD_CMD_SET_NORMAL)}
+{Index: The index of the Extended CSD register to be set}
+{Value: The value to be set in the Extended CSD register}
+{Timeout: Command timeout in milliseconds}
+{Timing: New timing to enable after change (eg MMC_TIMING_MMC_HS)}
+{SendStatus: Use the MMC_CMD_SEND_STATUS command to poll for busy}
+{RetryCRCError: Retry if CRC error occurs when polling for busy}
+begin
+ {}
+ Result:=MMCDeviceSwitchEx(mmc,setting,index,value,timeout,timing,sendstatus,retrycrcerror);
+end;
+
+{==============================================================================}
+
+function mmc_device_poll_for_busy(mmc: PMMC_DEVICE; timeout, command: uint32_t): uint32_t; stdcall;
+{Poll the specified MMC device for command completion using busy status}
+begin
+ {}
+ Result:=MMCDevicePollForBusy(mmc,timeout,command);
+end;
+
+{==============================================================================}
+
+function mmc_device_poll_for_busy_ex(mmc: PMMC_DEVICE; timeout, command: uint32_t; sendstatus, retrycrcerror: BOOL): uint32_t; stdcall;
+{Poll the specified MMC device for command completion using busy status}
+begin
+ {}
+ Result:=MMCDevicePollForBusyEx(mmc,timeout,command,sendstatus,retrycrcerror);
 end;
 
 {==============================================================================}
@@ -23993,6 +24209,38 @@ end;
 
 {==============================================================================}
 
+function sdio_device_enable_wide_bus(mmc: PMMC_DEVICE): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIODeviceEnableWideBus(mmc);
+end;
+
+{==============================================================================}
+
+function sdio_device_disable_wide_bus(mmc: PMMC_DEVICE): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIODeviceDisableWideBus(mmc);
+end;
+
+{==============================================================================}
+
+function sdio_device_enable_highspeed(mmc: PMMC_DEVICE): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIODeviceEnableHighspeed(mmc);
+end;
+
+{==============================================================================}
+
+function sdio_device_switch_highspeed(mmc: PMMC_DEVICE; enable: BOOL): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIODeviceSwitchHighspeed(mmc,enable);
+end;
+
+{==============================================================================}
+
 function sdio_device_send_operation_condition(mmc: PMMC_DEVICE; probe: BOOL): uint32_t; stdcall;
 begin
  {}
@@ -24016,9 +24264,385 @@ begin
 end;
 
 {==============================================================================}
+
+function sdio_device_read_byte(mmc: PMMC_DEVICE; address: uint32_t; output: Puint8_t): uint32_t; stdcall;
+{Wrapper for reading a single byte from Function 0}
+begin
+ {}
+ Result:=SDIODeviceReadByte(mmc,address,output);
+end;
+
+{==============================================================================}
+
+function sdio_device_write_byte(mmc: PMMC_DEVICE; address: uint32_t; input: uint8_t): uint32_t; stdcall;
+{Wrapper for writing a single byte to Function 0}
+begin
+ {}
+ Result:=SDIODeviceWriteByte(mmc,address,input);
+end;
+
+{==============================================================================}
+
+function sdio_device_read_cccr(mmc: PMMC_DEVICE): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIODeviceReadCCCR(mmc);
+end;
+
+{==============================================================================}
+
+function sdio_device_read_fbr(func: PSDIO_FUNCTION): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIODeviceReadFBR(func);
+end;
+
+{==============================================================================}
+
+function sdio_device_read_cis(mmc: PMMC_DEVICE; func: PSDIO_FUNCTION): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIODeviceReadCIS(mmc,func);
+end;
+
+{==============================================================================}
+
+function sdio_device_read_common_cis(mmc: PMMC_DEVICE): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIODeviceReadCommonCIS(mmc);
+end;
+
+{==============================================================================}
+
+function sdio_device_read_function_cis(func: PSDIO_FUNCTION): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIODeviceReadFunctionCIS(func);
+end;
+
+{==============================================================================}
+
+function sdio_device_process_interrupts(mmc: PMMC_DEVICE): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIODeviceProcessInterrupts(mmc);
+end;
+
+{==============================================================================}
+
+function sdio_device_register_interrupt(mmc: PMMC_DEVICE; func: PSDIO_FUNCTION; handler: sdio_interrupt_handler): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIODeviceRegisterInterrupt(mmc,func,handler);
+end;
+
+{==============================================================================}
+
+function sdio_device_deregister_interrupt(mmc: PMMC_DEVICE; func: PSDIO_FUNCTION): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIODeviceDeregisterInterrupt(mmc,func);
+end;
+
+{==============================================================================}
+
+function sdio_device_bind_functions(mmc: PMMC_DEVICE): uint32_t; stdcall;
+{Attempt to bind SDIO functions on an MMC device to one of the registered drivers}
+{MMC: The MMC device to attempt to bind a driver to}
+{Return: MMC_STATUS_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=SDIODeviceBindFunctions(mmc);
+end;
+
+{==============================================================================}
+
+function sdio_device_unbind_functions(mmc: PMMC_DEVICE; driver: PSDIO_DRIVER): uint32_t; stdcall;
+{Unbind SDIO functions on an MMC device from a driver}
+{MMC: The MMC device to unbind a driver from}
+{Driver: The driver to unbind the MMC device from (nil to unbind from current driver)}
+{Return: MMC_STATUS_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=SDIODeviceUnbindFunctions(mmc,driver);
+end;
+
+{==============================================================================}
+
+function sdio_function_allocate(mmc: PMMC_DEVICE; number: uint32_t): PSDIO_FUNCTION; stdcall;
+begin
+ {}
+ Result:=SDIOFunctionAllocate(mmc,number);
+end;
+
+{==============================================================================}
+
+function sdio_function_release(func: PSDIO_FUNCTION): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIOFunctionRelease(func);
+end;
+
+{==============================================================================}
+
+function sdio_function_find(mmc: PMMC_DEVICE; number: uint32_t): PSDIO_FUNCTION; stdcall;
+begin
+ {}
+ Result:=SDIOFunctionFind(mmc,number);
+end;
+
+{==============================================================================}
+
+function sdio_function_find_by_id(mmc: PMMC_DEVICE; vendorid, deviceid: uint16_t): PSDIO_FUNCTION; stdcall;
+begin
+ {}
+ Result:=SDIOFunctionFindById(mmc,vendorid,deviceid);
+end;
+
+{==============================================================================}
+
+function sdio_function_enumerate(mmc: PMMC_DEVICE; callback: sdio_function_enumerate_cb; data: PVOID): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIOFunctionEnumerate(mmc,callback,data);
+end;
+
+{==============================================================================}
+
+function sdio_function_bind(func: PSDIO_FUNCTION; driver: PSDIO_DRIVER): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIOFunctionBind(func,driver);
+end;
+
+{==============================================================================}
+
+function sdio_function_unbind(func: PSDIO_FUNCTION; driver: PSDIO_DRIVER): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIOFunctionUnbind(func,driver);
+end;
+
+{==============================================================================}
+
+function sdio_function_enable(func: PSDIO_FUNCTION): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIOFunctionEnable(func);
+end;
+
+{==============================================================================}
+
+function sdio_function_disable(func: PSDIO_FUNCTION): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIOFunctionDisable(func);
+end;
+
+{==============================================================================}
+
+function sdio_function_set_block_size(func: PSDIO_FUNCTION; blocksize: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIOFunctionSetBlockSize(func,blocksize);
+end;
+
+{==============================================================================}
+
+function sdio_function_read_write_extended(func: PSDIO_FUNCTION; write: BOOL; address: uint32_t; increment: BOOL; buffer: PVOID; size: uint32_t): uint32_t; stdcall;
+{Perform an SDIO read or write to the specified function at the specified address}
+{Handles splitting any size read or write into multiple IO_RW_EXTENDED requests, accounting for maximum block sizes}
+begin
+ {}
+ Result:=SDIOFunctionReadWriteExtended(func,write,address,increment,buffer,size);
+end;
+
+{==============================================================================}
+
+function sdio_function_read(func: PSDIO_FUNCTION; address: uint32_t; buffer: PVOID; size: uint32_t): uint32_t; stdcall;
+{Wrapper for reading multiple bytes from an SDIO function}
+begin
+ {}
+ Result:=SDIOFunctionRead(func,address,buffer,size);
+end;
+
+{==============================================================================}
+
+function sdio_function_write(func: PSDIO_FUNCTION; address: uint32_t; buffer: PVOID; size: uint32_t): uint32_t; stdcall;
+{Wrapper for writing multiple bytes to an SDIO function}
+begin
+ {}
+ Result:=SDIOFunctionWrite(func,address,buffer,size);
+end;
+
+{==============================================================================}
+
+function sdio_function_read_byte(func: PSDIO_FUNCTION; address: uint32_t; output: Puint8_t): uint32_t; stdcall;
+{Wrapper for reading a single byte from an SDIO function}
+begin
+ {}
+ Result:=SDIOFunctionReadByte(func,address,output);
+end;
+
+{==============================================================================}
+
+function sdio_function_write_byte(func: PSDIO_FUNCTION; address: uint32_t; input: uint8_t): uint32_t; stdcall;
+{Wrapper for writing a single byte to an SDIO function}
+begin
+ {}
+ Result:=SDIOFunctionWriteByte(func,address,input);
+end;
+
+{==============================================================================}
+
+function sdio_function_write_read_byte(func: PSDIO_FUNCTION; address: uint32_t; input: uint8_t; output: Puint8_t): uint32_t; stdcall;
+{Wrapper for performing a read after write (RAW) operation on an SDIO function}
+begin
+ {}
+ Result:=SDIOFunctionWriteReadByte(func,address,input,output);
+end;
+
+{==============================================================================}
+
+function sdio_function_read_word(func: PSDIO_FUNCTION; address: uint32_t; output: Puint16_t): uint32_t; stdcall;
+{Wrapper for reading a single word from an SDIO function}
+begin
+ {}
+ Result:=SDIOFunctionReadWord(func,address,output);
+end;
+
+{==============================================================================}
+
+function sdio_function_write_word(func: PSDIO_FUNCTION; address: uint32_t; input: uint16_t): uint32_t; stdcall;
+{Wrapper for writing a single word to an SDIO function}
+begin
+ {}
+ Result:=SDIOFunctionWriteWord(func,address,input);
+end;
+
+{==============================================================================}
+
+function sdio_function_read_long(func: PSDIO_FUNCTION; address: uint32_t; output: Puint32_t): uint32_t; stdcall;
+{Wrapper for reading a single longword from an SDIO function}
+begin
+ {}
+ Result:=SDIOFunctionReadLong(func,address,output);
+end;
+
+{==============================================================================}
+
+function sdio_function_write_long(func: PSDIO_FUNCTION; address: uint32_t; input: uint32_t): uint32_t; stdcall;
+{Wrapper for writing a single longword to an SDIO function}
+begin
+ {}
+ Result:=SDIOFunctionWriteLong(func,address,input);
+end;
+
+{==============================================================================}
+
+function sdio_function_register_interrupt(func: PSDIO_FUNCTION; handler: sdio_interrupt_handler): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIOFunctionRegisterInterrupt(func,handler);
+end;
+
+{==============================================================================}
+
+function sdio_function_deregister_interrupt(func: PSDIO_FUNCTION): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIOFunctionDeregisterInterrupt(func);
+end;
+
+{==============================================================================}
+
+function sdio_host_dispatch_interrupt(sdhci: PSDHCI_HOST; irq, fiq: BOOL): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIOHostDispatchInterrupt(sdhci,irq,fiq);
+end;
+
+{==============================================================================}
+
+function sdio_driver_create: PSDIO_DRIVER; stdcall;
+{Create a new SDIO Driver entry}
+{Return: Pointer to new Driver entry or nil if driver could not be created}
+begin
+ {}
+ Result:=SDIODriverCreate;
+end;
+
+{==============================================================================}
+
+function sdio_driver_create_ex(size: uint32_t): PSDIO_DRIVER; stdcall;
+{Create a new SDIO Driver entry}
+{Size: Size in bytes to allocate for new driver (Including the driver entry)}
+{Return: Pointer to new Driver entry or nil if driver could not be created}
+begin
+ {}
+ Result:=SDIODriverCreateEx(size);
+end;
+
+{==============================================================================}
+
+function sdio_driver_destroy(driver: PSDIO_DRIVER): uint32_t; stdcall;
+{Destroy an existing SDIO Driver entry}
+begin
+ {}
+ Result:=SDIODriverDestroy(driver);
+end;
+
+{==============================================================================}
+
+function sdio_driver_register(driver: PSDIO_DRIVER): uint32_t; stdcall;
+{Register a new Driver in the SDIO Driver table}
+begin
+ {}
+ Result:=SDIODriverRegister(driver);
+end;
+
+{==============================================================================}
+
+function sdio_driver_deregister(driver: PSDIO_DRIVER): uint32_t; stdcall;
+{Deregister a Driver from the SDIO Driver table}
+begin
+ {}
+ Result:=SDIODriverDeregister(driver);
+end;
+
+{==============================================================================}
+
+function sdio_driver_find(driverid: uint32_t): PSDIO_DRIVER; stdcall;
+{Find a driver by Id in the SDIO Driver table}
+begin
+ {}
+ Result:=SDIODriverFind(driverid);
+end;
+
+{==============================================================================}
+
+function sdio_driver_find_by_name(name: PCHAR): PSDIO_DRIVER; stdcall;
+{Find a driver by name in the Driver table}
+begin
+ {}
+ Result:=SDIODriverFindByName(name);
+end;
+
+{==============================================================================}
+
+function sdio_driver_enumerate(callback: sdio_driver_enumerate_cb; data: PVOID): uint32_t; stdcall;
+begin
+ {}
+ Result:=SDIODriverEnumerate(callback,data);
+end;
+
+{==============================================================================}
 {SDHCI Functions}
 function sdhci_host_reset(sdhci: PSDHCI_HOST; mask: uint8_t): uint32_t; stdcall;
-{Reference: Section ?.? of SD Host Controller Simplified Specification V3.0 partA2_300.pdf}
+{Default software reset function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
+{Reference: Section 3.3 of SD Host Controller Simplified Specification V3.0 partA2_300.pdf}
 begin
  {}
  Result:=SDHCIHostReset(sdhci,mask);
@@ -24026,7 +24650,22 @@ end;
 
 {==============================================================================}
 
+function sdhci_host_hardware_reset(sdhci: PSDHCI_HOST): uint32_t; stdcall;
+{Default hardware reset function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
+begin
+ {}
+ Result:=SDHCIHostHardwareReset(sdhci);
+end;
+
+{==============================================================================}
+
 function sdhci_host_set_power(sdhci: PSDHCI_HOST; power: uint16_t): uint32_t; stdcall;
+{Default set power function for SDHCI host controllers}
+{Power: A shift value to indicate the first available value in the Voltages mask}
+{       Caller can use FirstBitSet(SDHCI.Voltages) to obtain the value of Power}
+{       If there are no values set then Power will be -1 ($FFFF) to indicate nothing or unknown}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
 {Reference: Section 3.3 of SD Host Controller Simplified Specification V3.0 partA2_300.pdf}
 begin
  {}
@@ -24036,6 +24675,8 @@ end;
 {==============================================================================}
 
 function sdhci_host_set_clock(sdhci: PSDHCI_HOST; clock: uint32_t): uint32_t; stdcall;
+{Default set clock function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
 {Reference: Section 3.2 of SD Host Controller Simplified Specification V3.0 partA2_300.pdf}
 begin
  {}
@@ -24044,7 +24685,89 @@ end;
 
 {==============================================================================}
 
+function sdhci_host_set_timing(sdhci: PSDHCI_HOST; timing: uint32_t): uint32_t; stdcall;
+{Default set timing function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
+begin
+ {}
+ Result:=SDHCIHostSetTiming(sdhci,timing);
+end;
+
+{==============================================================================}
+
+function sdhci_host_set_bus_width(sdhci: PSDHCI_HOST; buswidth: uint32_t): uint32_t; stdcall;
+{Default set bus width function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
+begin
+ {}
+ Result:=SDHCIHostSetBusWidth(sdhci,buswidth);
+end;
+
+{==============================================================================}
+
+function sdhci_host_prepare_dma(sdhci: PSDHCI_HOST; command: PMMC_COMMAND): uint32_t; stdcall;
+{Default DMA transfer prepare function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
+begin
+ {}
+ Result:=SDHCIHostPrepareDMA(sdhci,command);
+end;
+
+{==============================================================================}
+
+function sdhci_host_start_dma(sdhci: PSDHCI_HOST; command: PMMC_COMMAND): uint32_t; stdcall;
+{Default DMA transfer start function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
+begin
+ {}
+ Result:=SDHCIHostStartDMA(sdhci,command);
+end;
+
+{==============================================================================}
+
+function sdhci_host_stop_dma(sdhci: PSDHCI_HOST; command: PMMC_COMMAND): uint32_t; stdcall;
+{Default DMA transfer stop function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
+begin
+ {}
+ Result:=SDHCIHostStopDMA(sdhci,command);
+end;
+
+{==============================================================================}
+
+procedure sdhci_host_complete_dma(request: PDMA_REQUEST); stdcall; // $IFDEF i386
+{Default DMA request completion callback for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
+begin
+ {}
+ SDHCIHostCompleteDMA(request);
+end;
+
+{==============================================================================}
+
+function sdhci_host_setup_card_irq(sdhci: PSDHCI_HOST; enable: LONGBOOL): uint32_t; stdcall;
+{Default Card IRQ setup function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
+begin
+ {}
+ Result:=SDHCIHostSetupCardIRQ(sdhci,enable);
+end;
+
+{==============================================================================}
+
+function sdhci_host_complete_card_irq(sdhci: PSDHCI_HOST): uint32_t; stdcall;
+{Default Card IRQ completion function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
+begin
+ {}
+ Result:=SDHCIHostCompleteCardIRQ(sdhci);
+end;
+
+{==============================================================================}
+
 function sdhci_host_transfer_pio(sdhci: PSDHCI_HOST): uint32_t; stdcall;
+{Default PIO transfer function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
 begin
  {}
  Result:=SDHCIHostTransferPIO(sdhci);
@@ -24053,6 +24776,8 @@ end;
 {==============================================================================}
 
 function sdhci_host_transfer_dma(sdhci: PSDHCI_HOST): uint32_t; stdcall;
+{Default DMA transfer function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
 begin
  {}
  Result:=SDHCIHostTransferDMA(sdhci);
@@ -24061,7 +24786,9 @@ end;
 {==============================================================================}
 
 function sdhci_host_finish_command(sdhci: PSDHCI_HOST): uint32_t; stdcall;
+{Default finish command function for SDHCI host controllers}
 {Called by Interrupt Command handler when an SDHCI_INT_RESPONSE is received}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
 begin
  {}
  Result:=SDHCIHostFinishCommand(sdhci);
@@ -24070,7 +24797,9 @@ end;
 {==============================================================================}
 
 function sdhci_host_finish_data(sdhci: PSDHCI_HOST): uint32_t; stdcall;
+{Default finish data function for SDHCI host controllers}
 {Called by Interrupt Data handler when data is received}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
 begin
  {}
  Result:=SDHCIHostFinishData(sdhci);
@@ -24079,6 +24808,9 @@ end;
 {==============================================================================}
 
 function sdhci_host_command_interrupt(sdhci: PSDHCI_HOST; interruptmask: uint32_t; var returnmask: uint32_t): uint32_t; stdcall;
+{Default command interrupt processing function for SDHCI host controllers}
+{Called by SDHCI controller interrupt handler when a command interrupt is received}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
 begin
  {}
  Result:=SDHCIHostCommandInterrupt(sdhci,interruptmask,returnmask);
@@ -24087,6 +24819,9 @@ end;
 {==============================================================================}
 
 function sdhci_host_data_interrupt(sdhci: PSDHCI_HOST; interruptmask: uint32_t): uint32_t; stdcall;
+{Default data interrupt processing function for SDHCI host controllers}
+{Called by SDHCI controller interrupt handler when a data interrupt is received}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
 begin
  {}
  Result:=SDHCIHostDataInterrupt(sdhci,interruptmask);
@@ -24095,6 +24830,9 @@ end;
 {==============================================================================}
 
 function sdhci_host_start(sdhci: PSDHCI_HOST): uint32_t; stdcall;
+{Default host start function for SDHCI host controllers}
+{Called automatically to start each registered SDHCI controller when required}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
 begin
  {}
  Result:=SDHCIHostStart(sdhci);
@@ -24103,6 +24841,9 @@ end;
 {==============================================================================}
 
 function sdhci_host_stop(sdhci: PSDHCI_HOST): uint32_t; stdcall;
+{Default host stop function for SDHCI host controllers}
+{Called automatically to stop each registered SDHCI controller when required}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
 begin
  {}
  Result:=SDHCIHostStop(sdhci);
@@ -24110,7 +24851,39 @@ end;
 
 {==============================================================================}
 
+function sdhci_host_lock(sdhci: PSDHCI_HOST): uint32_t; stdcall;
+{Default host lock function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
+begin
+ {}
+ Result:=SDHCIHostLock(sdhci);
+end;
+
+{==============================================================================}
+
+function sdhci_host_unlock(sdhci: PSDHCI_HOST): uint32_t; stdcall;
+{Default host unlock function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
+begin
+ {}
+ Result:=SDHCIHostUnlock(sdhci);
+end;
+
+{==============================================================================}
+
+function sdhci_host_signal(sdhci: PSDHCI_HOST; semaphore: SEMAPHORE_HANDLE): uint32_t; stdcall;
+{Default host semaphore signal function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
+begin
+ {}
+ Result:=SDHCIHostSignal(sdhci,semaphore);
+end;
+
+{==============================================================================}
+
 function sdhci_host_read_byte(sdhci: PSDHCI_HOST; reg: uint32_t): uint8_t; stdcall;
+{Default read byte function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
 begin
  {}
  Result:=SDHCIHostReadByte(sdhci,reg);
@@ -24119,6 +24892,8 @@ end;
 {==============================================================================}
 
 function sdhci_host_read_word(sdhci: PSDHCI_HOST; reg: uint32_t): uint16_t; stdcall;
+{Default read word function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
 begin
  {}
  Result:=SDHCIHostReadWord(sdhci,reg);
@@ -24127,6 +24902,8 @@ end;
 {==============================================================================}
 
 function sdhci_host_read_long(sdhci: PSDHCI_HOST; reg: uint32_t): uint32_t; stdcall;
+{Default read longword function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
 begin
  {}
  Result:=SDHCIHostReadLong(sdhci,reg);
@@ -24135,6 +24912,8 @@ end;
 {==============================================================================}
 
 procedure sdhci_host_write_byte(sdhci: PSDHCI_HOST; reg: uint32_t; value: uint8_t); stdcall;
+{Default write byte function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
 begin
  {}
  SDHCIHostWriteByte(sdhci,reg,value);
@@ -24143,6 +24922,8 @@ end;
 {==============================================================================}
 
 procedure sdhci_host_write_word(sdhci: PSDHCI_HOST; reg: uint32_t; value: uint16_t); stdcall;
+{Default write word function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
 begin
  {}
  SDHCIHostWriteWord(sdhci,reg,value);
@@ -24151,6 +24932,8 @@ end;
 {==============================================================================}
 
 procedure sdhci_host_write_long(sdhci: PSDHCI_HOST; reg: uint32_t; value: uint32_t); stdcall;
+{Default write longword function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
 begin
  {}
  SDHCIHostWriteLong(sdhci,reg,value);
@@ -24159,6 +24942,8 @@ end;
 {==============================================================================}
 
 function sdhci_host_set_clock_divider(sdhci: PSDHCI_HOST; index: int; divider: uint32_t): uint32_t; stdcall;
+{Default set clock divider function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
 begin
  {}
  Result:=SDHCIHostSetClockDivider(sdhci,index,divider);
@@ -24167,9 +24952,61 @@ end;
 {==============================================================================}
 
 function sdhci_host_set_control_register(sdhci: PSDHCI_HOST): uint32_t; stdcall;
+{Default set control register function for SDHCI host controllers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
 begin
  {}
  Result:=SDHCIHostSetControlRegister(sdhci);
+end;
+
+{==============================================================================}
+
+function sdhci_host_get_adma_address(sdhci: PSDHCI_HOST): SIZE_T; stdcall;
+{Get the DMA address of the ADMA table for the current request}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
+begin
+ {}
+ Result:=SDHCIHostGetADMAAddress(sdhci);
+end;
+
+{==============================================================================}
+
+procedure sdhci_host_set_adma_address(sdhci: PSDHCI_HOST; address: SIZE_T); stdcall;
+{Set the address of the transfer data in the Advanded DMA (ADMA) registers}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
+begin
+ {}
+ SDHCIHostSetADMAAddress(sdhci,address);
+end;
+
+{==============================================================================}
+
+function sdhci_host_get_sdma_address(sdhci: PSDHCI_HOST; command: PMMC_COMMAND): SIZE_T; stdcall;
+{Get the DMA address of the transfer data for the current request}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
+begin
+ {}
+ Result:=SDHCIHostGetSDMAAddress(sdhci,command);
+end;
+
+{==============================================================================}
+
+procedure sdhci_host_set_sdma_address(sdhci: PSDHCI_HOST; address: SIZE_T); stdcall;
+{Set the address of the transfer data in the Simple DMA (SDMA) register}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
+begin
+ {}
+ SDHCIHostSetSDMAAddress(sdhci,address);
+end;
+
+{==============================================================================}
+
+procedure sdhci_host_write_adma_descriptor(sdhci: PSDHCI_HOST; var descriptor: PVOID; command, len: uint16_t; address: SIZE_T); stdcall;
+{Write the properties to an ADMA descriptor}
+{Note: Not intended to be called directly by applications, may be used by SDHCI drivers}
+begin
+ {}
+ SDHCIHostWriteADMADescriptor(sdhci,descriptor,command,len,address);
 end;
 
 {==============================================================================}
@@ -24272,6 +25109,22 @@ end;
 
 {==============================================================================}
 
+function mmc_is_sdio(mmc: PMMC_DEVICE): BOOL; stdcall;
+begin
+ {}
+ Result:=MMCIsSDIO(mmc);
+end;
+
+{==============================================================================}
+
+function mmc_get_sdhci(mmc: PMMC_DEVICE): PSDHCI_HOST; stdcall;
+begin
+ {}
+ Result:=MMCGetSDHCI(mmc);
+end;
+
+{==============================================================================}
+
 function mmc_get_cid_value(mmc: PMMC_DEVICE; version, value: uint32_t): uint32_t; stdcall;
 {Extract a CID field value from the 128 bit Card Identification register}
 begin
@@ -24316,6 +25169,125 @@ function mmc_is_multi_command(command: uint16_t): BOOL; stdcall;
 begin
  {}
  Result:=MMCIsMultiCommand(command);
+end;
+
+{==============================================================================}
+
+function mmc_is_non_removable(mmc: PMMC_DEVICE): BOOL; stdcall;
+begin
+ {}
+ Result:=MMCIsNonRemovable(mmc);
+end;
+
+{==============================================================================}
+
+function mmc_has_extended_csd(mmc: PMMC_DEVICE): BOOL; stdcall;
+begin
+ {}
+ Result:=MMCHasExtendedCSD(mmc);
+end;
+
+{==============================================================================}
+
+function mmc_has_set_block_count(mmc: PMMC_DEVICE): BOOL; stdcall;
+begin
+ {}
+ Result:=MMCHasSetBlockCount(mmc);
+end;
+
+{==============================================================================}
+
+function mmc_has_auto_block_count(mmc: PMMC_DEVICE): BOOL; stdcall;
+begin
+ {}
+ Result:=MMCHasAutoBlockCount(mmc);
+end;
+
+{==============================================================================}
+
+function mmc_has_auto_command_stop(mmc: PMMC_DEVICE): BOOL; stdcall;
+begin
+ {}
+ Result:=MMCHasAutoCommandStop(mmc);
+end;
+
+{==============================================================================}
+
+function mmc_status_to_string(status: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Translates an MMC status code into a string describing it}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(MMCStatusToString(status),_string,len);
+end;
+
+{==============================================================================}
+
+function mmc_version_to_string(version: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Translates an MMC version into a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(MMCVersionToString(version),_string,len);
+end;
+
+{==============================================================================}
+
+function mmc_timing_to_string(timing: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Translates an MMC timing into a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(MMCTimingToString(timing),_string,len);
+end;
+
+{==============================================================================}
+
+function mmc_bus_width_to_string(buswidth: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Translates an MMC bus width into a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(MMCBusWidthToString(buswidth),_string,len);
+end;
+
+{==============================================================================}
+
+function mmc_driver_type_to_string(drivertype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Translates an MMC driver type into a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(MMCDriverTypeToString(drivertype),_string,len);
+end;
+
+{==============================================================================}
+
+function mmc_signal_voltage_to_string(signalvoltage: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Translates an MMC signal voltage into a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(MMCSignalVoltageToString(signalvoltage),_string,len);
+end;
+
+{==============================================================================}
+
+function mmc_device_type_to_string(mmctype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(MMCDeviceTypeToString(mmctype),_string,len);
+end;
+
+{==============================================================================}
+
+function mmc_device_state_to_string(mmcstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(MMCDeviceStateToString(mmcstate),_string,len);
+end;
+
+{==============================================================================}
+
+function mmc_device_state_to_notification(state: uint32_t): uint32_t; stdcall;
+{Convert a Device state value into the notification code for device notifications}
+begin
+ {}
+ Result:=MMCDeviceStateToNotification(state);
 end;
 
 {==============================================================================}
@@ -24373,7 +25345,109 @@ begin
 end;
 
 {==============================================================================}
+
+function sd_version_to_string(version: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Translates an SD version into a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SDVersionToString(version),_string,len);
+end;
+
+{==============================================================================}
+
+function sd_bus_width_to_string(buswidth: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Translates an SD bus width into a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SDBusWidthToString(buswidth),_string,len);
+end;
+
+{==============================================================================}
 {SDIO Helper Functions}
+function sdio_driver_get_count: uint32_t; stdcall;
+{Get the current SDIO driver count}
+begin
+ {}
+ Result:=SDIODriverGetCount;
+end;
+
+{==============================================================================}
+
+function sdio_driver_check(driver: PSDIO_DRIVER): PSDIO_DRIVER; stdcall;
+{Check if the supplied SDIO Driver is in the driver table}
+begin
+ {}
+ Result:=SDIODriverCheck(driver);
+end;
+
+{==============================================================================}
+
+function sdio_device_get_max_clock(mmc: PMMC_DEVICE): uint32_t; stdcall;
+{Determine the Maximum Clock (DTR) for the current SDIo device}
+begin
+ {}
+ Result:=SDIODeviceGetMaxClock(mmc);
+end;
+
+{==============================================================================}
+
+function sdio_function_get_mmc(func: PSDIO_FUNCTION): PMMC_DEVICE; stdcall;
+begin
+ {}
+ Result:=SDIOFunctionGetMMC(func);
+end;
+
+{==============================================================================}
+
+function sdio_function_get_sdhci(func: PSDIO_FUNCTION): PSDHCI_HOST; stdcall;
+begin
+ {}
+ Result:=SDIOFunctionGetSDHCI(func);
+end;
+
+{==============================================================================}
+
+function sdio_version_to_string(version: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Translates an SDIO version into a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SDIOVersionToString(version),_string,len);
+end;
+
+{==============================================================================}
+
+function sdio_function_state_to_string(sdiostate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SDIOFunctionStateToString(sdiostate),_string,len);
+end;
+
+{==============================================================================}
+
+function sdio_function_status_to_string(sdiostatus: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SDIOFunctionStatusToString(sdiostatus),_string,len);
+end;
+
+{==============================================================================}
+
+function sdio_function_state_to_notification(state: uint32_t): uint32_t; stdcall;
+{Convert a Device state value into the notification code for device notifications}
+begin
+ {}
+ Result:=SDIOFunctionStateToNotification(state);
+end;
+
+{==============================================================================}
+
+function sdio_function_status_to_notification(status: uint32_t): uint32_t; stdcall;
+{Convert a Device status value into the notification code for device notifications}
+begin
+ {}
+ Result:=SDIOFunctionStatusToNotification(status);
+end;
+
 {==============================================================================}
 {SDHCI Helper Functions}
 function sdhci_get_count: uint32_t; stdcall;
@@ -24398,6 +25472,38 @@ function sdhci_is_spi(sdhci: PSDHCI_HOST): BOOL; stdcall;
 begin
  {}
  Result:=SDHCIIsSPI(sdhci);
+end;
+
+{==============================================================================}
+
+function sdhci_has_dma(sdhci: PSDHCI_HOST): BOOL; stdcall;
+begin
+ {}
+ Result:=SDHCIHasDMA(sdhci);
+end;
+
+{==============================================================================}
+
+function sdhci_has_cm_d23(sdhci: PSDHCI_HOST): BOOL; stdcall;
+begin
+ {}
+ Result:=SDHCIHasCMD23(sdhci);
+end;
+
+{==============================================================================}
+
+function sdhci_auto_cm_d12(sdhci: PSDHCI_HOST): BOOL; stdcall;
+begin
+ {}
+ Result:=SDHCIAutoCMD12(sdhci);
+end;
+
+{==============================================================================}
+
+function sdhci_auto_cm_d23(sdhci: PSDHCI_HOST): BOOL; stdcall;
+begin
+ {}
+ Result:=SDHCIAutoCMD23(sdhci);
 end;
 
 {==============================================================================}
@@ -24430,6 +25536,65 @@ function sdhci_make_block_size(dma, blocksize: uint16_t): uint16_t; stdcall;
 begin
  {}
  Result:=SDHCIMakeBlockSize(dma,blocksize);
+end;
+
+{==============================================================================}
+
+function sdhci_version_to_string(version: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Translate an SDHCI version into a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SDHCIVersionToString(version),_string,len);
+end;
+
+{==============================================================================}
+
+function sdhci_power_to_string(power: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Translate an SDHCI power value into a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SDHCIPowerToString(power),_string,len);
+end;
+
+{==============================================================================}
+
+function sdhci_device_type_to_string(sdhcitype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SDHCIDeviceTypeToString(sdhcitype),_string,len);
+end;
+
+{==============================================================================}
+
+function sdhci_host_type_to_string(sdhcitype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SDHCIHostTypeToString(sdhcitype),_string,len);
+end;
+
+{==============================================================================}
+
+function sdhci_device_state_to_string(sdhcistate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SDHCIDeviceStateToString(sdhcistate),_string,len);
+end;
+
+{==============================================================================}
+
+function sdhci_host_state_to_string(sdhcistate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SDHCIHostStateToString(sdhcistate),_string,len);
+end;
+
+{==============================================================================}
+
+function sdhci_host_state_to_notification(state: uint32_t): uint32_t; stdcall;
+{Convert a Host state value into the notification code for device notifications}
+begin
+ {}
+ Result:=SDHCIHostStateToNotification(state);
 end;
 {$ENDIF}
 {==============================================================================}
