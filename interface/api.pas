@@ -701,7 +701,29 @@ type
 {$ENDIF}
 
 {$IFDEF API_EXPORT_HID}
-// To Do
+type
+ PHID_DEVICE = PHIDDevice;
+ PHID_CONSUMER = PHIDConsumer;
+ 
+ PHID_STATE = PHIDState;
+ PHID_STACK = PHIDStack;
+ 
+ PHID_USAGE = PHIDUsage;
+ PHID_REPORT = PHIDReport;
+ PHID_REPORTS = PHIDReports;
+ PHID_COLLECTION = PHIDCollection;
+ PHID_COLLECTIONS = PHIDCollections;
+ 
+ PHID_FIELD = PHIDField;
+ PHID_DEFINITION = PHIDDefinition;
+ 
+ PHID_REPORT_DESCRIPTOR = PHIDReportDescriptor;
+ PHID_PHYSICAL_DESCRIPTOR_SET = PHIDPhysicalDescriptorSet;
+ PHID_PHYSICAL_DESCRIPTOR_SET0 = PHIDPhysicalDescriptorSet0;
+ 
+ hid_device_enumerate_cb = THIDDeviceEnumerate;
+ hid_device_notification_cb = THIDDeviceNotification;
+ hid_consumer_enumerate_cb = THIDConsumerEnumerate;
 {$ENDIF}
 
 {$IFDEF API_EXPORT_KEYMAP}
@@ -3295,9 +3317,9 @@ function sdhci_host_check(sdhci: PSDHCI_HOST): PSDHCI_HOST; stdcall; public name
 
 function sdhci_is_spi(sdhci: PSDHCI_HOST): BOOL; stdcall; public name 'sdhci_is_spi';
 function sdhci_has_dma(sdhci: PSDHCI_HOST): BOOL; stdcall; public name 'sdhci_has_dma';
-function sdhci_has_cm_d23(sdhci: PSDHCI_HOST): BOOL; stdcall; public name 'sdhci_has_cm_d23';
-function sdhci_auto_cm_d12(sdhci: PSDHCI_HOST): BOOL; stdcall; public name 'sdhci_auto_cm_d12';
-function sdhci_auto_cm_d23(sdhci: PSDHCI_HOST): BOOL; stdcall; public name 'sdhci_auto_cm_d23';
+function sdhci_has_cmd23(sdhci: PSDHCI_HOST): BOOL; stdcall; public name 'sdhci_has_cmd23';
+function sdhci_auto_cmd12(sdhci: PSDHCI_HOST): BOOL; stdcall; public name 'sdhci_auto_cmd12';
+function sdhci_auto_cmd23(sdhci: PSDHCI_HOST): BOOL; stdcall; public name 'sdhci_auto_cmd23';
 
 function sdhci_get_version(sdhci: PSDHCI_HOST): uint16_t; stdcall; public name 'sdhci_get_version';
 
@@ -3951,10 +3973,137 @@ function graphics_window_check(console: PCONSOLE_DEVICE; window: PGRAPHICS_WINDO
 {==============================================================================}
 {HID Functions}
 {$IFDEF API_EXPORT_HID}
-//To Do
+function hid_parser_parse_collections(device: PHID_DEVICE; var collections: PHID_COLLECTIONS; var count: uint32_t): uint32_t; stdcall; public name 'hid_parser_parse_collections';
+function hid_parser_free_collections(collections: PHID_COLLECTIONS; count: uint32_t): uint32_t; stdcall; public name 'hid_parser_free_collections';
+
+function hid_parser_count_collections(device: PHID_DEVICE; parent: PHID_COLLECTION): uint32_t; stdcall; public name 'hid_parser_count_collections';
+function hid_parser_count_reports(device: PHID_DEVICE; collection: PHID_COLLECTION): uint32_t; stdcall; public name 'hid_parser_count_reports';
+function hid_parser_count_usages(device: PHID_DEVICE; report: PHID_REPORT): uint32_t; stdcall; public name 'hid_parser_count_usages';
+
+function hid_parser_allocate_collection(device: PHID_DEVICE; parent: PHID_COLLECTION; state: PHID_STATE; flags, start: uint32_t): PHID_COLLECTION; stdcall; public name 'hid_parser_allocate_collection';
+function hid_parser_allocate_report(device: PHID_DEVICE; collection: PHID_COLLECTION; state: PHID_STATE; kind: uint8_t; flags, index, sequence: uint32_t): PHID_REPORT; stdcall; public name 'hid_parser_allocate_report';
+function hid_parser_allocate_usage(device: PHID_DEVICE; report: PHID_REPORT; state: PHID_STATE; index: uint32_t): PHID_USAGE; stdcall; public name 'hid_parser_allocate_usage';
+function hid_parser_update_usage(device: PHID_DEVICE; report: PHID_REPORT; state: PHID_STATE; usage: PHID_USAGE): BOOL; stdcall; public name 'hid_parser_update_usage';
+function hid_parser_free_usage(device: PHID_DEVICE; usage: PHID_USAGE): BOOL; stdcall; public name 'hid_parser_free_usage';
+
+function hid_parser_pop_stack(var stack: PHID_STACK; var state: PHID_STATE): uint32_t; stdcall; public name 'hid_parser_pop_stack';
+function hid_parser_push_stack(stack: PHID_STACK): uint32_t; stdcall; public name 'hid_parser_push_stack';
+function hid_parser_free_stack(stack: PHID_STACK): uint32_t; stdcall; public name 'hid_parser_free_stack';
+
+function hid_parser_reset_state(state: PHID_STATE): uint32_t; stdcall; public name 'hid_parser_reset_state';
+function hid_parser_clean_state(state: PHID_STATE): uint32_t; stdcall; public name 'hid_parser_clean_state';
+
+function hid_find_collection(device: PHID_DEVICE; page, usage: uint16_t): PHID_COLLECTION; stdcall; public name 'hid_find_collection';
+
+function hid_find_report_ids(device: PHID_DEVICE; collection: PHID_COLLECTION; var minid, maxid: uint8_t): uint32_t; stdcall; public name 'hid_find_report_ids';
+
+function hid_count_reports(device: PHID_DEVICE; collection: PHID_COLLECTION; kind, id: uint8_t; var count: uint32_t): uint32_t; stdcall; public name 'hid_count_reports';
+function hid_find_reports(device: PHID_DEVICE; collection: PHID_COLLECTION; kind, id: uint8_t; reports: PHID_REPORTS; count: uint32_t): uint32_t; stdcall; public name 'hid_find_reports';
+
+function hid_allocate_definition(device: PHID_DEVICE; collection: PHID_COLLECTION; kind, id: uint8_t): PHID_DEFINITION; stdcall; public name 'hid_allocate_definition';
+function hid_free_definition(definition: PHID_DEFINITION): uint32_t; stdcall; public name 'hid_free_definition';
+
+function hid_insert_bit_field(field: PHID_FIELD; buffer: PVOID; size: uint32_t; value: BOOL): uint32_t; stdcall; public name 'hid_insert_bit_field';
+function hid_insert_signed_field(field: PHID_FIELD; buffer: PVOID; size: uint32_t; value: int32_t): uint32_t; stdcall; public name 'hid_insert_signed_field';
+function hid_insert_unsigned_field(field: PHID_FIELD; buffer: PVOID; size, value: uint32_t): uint32_t; stdcall; public name 'hid_insert_unsigned_field';
+
+function hid_extract_bit_field(field: PHID_FIELD; buffer: PVOID; size: uint32_t; var value: BOOL): uint32_t; stdcall; public name 'hid_extract_bit_field';
+function hid_extract_signed_field(field: PHID_FIELD; buffer: PVOID; size: uint32_t; var value: int32_t): uint32_t; stdcall; public name 'hid_extract_signed_field';
+function hid_extract_unsigned_field(field: PHID_FIELD; buffer: PVOID; size: uint32_t; var value: uint32_t): uint32_t; stdcall; public name 'hid_extract_unsigned_field';
+
+{==============================================================================}
+{HID Device Functions}
+function hid_device_set_state(device: PHID_DEVICE; state: uint32_t): uint32_t; stdcall; public name 'hid_device_set_state';
+
+function hid_device_get_idle(device: PHID_DEVICE; var duration: uint16_t; reportid: uint8_t): uint32_t; stdcall; public name 'hid_device_get_idle';
+function hid_device_set_idle(device: PHID_DEVICE; duration: uint16_t; reportid: uint8_t): uint32_t; stdcall; public name 'hid_device_set_idle';
+
+function hid_device_get_report(device: PHID_DEVICE; reporttype, reportid: uint8_t; reportdata: PVOID; reportsize: uint32_t): uint32_t; stdcall; public name 'hid_device_get_report';
+function hid_device_set_report(device: PHID_DEVICE; reporttype, reportid: uint8_t; reportdata: PVOID; reportsize: uint32_t): uint32_t; stdcall; public name 'hid_device_set_report';
+
+function hid_device_allocate_report(device: PHID_DEVICE; collection: PHID_COLLECTION; reportid: uint8_t; reportsize: uint32_t): uint32_t; stdcall; public name 'hid_device_allocate_report';
+function hid_device_release_report(device: PHID_DEVICE; reportid: uint8_t): uint32_t; stdcall; public name 'hid_device_release_report';
+
+function hid_device_submit_report(device: PHID_DEVICE; reportid: uint8_t): uint32_t; stdcall; public name 'hid_device_submit_report';
+function hid_device_cancel_report(device: PHID_DEVICE; reportid: uint8_t): uint32_t; stdcall; public name 'hid_device_cancel_report';
+
+function hid_device_get_protocol(device: PHID_DEVICE; var protocol: uint8_t): uint32_t; stdcall; public name 'hid_device_get_protocol';
+function hid_device_set_protocol(device: PHID_DEVICE; protocol: uint8_t): uint32_t; stdcall; public name 'hid_device_set_protocol';
+
+function hid_device_get_interval(device: PHID_DEVICE; var interval: uint32_t): uint32_t; stdcall; public name 'hid_device_get_interval';
+function hid_device_set_interval(device: PHID_DEVICE; interval: uint32_t): uint32_t; stdcall; public name 'hid_device_set_interval';
+
+function hid_device_get_report_descriptor(device: PHID_DEVICE; descriptor: PHID_REPORT_DESCRIPTOR; size: uint32_t): uint32_t; stdcall; public name 'hid_device_get_report_descriptor';
+function hid_device_get_physical_descriptor_set0(device: PHID_DEVICE; descriptor: PHID_PHYSICAL_DESCRIPTOR_SET0): uint32_t; stdcall; public name 'hid_device_get_physical_descriptor_set0';
+function hid_device_get_physical_descriptor_set(device: PHID_DEVICE; descriptor: PHID_PHYSICAL_DESCRIPTOR_SET; index: uint8_t; size: uint32_t): uint32_t; stdcall; public name 'hid_device_get_physical_descriptor_set';
+
+function hid_device_bind_device(device: PHID_DEVICE): uint32_t; stdcall; public name 'hid_device_bind_device';
+function hid_device_unbind_device(device: PHID_DEVICE; consumer: PHID_CONSUMER): uint32_t; stdcall; public name 'hid_device_unbind_device';
+
+function hid_device_bind_collections(device: PHID_DEVICE): uint32_t; stdcall; public name 'hid_device_bind_collections';
+function hid_device_unbind_collections(device: PHID_DEVICE; consumer: PHID_CONSUMER): uint32_t; stdcall; public name 'hid_device_unbind_collections';
+
+function hid_device_create: PHID_DEVICE; stdcall; public name 'hid_device_create';
+function hid_device_create_ex(size: uint32_t): PHID_DEVICE; stdcall; public name 'hid_device_create_ex';
+function hid_device_destroy(device: PHID_DEVICE): uint32_t; stdcall; public name 'hid_device_destroy';
+
+function hid_device_register(device: PHID_DEVICE): uint32_t; stdcall; public name 'hid_device_register';
+function hid_device_deregister(device: PHID_DEVICE): uint32_t; stdcall; public name 'hid_device_deregister';
+
+function hid_device_find(hidid: uint32_t): PHID_DEVICE; stdcall; public name 'hid_device_find';
+function hid_device_find_by_name(name: PCHAR): PHID_DEVICE; stdcall; public name 'hid_device_find_by_name';
+function hid_device_find_by_description(description: PCHAR): PHID_DEVICE; stdcall; public name 'hid_device_find_by_description';
+function hid_device_enumerate(callback: hid_device_enumerate_cb; data: PVOID): uint32_t; stdcall; public name 'hid_device_enumerate';
+
+function hid_device_notification(device: PHID_DEVICE; callback: hid_device_notification_cb; data: PVOID; notification, flags: uint32_t): uint32_t; stdcall; public name 'hid_device_notification';
+
+{==============================================================================}
+{HID Consumer Functions}
+function hid_consumer_create: PHID_CONSUMER; stdcall; public name 'hid_consumer_create';
+function hid_consumer_create_ex(size: uint32_t): PHID_CONSUMER; stdcall; public name 'hid_consumer_create_ex';
+function hid_consumer_destroy(consumer: PHID_CONSUMER): uint32_t; stdcall; public name 'hid_consumer_destroy';
+
+function hid_consumer_register(consumer: PHID_CONSUMER): uint32_t; stdcall; public name 'hid_consumer_register';
+function hid_consumer_deregister(consumer: PHID_CONSUMER): uint32_t; stdcall; public name 'hid_consumer_deregister';
+
+function hid_consumer_find(consumerid: uint32_t): PHID_CONSUMER; stdcall; public name 'hid_consumer_find';
+function hid_consumer_find_by_name(name: PCHAR): PHID_CONSUMER; stdcall; public name 'hid_consumer_find_by_name';
+function hid_consumer_enumerate(callback: hid_consumer_enumerate_cb; data: PVOID): uint32_t; stdcall; public name 'hid_consumer_enumerate';
+
 {==============================================================================}
 {HID Helper Functions}
-//To Do
+function hid_is_bit_field(field: PHID_FIELD): BOOL; stdcall; public name 'hid_is_bit_field';
+function hid_is_byte_field(field: PHID_FIELD): BOOL; stdcall; public name 'hid_is_byte_field';
+function hid_is_word_field(field: PHID_FIELD): BOOL; stdcall; public name 'hid_is_word_field';
+function hid_is_long_field(field: PHID_FIELD): BOOL; stdcall; public name 'hid_is_long_field';
+function hid_is_signed_field(field: PHID_FIELD): BOOL; stdcall; public name 'hid_is_signed_field';
+
+function hid_page_to_string(page: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'hid_page_to_string';
+function hid_usage_to_string(page, usage, count: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'hid_usage_to_string';
+
+function hid_unit_type_to_string(unittype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'hid_unit_type_to_string';
+
+function hid_report_kind_to_string(kind: uint8_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'hid_report_kind_to_string';
+function hid_report_flags_to_string(flags: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'hid_report_flags_to_string';
+
+function hid_collection_flags_to_string(flags: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'hid_collection_flags_to_string';
+
+{==============================================================================}
+{HID Device Helper Functions}
+function hid_device_get_count: uint32_t; stdcall; public name 'hid_device_get_count';
+
+function hid_device_check(device: PHID_DEVICE): PHID_DEVICE; stdcall; public name 'hid_device_check';
+
+function hid_device_type_to_string(hidtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'hid_device_type_to_string';
+function hid_device_state_to_string(hidstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'hid_device_state_to_string';
+
+function hid_device_state_to_notification(state: uint32_t): uint32_t; stdcall; public name 'hid_device_state_to_notification';
+
+{==============================================================================}
+{HID Consumer Helper Functions}
+function hid_consumer_get_count: uint32_t; stdcall; public name 'hid_consumer_get_count';
+
+function hid_consumer_check(consumer: PHID_CONSUMER): PHID_CONSUMER; stdcall; public name 'hid_consumer_check';
 {$ENDIF}
 {==============================================================================}
 {Keymap Functions}
@@ -5628,6 +5777,8 @@ function lstrlenW(lpstring: LPCWSTR): int; stdcall; public name 'lstrlenW';
 {==============================================================================}
 
 implementation
+
+{$NOTES OFF}
 
 {==============================================================================}
 {==============================================================================}
@@ -24688,7 +24839,7 @@ function sdio_driver_find_by_name(name: PCHAR): PSDIO_DRIVER; stdcall;
 {Find a driver by name in the Driver table}
 begin
  {}
- Result:=SDIODriverFindByName(name);
+ Result:=SDIODriverFindByName(String(name));
 end;
 
 {==============================================================================}
@@ -25546,7 +25697,7 @@ end;
 
 {==============================================================================}
 
-function sdhci_has_cm_d23(sdhci: PSDHCI_HOST): BOOL; stdcall;
+function sdhci_has_cmd23(sdhci: PSDHCI_HOST): BOOL; stdcall;
 begin
  {}
  Result:=SDHCIHasCMD23(sdhci);
@@ -25554,7 +25705,7 @@ end;
 
 {==============================================================================}
 
-function sdhci_auto_cm_d12(sdhci: PSDHCI_HOST): BOOL; stdcall;
+function sdhci_auto_cmd12(sdhci: PSDHCI_HOST): BOOL; stdcall;
 begin
  {}
  Result:=SDHCIAutoCMD12(sdhci);
@@ -25562,7 +25713,7 @@ end;
 
 {==============================================================================}
 
-function sdhci_auto_cm_d23(sdhci: PSDHCI_HOST): BOOL; stdcall;
+function sdhci_auto_cmd23(sdhci: PSDHCI_HOST): BOOL; stdcall;
 begin
  {}
  Result:=SDHCIAutoCMD23(sdhci);
@@ -30264,10 +30415,975 @@ end;
 {==============================================================================}
 {HID Functions}
 {$IFDEF API_EXPORT_HID}
-//To Do
+function hid_parser_parse_collections(device: PHID_DEVICE; var collections: PHID_COLLECTIONS; var count: uint32_t): uint32_t; stdcall;
+{Parse the HID report descriptor of the provided device and popuplate the collections, reports and usages}
+{Device: The HID device to parse collections for}
+{Collections: A pointer to the top level collections array to be populated}
+{Count: A variable to return the number of top level collections}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDParserParseCollections(device,collections,count);
+end;
+
+{==============================================================================}
+
+function hid_parser_free_collections(collections: PHID_COLLECTIONS; count: uint32_t): uint32_t; stdcall;
+{Free the collections, reports and usages parsed from a HID report descriptor}
+{Collections: A pointer to the top level collections array to be freed}
+{Count: The number of top level collections in the array}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDParserFreeCollections(collections,count);
+end;
+
+{==============================================================================}
+
+function hid_parser_count_collections(device: PHID_DEVICE; parent: PHID_COLLECTION): uint32_t; stdcall;
+{Count the number of collections found in the HID report descriptor of the provided device}
+{Device: The HID device to count collections for}
+{Parent: The parent HID collection, if supplied count child collections else count top level collections}
+{Return: The number of collections found, 0 if none for or on error}
+begin
+ {}
+ Result:=HIDParserCountCollections(device,parent);
+end;
+
+{==============================================================================}
+
+function hid_parser_count_reports(device: PHID_DEVICE; collection: PHID_COLLECTION): uint32_t; stdcall;
+{Count the number of reports found in the HID report descriptor of the supplied device and collection}
+{Device: The HID device to count reports for}
+{Collection: The HID collection to count reports for}
+{Return: The number of reports found, 0 if none for or on error}
+begin
+ {}
+ Result:=HIDParserCountReports(device,collection);
+end;
+
+{==============================================================================}
+
+function hid_parser_count_usages(device: PHID_DEVICE; report: PHID_REPORT): uint32_t; stdcall;
+{Count the number of usages found in the HID report descriptor for the supplied device and report}
+{Device: The HID device to count usages for}
+{Report: The HID report to count usages for}
+{Return: The number of usages found, 0 if none for or on error}
+begin
+ {}
+ Result:=HIDParserCountUsages(device,report);
+end;
+
+{==============================================================================}
+
+function hid_parser_allocate_collection(device: PHID_DEVICE; parent: PHID_COLLECTION; state: PHID_STATE; flags, start: uint32_t): PHID_COLLECTION; stdcall;
+{Allocate a HID collection to contain a set of reports and usages from a HID report descriptor}
+{Device: The HID device containing the collection}
+{Parent: The HID collection containing the collection (or nil for a top level collection)}
+{State: The current HID parser state}
+{Flags: The flags for the collection from the HID report descriptor}
+{Start: The starting byte offset of the collection in the HID report descriptor}
+{Return: A pointer to the HID collection or nil on error}
+begin
+ {}
+ Result:=HIDParserAllocateCollection(device,parent,state,flags,start);
+end;
+
+{==============================================================================}
+
+function hid_parser_allocate_report(device: PHID_DEVICE; collection: PHID_COLLECTION; state: PHID_STATE; kind: uint8_t; flags, index, sequence: uint32_t): PHID_REPORT; stdcall;
+{Allocate a HID report to contain a set of usages from a HID report descriptor}
+{Device: The HID device containing the report}
+{Collection: The HID collection containing the report}
+{State: The current HID parser state}
+{Kind: The report kind (eg HID_REPORT_INPUT)}
+{Flags: The flags for the report from the HID report descriptor}
+{Index: The index of this report in the collection (First report is 0)}
+{Sequence: The sequence of this report in all collections (First report is 0)}
+{Return: A pointer to the HID report or nil on error}
+begin
+ {}
+ Result:=HIDParserAllocateReport(device,collection,state,kind,flags,index,sequence);
+end;
+
+{==============================================================================}
+
+function hid_parser_allocate_usage(device: PHID_DEVICE; report: PHID_REPORT; state: PHID_STATE; index: uint32_t): PHID_USAGE; stdcall;
+{Allocate a HID usage from a HID report descriptor}
+{Device: The HID device containing the usage}
+{Report: The HID report containing the usage}
+{State: The current HID parser state}
+{Index: The index of this usage in the report (First usage is 0)}
+{Return: A pointer to the HID usage or nil on error}
+begin
+ {}
+ Result:=HIDParserAllocateUsage(device,report,state,index);
+end;
+
+{==============================================================================}
+
+function hid_parser_update_usage(device: PHID_DEVICE; report: PHID_REPORT; state: PHID_STATE; usage: PHID_USAGE): BOOL; stdcall;
+{Update a HID usage from a HID report descriptor}
+{Device: The HID device containing the usage}
+{Report: The HID report containing the usage}
+{State: The current HID parser state}
+{Usage: The HID usage to update}
+{Return: True if completed or False on error}
+{Note: As usages must precede the main item they relate to in the HID report descriptor they need to be allocated}
+{      before all the required information is known, this function updates the usage after the main item is found}
+begin
+ {}
+ Result:=HIDParserUpdateUsage(device,report,state,usage);
+end;
+
+{==============================================================================}
+
+function hid_parser_free_usage(device: PHID_DEVICE; usage: PHID_USAGE): BOOL; stdcall;
+{Free a HID usage and any associated usage aliases}
+{Device: The HID device containing the usage}
+{Usage: The HID usage to free}
+{Return: True if completed or False on error}
+begin
+ {}
+ Result:=HIDParserFreeUsage(device,usage);
+end;
+
+{==============================================================================}
+
+function hid_parser_pop_stack(var stack: PHID_STACK; var state: PHID_STATE): uint32_t; stdcall;
+{Replace the current HID parser state with the top item from the parser stack}
+{Stack: The HID parser stack}
+{State: The HID parser state to replace}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDParserPopStack(stack,state);
+end;
+
+{==============================================================================}
+
+function hid_parser_push_stack(stack: PHID_STACK): uint32_t; stdcall;
+{Place a copy of the current HID parser state on top of the parser stack}
+{Stack: The HID parser stack}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDParserPushStack(stack);
+end;
+
+{==============================================================================}
+
+function hid_parser_free_stack(stack: PHID_STACK): uint32_t; stdcall;
+{Free the HID parser stack and state}
+{Stack: The HID parser stack}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDParserFreeStack(stack);
+end;
+
+{==============================================================================}
+
+function hid_parser_reset_state(state: PHID_STATE): uint32_t; stdcall;
+{Clear the Local and Global HID parser state}
+{State: The HID parser state to reset}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDParserResetState(state);
+end;
+
+{==============================================================================}
+
+function hid_parser_clean_state(state: PHID_STATE): uint32_t; stdcall;
+{Clear the Local HID parser state}
+{State: The HID parser state to clean}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDParserCleanState(state);
+end;
+
+{==============================================================================}
+
+function hid_find_collection(device: PHID_DEVICE; page, usage: uint16_t): PHID_COLLECTION; stdcall;
+{Find the first HID collection matching the specified page and usage}
+{Device: The HID device to find collections from}
+{Page: The HID Usage Page to match (eg HID_PAGE_GENERIC_DESKTOP)}
+{Usage: The HID Usage to match (eg HID_DESKTOP_MOUSE)}
+{Return: A pointer to the first matching collection or nil if not matched}
+begin
+ {}
+ Result:=HIDFindCollection(device,page,usage);
+end;
+
+{==============================================================================}
+
+function hid_find_report_ids(device: PHID_DEVICE; collection: PHID_COLLECTION; var minid, maxid: uint8_t): uint32_t; stdcall;
+{Find the minimum and maximum report ids contained in the specified HID collection or all collections}
+{Device: The HID device to find report ids from}
+{Collection: The HID collection to find report ids from (or nil to find from all collections)}
+{MinId: A variable to receive the minimum report id number}
+{MaxId: A variable to receive the maximum report id number}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDFindReportIds(device,collection,minid,maxid);
+end;
+
+{==============================================================================}
+
+function hid_count_reports(device: PHID_DEVICE; collection: PHID_COLLECTION; kind, id: uint8_t; var count: uint32_t): uint32_t; stdcall;
+{Count the number of HID reports of the specified type and id in the specified collection}
+{Device: The HID device to get the report count from}
+{Collection: The HID collection to get the report count from}
+{Kind: The report kind to count reports for (eg HID_REPORT_INPUT)}
+{Id: The report id to count reports for (must be less than or equal to the maximum report id)}
+{Count: A variable to return the number of reports}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDCountReports(device,collection,kind,id,count);
+end;
+
+{==============================================================================}
+
+function hid_find_reports(device: PHID_DEVICE; collection: PHID_COLLECTION; kind, id: uint8_t; reports: PHID_REPORTS; count: uint32_t): uint32_t; stdcall;
+{Find all HID reports of the specified type and id in the specified collection}
+{Device: The HID device to get the reports from}
+{Collection: The HID collection to get the reports from}
+{Kind: The report kind to get reports for (eg HID_REPORT_INPUT)}
+{Id: The report id to get reports for (must be less than or equal to the maximum report id)}
+{Reports: A pointer to an array to return the list of reports}
+{Count: The number of reports able to be returned in the reports array}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+{Note: The caller is responsible for allocating the reports array which must be large enough}
+{      to hold a pointer to every report in the returned list}
+{      When finished the array should be freed by the caller but not the reports themselves}
+{      Call HIDCountReports first to obtain the correct size to be allocated for the array}
+begin
+ {}
+ Result:=HIDFindReports(device,collection,kind,id,reports,count);
+end;
+
+{==============================================================================}
+
+function hid_allocate_definition(device: PHID_DEVICE; collection: PHID_COLLECTION; kind, id: uint8_t): PHID_DEFINITION; stdcall;
+{Allocate a HID definition to describe an input, output or feature report contained in the specified collection}
+{Device: The HID device to create the report definition from}
+{Collection: The HID collection to create the report definition from}
+{Kind: The report kind to create a definition for (eg HID_REPORT_INPUT)}
+{Id: The report id to create a definition for (must be less than or equal to the maximum report id)}
+{Return: A pointer to the allocated definition or nil on error}
+begin
+ {}
+ Result:=HIDAllocateDefinition(device,collection,kind,id);
+end;
+
+{==============================================================================}
+
+function hid_free_definition(definition: PHID_DEFINITION): uint32_t; stdcall;
+{Free a HID definition describing an input, output or feature report}
+{Definition: The HID definition to be freed}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDFreeDefinition(definition);
+end;
+
+{==============================================================================}
+
+function hid_insert_bit_field(field: PHID_FIELD; buffer: PVOID; size: uint32_t; value: BOOL): uint32_t; stdcall;
+{Insert a bit field value into a report buffer}
+{Field: The field to insert into the report}
+{Buffer: A pointer to the report buffer}
+{Size: The size in bytes of the report buffer}
+{Value: The value to insert into the buffer}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDInsertBitField(field,buffer,size,value);
+end;
+
+{==============================================================================}
+
+function hid_insert_signed_field(field: PHID_FIELD; buffer: PVOID; size: uint32_t; value: int32_t): uint32_t; stdcall;
+{Insert a signed field value into a report buffer}
+{Field: The field to insert into the report}
+{Buffer: A pointer to the report buffer}
+{Size: The size in bytes of the report buffer}
+{Value: The value to insert into the buffer}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDInsertSignedField(field,buffer,size,value);
+end;
+
+{==============================================================================}
+
+function hid_insert_unsigned_field(field: PHID_FIELD; buffer: PVOID; size, value: uint32_t): uint32_t; stdcall;
+{Insert an unsigned field value into a report buffer}
+{Field: The field to insert into the report}
+{Buffer: A pointer to the report buffer}
+{Size: The size in bytes of the report buffer}
+{Value: The value to insert into the buffer}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDInsertUnsignedField(field,buffer,size,value);
+end;
+
+{==============================================================================}
+
+function hid_extract_bit_field(field: PHID_FIELD; buffer: PVOID; size: uint32_t; var value: BOOL): uint32_t; stdcall;
+{Extract a bit field value from a report buffer}
+{Field: The field to extract from the report}
+{Buffer: A pointer to the report buffer}
+{Size: The size in bytes of the report buffer}
+{Value: A variable to receive the extracted value}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+var
+ WorkBool:Boolean;
+begin
+ {}
+ Result:=HIDExtractBitField(field,buffer,size,WorkBool);
+ 
+ {Return Value}
+ value:=WorkBool;
+end;
+
+{==============================================================================}
+
+function hid_extract_signed_field(field: PHID_FIELD; buffer: PVOID; size: uint32_t; var value: int32_t): uint32_t; stdcall;
+{Extract a signed field value from a report buffer}
+{Field: The field to extract from the report}
+{Buffer: A pointer to the report buffer}
+{Size: The size in bytes of the report buffer}
+{Value: A variable to receive the extracted value}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDExtractSignedField(field,buffer,size,value);
+end;
+
+{==============================================================================}
+
+function hid_extract_unsigned_field(field: PHID_FIELD; buffer: PVOID; size: uint32_t; var value: uint32_t): uint32_t; stdcall;
+{Extract an unsigned field value from a report buffer}
+{Field: The field to extract from the report}
+{Buffer: A pointer to the report buffer}
+{Size: The size in bytes of the report buffer}
+{Value: A variable to receive the extracted value}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDExtractUnsignedField(field,buffer,size,value);
+end;
+
+{==============================================================================}
+{HID Device Functions}
+function hid_device_set_state(device: PHID_DEVICE; state: uint32_t): uint32_t; stdcall;
+{Set the state of the specified HID device and send a notification}
+{Device: The HID device to set the state for}
+{State: The new state to set and notify (eg HID_STATE_ATTACHED)}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDDeviceSetState(device,state);
+end;
+
+{==============================================================================}
+
+function hid_device_get_idle(device: PHID_DEVICE; var duration: uint16_t; reportid: uint8_t): uint32_t; stdcall;
+{Get the idle rate from a HID device for the specified report id}
+{Device: The HID device to get the idle rate from}
+{Duration: A variable to receive the idle rate (in Milliseconds)}
+{ReportId: The report id to get the idle rate from}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDDeviceGetIdle(device,duration,reportid);
+end;
+
+{==============================================================================}
+
+function hid_device_set_idle(device: PHID_DEVICE; duration: uint16_t; reportid: uint8_t): uint32_t; stdcall;
+{Set the idle rate on a HID device for the specified report id}
+{Device: The HID device to set the idle rate for}
+{Duration: The idle rate to set (in Milliseconds)}
+{ReportId: The report id to set the idle rate for}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDDeviceSetIdle(device,duration,reportid);
+end;
+
+{==============================================================================}
+
+function hid_device_get_report(device: PHID_DEVICE; reporttype, reportid: uint8_t; reportdata: PVOID; reportsize: uint32_t): uint32_t; stdcall;
+{Read a report by type and id from a HID device}
+{Device: The HID device to read the report from}
+{ReportType: The report type to read (eg HID_REPORT_INPUT)}
+{ReportId: The report id to read (eg HID_REPORTID_NONE)}
+{ReportData: A pointer to a buffer to receive the report data}
+{ReportSize: The size in bytes of the buffer pointed to by report data}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDDeviceGetReport(device,reporttype,reportid,reportdata,reportsize);
+end;
+
+{==============================================================================}
+
+function hid_device_set_report(device: PHID_DEVICE; reporttype, reportid: uint8_t; reportdata: PVOID; reportsize: uint32_t): uint32_t; stdcall;
+{Write a report by type and id to a HID device}
+{Device: The HID device to write the report to}
+{ReportType: The report type to write (eg HID_REPORT_OUTPUT)}
+{ReportId: The report id to write (eg HID_REPORTID_NONE)}
+{ReportData: A pointer to a buffer containing the report data}
+{ReportSize: The size in bytes of the buffer pointed to by report data}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDDeviceSetReport(device,reporttype,reportid,reportdata,reportsize);
+end;
+
+{==============================================================================}
+
+function hid_device_allocate_report(device: PHID_DEVICE; collection: PHID_COLLECTION; reportid: uint8_t; reportsize: uint32_t): uint32_t; stdcall;
+{Allocate and initialize an input report by id on a HID device}
+{Device: The HID device to allocate the report on}
+{Collection: The HID collection this request corresponds to}
+{ReportId: The report id to allocate (eg HID_REPORTID_NONE)}
+{ReportSize: The size in bytes to allocate for the report (Provider will handle alignment and other requirements)}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+{Note: An allocated report must be submitted before reports will be received from the device}
+begin
+ {}
+ Result:=HIDDeviceAllocateReport(device,collection,reportid,reportsize);
+end;
+
+{==============================================================================}
+
+function hid_device_release_report(device: PHID_DEVICE; reportid: uint8_t): uint32_t; stdcall;
+{Release an input report by id from a HID device}
+{Device: The HID device to release the report from}
+{ReportId: The report id to allocate (eg HID_REPORTID_NONE)}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+{Note: If the report has been submitted it must be cancelled before being released}
+begin
+ {}
+ Result:=HIDDeviceReleaseReport(device,reportid);
+end;
+
+{==============================================================================}
+
+function hid_device_submit_report(device: PHID_DEVICE; reportid: uint8_t): uint32_t; stdcall;
+{Submit an input report by id on a HID device}
+{Device: The HID device to submit the report on}
+{ReportId: The report id to submit (eg HID_REPORTID_NONE)}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+{Note: The report must be allocated then submitted before reports will be received from the device}
+begin
+ {}
+ Result:=HIDDeviceSubmitReport(device,reportid);
+end;
+
+{==============================================================================}
+
+function hid_device_cancel_report(device: PHID_DEVICE; reportid: uint8_t): uint32_t; stdcall;
+{Cancel an input report by id on a HID device}
+{Device: The HID device to cancel the report on}
+{ReportId: The report id to cancel (eg HID_REPORTID_NONE)}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+{Note: The report should be cancelled then released to stop receiving reports from the device}
+begin
+ {}
+ Result:=HIDDeviceCancelReport(device,reportid);
+end;
+
+{==============================================================================}
+
+function hid_device_get_protocol(device: PHID_DEVICE; var protocol: uint8_t): uint32_t; stdcall;
+{Get the report protocol from a HID device}
+{Device: The HID device to get the report protocol from}
+{Protocol: A variable to receive the report protocol (eg HID_PROTOCOL_REPORT)}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDDeviceGetProtocol(device,protocol);
+end;
+
+{==============================================================================}
+
+function hid_device_set_protocol(device: PHID_DEVICE; protocol: uint8_t): uint32_t; stdcall;
+{Set the report protocol for a HID device}
+{Device: The HID device to set the report protocol for}
+{Protocol: The report protocol to set (eg HID_PROTOCOL_REPORT)}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDDeviceSetProtocol(device,protocol);
+end;
+
+{==============================================================================}
+
+function hid_device_get_interval(device: PHID_DEVICE; var interval: uint32_t): uint32_t; stdcall;
+{Get the polling interval from a HID device}
+{Device: The HID device to get the polling interval from}
+{Interval: A variable to receive the polling interval (in Milliseconds)}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDDeviceGetInterval(device,interval);
+end;
+
+{==============================================================================}
+
+function hid_device_set_interval(device: PHID_DEVICE; interval: uint32_t): uint32_t; stdcall;
+{Set the polling interval for a HID device}
+{Device: The HID device to set the polling interval for}
+{Interval: The polling interval to set (in Milliseconds)}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDDeviceSetInterval(device,interval);
+end;
+
+{==============================================================================}
+
+function hid_device_get_report_descriptor(device: PHID_DEVICE; descriptor: PHID_REPORT_DESCRIPTOR; size: uint32_t): uint32_t; stdcall;
+{Get the Report Descriptor for a HID device}
+{Device: The HID device to get the descriptor for}
+{Descriptor: Pointer to a buffer to return the HID Report Descriptor}
+{Size: The size in bytes of the buffer pointed to by Descriptor}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDDeviceGetReportDescriptor(device,descriptor,size);
+end;
+
+{==============================================================================}
+
+function hid_device_get_physical_descriptor_set0(device: PHID_DEVICE; descriptor: PHID_PHYSICAL_DESCRIPTOR_SET0): uint32_t; stdcall;
+{Get the HID Physical Descriptor Set 0 for a HID device}
+{Device: The HID device to get the descriptor for}
+{Descriptor: Pointer to a HID Physical Descriptor Set 0 structure for the returned data}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDDeviceGetPhysicalDescriptorSet0(device,descriptor);
+end;
+
+{==============================================================================}
+
+function hid_device_get_physical_descriptor_set(device: PHID_DEVICE; descriptor: PHID_PHYSICAL_DESCRIPTOR_SET; index: uint8_t; size: uint32_t): uint32_t; stdcall;
+{Get a HID Physical Descriptor Set for a HID device}
+{Device: The HID device to get the descriptor for}
+{Descriptor: Pointer to a HID Physical Descriptor Set structure for the returned data}
+{Index: The index of the physical descriptor set to return}
+{Size: The size in bytes of the buffer pointed to by Descriptor}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDDeviceGetPhysicalDescriptorSet(device,descriptor,index,size);
+end;
+
+{==============================================================================}
+
+function hid_device_bind_device(device: PHID_DEVICE): uint32_t; stdcall;
+{Attempt to bind a HID device to one of the registered consumers}
+{Device: The HID device to attempt to bind a consumer to}
+{Return: ERROR_SUCCESS if completed, ERROR_NOT_SUPPORTED if unsupported or another error code on failure}
+begin
+ {}
+ Result:=HIDDeviceBindDevice(device);
+end;
+
+{==============================================================================}
+
+function hid_device_unbind_device(device: PHID_DEVICE; consumer: PHID_CONSUMER): uint32_t; stdcall;
+{Unbind a HID device from a consumer}
+{Device: The HID device to unbind a consumer from}
+{Consumer: The consumer to unbind the device from (nil to unbind from current consumer)}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDDeviceUnbindDevice(device,consumer);
+end;
+
+{==============================================================================}
+
+function hid_device_bind_collections(device: PHID_DEVICE): uint32_t; stdcall;
+{Attempt to bind the HID collections in the specified device to one of the registered consumers}
+{Device: The HID device containing the collections to attempt to bind a consumer to}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDDeviceBindCollections(device);
+end;
+
+{==============================================================================}
+
+function hid_device_unbind_collections(device: PHID_DEVICE; consumer: PHID_CONSUMER): uint32_t; stdcall;
+{Unbind the HID collections in the specified device from a consumer}
+{Device: The HID device containing the collections to unbind a consumer from}
+{Consumer: The consumer to unbind the collections from (nil to unbind from current consumer)}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDDeviceUnbindCollections(device,consumer);
+end;
+
+{==============================================================================}
+
+function hid_device_create: PHID_DEVICE; stdcall;
+{Create a new HID device entry}
+{Return: Pointer to new HID device entry or nil if HID device could not be created}
+begin
+ {}
+ Result:=HIDDeviceCreate;
+end;
+
+{==============================================================================}
+
+function hid_device_create_ex(size: uint32_t): PHID_DEVICE; stdcall;
+{Create a new HID device entry}
+{Size: Size in bytes to allocate for new HID device (Including the HID device entry)}
+{Return: Pointer to new HID device entry or nil if HID device could not be created}
+begin
+ {}
+ Result:=HIDDeviceCreateEx(size);
+end;
+
+{==============================================================================}
+
+function hid_device_destroy(device: PHID_DEVICE): uint32_t; stdcall;
+{Destroy an existing HID device entry}
+{Device: The HID device to destroy}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDDeviceDestroy(device);
+end;
+
+{==============================================================================}
+
+function hid_device_register(device: PHID_DEVICE): uint32_t; stdcall;
+{Register a new HID device in the HID device table}
+{Device: The HID device to register}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDDeviceRegister(device);
+end;
+
+{==============================================================================}
+
+function hid_device_deregister(device: PHID_DEVICE): uint32_t; stdcall;
+{Deregister a HID device from the HID device table}
+{Device: The HID device to deregister}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDDeviceDeregister(device);
+end;
+
+{==============================================================================}
+
+function hid_device_find(hidid: uint32_t): PHID_DEVICE; stdcall;
+{Find a HID device by ID in the HID device table}
+{HIDId: The ID number of the HID device to find}
+{Return: Pointer to HID device entry or nil if not found}
+begin
+ {}
+ Result:=HIDDeviceFind(hidid);
+end;
+
+{==============================================================================}
+
+function hid_device_find_by_name(name: PCHAR): PHID_DEVICE; stdcall;
+{Find a HID device by name in the device table}
+{Name: The name of the HID device to find (eg HID0)}
+{Return: Pointer to HID device entry or nil if not found}
+begin
+ {}
+ Result:=HIDDeviceFindByName(String(name));
+end;
+
+{==============================================================================}
+
+function hid_device_find_by_description(description: PCHAR): PHID_DEVICE; stdcall;
+{Find a HID device by description in the device table}
+{Description: The description of the HID to find (eg Optical USB Mouse)}
+{Return: Pointer to HID device entry or nil if not found}
+begin
+ {}
+ Result:=HIDDeviceFindByDescription(String(description));
+end;
+
+{==============================================================================}
+
+function hid_device_enumerate(callback: hid_device_enumerate_cb; data: PVOID): uint32_t; stdcall;
+{Enumerate all HID devices in the HID device table}
+{Callback: The callback function to call for each HID device in the table}
+{Data: A private data pointer to pass to callback for each HID device in the table}
+{Return: ERROR_SUCCESS if completed or another error code on failure}
+begin
+ {}
+ Result:=HIDDeviceEnumerate(callback,data);
+end;
+
+{==============================================================================}
+
+function hid_device_notification(device: PHID_DEVICE; callback: hid_device_notification_cb; data: PVOID; notification, flags: uint32_t): uint32_t; stdcall;
+{Register a notification for HID device changes}
+{Device: The HID device to notify changes for (Optional, pass nil for all HID devices)}
+{Callback: The function to call when a notification event occurs}
+{Data: A private data pointer to pass to callback when a notification event occurs}
+{Notification: The events to register for notification of (eg DEVICE_NOTIFICATION_REGISTER)}
+{Flags: The flags to control the notification (eg NOTIFIER_FLAG_WORKER)}
+begin
+ {}
+ Result:=HIDDeviceNotification(device,callback,data,notification,flags);
+end;
+
+{==============================================================================}
+{HID Consumer Functions}
+function hid_consumer_create: PHID_CONSUMER; stdcall;
+{Create a new HID Consumer entry}
+{Return: Pointer to new Consumer entry or nil if consumer could not be created}
+begin
+ {}
+ Result:=HIDConsumerCreate;
+end;
+
+{==============================================================================}
+
+function hid_consumer_create_ex(size: uint32_t): PHID_CONSUMER; stdcall;
+{Create a new HID Consumer entry}
+{Size: Size in bytes to allocate for new consumer (Including the consumer entry)}
+{Return: Pointer to new Consumer entry or nil if consumer could not be created}
+begin
+ {}
+ Result:=HIDConsumerCreateEx(size);
+end;
+
+{==============================================================================}
+
+function hid_consumer_destroy(consumer: PHID_CONSUMER): uint32_t; stdcall;
+{Destroy an existing HID Consumer entry}
+begin
+ {}
+ Result:=HIDConsumerDestroy(consumer);
+end;
+
+{==============================================================================}
+
+function hid_consumer_register(consumer: PHID_CONSUMER): uint32_t; stdcall;
+{Register a new Consumer in the HID Consumer table}
+begin
+ {}
+ Result:=HIDConsumerRegister(consumer);
+end;
+
+{==============================================================================}
+
+function hid_consumer_deregister(consumer: PHID_CONSUMER): uint32_t; stdcall;
+{Deregister a Consumer from the HID Consumer table}
+begin
+ {}
+ Result:=HIDConsumerDeregister(consumer);
+end;
+
+{==============================================================================}
+
+function hid_consumer_find(consumerid: uint32_t): PHID_CONSUMER; stdcall;
+{Find a consumer by Id in the HID Consumer table}
+begin
+ {}
+ Result:=HIDConsumerFind(consumerid);
+end;
+
+{==============================================================================}
+
+function hid_consumer_find_by_name(name: PCHAR): PHID_CONSUMER; stdcall;
+{Find a consumer by name in the Driver table}
+begin
+ {}
+ Result:=HIDConsumerFindByName(String(name));
+end;
+
+{==============================================================================}
+
+function hid_consumer_enumerate(callback: hid_consumer_enumerate_cb; data: PVOID): uint32_t; stdcall;
+{Enumerate all consumers in the HID Consumer table}
+begin
+ {}
+ Result:=HIDConsumerEnumerate(callback,data);
+end;
+
 {==============================================================================}
 {HID Helper Functions}
-//To Do
+function hid_is_bit_field(field: PHID_FIELD): BOOL; stdcall;
+{Return True if the supplied field contains a 1 bit value}
+begin
+ {}
+ Result:=HIDIsBitField(field);
+end;
+
+{==============================================================================}
+
+function hid_is_byte_field(field: PHID_FIELD): BOOL; stdcall;
+{Return True if the supplied HID field contains a 1 byte value}
+begin
+ {}
+ Result:=HIDIsByteField(field);
+end;
+
+{==============================================================================}
+
+function hid_is_word_field(field: PHID_FIELD): BOOL; stdcall;
+{Return True if the supplied HID field contains a 2 byte value}
+begin
+ {}
+ Result:=HIDIsWordField(field);
+end;
+
+{==============================================================================}
+
+function hid_is_long_field(field: PHID_FIELD): BOOL; stdcall;
+{Return True if the supplied HID field contains a 3 or 4 byte value}
+begin
+ {}
+ Result:=HIDIsLongField(field);
+end;
+
+{==============================================================================}
+
+function hid_is_signed_field(field: PHID_FIELD): BOOL; stdcall;
+{Return True if the supplied HID field contains a signed value}
+begin
+ {}
+ Result:=HIDIsSignedField(field);
+end;
+
+{==============================================================================}
+
+function hid_page_to_string(page: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return a string describing a HID usage page}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(HIDPageToString(page),_string,len);
+end;
+
+{==============================================================================}
+
+function hid_usage_to_string(page, usage, count: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return a string describing a HID usage within the given page}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(HIDUsageToString(page,usage,count),_string,len);
+end;
+
+{==============================================================================}
+
+function hid_unit_type_to_string(unittype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return a string describing a HID unit type}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(HIDUnitTypeToString(unittype),_string,len);
+end;
+
+{==============================================================================}
+
+function hid_report_kind_to_string(kind: uint8_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return a string describing a HID report type}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(HIDReportKindToString(kind),_string,len);
+end;
+
+{==============================================================================}
+
+function hid_report_flags_to_string(flags: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return a string describing the flags of a HID report}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(HIDReportFlagsToString(flags),_string,len);
+end;
+
+{==============================================================================}
+
+function hid_collection_flags_to_string(flags: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return a string describing the flags of a HID collection}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(HIDCollectionFlagsToString(flags),_string,len);
+end;
+
+{==============================================================================}
+{HID Device Helper Functions}
+function hid_device_get_count: uint32_t; stdcall;
+{Get the current HID Device count}
+begin
+ {}
+ Result:=HIDDeviceGetCount;
+end;
+
+{==============================================================================}
+
+function hid_device_check(device: PHID_DEVICE): PHID_DEVICE; stdcall;
+{Check if the supplied HID Device is in the device table}
+begin
+ {}
+ Result:=HIDDeviceCheck(device);
+end;
+
+{==============================================================================}
+
+function hid_device_type_to_string(hidtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return a string describing the HID device type (eg HID_TYPE_USB)}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(HIDDeviceTypeToString(hidtype),_string,len);
+end;
+
+{==============================================================================}
+
+function hid_device_state_to_string(hidstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return a string describing the HID device state (eg HID_STATE_ATTACHED)}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(HIDDeviceStateToString(hidstate),_string,len);
+end;
+
+{==============================================================================}
+
+function hid_device_state_to_notification(state: uint32_t): uint32_t; stdcall;
+{Convert a Device state value into the notification code for device notifications}
+begin
+ {}
+ Result:=HIDDeviceStateToNotification(state);
+end;
+
+{==============================================================================}
+{HID Consumer Helper Functions}
+function hid_consumer_get_count: uint32_t; stdcall;
+{Get the current HID Consumer count}
+begin
+ {}
+ Result:=HIDConsumerGetCount;
+end;
+
+{==============================================================================}
+
+function hid_consumer_check(consumer: PHID_CONSUMER): PHID_CONSUMER; stdcall;
+{Check if the supplied HID Consumer is in the consumer table}
+begin
+ {}
+ Result:=HIDConsumerCheck(consumer);
+end;
 {$ENDIF}
 {==============================================================================}
 {==============================================================================}
@@ -39514,5 +40630,7 @@ finalization
 
 {==============================================================================}
 {==============================================================================}
+
+{$NOTES ON}
 
 end.

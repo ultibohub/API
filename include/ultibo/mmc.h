@@ -2717,9 +2717,9 @@ SDHCI_HOST * STDCALL sdhci_host_check(SDHCI_HOST *sdhci);
 
 BOOL STDCALL sdhci_is_spi(SDHCI_HOST *sdhci);
 BOOL STDCALL sdhci_has_dma(SDHCI_HOST *sdhci);
-BOOL STDCALL sdhci_has_cm_d23(SDHCI_HOST *sdhci);
-BOOL STDCALL sdhci_auto_cm_d12(SDHCI_HOST *sdhci);
-BOOL STDCALL sdhci_auto_cm_d23(SDHCI_HOST *sdhci);
+BOOL STDCALL sdhci_has_cmd23(SDHCI_HOST *sdhci);
+BOOL STDCALL sdhci_auto_cmd12(SDHCI_HOST *sdhci);
+BOOL STDCALL sdhci_auto_cmd23(SDHCI_HOST *sdhci);
 
 uint16_t STDCALL sdhci_get_version(SDHCI_HOST *sdhci);
 
