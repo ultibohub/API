@@ -11,6 +11,7 @@ The includes directory contains header files for interfaces to the following Ult
 * ultibo/console.h - 
 * ultibo/devices.h - 
 * ultibo/devicetree.h - 
+* ultibo/dma.h - 
 * ultibo/font.h - 
 * ultibo/framebuffer.h - 
 * ultibo/globalconst.h - 

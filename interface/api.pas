@@ -2716,6 +2716,9 @@ function dma_host_get_default: PDMA_HOST; stdcall; public name 'dma_host_get_def
 function dma_host_set_default(dma: PDMA_HOST): uint32_t; stdcall; public name 'dma_host_set_default';
 
 function dma_host_check(dma: PDMA_HOST): PDMA_HOST; stdcall; public name 'dma_host_check';
+
+function dma_type_to_string(dmatype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'dma_type_to_string';
+function dma_state_to_string(dmastate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'dma_state_to_string';
 {$ENDIF}
 {==============================================================================}
 {PCI Functions}
@@ -22050,6 +22053,24 @@ function dma_host_check(dma: PDMA_HOST): PDMA_HOST; stdcall;
 begin
  {}
  Result:=DMAHostCheck(dma);
+end;
+
+{==============================================================================}
+
+function dma_type_to_string(dmatype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a DMA type value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(DMATypeToString(dmatype),_string,len);
+end;
+
+{==============================================================================}
+
+function dma_state_to_string(dmastate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a DMA state value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(DMAStateToString(dmastate),_string,len);
 end;
 {$ENDIF}
 {==============================================================================}
