@@ -4366,7 +4366,7 @@ function joystick_insert_data(joystick: PJOYSTICK_DEVICE; data: PJOYSTICK_DATA; 
 function storage_device_read(storage: PSTORAGE_DEVICE; const start, count: int64_t; buffer: PVOID): uint32_t; stdcall; public name 'storage_device_read';
 function storage_device_write(storage: PSTORAGE_DEVICE; const start, count: int64_t; buffer: PVOID): uint32_t; stdcall; public name 'storage_device_write';
 function storage_device_erase(storage: PSTORAGE_DEVICE; const start, count: int64_t): uint32_t; stdcall; public name 'storage_device_erase';
-function storage_device_control(storage: PSTORAGE_DEVICE; request: int; argument1: uint32_t; var argument2: uint32_t): uint32_t; stdcall; public name 'storage_device_control';
+function storage_device_control(storage: PSTORAGE_DEVICE; request: int; argument1: SIZE_T; var argument2: SIZE_T): uint32_t; stdcall; public name 'storage_device_control';
 
 function storage_device_set_state(storage: PSTORAGE_DEVICE; state: uint32_t): uint32_t; stdcall; public name 'storage_device_set_state';
 
@@ -4393,6 +4393,9 @@ function storage_device_notification(storage: PSTORAGE_DEVICE; callback: storage
 function storage_get_count: uint32_t; stdcall; public name 'storage_get_count';
 
 function storage_device_check(storage: PSTORAGE_DEVICE): PSTORAGE_DEVICE; stdcall; public name 'storage_device_check';
+
+function storage_device_type_to_string(storagetype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'storage_device_type_to_string';
+function storage_device_state_to_string(storagestate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'storage_device_state_to_string';
 
 function storage_device_state_to_notification(state: uint32_t): uint32_t; stdcall; public name 'storage_device_state_to_notification';
 {$ENDIF}
@@ -33121,7 +33124,7 @@ end;
 
 {==============================================================================}
 
-function storage_device_control(storage: PSTORAGE_DEVICE; request: int; argument1: uint32_t; var argument2: uint32_t): uint32_t; stdcall;
+function storage_device_control(storage: PSTORAGE_DEVICE; request: int; argument1: SIZE_T; var argument2: SIZE_T): uint32_t; stdcall;
 begin
  {}
  Result:=StorageDeviceControl(storage,request,argument1,argument2);
@@ -33277,6 +33280,22 @@ function storage_device_check(storage: PSTORAGE_DEVICE): PSTORAGE_DEVICE; stdcal
 begin
  {}
  Result:=StorageDeviceCheck(storage);
+end;
+
+{==============================================================================}
+
+function storage_device_type_to_string(storagetype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(StorageDeviceTypeToString(storagetype),_string,len);
+end;
+
+{==============================================================================}
+
+function storage_device_state_to_string(storagestate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(StorageDeviceStateToString(storagestate),_string,len);
 end;
 
 {==============================================================================}
