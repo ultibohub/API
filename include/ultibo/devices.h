@@ -393,30 +393,30 @@ struct _DEVICE
 	uint32_t signature; // Signature for entry validation
 	uint32_t deviceid; // Unique Id of this Device in the Device table
 	uint32_t devicestate; // Device state (eg Registered/Unregistered)
-	char devicename[DEVICE_NAME_LENGTH] // The name of the Device (eg Keyboard0, Storage0 or Network0 etc)
+	char devicename[DEVICE_NAME_LENGTH]; // The name of the Device (eg Keyboard0, Storage0 or Network0 etc)
 	uint32_t deviceclass; // The class of this Device (eg DEVICE_CLASS_USB, DEVICE_CLASS_NETWORK, DEVICE_CLASS_STORAGE etc)
 	uint32_t devicebus; // The Bus type for the Device (eg DEVICE_BUS_USB)
 	uint32_t devicetype; // A class specific Device type (eg KEYBOARD_TYPE_USB, MOUSE_TYPE_USB, NETWORK_TYPE_ETHERNET etc)
 	uint32_t deviceflags; // The class specific Device flags
 	void *devicedata; // A pointer to a class specific Device interface (eg PUSBDevice, PNetworkDevice or PStorageDevice etc) (Used by Drivers)
-	char devicedescription[DEVICE_DESC_LENGTH] // A description of the Device (eg BCM2835 PL011 UART)
+	char devicedescription[DEVICE_DESC_LENGTH]; // A description of the Device (eg BCM2835 PL011 UART)
 	// Internal Properties
 	DEVICE *prev; // Previous entry in Device table
 	DEVICE *next; // Next entry in Device table
 };
 
-typedef _DEVICE_FIRMWARE DEVICE_FIRMWARE;
+typedef struct _DEVICE_FIRMWARE DEVICE_FIRMWARE;
 
 /* Device Firmware Handler */
 typedef uint32_t STDCALL (*device_firmware_handler)(DEVICE_FIRMWARE *firmware, uint32_t action, HANDLE *handle, void *buffer, uint32_t *value);
 
-typedef _FIRMWARE_HANDLE FIRMWARE_HANDLE;
+typedef struct _FIRMWARE_HANDLE FIRMWARE_HANDLE;
 
 /* Device Firmware */
 struct _DEVICE_FIRMWARE
 {
 	uint32_t deviceclass; // The Device class supported by this firmware (or DEVICE_CLASS_ANY for all devices)
-	char name[FIRMWARE_NAME_LENGTH] // The device specific name of the firmware which may be a filename, a device model, id or type
+	char name[FIRMWARE_NAME_LENGTH]; // The device specific name of the firmware which may be a filename, a device model, id or type
 	uint32_t size; // For block (memory) based firmware, the size passed to Create or 0 for other firmware types
 	void *buffer; // For block (memory) based firmware, the buffer passed to Create or nil for other firmware types
 	FIRMWARE_HANDLE *handles; // List of currently open handles for this firmware
@@ -463,7 +463,7 @@ struct _NOTIFIER_TASK
 };
 
 /* Notifier Retry */
-typedef _NOTIFIER_RETRY NOTIFIER_RETRY;
+typedef struct _NOTIFIER_RETRY NOTIFIER_RETRY;
 struct _NOTIFIER_RETRY
 {
 	DEVICE *device;
@@ -484,7 +484,7 @@ struct _DRIVER
 	uint32_t signature; // Signature for entry validation
 	uint32_t driverid; // Unique Id of this Driver in the Driver table
 	uint32_t driverstate; // Driver state (eg Registered/Unregistered)
-	char drivername[DRIVER_NAME_LENGTH] // Descriptive name for the Driver (eg USB Mouse Driver)
+	char drivername[DRIVER_NAME_LENGTH]; // Descriptive name for the Driver (eg USB Mouse Driver)
 	uint32_t driverclass; // The class of this Driver (eg DRIVER_CLASS_USB etc)
 	// Internal Properties
 	DRIVER *prev; // Previous entry in Driver table
@@ -505,7 +505,7 @@ struct _HOST
 	uint32_t signature; // Signature for entry validation
 	uint32_t hostid; // Unique Id of this Host in the Host table
 	uint32_t hoststate; // Host state (eg Registered/Unregistered)
-	char hostname[HOST_NAME_LENGTH] // Descriptive name for the Host (eg DWC OTG Host)
+	char hostname[HOST_NAME_LENGTH]; // Descriptive name for the Host (eg DWC OTG Host)
 	uint32_t hostclass; // The class of this Host (eg HOST_CLASS_USB etc)
 	// Internal Properties
 	HOST *prev; // Previous entry in Host table

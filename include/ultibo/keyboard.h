@@ -247,6 +247,7 @@ struct _KEYBOARD_DEVICE
 /* USB Keyboard specific types */
 /* Note: The following structure is duplicated with the USBKeyboard unit for backwards compatibility */
 
+#ifndef _ULTIBO_MOUSE_H
 /* USB HID Descriptor */
 typedef struct _USB_HID_DESCRIPTOR USB_HID_DESCRIPTOR;
 struct _USB_HID_DESCRIPTOR
@@ -260,6 +261,7 @@ struct _USB_HID_DESCRIPTOR
 	uint16_t whiddescriptorlength;
 	// Note: Up to two optional bHIDDescriptorType/wHIDDescriptorLength pairs after the Report descriptor details
 } PACKED;
+#endif // _ULTIBO_MOUSE_H
 
 /* ============================================================================== */
 /* Keyboard Functions */

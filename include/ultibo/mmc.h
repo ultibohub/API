@@ -34,6 +34,7 @@ extern "C" {
 #include "ultibo/globalconst.h"
 #include "ultibo/devices.h"
 #include "ultibo/storage.h"
+#include "ultibo/dma.h"
 
 /* ============================================================================== */
 /* MMC specific constants */
@@ -1080,17 +1081,11 @@ const uint32_t SD_SSR_UHS_AU_SIZE_VALUES[] = {
 
 #define SDIO_STATE_MAX	3
 
-/* SDIO Function State Names */
-#define SDIO_STATE_NAMES:array[SDIO_STATE_DETACHED..SDIO_STATE_MAX] of String	( 'SDIO_STATE_DETACHED',
-
 /* SDIO Function Status */
 #define SDIO_STATUS_UNBOUND	0
 #define SDIO_STATUS_BOUND	1
 
 #define SDIO_STATUS_MAX	1
-
-/* SDIO Function Status Names */
-#define SDIO_STATUS_NAMES:array[SDIO_STATUS_UNBOUND..SDIO_STATUS_MAX] of String	( 'SDIO_STATUS_UNBOUND',
 
 /* SDIO Commands (From: /include/linux/mmc/sdio.h) */
 #define SDIO_CMD_SEND_OP_COND	5

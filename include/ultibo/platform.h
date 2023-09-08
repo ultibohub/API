@@ -861,8 +861,8 @@ void STDCALL disable_abort(void);
 ABORT_MASK STDCALL save_abort(void);
 ABORT_MASK STDCALL restore_abort(ABORT_MASK abortmask);
 
-void STDCALL halt(void);
-void STDCALL pause(void);
+void STDCALL halt_cpu(void);
+void STDCALL pause_cpu(void);
 
 uint32_t STDCALL halt_thread(uint32_t exitcode);
 

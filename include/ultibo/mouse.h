@@ -151,7 +151,7 @@ extern "C" {
 #define USB_HID_BOOT_EXTRA_BUTTON	(1 << 4)
 
 /* HID Boot Protocol Report data */
-#define USB_HID_BOOT_REPORT_SIZE	3 // Appendix B of HID Device Class Definition 1.11
+#define USB_HID_BOOT_REPORT_SIZE	8 // 3 // Appendix B of HID Device Class Definition 1.11
 #define USB_HID_BOOT_DATA_SIZE	8 // Allocate more than the minimum to allow for extra data
 
 /* ============================================================================== */
@@ -236,6 +236,7 @@ struct _MOUSE_DEVICE
 /* USB Mouse specific types */
 /* Note: The following structure is duplicated with the USBMouse unit for backwards compatibility */
 
+#ifndef _ULTIBO_KEYBOARD_H
 /* USB HID Descriptor */
 typedef struct _USB_HID_DESCRIPTOR USB_HID_DESCRIPTOR;
 struct _USB_HID_DESCRIPTOR
@@ -249,6 +250,7 @@ struct _USB_HID_DESCRIPTOR
 	uint16_t whiddescriptorlength;
 	// Note: Up to two optional bHIDDescriptorType/wHIDDescriptorLength pairs after the Report descriptor details
 } PACKED;
+#endif // _ULTIBO_KEYBOARD_H
 
 /* ============================================================================== */
 /* Mouse Functions */

@@ -173,8 +173,8 @@ extern "C" {
 /* ============================================================================== */
 /* Device Tree specific types */
 /* DTB Header */
-typedef _DTB_HEADER DTB_HEADER;
-struct _DTB_HEADER;
+typedef struct _DTB_HEADER DTB_HEADER;
+struct _DTB_HEADER
 {
 	uint32_t magic; // The value 0xd00dfeed (big-endian)
 	uint32_t totalsize; // The total size in bytes of the devicetree data structure (big-endian)
@@ -189,24 +189,24 @@ struct _DTB_HEADER;
 } PACKED;
 
 /* DTB Reservation */
-typedef _DTB_RESERVATION DTB_RESERVATION;
-struct _DTB_RESERVATION;
+typedef struct _DTB_RESERVATION DTB_RESERVATION;
+struct _DTB_RESERVATION
 {
 	uint64_t address; // Physical address of a reserved memory region
 	uint64_t size; // Size in bytes of a reserved memory region
 } PACKED;
 
 /* DTB Node */
-typedef _DTB_NODE DTB_NODE;
-struct _DTB_NODE;
+typedef struct _DTB_NODE DTB_NODE;
+struct _DTB_NODE
 {
 	uint32_t token; // Token (big-endian)
 	char name[1]; // The name stored as a null-terminated string, shall include the unit address if any
 } PACKED;
 
 /* DTB Property */
-typedef _DTB_PROPERTY DTB_PROPERTY;
-struct _DTB_PROPERTY;
+typedef struct _DTB_PROPERTY DTB_PROPERTY;
+struct _DTB_PROPERTY
 {
 	uint32_t token; // Token (big-endian)
 	uint32_t valuelength; // The length of the property value in bytes
@@ -216,8 +216,8 @@ struct _DTB_PROPERTY;
 
 
 /* DTB Property Char */
-typedef _DTB_PROPERTY_CHAR DTB_PROPERTY_CHAR;
-struct _DTB_PROPERTY_CHAR;
+typedef struct _DTB_PROPERTY_CHAR DTB_PROPERTY_CHAR;
+struct _DTB_PROPERTY_CHAR
 {
 	uint32_t token; // Token (big-endian)
 	uint32_t valuelength; // The length of the property value in bytes
@@ -227,8 +227,8 @@ struct _DTB_PROPERTY_CHAR;
 
 
 /* DTB Property LongWord */
-typedef _DTB_PROPERTY_LONGWORD DTB_PROPERTY_LONGWORD;
-struct _DTB_PROPERTY_LONGWORD;
+typedef struct _DTB_PROPERTY_LONGWORD DTB_PROPERTY_LONGWORD;
+struct _DTB_PROPERTY_LONGWORD
 {
 	uint32_t token; // Token (big-endian)
 	uint32_t valuelength; // The length of the property value in bytes
@@ -238,8 +238,8 @@ struct _DTB_PROPERTY_LONGWORD;
 
 
 /* DTB Property QuadWord */
-typedef _DTB_PROPERTY_QUADWORD DTB_PROPERTY_QUADWORD;
-struct _DTB_PROPERTY_QUADWORD;
+typedef struct _DTB_PROPERTY_QUADWORD DTB_PROPERTY_QUADWORD;
+struct _DTB_PROPERTY_QUADWORD
 {
 	uint32_t token; // Token (big-endian)
 	uint32_t valuelength; // The length of the property value in bytes

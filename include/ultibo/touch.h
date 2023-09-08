@@ -250,7 +250,7 @@ uint32_t STDCALL touch_device_rotation_to_string(uint32_t rotation, char *string
 
 uint32_t STDCALL touch_device_resolve_rotation(uint32_t rotation);
 
-uint32_t STDCALL touch_device_set_callback(TOUCH_DEVICE *touch, TTouchEvent event, void *parameter);
+uint32_t STDCALL touch_device_set_callback(TOUCH_DEVICE *touch, touch_event_cb event, void *parameter);
 
 uint32_t STDCALL touch_insert_data(TOUCH_DEVICE *touch, TOUCH_DATA *data, BOOL signal);
 

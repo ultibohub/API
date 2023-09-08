@@ -1360,8 +1360,8 @@ procedure disable_abort; stdcall; public name 'disable_abort';
 function save_abort: TABORT_MASK; stdcall; public name 'save_abort';
 function restore_abort(abortmask: TABORT_MASK): TABORT_MASK; stdcall; public name 'restore_abort';
 
-procedure halt; stdcall; public name 'halt';
-procedure pause; stdcall; public name 'pause';
+procedure halt_cpu; stdcall; public name 'halt_cpu';
+procedure pause_cpu; stdcall; public name 'pause_cpu';
 
 function halt_thread(exitcode: uint32_t): uint32_t; stdcall; public name 'halt_thread';
 
@@ -11176,7 +11176,7 @@ end;
 
 {==============================================================================}
 
-procedure halt; stdcall;
+procedure halt_cpu; stdcall;
 {Halt the current processor}
 begin
  {}
@@ -11188,7 +11188,7 @@ end;
 
 {==============================================================================}
 
-procedure pause; stdcall;
+procedure pause_cpu; stdcall;
 {Pause the current processor and wait for an Event or Interrupt (Where Applicable)}
 begin
  {}
