@@ -2697,9 +2697,15 @@ function logging_device_set_default(logging: PLOGGING_DEVICE): uint32_t; stdcall
 
 function logging_device_check(logging: PLOGGING_DEVICE): PLOGGING_DEVICE; stdcall; public name 'logging_device_check';
 
+function logging_type_to_string(loggingtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'logging_type_to_string';
+function logging_state_to_string(loggingstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'logging_state_to_string';
+
 function logging_device_redirect_output(logging: PLOGGING_DEVICE): BOOL; stdcall; public name 'logging_device_redirect_output';
 
 function logging_get_messageslot_flags: uint32_t; stdcall; public name 'logging_get_messageslot_flags';
+
+function logging_console_device_add(console: PCONSOLE_DEVICE): uint32_t; stdcall; public name 'logging_console_device_add';
+function logging_console_device_remove(console: PCONSOLE_DEVICE): uint32_t; stdcall; public name 'logging_console_device_remove';
 {$ENDIF}
 {==============================================================================}
 {DMA Host Functions}
@@ -21888,6 +21894,7 @@ end;
 
 function logging_device_create(default: BOOL): PLOGGING_DEVICE; stdcall;
 {Create a new Logging device entry}
+{Default: If true make the new device the default logging device if there is no current default}
 {Return: Pointer to new Logging device entry or nil if Logging device could not be created}
 begin
  {}
@@ -21899,6 +21906,7 @@ end;
 function logging_device_create_ex(size: uint32_t; default: BOOL): PLOGGING_DEVICE; stdcall;
 {Create a new Logging device entry}
 {Size: Size in bytes to allocate for new Logging (Including the Logging entry)}
+{Default: If true make the new device the default logging device if there is no current default}
 {Return: Pointer to new Logging device entry or nil if Logging device could not be created}
 begin
  {}
@@ -22026,6 +22034,24 @@ end;
 
 {==============================================================================}
 
+function logging_type_to_string(loggingtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a Logging type value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(LoggingTypeToString(loggingtype),_string,len);
+end;
+
+{==============================================================================}
+
+function logging_state_to_string(loggingstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Convert a Logging state value to a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(LoggingStateToString(loggingstate),_string,len);
+end;
+
+{==============================================================================}
+
 function logging_device_redirect_output(logging: PLOGGING_DEVICE): BOOL; stdcall;
 {Redirect standard output to the logging device specified by Logging}
 {Logging: The logging device to redirect output to (or nil to stop redirection)}
@@ -22044,6 +22070,22 @@ function logging_get_messageslot_flags: uint32_t; stdcall;
 begin
  {}
  Result:=LoggingGetMessageslotFlags;
+end;
+
+{==============================================================================}
+
+function logging_console_device_add(console: PCONSOLE_DEVICE): uint32_t; stdcall;
+begin
+ {}
+ Result:=LoggingConsoleDeviceAdd(console);
+end;
+
+{==============================================================================}
+
+function logging_console_device_remove(console: PCONSOLE_DEVICE): uint32_t; stdcall;
+begin
+ {}
+ Result:=LoggingConsoleDeviceRemove(console);
 end;
 {$ENDIF}
 {==============================================================================}

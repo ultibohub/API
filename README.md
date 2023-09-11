@@ -24,6 +24,7 @@ The includes directory contains header files for interfaces to the following Ult
 * ultibo/keyboard.h - 
 * ultibo/keymap.h - 
 * ultibo/locale.h - 
+* ultibo/logging.h - 
 * ultibo/mmc.h - 
 * ultibo/mouse.h - 
 * ultibo/network.h - 
