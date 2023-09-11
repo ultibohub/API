@@ -4491,21 +4491,47 @@ function network_get_count: uint32_t; stdcall; public name 'network_get_count';
 
 function network_device_check(network: PNETWORK_DEVICE): PNETWORK_DEVICE; stdcall; public name 'network_device_check';
 
+function network_device_type_to_string(networktype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'network_device_type_to_string';
+function network_device_state_to_string(networkstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'network_device_state_to_string';
+function network_device_status_to_string(networkstatus: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'network_device_status_to_string';
+
 function network_device_state_to_notification(state: uint32_t): uint32_t; stdcall; public name 'network_device_state_to_notification';
 function network_device_status_to_notification(status: uint32_t): uint32_t; stdcall; public name 'network_device_status_to_notification';
 
 function network_event_check(event: PNETWORK_EVENT): PNETWORK_EVENT; stdcall; public name 'network_event_check';
 
-function hardware_address_to_string(const address: THARDWARE_ADDRESS; separator: PCHAR; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'hardware_address_to_string';
-function string_to_hardware_address(address: PCHAR): THARDWARE_ADDRESS; stdcall; public name 'string_to_hardware_address';
+function hardware_address_to_string(const address: THARDWARE_ADDRESS; separator: PCHAR; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'hardware_address_to_string';
+procedure string_to_hardware_address(_string: PCHAR; var address: THARDWARE_ADDRESS); stdcall; public name 'string_to_hardware_address';
 
 function valid_hardware_address(const address: THARDWARE_ADDRESS): BOOL; stdcall; public name 'valid_hardware_address';
-function random_hardware_address: THARDWARE_ADDRESS; stdcall; public name 'random_hardware_address';
+procedure random_hardware_addres(var addresss: THARDWARE_ADDRESS); stdcall; public name 'random_hardware_address';
 
 function compare_hardware_address(const address1, address2: THARDWARE_ADDRESS): BOOL; stdcall; public name 'compare_hardware_address';
 function compare_hardware_default(const address: THARDWARE_ADDRESS): BOOL; stdcall; public name 'compare_hardware_default';
 function compare_hardware_broadcast(const address: THARDWARE_ADDRESS): BOOL; stdcall; public name 'compare_hardware_broadcast';
 function compare_hardware_multicast(const address: THARDWARE_ADDRESS): BOOL; stdcall; public name 'compare_hardware_multicast';
+
+function adapter_type_to_string(_type: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'adapter_type_to_string';
+function adapter_mode_to_string(mode: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'adapter_mode_to_string';
+function adapter_config_to_string(config: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'adapter_config_to_string';
+function adapter_state_to_string(state: int; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'adapter_state_to_string';
+function adapter_status_to_string(status: int; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'adapter_status_to_string';
+
+function frame_type_to_string(_type: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'frame_type_to_string';
+function media_type_to_string(_type: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'media_type_to_string';
+function packet_type_to_string(_type: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'packet_type_to_string';
+
+function config_type_to_string(_type: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'config_type_to_string';
+function config_command_to_string(command: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'config_command_to_string';
+
+function auth_type_to_string(_type: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'auth_type_to_string';
+function auth_command_to_string(command: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'auth_command_to_string';
+
+function phy_interface_mode_to_string(mode: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'phy_interface_mode_to_string';
+function phy_link_speed_to_string(speed: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'phy_link_speed_to_string';
+function phy_duplex_mode_to_string(mode: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'phy_duplex_mode_to_string';
+
+function match_string_to_phy_interface_mode(mode: PCHAR): uint16_t; stdcall; public name 'match_string_to_phy_interface_mode';
 {$ENDIF}
 {==============================================================================}
 {Timezone Functions}
@@ -33898,6 +33924,30 @@ end;
 
 {==============================================================================}
 
+function network_device_type_to_string(networktype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(NetworkDeviceTypeToString(networktype),_string,len);
+end;
+
+{==============================================================================}
+
+function network_device_state_to_string(networkstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(NetworkDeviceStateToString(networkstate),_string,len);
+end;
+
+{==============================================================================}
+
+function network_device_status_to_string(networkstatus: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(NetworkDeviceStatusToString(networkstatus),_string,len);
+end;
+
+{==============================================================================}
+
 function network_device_state_to_notification(state: uint32_t): uint32_t; stdcall;
 {Convert a Network state value into the notification code for device notifications}
 begin
@@ -33925,18 +33975,18 @@ end;
 
 {==============================================================================}
 
-function hardware_address_to_string(const address: THARDWARE_ADDRESS; separator: PCHAR; value: PCHAR; len: uint32_t): uint32_t; stdcall;
+function hardware_address_to_string(const address: THARDWARE_ADDRESS; separator: PCHAR; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- Result:=APIStringToPCharBuffer(HardwareAddressToString(address,String(separator)),value,len);
+ Result:=APIStringToPCharBuffer(HardwareAddressToString(address,String(separator)),_string,len);
 end;
 
 {==============================================================================}
 
-function string_to_hardware_address(address: PCHAR): THARDWARE_ADDRESS; stdcall;
+procedure string_to_hardware_address(_string: PCHAR; var address: THARDWARE_ADDRESS); stdcall;
 begin
  {}
- Result:=StringToHardwareAddress(String(address));
+ address:=StringToHardwareAddress(String(_string));
 end;
 
 {==============================================================================}
@@ -33949,10 +33999,10 @@ end;
 
 {==============================================================================}
 
-function random_hardware_address: THARDWARE_ADDRESS; stdcall;
+procedure random_hardware_addres(var addresss: THARDWARE_ADDRESS); stdcall;
 begin
  {}
- Result:=RandomHardwareAddress;
+ addresss:=RandomHardwareAddress;
 end;
 
 {==============================================================================}
@@ -33985,6 +34035,134 @@ function compare_hardware_multicast(const address: THARDWARE_ADDRESS): BOOL; std
 begin
  {}
  Result:=CompareHardwareMulticast(address);
+end;
+
+{==============================================================================}
+
+function adapter_type_to_string(_type: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(AdapterTypeToString(_type),_string,len);
+end;
+
+{==============================================================================}
+
+function adapter_mode_to_string(mode: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(AdapterModeToString(mode),_string,len);
+end;
+
+{==============================================================================}
+
+function adapter_config_to_string(config: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(AdapterConfigToString(config),_string,len);
+end;
+
+{==============================================================================}
+
+function adapter_state_to_string(state: int; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(AdapterStateToString(state),_string,len);
+end;
+
+{==============================================================================}
+
+function adapter_status_to_string(status: int; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(AdapterStatusToString(status),_string,len);
+end;
+
+{==============================================================================}
+
+function frame_type_to_string(_type: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(FrameTypeToString(_type),_string,len);
+end;
+
+{==============================================================================}
+
+function media_type_to_string(_type: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(Network.MediaTypeToString(_type),_string,len);
+end;
+
+{==============================================================================}
+
+function packet_type_to_string(_type: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(PacketTypeToString(_type),_string,len);
+end;
+
+{==============================================================================}
+
+function config_type_to_string(_type: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(ConfigTypeToString(_type),_string,len);
+end;
+
+{==============================================================================}
+
+function config_command_to_string(command: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(ConfigCommandToString(command),_string,len);
+end;
+
+{==============================================================================}
+
+function auth_type_to_string(_type: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(AuthTypeToString(_type),_string,len);
+end;
+
+{==============================================================================}
+
+function auth_command_to_string(command: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(AuthCommandToString(command),_string,len);
+end;
+
+{==============================================================================}
+
+function phy_interface_mode_to_string(mode: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(PhyInterfaceModeToString(mode),_string,len);
+end;
+
+{==============================================================================}
+
+function phy_link_speed_to_string(speed: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(PhyLinkSpeedToString(speed),_string,len);
+end;
+
+{==============================================================================}
+
+function phy_duplex_mode_to_string(mode: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(PhyDuplexModeToString(mode),_string,len);
+end;
+
+{==============================================================================}
+
+function match_string_to_phy_interface_mode(mode: PCHAR): uint16_t; stdcall;
+begin
+ {}
+ Result:=MatchStringToPhyInterfaceMode(String(mode));
 end;
 {$ENDIF}
 {==============================================================================}

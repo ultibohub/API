@@ -26,6 +26,7 @@ The includes directory contains header files for interfaces to the following Ult
 * ultibo/locale.h - 
 * ultibo/mmc.h - 
 * ultibo/mouse.h - 
+* ultibo/network.h - 
 * ultibo/platform.h - 
 * ultibo/pwm.h - 
 * ultibo/serial.h - 
