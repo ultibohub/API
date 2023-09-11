@@ -38,6 +38,7 @@ The includes directory contains header files for interfaces to the following Ult
 * ultibo/sysutils.h - 
 * ultibo/tftframebuffer.h - 
 * ultibo/threads.h - 
+* ultibo/timezone.h - 
 * ultibo/touch.h - 
 * ultibo/uart.h - 
 * ultibo/unicode.h - 

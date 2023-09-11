@@ -4565,7 +4565,9 @@ function timezone_get_description(timezone: PTIMEZONE_ENTRY; description: PCHAR;
 
 function timezone_get_bias(timezone: PTIMEZONE_ENTRY): int32_t; stdcall; public name 'timezone_get_bias';
 function timezone_get_state(timezone: PTIMEZONE_ENTRY): uint32_t; stdcall; public name 'timezone_get_state';
+function timezone_get_state_ex(timezone: PTIMEZONE_ENTRY; const datetime: double_t): uint32_t; stdcall; public name 'timezone_get_state_ex';
 function timezone_get_active_bias(timezone: PTIMEZONE_ENTRY): int32_t; stdcall; public name 'timezone_get_active_bias';
+function timezone_get_active_bias_ex(timezone: PTIMEZONE_ENTRY; const datetime: double_t): int32_t; stdcall; public name 'timezone_get_active_bias_ex';
 
 function timezone_get_standard_name(timezone: PTIMEZONE_ENTRY; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'timezone_get_standard_name';
 function timezone_get_standard_bias(timezone: PTIMEZONE_ENTRY): int32_t; stdcall; public name 'timezone_get_standard_bias';
@@ -4578,6 +4580,9 @@ function timezone_get_daylight_date(timezone: PTIMEZONE_ENTRY; next: BOOL): doub
 function timezone_get_daylight_start(timezone: PTIMEZONE_ENTRY): SYSTEMTIME; stdcall; public name 'timezone_get_daylight_start';
 
 function timezone_find(name: PCHAR): PTIMEZONE_ENTRY; stdcall; public name 'timezone_find';
+function timezone_find_by_standard(standardname: PCHAR): PTIMEZONE_ENTRY; stdcall; public name 'timezone_find_by_standard';
+function timezone_find_by_daylight(daylightname: PCHAR): PTIMEZONE_ENTRY; stdcall; public name 'timezone_find_by_daylight';
+
 function timezone_enumerate(callback: timezone_enumerate_cb; data: PVOID): uint32_t; stdcall; public name 'timezone_enumerate';
 
 {==============================================================================}
@@ -34344,6 +34349,9 @@ end;
 {==============================================================================}
 
 function timezone_get_state(timezone: PTIMEZONE_ENTRY): uint32_t; stdcall;
+{Get the state of the supplied Timezone at the current date and time}
+{Timezone: The timezone entry to get the state for}
+{Return: The TIME_ZONE_ID_* constant representing the standard / daylight state of the timezone}
 begin
  {}
  Result:=TimezoneGetState(timezone);
@@ -34351,10 +34359,37 @@ end;
 
 {==============================================================================}
 
+function timezone_get_state_ex(timezone: PTIMEZONE_ENTRY; const datetime: double_t): uint32_t; stdcall;
+{Get the state of the supplied Timezone at the specified date and time}
+{Timezone: The timezone entry to get the state for}
+{DateTime: The date and time to get the state of the timezone at}
+{Return: The TIME_ZONE_ID_* constant representing the standard / daylight state of the timezone}
+begin
+ {}
+ Result:=TimezoneGetStateEx(timezone,datetime);
+end;
+
+{==============================================================================}
+
 function timezone_get_active_bias(timezone: PTIMEZONE_ENTRY): int32_t; stdcall;
+{Get the bias (offset between UTC and Local) of the supplied Timezone at the current date and time}
+{Timezone: The timezone entry to get the bias for}
+{Return: The bias in minutes offset between UTC and Local including any daylight bias if active}
 begin
  {}
  Result:=TimezoneGetActiveBias(timezone);
+end;
+
+{==============================================================================}
+
+function timezone_get_active_bias_ex(timezone: PTIMEZONE_ENTRY; const datetime: double_t): int32_t; stdcall;
+{Get the bias (offset between UTC and Local) of the supplied Timezone at the specified date and time}
+{Timezone: The timezone entry to get the bias for}
+{DateTime: The date and time to get the bias of the timezone at}
+{Return: The bias in minutes offset between UTC and Local}
+begin
+ {}
+ Result:=TimezoneGetActiveBiasEx(timezone,datetime);
 end;
 
 {==============================================================================}
@@ -34420,12 +34455,29 @@ begin
  {}
  Result:=TimezoneGetDaylightStart(timezone);
 end;
+
 {==============================================================================}
 
 function timezone_find(name: PCHAR): PTIMEZONE_ENTRY; stdcall;
 begin
  {}
  Result:=TimezoneFind(String(name));
+end;
+
+{==============================================================================}
+
+function timezone_find_by_standard(standardname: PCHAR): PTIMEZONE_ENTRY; stdcall;
+begin
+ {}
+ Result:=TimezoneFindByStandard(String(standardname));
+end;
+
+{==============================================================================}
+
+function timezone_find_by_daylight(daylightname: PCHAR): PTIMEZONE_ENTRY; stdcall;
+begin
+ {}
+ Result:=TimezoneFindByDaylight(String(daylightname));
 end;
 
 {==============================================================================}
