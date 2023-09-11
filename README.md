@@ -31,6 +31,7 @@ The includes directory contains header files for interfaces to the following Ult
 * ultibo/spi.h - 
 * ultibo/storage.h - 
 * ultibo/system.h - 
+* ultibo/sysutils.h - 
 * ultibo/tftframebuffer.h - 
 * ultibo/touch.h - 
 * ultibo/uart.h - 
