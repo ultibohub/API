@@ -733,7 +733,7 @@ uint32_t STDCALL network_device_status_to_notification(uint32_t status);
 
 NETWORK_EVENT * STDCALL network_event_check(NETWORK_EVENT *event);
 
-uint32_t STDCALL hardware_address_to_string(HARDWARE_ADDRESS *address, char *separator, char *value, uint32_t len);
+uint32_t STDCALL hardware_address_to_string(HARDWARE_ADDRESS *address, char *separator, char *string, uint32_t len);
 void STDCALL string_to_hardware_address(char *string, HARDWARE_ADDRESS *address);
 
 BOOL STDCALL valid_hardware_address(HARDWARE_ADDRESS *address);

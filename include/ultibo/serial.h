@@ -259,6 +259,17 @@ BOOL STDCALL serial_buffer_read_complete(SERIAL_BUFFER *buffer, uint32_t removed
 void * STDCALL serial_buffer_write_start(SERIAL_BUFFER *buffer, uint32_t *available);
 BOOL STDCALL serial_buffer_write_complete(SERIAL_BUFFER *buffer, uint32_t added);
 
+uint32_t STDCALL serial_data_bits_to_string(uint32_t bits, char *string, uint32_t len);
+uint32_t STDCALL serial_stop_bits_to_string(uint32_t bits, char *string, uint32_t len);
+uint32_t STDCALL serial_parity_to_string(uint32_t parity, char *string, uint32_t len);
+uint32_t STDCALL serial_flow_control_to_string(uint32_t flow, char *string, uint32_t len);
+
+/* ============================================================================== */
+/* Serial Logging Helper Functions */
+uint32_t STDCALL serial_logging_device_add(SERIAL_DEVICE *serial);
+uint32_t STDCALL serial_logging_device_remove(SERIAL_DEVICE *serial);
+uint32_t STDCALL serial_logging_device_parameters(SERIAL_DEVICE *serial, char *parameters, uint32_t *baudrate, uint32_t *parity, uint32_t *databits, uint32_t *stopbits);
+
 #ifdef __cplusplus
 }
 #endif

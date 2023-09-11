@@ -1905,6 +1905,7 @@ function begin_thread_ex(signalaction: PVOID; stacksize: SIZE_T; threadfunction:
 
 procedure end_thread(exitcode: uint32_t); stdcall; public name 'end_thread';
 
+{==============================================================================}
 {Thread Helper Functions}
 function spin_get_count: uint32_t; stdcall; public name 'spin_get_count';
 function mutex_get_count: uint32_t; stdcall; public name 'mutex_get_count';
@@ -3744,6 +3745,17 @@ function serial_buffer_read_complete(buffer: PSERIAL_BUFFER; removed: uint32_t):
 
 function serial_buffer_write_start(buffer: PSERIAL_BUFFER; var available: uint32_t): PVOID; stdcall; public name 'serial_buffer_write_start';
 function serial_buffer_write_complete(buffer: PSERIAL_BUFFER; added: uint32_t): BOOL; stdcall; public name 'serial_buffer_write_complete';
+
+function serial_data_bits_to_string(bits: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'serial_data_bits_to_string';
+function serial_stop_bits_to_string(bits: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'serial_stop_bits_to_string';
+function serial_parity_to_string(parity: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'serial_parity_to_string';
+function serial_flow_control_to_string(flow: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'serial_flow_control_to_string';
+
+{==============================================================================}
+{Serial Logging Helper Functions}
+function serial_logging_device_add(serial: PSERIAL_DEVICE): uint32_t; stdcall; public name 'serial_logging_device_add';
+function serial_logging_device_remove(serial: PSERIAL_DEVICE): uint32_t; stdcall; public name 'serial_logging_device_remove';
+function serial_logging_device_parameters(serial: PSERIAL_DEVICE; parameters: PCHAR; var baudrate, parity, databits, stopbits: uint32_t): uint32_t; stdcall; public name 'serial_logging_device_parameters';
 {$ENDIF}
 {==============================================================================}
 {RTC Functions}
@@ -28697,6 +28709,66 @@ function serial_buffer_write_complete(buffer: PSERIAL_BUFFER; added: uint32_t): 
 begin
  {}
  Result:=SerialBufferWriteComplete(buffer,added);
+end;
+
+{==============================================================================}
+
+function serial_data_bits_to_string(bits: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SerialDataBitsToString(bits),_string,len);
+end;
+
+{==============================================================================}
+
+function serial_stop_bits_to_string(bits: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SerialStopBitsToString(bits),_string,len);
+end;
+
+{==============================================================================}
+
+function serial_parity_to_string(parity: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SerialParityToString(parity),_string,len);
+end;
+
+{==============================================================================}
+
+function serial_flow_control_to_string(flow: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SerialFlowControlToString(flow),_string,len);
+end;
+
+{==============================================================================}
+{Serial Logging Helper Functions}
+function serial_logging_device_add(serial: PSERIAL_DEVICE): uint32_t; stdcall;
+{Add a new serial logging device on receipt of a device register notification}
+begin
+ {}
+ Result:=SerialLoggingDeviceAdd(serial);
+end;
+
+{==============================================================================}
+
+function serial_logging_device_remove(serial: PSERIAL_DEVICE): uint32_t; stdcall;
+{Remove a serial logging device on receipt of a device deregister notification}
+begin
+ {}
+ Result:=SerialLoggingDeviceRemove(serial);
+end;
+
+{==============================================================================}
+
+function serial_logging_device_parameters(serial: PSERIAL_DEVICE; parameters: PCHAR; var baudrate, parity, databits, stopbits: uint32_t): uint32_t; stdcall;
+{Break down the serial parameters value into component parts of baud rate, parity, data bits and stop bits}
+{The parameters must be in the form 'BaudRate,Parity,DataBits,StopBits' (eg '115200,N,8,1')}
+begin
+ {}
+ Result:=SerialLoggingDeviceParameters(serial,parameters,baudrate,parity,databits,stopbits);
 end;
 {$ENDIF}
 {==============================================================================}
