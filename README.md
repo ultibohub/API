@@ -36,6 +36,7 @@ The includes directory contains header files for interfaces to the following Ult
 * ultibo/tftframebuffer.h - 
 * ultibo/touch.h - 
 * ultibo/uart.h - 
+* ultibo/unicode.h - 
 
 In addition to the Ultibo interface headers a small number of headers that expose functionality not normally available in the Newlib C library are also provided
 
