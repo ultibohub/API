@@ -3797,6 +3797,9 @@ function rtc_device_set_default(rtc: PRTC_DEVICE): uint32_t; stdcall; public nam
 
 function rtc_device_check(rtc: PRTC_DEVICE): PRTC_DEVICE; stdcall; public name 'rtc_device_check';
 
+function rtc_device_type_to_string(rtctype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'rtc_device_type_to_string';
+function rtc_device_state_to_string(rtcstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'rtc_device_state_to_string';
+
 function rtc_time_is_valid(const time: SYSTEMTIME): BOOL; stdcall; public name 'rtc_time_is_valid';
 
 function rtc_systemtime_to_filetime(const systemtime: SYSTEMTIME; var filetime: int64_t): BOOL; stdcall; public name 'rtc_systemtime_to_filetime';
@@ -28994,6 +28997,22 @@ function rtc_device_check(rtc: PRTC_DEVICE): PRTC_DEVICE; stdcall;
 begin
  {}
  Result:=RTCDeviceCheck(rtc);
+end;
+
+{==============================================================================}
+
+function rtc_device_type_to_string(rtctype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(RTCDeviceTypeToString(rtctype),_string,len);
+end;
+
+{==============================================================================}
+
+function rtc_device_state_to_string(rtcstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(RTCDeviceStateToString(rtcstate),_string,len);
 end;
 
 {==============================================================================}
