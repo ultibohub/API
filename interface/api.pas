@@ -1567,21 +1567,21 @@ function mutex_owner(mutex: MUTEX_HANDLE): THREAD_HANDLE; stdcall; public name '
 
 function mutex_lock(mutex: MUTEX_HANDLE): uint32_t; stdcall; public name 'mutex_lock';
 function mutex_unlock(mutex: MUTEX_HANDLE): uint32_t; stdcall; public name 'mutex_unlock';
-function mutex_trylock(mutex: MUTEX_HANDLE): uint32_t; stdcall; public name 'mutex_trylock';
+function mutex_try_lock(mutex: MUTEX_HANDLE): uint32_t; stdcall; public name 'mutex_try_lock';
 
 {Critical Section Functions}
 function critical_section_create: CRITICAL_SECTION_HANDLE; stdcall; public name 'critical_section_create';
 function critical_section_create_ex(initialowner: BOOL; spincount: uint32_t): CRITICAL_SECTION_HANDLE; stdcall; public name 'critical_section_create_ex';
-function critical_section_destroy(critical_section: CRITICAL_SECTION_HANDLE): uint32_t; stdcall; public name 'critical_section_destroy';
+function critical_section_destroy(criticalsection: CRITICAL_SECTION_HANDLE): uint32_t; stdcall; public name 'critical_section_destroy';
 
-function critical_section_count(critical_section: CRITICAL_SECTION_HANDLE): uint32_t; stdcall; public name 'critical_section_count';
-function critical_section_owner(critical_section: CRITICAL_SECTION_HANDLE): THREAD_HANDLE; stdcall; public name 'critical_section_owner';
-function critical_section_set_spincount(critical_section: CRITICAL_SECTION_HANDLE; spincount: uint32_t): uint32_t; stdcall; public name 'critical_section_set_spincount';
+function critical_section_count(criticalsection: CRITICAL_SECTION_HANDLE): uint32_t; stdcall; public name 'critical_section_count';
+function critical_section_owner(criticalsection: CRITICAL_SECTION_HANDLE): THREAD_HANDLE; stdcall; public name 'critical_section_owner';
+function critical_section_set_spin_count(criticalsection: CRITICAL_SECTION_HANDLE; spincount: uint32_t): uint32_t; stdcall; public name 'critical_section_set_spin_count';
 
-function critical_section_lock(critical_section: CRITICAL_SECTION_HANDLE): uint32_t; stdcall; public name 'critical_section_lock';
-function critical_section_lock_ex(critical_section: CRITICAL_SECTION_HANDLE; timeout: uint32_t): uint32_t; stdcall; public name 'critical_section_lock_ex';
-function critical_section_unlock(critical_section: CRITICAL_SECTION_HANDLE): uint32_t; stdcall; public name 'critical_section_unlock';
-function critical_section_trylock(critical_section: CRITICAL_SECTION_HANDLE): uint32_t; stdcall; public name 'critical_section_trylock';
+function critical_section_lock(criticalsection: CRITICAL_SECTION_HANDLE): uint32_t; stdcall; public name 'critical_section_lock';
+function critical_section_lock_ex(criticalsection: CRITICAL_SECTION_HANDLE; timeout: uint32_t): uint32_t; stdcall; public name 'critical_section_lock_ex';
+function critical_section_unlock(criticalsection: CRITICAL_SECTION_HANDLE): uint32_t; stdcall; public name 'critical_section_unlock';
+function critical_section_try_lock(criticalsection: CRITICAL_SECTION_HANDLE): uint32_t; stdcall; public name 'critical_section_try_lock';
 
 {Semaphore Functions}
 function semaphore_create(count: uint32_t): SEMAPHORE_HANDLE; stdcall; public name 'semaphore_create';
@@ -1624,7 +1624,7 @@ function condition_destroy(condition: CONDITION_HANDLE): uint32_t; stdcall; publ
 function condition_wait(condition: CONDITION_HANDLE; timeout: uint32_t): uint32_t; stdcall; public name 'condition_wait';
 function condition_wait_mutex(condition: CONDITION_HANDLE; mutex: MUTEX_HANDLE; timeout: uint32_t): uint32_t; stdcall; public name 'condition_wait_mutex';
 function condition_wait_synchronizer(condition: CONDITION_HANDLE; synchronizer: SYNCHRONIZER_HANDLE; flags: uint32_t; timeout: uint32_t): uint32_t; stdcall; public name 'condition_wait_synchronizer';
-function condition_wait_critical_section(condition: CONDITION_HANDLE; critical_section: CRITICAL_SECTION_HANDLE; timeout: uint32_t): uint32_t; stdcall; public name 'condition_wait_critical_section';
+function condition_wait_critical_section(condition: CONDITION_HANDLE; criticalsection: CRITICAL_SECTION_HANDLE; timeout: uint32_t): uint32_t; stdcall; public name 'condition_wait_critical_section';
 
 function condition_wake(condition: CONDITION_HANDLE): uint32_t; stdcall; public name 'condition_wake';
 function condition_wake_all(condition: CONDITION_HANDLE): uint32_t; stdcall; public name 'condition_wake_all';
@@ -1636,7 +1636,7 @@ function completion_destroy(completion: COMPLETION_HANDLE): uint32_t; stdcall; p
 function completion_state(completion: COMPLETION_HANDLE): uint32_t; stdcall; public name 'completion_state';
 
 function completion_wait(completion: COMPLETION_HANDLE; timeout: uint32_t): uint32_t; stdcall; public name 'completion_wait';
-function completion_trywait(completion: COMPLETION_HANDLE): uint32_t; stdcall; public name 'completion_trywait';
+function completion_try_wait(completion: COMPLETION_HANDLE): uint32_t; stdcall; public name 'completion_try_wait';
 
 function completion_reset(completion: COMPLETION_HANDLE): uint32_t; stdcall; public name 'completion_reset';
 function completion_complete(completion: COMPLETION_HANDLE): uint32_t; stdcall; public name 'completion_complete';
@@ -1717,7 +1717,7 @@ function thread_get_locale(thread: THREAD_HANDLE): LCID; stdcall; public name 't
 function thread_set_locale(thread: THREAD_HANDLE; locale: LCID): uint32_t; stdcall; public name 'thread_set_locale';
 
 function thread_get_times(thread: THREAD_HANDLE; var createtime, exittime, kerneltime: int64_t): uint32_t; stdcall; public name 'thread_get_times';
-function thread_get_switchcount(thread: THREAD_HANDLE; var switchcount: int64_t): uint32_t; stdcall; public name 'thread_get_switchcount';
+function thread_get_switch_count(thread: THREAD_HANDLE; var switchcount: int64_t): uint32_t; stdcall; public name 'thread_get_switch_count';
 
 function thread_get_stack_free: uint32_t; stdcall; public name 'thread_get_stack_free';
 function thread_get_stack_size(thread: THREAD_HANDLE): uint32_t; stdcall; public name 'thread_get_stack_size';
@@ -1890,6 +1890,8 @@ function worker_decrease_ex(count: uint32_t; priority: BOOL): uint32_t; stdcall;
 function tasker_thread_send_message(thread: THREAD_HANDLE; const message: TTHREAD_MESSAGE): uint32_t; stdcall; public name 'tasker_thread_send_message';
 function tasker_messageslot_send(messageslot: MESSAGESLOT_HANDLE; const message: TTHREAD_MESSAGE): uint32_t; stdcall; public name 'tasker_messageslot_send';
 function tasker_semaphore_signal(semaphore: SEMAPHORE_HANDLE; count: uint32_t): uint32_t; stdcall; public name 'tasker_semaphore_signal';
+function tasker_completion_reset(completion: COMPLETION_HANDLE): uint32_t; stdcall; public name 'tasker_completion_reset';
+function tasker_completion_complete(completion: COMPLETION_HANDLE; all: BOOL): uint32_t; stdcall; public name 'tasker_completion_complete';
 
 function tasker_enqueue(task: PTASKER_TASK): uint32_t; stdcall; public name 'tasker_enqueue';
 function tasker_dequeue: PTASKER_TASK; stdcall; public name 'tasker_dequeue';
@@ -1931,6 +1933,43 @@ function timer_get_count: uint32_t; stdcall; public name 'timer_get_count';
 function worker_get_count: uint32_t; stdcall; public name 'worker_get_count';
 function worker_get_priority_count: uint32_t; stdcall; public name 'worker_get_priority_count';
 function tasker_get_count: uint32_t; stdcall; public name 'tasker_get_count';
+
+function list_type_to_string(listtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'list_type_to_string';
+function queue_type_to_string(queuetype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'queue_type_to_string';
+function thread_type_to_string(threadtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'thread_type_to_string';
+function thread_state_to_string(threadstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'thread_state_to_string';
+function thread_priority_to_string(threadpriority: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'thread_priority_to_string';
+
+{Scheduler Helper Functions}
+function scheduler_get_list_flags(listtype: uint32_t): uint32_t; stdcall; public name 'scheduler_get_list_flags';
+function scheduler_get_queue_flags(queuetype: uint32_t): uint32_t; stdcall; public name 'scheduler_get_queue_flags';
+function scheduler_get_queue_handle(cpuid: uint32_t; queuetype: uint32_t): QUEUE_HANDLE; stdcall; public name 'scheduler_get_queue_handle';
+function scheduler_get_queue_handle_ex(cpuid: uint32_t; priority: uint32_t): QUEUE_HANDLE; stdcall; public name 'scheduler_get_queue_handle_ex';
+function scheduler_get_thread_count(cpuid: uint32_t): uint32_t; stdcall; public name 'scheduler_get_thread_count';
+function scheduler_get_thread_quantum(cpuid: uint32_t): uint32_t; stdcall; public name 'scheduler_get_thread_quantum';
+function scheduler_get_thread_handle(cpuid: uint32_t; threadtype: uint32_t): THREAD_HANDLE; stdcall; public name 'scheduler_get_thread_handle';
+function scheduler_get_priority_mask(cpuid: uint32_t): uint32_t; stdcall; public name 'scheduler_get_priority_mask';
+function scheduler_get_priority_quantum(priority: uint32_t): uint32_t; stdcall; public name 'scheduler_get_priority_quantum';
+function scheduler_set_priority_quantum(priority, quantum: uint32_t): uint32_t; stdcall; public name 'scheduler_set_priority_quantum';
+function scheduler_get_migration_quantum: uint32_t; stdcall; public name 'scheduler_get_migration_quantum';
+function scheduler_get_starvation_quantum(cpuid: uint32_t): uint32_t; stdcall; public name 'scheduler_get_starvation_quantum';
+
+function scheduler_get_thread_next: uint32_t; stdcall; public name 'scheduler_get_thread_next';
+function scheduler_get_thread_migration: uint32_t; stdcall; public name 'scheduler_get_thread_migration';
+
+function scheduler_get_thread_preempt(cpuid: uint32_t): uint32_t; stdcall; public name 'scheduler_get_thread_preempt';
+function scheduler_get_thread_allocation(cpuid: uint32_t): uint32_t; stdcall; public name 'scheduler_get_thread_allocation';
+
+function scheduler_migration_to_string(migration: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'scheduler_migration_to_string';
+function scheduler_preempt_to_string(preempt: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'scheduler_preempt_to_string';
+function scheduler_allocation_to_string(allocation: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'scheduler_allocation_to_string';
+
+{Timer Helper Functions}
+function timer_get_list_flags: uint32_t; stdcall; public name 'timer_get_list_flags';
+function timer_get_messageslot_flags: uint32_t; stdcall; public name 'timer_get_messageslot_flags';
+
+{Worker Helper Functions}
+function worker_get_messageslot_flags: uint32_t; stdcall; public name 'worker_get_messageslot_flags';
 {$ENDIF}
 {==============================================================================}
 {HeapManager Functions}
@@ -12899,7 +12938,6 @@ function spin_lock_preempt(spin: SPIN_HANDLE): uint32_t; stdcall;
 {Lock an existing Spin entry, disable IRQ or IRQ/FIQ and save the previous IRQ or IRQ/FIQ state}
 {Spin: Handle of Spin entry to lock}
 {Return: ERROR_SUCCESS if completed or another error code on failure}
-
 {Note: This is a convenience wrapper which determines the appropriate SpinLock call to disable preemption}
 begin
  {}
@@ -12912,7 +12950,6 @@ function spin_unlock_preempt(spin: SPIN_HANDLE): uint32_t; stdcall;
 {Unlock an existing Spin entry and restore the previous IRQ or IRQ/FIQ state}
 {Spin: Handle of Spin entry to unlock}
 {Return: ERROR_SUCCESS if completed or another error code on failure}
-
 {Note: This is a convenience wrapper which determines the appropriate SpinUnlock call to enable preemption}
 begin
  {}
@@ -13061,7 +13098,7 @@ end;
 
 {==============================================================================}
 
-function mutex_trylock(mutex: MUTEX_HANDLE): uint32_t; stdcall;
+function mutex_try_lock(mutex: MUTEX_HANDLE): uint32_t; stdcall;
 {Try to lock an existing Mutex entry
 
  If the Mutex is not locked then lock it and mark the owner as the current thread
@@ -13099,52 +13136,52 @@ end;
 
 {==============================================================================}
 
-function critical_section_destroy(critical_section: CRITICAL_SECTION_HANDLE): uint32_t; stdcall;
+function critical_section_destroy(criticalsection: CRITICAL_SECTION_HANDLE): uint32_t; stdcall;
 {Destroy and remove an existing CriticalSection entry}
 {CriticalSection: Handle of CriticalSection entry to destroy}
 {Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
- Result:=CriticalSectionDestroy(critical_section);
+ Result:=CriticalSectionDestroy(criticalsection);
 end;
 
 {==============================================================================}
 
-function critical_section_count(critical_section: CRITICAL_SECTION_HANDLE): uint32_t; stdcall;
+function critical_section_count(criticalsection: CRITICAL_SECTION_HANDLE): uint32_t; stdcall;
 {Get the current lock count of an existing CriticalSection entry}
 {CriticalSection: CriticalSection to get count for}
 {Return: Current lock count or INVALID_HANDLE_VALUE on error}
 begin
  {}
- Result:=CriticalSectionCount(critical_section);
+ Result:=CriticalSectionCount(criticalsection);
 end;
 
 {==============================================================================}
 
-function critical_section_owner(critical_section: CRITICAL_SECTION_HANDLE): THREAD_HANDLE; stdcall;
+function critical_section_owner(criticalsection: CRITICAL_SECTION_HANDLE): THREAD_HANDLE; stdcall;
 {Get the current owner of an existing CriticalSection entry}
 {CriticalSection: CriticalSection to get owner for}
 {Return: Handle of owning thread or INVALID_HANDLE_VALUE if not currently owned}
 begin
  {}
- Result:=CriticalSectionOwner(critical_section);
+ Result:=CriticalSectionOwner(criticalsection);
 end;
 
 {==============================================================================}
 
-function critical_section_set_spincount(critical_section: CRITICAL_SECTION_HANDLE; spincount: uint32_t): uint32_t; stdcall;
+function critical_section_set_spin_count(criticalsection: CRITICAL_SECTION_HANDLE; spincount: uint32_t): uint32_t; stdcall;
 {Set the spin count of an existing CriticalSection entry}
 {CriticalSection: CriticalSection to set spin count for}
 {SpinCount: The spin count value to set}
 {Return: Current spin count or INVALID_HANDLE_VALUE on error}
 begin
  {}
- Result:=CriticalSectionSetSpinCount(critical_section,spincount);
+ Result:=CriticalSectionSetSpinCount(criticalsection,spincount);
 end;
 
 {==============================================================================}
 
-function critical_section_lock(critical_section: CRITICAL_SECTION_HANDLE): uint32_t; stdcall;
+function critical_section_lock(criticalsection: CRITICAL_SECTION_HANDLE): uint32_t; stdcall;
 {Lock an existing CriticalSection entry
 
  If the CriticalSection is not locked then lock it, set the count to one and
@@ -13159,12 +13196,12 @@ function critical_section_lock(critical_section: CRITICAL_SECTION_HANDLE): uint3
 {Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
- Result:=CriticalSectionLock(critical_section);
+ Result:=CriticalSectionLock(criticalsection);
 end;
 
 {==============================================================================}
 
-function critical_section_lock_ex(critical_section: CRITICAL_SECTION_HANDLE; timeout: uint32_t): uint32_t; stdcall;
+function critical_section_lock_ex(criticalsection: CRITICAL_SECTION_HANDLE; timeout: uint32_t): uint32_t; stdcall;
 {Lock an existing CriticalSection entry
 
  If the CriticalSection is not locked then lock it, set the count to one and
@@ -13180,12 +13217,12 @@ function critical_section_lock_ex(critical_section: CRITICAL_SECTION_HANDLE; tim
 {Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
- Result:=CriticalSectionLockEx(critical_section,timeout);
+ Result:=CriticalSectionLockEx(criticalsection,timeout);
 end;
 
 {==============================================================================}
 
-function critical_section_unlock(critical_section: CRITICAL_SECTION_HANDLE): uint32_t; stdcall;
+function critical_section_unlock(criticalsection: CRITICAL_SECTION_HANDLE): uint32_t; stdcall;
 {Unlock an existing CriticalSection entry
 
  If the CriticalSection is locked by the current thread then decrement the count
@@ -13202,12 +13239,12 @@ function critical_section_unlock(critical_section: CRITICAL_SECTION_HANDLE): uin
 {Return: ERROR_SUCCESS if completed or another error code on failure}
 begin
  {}
- Result:=CriticalSectionUnlock(critical_section);
+ Result:=CriticalSectionUnlock(criticalsection);
 end;
 
 {==============================================================================}
 
-function critical_section_trylock(critical_section: CRITICAL_SECTION_HANDLE): uint32_t; stdcall;
+function critical_section_try_lock(criticalsection: CRITICAL_SECTION_HANDLE): uint32_t; stdcall;
 {Try to lock an existing CriticalSection entry
 
  If the CriticalSection is not locked then lock it, set the count to one and
@@ -13222,7 +13259,7 @@ function critical_section_trylock(critical_section: CRITICAL_SECTION_HANDLE): ui
 {Return: ERROR_SUCCESS if completed, ERROR_LOCKED if locked by another thread or another error code on failure}
 begin
  {}
- Result:=CriticalSectionTryLock(critical_section);
+ Result:=CriticalSectionTryLock(criticalsection);
 end;
 
 {==============================================================================}
@@ -13475,7 +13512,6 @@ function synchronizer_reader_convert(synchronizer: SYNCHRONIZER_HANDLE): uint32_
  If the Synchronizer is not locked then return an error}
 {Synchronizer: Synchronizer to convert}
 {Return: ERROR_SUCCESS if completed or another error code on failure}
-
 {Note: Since reader locks are recursive but do not maintain reader thread ownership,
  caller must ensure that one and only one reader lock is held by the current thread}
 begin
@@ -13501,7 +13537,6 @@ function synchronizer_reader_convert_ex(synchronizer: SYNCHRONIZER_HANDLE; timeo
 {Synchronizer: Synchronizer to convert}
 {Timeout: Milliseconds to wait before timeout (0 equals do not wait, INFINITE equals wait forever)}
 {Return: ERROR_SUCCESS if completed or another error code on failure}
-
 {Note: Since reader locks are recursive but do not maintain reader thread ownership,
  caller must ensure that one and only one reader lock is held by the current thread}
 begin
@@ -13612,7 +13647,6 @@ function synchronizer_writer_convert(synchronizer: SYNCHRONIZER_HANDLE): uint32_
  If the Synchronizer is not locked then return an error}
 {Synchronizer: Synchronizer to convert}
 {Return: ERROR_SUCCESS if completed or another error code on failure}
-
 {Note: Since writer locks are recursive, caller must ensure that one and only
  one writer lock is held by the current thread}
 begin
@@ -13666,7 +13700,6 @@ function condition_wait_mutex(condition: CONDITION_HANDLE; mutex: MUTEX_HANDLE; 
           INFINITE = Wait Indefinitely}
 {Return: ERROR_SUCCESS if completed or another error code on failure.
          Before returning (with either success or failure) the thread will reacquire the Mutex}
-
 {Note: Caller must be the owner of the Mutex with a count of one on entry to this function}
 begin
  {}
@@ -13686,7 +13719,6 @@ function condition_wait_synchronizer(condition: CONDITION_HANDLE; synchronizer: 
 {Return: ERROR_SUCCESS if completed or another error code on failure.
          Before returning (with either success or failure) the thread will reacquire the Synchronizer
          for either reading or writing depending on the flags value}
-
 {Note: Caller must be the owner of the Synchronizer with a count of one on entry to this function
        and the ownership must match the flags value provided}
 begin
@@ -13696,7 +13728,7 @@ end;
 
 {==============================================================================}
 
-function condition_wait_critical_section(condition: CONDITION_HANDLE; critical_section: CRITICAL_SECTION_HANDLE; timeout: uint32_t): uint32_t; stdcall;
+function condition_wait_critical_section(condition: CONDITION_HANDLE; criticalsection: CRITICAL_SECTION_HANDLE; timeout: uint32_t): uint32_t; stdcall;
 {Release a Critical Section and Wait on an existing Condition in an atomic operation}
 {Condition: Condition to wait on}
 {CriticalSection: Critical Section to release}
@@ -13706,11 +13738,10 @@ function condition_wait_critical_section(condition: CONDITION_HANDLE; critical_s
 {Return: ERROR_SUCCESS if completed or another error code on failure.
          Before returning (with either success or failure) the thread will reacquire the Synchronizer
          for either reading or writing depending on the flags value}
-
 {Note: Caller must be the owner of the Critical Section with a count of one on entry to this function}
 begin
  {}
- Result:=ConditionWaitCriticalSection(condition,critical_section,timeout);
+ Result:=ConditionWaitCriticalSection(condition,criticalsection,timeout);
 end;
 
 {==============================================================================}
@@ -13792,7 +13823,7 @@ end;
 
 {==============================================================================}
 
-function completion_trywait(completion: COMPLETION_HANDLE): uint32_t; stdcall;
+function completion_try_wait(completion: COMPLETION_HANDLE): uint32_t; stdcall;
 {Try an existing Completion to see if it is completed
 
  If the completion is not set (complete) then return immediately with an error
@@ -14265,7 +14296,6 @@ function thread_create(startproc: thread_start_proc; stacksize, priority: uint32
 {Note: Calls ThreadCreateEx with:
          Affinity = SCHEDULER_CPU_MASK (Run on any available CPU)
          CPU = SchedulerThreadNext (Assign to next CPU in round robin)}
-
 {WARNING: ThreadCreate and ThreadCreateEx are only used internally by SysBeginThread and SysBeginThreadEx
 
           These functions do not handle setting up certain RTL functionality such as thread variables,
@@ -14290,11 +14320,10 @@ function thread_create_ex(startproc: thread_start_proc; stacksize, priority, aff
 {StackSize: Stack size in bytes}
 {Priority: Thread priority (eg THREAD_PRIORITY_NORMAL)}
 {Affinity: Thread affinity (eg CPU_AFFINITY_ALL)}
-{CPU: The CPU to assign new thread to (eg )}
+{CPU: The CPU to assign new thread to (eg CPU_ID_0)}
 {Name: Name of the thread}
 {Parameter: Parameter passed to StartProc of new thread}
 {Return: Handle of new thread or INVALID_HANDLE_VALUE if a new thread could not be created}
-
 {WARNING: ThreadCreate and ThreadCreateEx are only used internally by SysBeginThread and SysBeginThreadEx
 
           These functions do not handle setting up certain RTL functionality such as thread variables,
@@ -14491,7 +14520,7 @@ end;
 
 {==============================================================================}
 
-function thread_get_switchcount(thread: THREAD_HANDLE; var switchcount: int64_t): uint32_t; stdcall;
+function thread_get_switch_count(thread: THREAD_HANDLE; var switchcount: int64_t): uint32_t; stdcall;
 {Get the current context switch count of a thread (How many times the thread has been scheduled)}
 {Thread: Handle of thread to get}
 {SwitchCount: Buffer to receive the SwitchCount value}
@@ -15478,7 +15507,6 @@ function buffer_iterate(buffer: BUFFER_HANDLE; previous: PVOID): PVOID; stdcall;
 {Buffer: Handle of Buffer entry to iterate from}
 {Previous: The pointer returned by the previous call or nil on first call}
 {Return: A pointer to the next buffer or nil on error}
-
 {Note: Iterate is intended to allow allocating or initializing buffers after
  a Buffer entry is created, or deallocating before a Buffer entry is destroyed.
 
@@ -15984,6 +16012,24 @@ end;
 
 {==============================================================================}
 
+function tasker_completion_reset(completion: COMPLETION_HANDLE): uint32_t; stdcall;
+{Perform a CompletionReset() function call using the tasker list}
+begin
+ {}
+ Result:=TaskerCompletionReset(completion);
+end;
+
+{==============================================================================}
+
+function tasker_completion_complete(completion: COMPLETION_HANDLE; all: BOOL): uint32_t; stdcall;
+{Perform a CompletionComplete() or CompletionCompleteAll() function call using the tasker list}
+begin
+ {}
+ Result:=TaskerCompletionComplete(completion,all);
+end;
+
+{==============================================================================}
+
 function tasker_enqueue(task: PTASKER_TASK): uint32_t; stdcall;
 {Add the supplied task to the end of the Tasker list}
 {Return: ERROR_SUCCESS if completed or another error code on failure}
@@ -16275,6 +16321,241 @@ function tasker_get_count: uint32_t; stdcall;
 begin
  {}
  Result:=TaskerGetCount;
+end;
+
+{==============================================================================}
+
+function list_type_to_string(listtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(ListTypeToString(listtype),_string,len);
+end;
+
+{==============================================================================}
+
+function queue_type_to_string(queuetype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(QueueTypeToString(queuetype),_string,len);
+end;
+
+{==============================================================================}
+
+function thread_type_to_string(threadtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(ThreadTypeToString(threadtype),_string,len);
+end;
+
+{==============================================================================}
+
+function thread_state_to_string(threadstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(ThreadStateToString(threadstate),_string,len);
+end;
+
+{==============================================================================}
+
+function thread_priority_to_string(threadpriority: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(ThreadPriorityToString(threadpriority),_string,len);
+end;
+
+{==============================================================================}
+{Scheduler Helper Functions}
+function scheduler_get_list_flags(listtype: uint32_t): uint32_t; stdcall;
+{Get the list flags for the specified type of list}
+begin
+ {}
+ Result:=SchedulerGetListFlags(listtype);
+end;
+
+{==============================================================================}
+
+function scheduler_get_queue_flags(queuetype: uint32_t): uint32_t; stdcall;
+{Get the queue flags for the specified type of scheduler queue}
+begin
+ {}
+ Result:=SchedulerGetQueueFlags(queuetype);
+end;
+
+{==============================================================================}
+
+function scheduler_get_queue_handle(cpuid: uint32_t; queuetype: uint32_t): QUEUE_HANDLE; stdcall;
+{Get the queue handle for the specified type of scheduler queue on the specified CPU}
+begin
+ {}
+ Result:=SchedulerGetQueueHandle(cpuid,queuetype);
+end;
+
+{==============================================================================}
+
+function scheduler_get_queue_handle_ex(cpuid: uint32_t; priority: uint32_t): QUEUE_HANDLE; stdcall;
+{Get the queue handle for the specified thread priority on the specified CPU}
+begin
+ {}
+ Result:=SchedulerGetQueueHandleEx(cpuid,priority);
+end;
+
+{==============================================================================}
+
+function scheduler_get_thread_count(cpuid: uint32_t): uint32_t; stdcall;
+{Get the thread count for the specified CPU}
+begin
+ {}
+ Result:=SchedulerGetThreadCount(cpuid);
+end;
+
+{==============================================================================}
+
+function scheduler_get_thread_quantum(cpuid: uint32_t): uint32_t; stdcall;
+{Get the current thread quantum for the specified CPU}
+begin
+ {}
+ Result:=SchedulerGetThreadQuantum(cpuid);
+end;
+
+{==============================================================================}
+
+function scheduler_get_thread_handle(cpuid: uint32_t; threadtype: uint32_t): THREAD_HANDLE; stdcall;
+{Get the thread handle for the specified type of thread on the specified CPU}
+begin
+ {}
+ Result:=SchedulerGetThreadHandle(cpuid,threadtype);
+end;
+
+{==============================================================================}
+
+function scheduler_get_priority_mask(cpuid: uint32_t): uint32_t; stdcall;
+{Get the current priority mask for the specified CPU}
+begin
+ {}
+ Result:=SchedulerGetPriorityMask(cpuid);
+end;
+
+{==============================================================================}
+
+function scheduler_get_priority_quantum(priority: uint32_t): uint32_t; stdcall;
+{Get the scheduler quantum for the specified thread priority}
+begin
+ {}
+ Result:=SchedulerGetPriorityQuantum(priority);
+end;
+
+{==============================================================================}
+
+function scheduler_set_priority_quantum(priority, quantum: uint32_t): uint32_t; stdcall;
+{Set the scheduler quantum for the specified thread priority}
+begin
+ {}
+ Result:=SchedulerSetPriorityQuantum(priority,quantum);
+end;
+
+{==============================================================================}
+
+function scheduler_get_migration_quantum: uint32_t; stdcall;
+{Get the current migration quantum}
+begin
+ {}
+ Result:=SchedulerGetMigrationQuantum;
+end;
+
+{==============================================================================}
+
+function scheduler_get_starvation_quantum(cpuid: uint32_t): uint32_t; stdcall;
+{Get the current starvation quantum for the specified CPU}
+begin
+ {}
+ Result:=SchedulerGetStarvationQuantum(cpuid);
+end;
+
+{==============================================================================}
+
+function scheduler_get_thread_next: uint32_t; stdcall;
+{Get the next CPU for thread allocation}
+begin
+ {}
+ Result:=SchedulerGetThreadNext;
+end;
+
+{==============================================================================}
+
+function scheduler_get_thread_migration: uint32_t; stdcall;
+{Get the current thread migration setting}
+begin
+ {}
+ Result:=SchedulerGetThreadMigration;
+end;
+
+{==============================================================================}
+
+function scheduler_get_thread_preempt(cpuid: uint32_t): uint32_t; stdcall;
+{Get the current thread preempt setting for the specified CPU}
+begin
+ {}
+ Result:=SchedulerGetThreadPreempt(cpuid);
+end;
+
+{==============================================================================}
+
+function scheduler_get_thread_allocation(cpuid: uint32_t): uint32_t; stdcall;
+{Get the current thread allocation setting for the specified CPU}
+begin
+ {}
+ Result:=SchedulerGetThreadAllocation(cpuid);
+end;
+
+{==============================================================================}
+
+function scheduler_migration_to_string(migration: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SchedulerMigrationToString(migration),_string,len);
+end;
+
+{==============================================================================}
+
+function scheduler_preempt_to_string(preempt: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SchedulerPreemptToString(preempt),_string,len);
+end;
+
+{==============================================================================}
+
+function scheduler_allocation_to_string(allocation: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(SchedulerAllocationToString(allocation),_string,len);
+end;
+
+{==============================================================================}
+{Timer Helper Functions}
+function timer_get_list_flags: uint32_t; stdcall;
+{Get the lock flags for the timer list}
+begin
+ {}
+ Result:=TimerGetListFlags;
+end;
+
+{==============================================================================}
+
+function timer_get_messageslot_flags: uint32_t; stdcall;
+{Get the lock flags for the timer messageslot}
+begin
+ {}
+ Result:=TimerGetMessageslotFlags;
+end;
+
+{==============================================================================}
+{Worker Helper Functions}
+function worker_get_messageslot_flags: uint32_t; stdcall;
+{Get the lock flags for the worker messageslot}
+begin
+ {}
+ Result:=WorkerGetMessageslotFlags;
 end;
 {$ENDIF}
 {==============================================================================}
