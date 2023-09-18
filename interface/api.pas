@@ -5332,7 +5332,7 @@ function GetDiskFreeSpaceExW(lpdirectoryname: LPCWSTR; var lpfreebytesavailablet
 {Drive Functions (Ultibo)}
 function GetPathDrive(path: PCHAR): uint8_t; stdcall; public name 'GetPathDrive';
 function GetDriveType(drive: uint8_t): TDRIVE_TYPE; stdcall; public name 'GetDriveType';
-function GetDriveData(drive: uint8_t): TDRIVE_DATA; stdcall; public name 'GetDriveData';
+procedure GetDriveData(drive: uint8_t; var data: TDRIVE_DATA); stdcall; public name 'GetDriveData';
 function GetDriveAttr(drive: uint8_t): uint32_t; stdcall; public name 'GetDriveAttr';
 function GetDriveLabel(drive: uint8_t; _label: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'GetDriveLabel';
 function SetDriveLabel(drive: uint8_t; _label: PCHAR): BOOL; stdcall; public name 'SetDriveLabel';
@@ -38427,8 +38427,8 @@ end;
 
 function FileTimeToDosDateTime(const lpfiletime: FILETIME; var lpfatdate, lpfattime: uint16_t): BOOL; stdcall;
 {Convert a FileTime value to a DOS date and time value}
-{Note: FileTime is assumed to be Local / DOS data and time is returned as Local}
-{Note: If FileTime is less than 1/1/1980 then DOS date and time will be zero}
+{Note: FileTime is assumed to be Local / DOS date and time is returned as Local}
+{Note: If FileTime is less than 1/1/1980 then DOS date and time will be 1/1/1980}
 begin
  {}
  Result:=Ultibo.FileTimeToDosDateTime(lpfiletime,lpfatdate,lpfattime);
@@ -38439,7 +38439,7 @@ end;
 function DosDateTimeToFileTime(wfatdate, wfattime: uint16_t; var lpfiletime: FILETIME): BOOL; stdcall;
 {Convert a DOS date and time value to a FileTime value}
 {Note: DOS date and time is assumed to be Local / FileTime is returned as Local}
-{Note: If DOS date and time is less than 1/1/1980 then FileTime will be zero}
+{Note: If DOS date and time is less than 1/1/1980 then FileTime will be 1/1/1980}
 begin
  {}
  Result:=Ultibo.DosDateTimeToFileTime(wfatdate,wfattime,lpfiletime);
@@ -39000,10 +39000,10 @@ end;
 
 {==============================================================================}
 
-function GetDriveData(drive: uint8_t): TDRIVE_DATA; stdcall;
+procedure GetDriveData(drive: uint8_t; var data: TDRIVE_DATA); stdcall;
 begin
  {}
- Result:=Ultibo.GetDriveData(drive);
+ data:=Ultibo.GetDriveData(drive);
 end;
 
 {==============================================================================}
