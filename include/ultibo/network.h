@@ -751,7 +751,7 @@ uint32_t STDCALL adapter_state_to_string(int state, char *string, uint32_t len);
 uint32_t STDCALL adapter_status_to_string(int status, char *string, uint32_t len);
 
 uint32_t STDCALL frame_type_to_string(uint16_t _type, char *string, uint32_t len);
-uint32_t STDCALL media_type_to_string(uint16_t _type, char *string, uint32_t len);
+uint32_t STDCALL network_media_type_to_string(uint16_t _type, char *string, uint32_t len);
 uint32_t STDCALL packet_type_to_string(uint16_t _type, char *string, uint32_t len);
 
 uint32_t STDCALL config_type_to_string(uint16_t _type, char *string, uint32_t len);

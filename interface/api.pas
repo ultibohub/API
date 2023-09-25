@@ -56,20 +56,6 @@ API
  only on the features that you use then you should turn off any of the API_EXPORT_*
  that are not required for your project.
 
- //To Do
-
- //Export all Ultibo functions for linking from static libraries
-
- //This also works in conjunction with loader by redefining the internal API functions as STDCALL (not CDECL)
-
- //To Do //PCHAR returns need to be converted to passing a buffer and size (Like common windows functions)
-
- //To Do //Callbacks need to be declared as Pascal calling convention in the C header ?
-         //Or need to be declared in Ultibo as STDCALL (Probably this since it will have no affect at present)
-         //Make it $IFDEF i386
-
- //To Do //Strings embedded in structures such as TDevice/TDriver/THost need to be changed to PChar instead
-
 }
 
 {$mode delphi} {Default to Delphi compatible syntax}
@@ -147,168 +133,169 @@ interface
 
 //To Do //Continuing
 
-uses GlobalConfig,
-   GlobalConst,
-   GlobalTypes,
+uses
+  GlobalConfig,
+  GlobalConst,
+  GlobalTypes,
 
-   {$IFDEF API_EXPORT_PLATFORM}
-   Platform,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_PLATFORM}
+  Platform,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_THREADS}
-   Threads,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_THREADS}
+  Threads,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_HEAP}
-   HeapManager,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_HEAP}
+  HeapManager,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_DEVICE_TREE}
-   DeviceTree,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_DEVICE_TREE}
+  DeviceTree,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_DEVICES}
-   Devices,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_DEVICES}
+  Devices,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_CONSOLE}
-   Console,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_CONSOLE}
+  Console,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_LOGGING}
-   Logging,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_LOGGING}
+  Logging,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_DMA}
-   DMA,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_DMA}
+  DMA,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_PCI}
-   PCI,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_PCI}
+  PCI,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_USB}
-   USB,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_USB}
+  USB,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_MMC}
-   MMC,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_MMC}
+  MMC,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_SPI}
-   SPI,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_SPI}
+  SPI,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_I2C}
-   I2C,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_I2C}
+  I2C,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_PWM}
-   PWM,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_PWM}
+  PWM,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_PCM}
-   I2S,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_PCM}
+  I2S,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_GPIO}
-   GPIO,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_GPIO}
+  GPIO,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_UART}
-   UART,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_UART}
+  UART,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_SERIAL}
-   Serial,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_SERIAL}
+  Serial,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_RTC}
-   RTC,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_RTC}
+  RTC,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_FONT}
-   Font,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_FONT}
+  Font,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_FRAMEBUFFER}
-   Framebuffer,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_FRAMEBUFFER}
+  Framebuffer,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_GRAPHICSCONSOLE}
-   GraphicsConsole,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_GRAPHICSCONSOLE}
+  GraphicsConsole,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_HID}
-   HID,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_HID}
+  HID,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_KEYMAP}
-   Keymap,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_KEYMAP}
+  Keymap,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_KEYBOARD}
-   Keyboard,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_KEYBOARD}
+  Keyboard,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_MOUSE}
-   Mouse,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_MOUSE}
+  Mouse,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_TOUCH}
-   Touch,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_TOUCH}
+  Touch,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_JOYSTICK}
-   Joystick,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_JOYSTICK}
+  Joystick,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_STORAGE}
-   Storage,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_STORAGE}
+  Storage,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_NETWORK}
-   Network,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_NETWORK}
+  Network,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_TIMEZONE}
-   Timezone,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_TIMEZONE}
+  Timezone,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_LOCALE}
-   Locale,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_LOCALE}
+  Locale,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_UNICODE}
-   Unicode,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_UNICODE}
+  Unicode,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_TFTFRAMEBUFFER}
-   TFTFramebuffer,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_TFTFRAMEBUFFER}
+  TFTFramebuffer,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_FILESYSTEM}
-   FileSystem,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_FILESYSTEM}
+  FileSystem,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_WINSOCK}
-   Winsock,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_WINSOCK}
+  Winsock,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_WINSOCK2}
-   Winsock2,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_WINSOCK2}
+  Winsock2,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_IPHLPAPI}
-   Iphlpapi,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_IPHLPAPI}
+  Iphlpapi,
+  {$ENDIF}
 
-   {$IFDEF API_EXPORT_ULTIBO}
-   Security,
-   Ultibo,
-   {$ENDIF}
+  {$IFDEF API_EXPORT_ULTIBO}
+  Security,
+  Ultibo,
+  {$ENDIF}
 
-   SysUtils;
+  SysUtils;
 
 {==============================================================================}
 {const}
@@ -832,11 +819,13 @@ type
 
 {$IFDEF API_EXPORT_FILESYSTEM}
 type
- TDRIVE_TYPE = TDriveType;
- TDRIVE_DATA = TDriveData;
+ TMEDIA_TYPE = TMediaType;
+ TFLOPPY_TYPE = TFloppyType;
+ TIMAGE_TYPE = TImageType;
+ TCACHE_STATE = TCacheState;
+ TCACHE_MODE = TCacheMode;
 
- SEARCH_REC = TSearchRec;
- FILE_SEARCH_REC = TFileSearchRec;
+ TFILE_SEARCH_REC = TFileSearchRec;
 {$ENDIF}
 
 {$IFDEF API_EXPORT_WINSOCK}
@@ -852,7 +841,11 @@ type
 {$ENDIF}
 
 {$IFDEF API_EXPORT_ULTIBO}
-{type}
+type
+ TDRIVE_TYPE = TDriveType;
+ TDRIVE_DATA = TDriveData;
+ 
+ TFILE_SYS_TYPE = TFileSysType;
 {$ENDIF}
 
 {==============================================================================}
@@ -4539,7 +4532,7 @@ function adapter_state_to_string(state: int; _string: PCHAR; len: uint32_t): uin
 function adapter_status_to_string(status: int; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'adapter_status_to_string';
 
 function frame_type_to_string(_type: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'frame_type_to_string';
-function media_type_to_string(_type: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'media_type_to_string';
+function network_media_type_to_string(_type: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'network_media_type_to_string';
 function packet_type_to_string(_type: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'packet_type_to_string';
 
 function config_type_to_string(_type: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'config_type_to_string';
@@ -4715,143 +4708,139 @@ function file_sys_start_completed: BOOL; stdcall; public name 'file_sys_start_co
 procedure file_sys_async_start(data: PVOID); stdcall; public name 'file_sys_async_start';
 
 {Drive Functions}
-function fs_get_path_drive(path: PCHAR): uint8_t; stdcall; public name 'fs_get_path_drive';
-function fs_get_drive_type(drive: uint8_t): TDRIVE_TYPE; stdcall; public name 'fs_get_drive_type';
-function fs_get_drive_data(drive: uint8_t): TDRIVE_DATA; stdcall; public name 'fs_get_drive_data';
-function fs_get_drive_attr(drive: uint8_t): uint32_t; stdcall; public name 'fs_get_drive_attr';
-function fs_get_drive_label(drive: uint8_t; _label: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_drive_label';
-function fs_set_drive_label(drive: uint8_t; _label: PCHAR): BOOL; stdcall; public name 'fs_set_drive_label';
-function fs_get_drive_serial(drive: uint8_t): uint32_t; stdcall; public name 'fs_get_drive_serial';
-function fs_set_drive_serial(drive: uint8_t; serial: uint32_t): BOOL; stdcall; public name 'fs_set_drive_serial';
-function fs_is_drive_valid(drive: uint8_t): BOOL; stdcall; public name 'fs_is_drive_valid';
-function fs_get_valid_drives: uint32_t; stdcall; public name 'fs_get_valid_drives';
-function fs_get_valid_drive_strings(drives: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_valid_drive_strings';
-function fs_get_drive_free_space(drive: uint8_t): uint32_t; stdcall; public name 'fs_get_drive_free_space';
-function fs_get_drive_free_space_ex(drive: uint8_t): int64_t; stdcall; public name 'fs_get_drive_free_space_ex';
-function fs_get_drive_total_space(drive: uint8_t): uint32_t; stdcall; public name 'fs_get_drive_total_space';
-function fs_get_drive_total_space_ex(drive: uint8_t): int64_t; stdcall; public name 'fs_get_drive_total_space_ex';
+{function GetPathDrive(path: PCHAR): uint8_t; stdcall; public name 'GetPathDrive';} {Exported in Ultibo}
+{function GetDriveType(drive: uint8_t): TDRIVE_TYPE; stdcall; public name 'GetDriveType';} {Exported in Ultibo}
+{procedure GetDriveData(drive: uint8_t; var data: TDRIVE_DATA); stdcall; public name 'GetDriveData';} {Exported in Ultibo}
+{function GetDriveAttr(drive: uint8_t): uint32_t; stdcall; public name 'GetDriveAttr';} {Exported in Ultibo}
+{function GetDriveLabel(drive: uint8_t; _label: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'GetDriveLabel';} {Exported in Ultibo}
+{function SetDriveLabel(drive: uint8_t; _label: PCHAR): BOOL; stdcall; public name 'SetDriveLabel';} {Exported in Ultibo}
+{function GetDriveSerial(drive: uint8_t): uint32_t; stdcall; public name 'GetDriveSerial';} {Exported in Ultibo}
+{function SetDriveSerial(drive: uint8_t; serial: uint32_t): BOOL; stdcall; public name 'SetDriveSerial';} {Exported in Ultibo}
+{function IsDriveValid(drive: uint8_t): BOOL; stdcall; public name 'IsDriveValid';} {Exported in Ultibo}
+{function GetValidDrives: uint32_t; stdcall; public name 'GetValidDrives';} {Exported in Ultibo}
+{function GetValidDriveNames(names: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'GetValidDriveNames';} {Exported in Ultibo}
+{function GetDriveFreeSpace(drive: uint8_t): uint32_t; stdcall; public name 'GetDriveFreeSpace';} {Exported in Ultibo}
+{function GetDriveFreeSpaceEx(drive: uint8_t): int64_t; stdcall; public name 'GetDriveFreeSpaceEx';} {Exported in Ultibo}
+{function GetDriveTotalSpace(drive: uint8_t): uint32_t; stdcall; public name 'GetDriveTotalSpace';} {Exported in Ultibo}
+{function GetDriveTotalSpaceEx(drive: uint8_t): int64_t; stdcall; public name 'GetDriveTotalSpaceEx';} {Exported in Ultibo}
 
-function fs_get_drive_information(path: PCHAR; var clustersize: uint32_t; var totalclustercount, freeclustercount: int64_t): BOOL; stdcall; public name 'fs_get_drive_information';
+{function GetDriveInformation(path: PCHAR; var clustersize: uint32_t; var totalclustercount, freeclustercount: int64_t): BOOL; stdcall; public name 'GetDriveInformation';} {Exported in Ultibo}
 
-function fs_get_current_drive: uint8_t; stdcall; public name 'fs_get_current_drive';
-function fs_set_current_drive(drive: PCHAR): BOOL; stdcall; public name 'fs_set_current_drive';
+{function GetCurrentDrive: uint8_t; stdcall; public name 'GetCurrentDrive';} {Exported in Ultibo}
+{function SetCurrentDrive(drive: PCHAR): BOOL; stdcall; public name 'SetCurrentDrive';} {Exported in Ultibo}
 
 {File Functions}
-function fs_file_open(filename: PCHAR; mode: int): THANDLE; stdcall; public name 'fs_file_open';
-function fs_file_create(filename: PCHAR): THANDLE; stdcall; public name 'fs_file_create';
-function fs_delete_file(filename: PCHAR): BOOL; stdcall; public name 'fs_delete_file';
-procedure fs_file_close(handle: int); stdcall; public name 'fs_file_close';
-function fs_rename_file(oldname, newname: PCHAR): BOOL; stdcall; public name 'fs_rename_file';
-function fs_file_seek(handle: THANDLE; offset, origin: int32_t): int32_t; stdcall; public name 'fs_file_seek';
-function fs_file_flush(handle: int): BOOL; stdcall; public name 'fs_file_flush';
-function fs_file_truncate(handle: int): BOOL; stdcall; public name 'fs_file_truncate';
-function fs_set_end_of_file(handle: THANDLE): BOOL; stdcall; public name 'fs_set_end_of_file';
+function FileOpen(filename: PCHAR; mode: int): THANDLE; stdcall; public name 'FileOpen';
+function FileCreate(filename: PCHAR): THANDLE; stdcall; public name 'FileCreate';
+{function DeleteFile(filename: PCHAR): BOOL; stdcall; public name 'DeleteFile';} {Exported in Ultibo}
+procedure FileClose(handle: int); stdcall; public name 'FileClose';
+function RenameFile(const oldname, newname: PCHAR): BOOL; stdcall; public name 'RenameFile';
+function FileSeek(handle: THANDLE; offset, origin: int32_t): int32_t; stdcall; public name 'FileSeek';
+function FileFlush(handle: int): BOOL; stdcall; public name 'FileFlush';
+function FileTruncate(handle: int): BOOL; stdcall; public name 'FileTruncate';
+{function SetEndOfFile(handle: THANDLE): BOOL; stdcall; public name 'SetEndOfFile';} {Exported in Ultibo}
 
-function fs_end_of_file(handle: int): BOOL; stdcall; public name 'fs_end_of_file';
-function fs_file_pos(handle: THANDLE): int32_t; stdcall; public name 'fs_file_pos';
-function fs_file_size(handle: THANDLE): int32_t; stdcall; public name 'fs_file_size';
+function EndOfFile(handle: int): BOOL; stdcall; public name 'EndOfFile';
+function FilePos(handle: THANDLE): int32_t; stdcall; public name 'FilePos';
+function FileSize(handle: THANDLE): int32_t; stdcall; public name 'FileSize';
 
-function fs_file_age(filename: PCHAR): int; stdcall; public name 'fs_file_age';
-function fs_file_exists(filename: PCHAR): BOOL; stdcall; public name 'fs_file_exists';
-function fs_file_get_attr(filename: PCHAR): int; stdcall; public name 'fs_file_get_attr';
-function fs_file_get_date(handle: int): int; stdcall; public name 'fs_file_get_date';
-function fs_file_set_attr(filename: PCHAR; attr: int): int; stdcall; public name 'fs_file_set_attr';
-function fs_file_set_date(handle: int; age: int): int; stdcall; public name 'fs_file_set_date';
+function FileAge(filename: PCHAR): int; stdcall; public name 'FileAge';
+function FileExists(filename: PCHAR): BOOL; stdcall; public name 'FileExists';
+function FileGetAttr(filename: PCHAR): int; stdcall; public name 'FileGetAttr';
+function FileGetDate(handle: int): int; stdcall; public name 'FileGetDate';
+function FileSetAttr(filename: PCHAR; attr: int): int; stdcall; public name 'FileSetAttr';
+function FileSetDate(handle: int; age: int): int; stdcall; public name 'FileSetDate';
 
-function fs_file_read(handle: THANDLE; buffer: PVOID; count: int32_t): int32_t; stdcall; public name 'fs_file_read';
-function fs_file_write(handle: THANDLE; buffer: PVOID; count: int32_t): int32_t; stdcall; public name 'fs_file_write';
+function FileRead(handle: THANDLE; buffer: PVOID; count: int32_t): int32_t; stdcall; public name 'FileRead';
+function FileWrite(handle: THANDLE; buffer: PVOID; count: int32_t): int32_t; stdcall; public name 'FileWrite';
 
 {Directory Functions}
-function fs_create_dir(dirname: PCHAR): BOOL; stdcall; public name 'fs_create_dir';
-function fs_remove_dir(dirname: PCHAR): BOOL; stdcall; public name 'fs_remove_dir';
-function fs_rename_dir(oldname, newname: PCHAR): BOOL; stdcall; public name 'fs_rename_dir';
-function fs_get_current_dir(dirname: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_current_dir';
-function fs_set_current_dir(dirname: PCHAR): BOOL; stdcall; public name 'fs_set_current_dir';
-function fs_directory_exists(dirname: PCHAR): BOOL; stdcall; public name 'fs_directory_exists';
-procedure fs_force_directories(dirname: PCHAR); stdcall; public name 'fs_force_directories';
-procedure fs_delete_tree(dirname: PCHAR); stdcall; public name 'fs_delete_tree';
+function CreateDir(dirname: PCHAR): BOOL; stdcall; public name 'CreateDir';
+function RemoveDir(dirname: PCHAR): BOOL; stdcall; public name 'RemoveDir';
+function RenameDir(const oldname, newname: PCHAR): BOOL; stdcall; public name 'RenameDir';
+function GetCurrentDir(dirname: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'GetCurrentDir';
+function SetCurrentDir(dirname: PCHAR): BOOL; stdcall; public name 'SetCurrentDir';
+function DirectoryExists(dirname: PCHAR): BOOL; stdcall; public name 'DirectoryExists';
+procedure ForceDirectories(dirname: PCHAR); stdcall; public name 'ForceDirectories';
+procedure DeleteTree(dirname: PCHAR); stdcall; public name 'DeleteTree';
 
 {Search Functions}
-function fs_find_first(path: PCHAR; attr: int; var searchrec: SEARCH_REC): int; stdcall; public name 'fs_find_first';
-function fs_find_next(var searchrec: SEARCH_REC): int; stdcall; public name 'fs_find_next';
-procedure fs_find_close(var searchrec: SEARCH_REC); stdcall; public name 'fs_find_close';
 
 {Additional Functions}
-function fs_file_copy(sourcefile, destfile: PCHAR; failifexists: BOOL): BOOL; stdcall; public name 'fs_file_copy';
-function fs_file_copy_ex(sourcefile, destfile: PCHAR; failifexists: BOOL; usesourcedate: BOOL; destdate: int; usesourceattr: BOOL; destattr: int): BOOL; stdcall; public name 'fs_file_copy_ex';
+function FileCopy(const sourcefile, destfile: PCHAR; failifexists: BOOL): BOOL; stdcall; public name 'FileCopy';
+function FileCopyEx(const sourcefile, destfile: PCHAR; failifexists: BOOL; usesourcedate: BOOL; destdate: int; usesourceattr: BOOL; destattr: int): BOOL; stdcall; public name 'FileCopyEx';
 
-function fs_get_short_name(filename: PCHAR; shortname: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_short_name';
-function fs_get_long_name(filename: PCHAR; longname: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_long_name';
-function fs_get_true_name(filename: PCHAR; truename: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_true_name';
+function GetShortName(filename: PCHAR; shortname: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'GetShortName';
+function GetLongName(filename: PCHAR; longname: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'GetLongName';
+function GetTrueName(filename: PCHAR; truename: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'GetTrueName';
 
 {Extended Functions}
-function fs_file_seek_ex(handle: THANDLE; const offset: int64_t; origin: int32_t): int64_t; stdcall; public name 'fs_file_seek_ex';
+function FileSeekEx(handle: THANDLE; const offset: int64_t; origin: int32_t): int64_t; stdcall; public name 'FileSeekEx';
 
-function fs_end_of_file_ex(handle: int): BOOL; stdcall; public name 'fs_end_of_file_ex';
-function fs_file_pos_ex(handle: THANDLE): int64_t; stdcall; public name 'fs_file_pos_ex';
-function fs_file_size_ex(handle: THANDLE): int64_t; stdcall; public name 'fs_file_size_ex';
+function EndOfFileEx(handle: int): BOOL; stdcall; public name 'EndOfFileEx';
+function FilePosEx(handle: THANDLE): int64_t; stdcall; public name 'FilePosEx';
+function FileSizeEx(handle: THANDLE): int64_t; stdcall; public name 'FileSizeEx';
 
-function fs_file_age_ex(filename: PCHAR): FILETIME; stdcall; public name 'fs_file_age_ex';
+function FileAgeEx(filename: PCHAR): FILETIME; stdcall; public name 'FileAgeEx';
 
-function fs_file_get_attr_ex(handle: int): int; stdcall; public name 'fs_file_get_attr_ex';
+function FileGetAttrEx(handle: int): int; stdcall; public name 'FileGetAttrEx';
 
-function fs_file_get_date_ex(handle: int): FILETIME; stdcall; public name 'fs_file_get_date_ex';
-function fs_file_set_date_ex(handle: int; age: FILETIME): int; stdcall; public name 'fs_file_set_date_ex';
+function FileGetDateEx(handle: int): FILETIME; stdcall; public name 'FileGetDateEx';
+function FileSetDateEx(handle: int; age: FILETIME): int; stdcall; public name 'FileSetDateEx';
 
-function fs_get_file_time(handle: THANDLE; createtime, accesstime, writetime: PFILETIME): BOOL; stdcall; public name 'fs_get_file_time';
-function fs_set_file_time(handle: THANDLE; createtime, accesstime, writetime: PFILETIME): BOOL; stdcall; public name 'fs_set_file_time';
+{function GetFileTime(handle: THANDLE; createtime, accesstime, writetime: PFILETIME): BOOL; stdcall; public name 'GetFileTime';} {Exported in Ultibo}
+{function SetFileTime(handle: THANDLE; createtime, accesstime, writetime: PFILETIME): BOOL; stdcall; public name 'SetFileTime';} {Exported in Ultibo}
 
-function fs_find_first_ex(path: PCHAR; var searchrec: FILE_SEARCH_REC): int; stdcall; public name 'fs_find_first_ex';
-function fs_find_next_ex(var searchrec: FILE_SEARCH_REC): int; stdcall; public name 'fs_find_next_ex';
-procedure fs_find_close_ex(var searchrec: FILE_SEARCH_REC); stdcall; public name 'fs_find_close_ex';
+function FindFirstEx(path: PCHAR; var searchrec: TFILE_SEARCH_REC): int; stdcall; public name 'FindFirstEx';
+function FindNextEx(var searchrec: TFILE_SEARCH_REC): int; stdcall; public name 'FindNextEx';
+procedure FindCloseEx(var searchrec: TFILE_SEARCH_REC); stdcall; public name 'FindCloseEx';
 
 {==============================================================================}
 {FileSystem Functions (Win32 Compatibility)}
 {Drive Functions}
-function fs_define_dos_device(devicename, targetpath: PCHAR; flags: uint32_t): BOOL; stdcall; public name 'fs_define_dos_device';
-function fs_get_disk_type(rootpath: PCHAR): uint32_t; stdcall; public name 'fs_get_disk_type'; // Equivalent to Win32 GetDriveType
-function fs_get_disk_free_space(rootpath: PCHAR; var sectorspercluster, bytespersector, numberoffreeclusters, totalnumberofclusters: uint32_t): BOOL; stdcall; public name 'fs_get_disk_free_space';
-function fs_get_disk_free_space_ex(pathname: PCHAR; var freebytesavailabletocaller, totalnumberofbytes, totalnumberoffreebytes: uint64_t): BOOL; stdcall; public name 'fs_get_disk_free_space_ex';
-function fs_get_logical_drives: uint32_t; stdcall; public name 'fs_get_logical_drives';
-function fs_get_logical_drive_strings(drives: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_logical_drive_strings';
-function fs_get_volume_information(rootpath: PCHAR; volumename: PCHAR; volumelen: uint32_t; var volumeserialnumber, maximumcomponentlength, filesystemflags: uint32_t; systemname: PCHAR; systemlen: uint32_t): BOOL; stdcall; public name 'fs_get_volume_information';
-function fs_query_dos_device(rootpath: PCHAR; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_query_dos_device';
-function fs_set_volume_label(volume: PCHAR; _label: PCHAR): BOOL; stdcall; public name 'fs_set_volume_label';
+{function DefineDosDevice(dwflags: uint32_t; lpdevicename, lptargetpath: LPCSTR): BOOL; stdcall; public name 'DefineDosDevice';} {Exported in Ultibo}
+{function GetDiskType(lprootpathname: LPCSTR): UINT; stdcall; public name 'GetDiskType'; // GetDriveType - Already defined above} {Exported in Ultibo}
+{function GetDiskFreeSpace(lprootpathname: LPCSTR; var lpsectorspercluster, lpbytespersector, lpnumberoffreeclusters, lptotalnumberofclusters: uint32_t): BOOL; stdcall; public name 'GetDiskFreeSpace';} {Exported in Ultibo}
+{function GetDiskFreeSpaceEx(lpdirectoryname: LPCSTR; var lpfreebytesavailabletocaller, lptotalnumberofbytes: ULARGE_INTEGER; lptotalnumberoffreebytes: PULARGE_INTEGER): BOOL; stdcall; public name 'GetDiskFreeSpaceEx';} {Exported in Ultibo}
+{function GetLogicalDrives: uint32_t; stdcall; public name 'GetLogicalDrives';} {Exported in Ultibo}
+{function GetLogicalDriveStrings(nbufferlength: uint32_t; lpbuffer: LPSTR): uint32_t; stdcall; public name 'GetLogicalDriveStrings';} {Exported in Ultibo}
+{function GetVolumeInformation(lprootpathname: LPCSTR; lpvolumenamebuffer: LPSTR; nvolumenamesize: uint32_t; lpvolumeserialnumber: LPDWORD; var lpmaximumcomponentlength, lpfilesystemflags: uint32_t; lpfilesystemnamebuffer: LPSTR; nfilesystemnamesize: uint32_t): BOOL; stdcall; public name 'GetVolumeInformation';} {Exported in Ultibo}
+{function QueryDosDevice(lpdevicename, lptargetpath: LPSTR; ucchmax: uint32_t): uint32_t; stdcall; public name 'QueryDosDevice';} {Exported in Ultibo}
+{function SetVolumeLabel(lprootpathname, lpvolumename: LPCSTR): BOOL; stdcall; public name 'SetVolumeLabel';} {Exported in Ultibo}
 
 {File Functions}
-function fs_are_file_apis_ansi: BOOL; stdcall; public name 'fs_are_file_apis_ansi';
-function fs_close_file(handle: THANDLE): BOOL; stdcall; public name 'fs_close_file'; // Equivalent to Win32 CloseHandle
-function fs_copy_file(existingname, newname: PCHAR; failifexists: BOOL): BOOL; stdcall; public name 'fs_copy_file';
-function fs_create_file(filename: PCHAR; accessmode, sharemode, createflags, fileattributes: uint32_t): THANDLE; stdcall; public name 'fs_create_file';
-function fs_find_close_file(handle: THANDLE): BOOL; stdcall; public name 'fs_find_close_file'; // Equivalent to Win32 FindClose
-function fs_find_first_file(filename: PCHAR; var finddata: TWin32FindData): THANDLE; stdcall; public name 'fs_find_first_file';
-function fs_find_next_file(handle: THANDLE; var finddata: TWin32FindData): BOOL; stdcall; public name 'fs_find_next_file';
-function fs_flush_file_buffers(handle: THANDLE): BOOL; stdcall; public name 'fs_flush_file_buffers';
-function fs_get_file_attributes(filename: PCHAR): uint32_t; stdcall; public name 'fs_get_file_attributes';
-function fs_get_file_information_by_handle(handle: THANDLE; var fileinformation: TByHandleFileInformation): BOOL; stdcall; public name 'fs_get_file_information_by_handle';
-function fs_get_file_size(handle: THANDLE; var filesizehigh: uint32_t): uint32_t; stdcall; public name 'fs_get_file_size';
-function fs_get_full_path_name(filename: PCHAR; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_full_path_name';
-function fs_get_short_path_name(longpath: PCHAR; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_short_path_name';
-function fs_move_file(existingname, newname: PCHAR): BOOL; stdcall; public name 'fs_move_file';
-function fs_read_file(handle: THANDLE; buffer: PVOID; bytestoread: uint32_t; var bytesread: uint32_t): BOOL; stdcall; public name 'fs_read_file';
-function fs_set_file_apis_to_ansi: BOOL; stdcall; public name 'fs_set_file_apis_to_ansi';
-function fs_set_file_apis_to_oem: BOOL; stdcall; public name 'fs_set_file_apis_to_oem';
-function fs_set_file_attributes(filename: PCHAR; fileattributes: uint32_t): BOOL; stdcall; public name 'fs_set_file_attributes';
-function fs_set_file_pointer(handle: THANDLE; distancetomove: int32_t; var distancetomovehigh: int32_t; movemethod: uint32_t): uint32_t; stdcall; public name 'fs_set_file_pointer';
-function fs_set_file_pointer_ex(handle: THANDLE; const distancetomove: int64_t; var newfilepointer: int64_t; movemethod: uint32_t): BOOL; stdcall; public name 'fs_set_file_pointer_ex';
-function fs_write_file(handle: THANDLE; buffer: PVOID; bytestowrite: uint32_t; var byteswritten: uint32_t): BOOL; stdcall; public name 'fs_write_file';
-function fs_get_long_path_name(shortpath: PCHAR; name: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_long_path_name';
+{function AreFileApisANSI: BOOL; stdcall; public name 'AreFileApisANSI';} {Exported in Ultibo}
+{function CloseHandle(hobject: HANDLE): BOOL; stdcall; public name 'CloseHandle';} {Exported in Ultibo}
+{function CopyFile(lpexistingfilename, lpnewfilename: LPCSTR; bfailifexists: BOOL): BOOL; stdcall; public name 'CopyFile';} {Exported in Ultibo}
+{function CreateFile(lpfilename: LPCSTR; dwdesiredaccess, dwsharemode: uint32_t; lpsecurityattributes: LPSECURITY_ATTRIBUTES; dwcreationdisposition: uint32_t; dwflagsandattributes: uint32_t; htemplatefile: HANDLE): HANDLE; stdcall; public name 'CreateFile';} {Exported in Ultibo}
+{function FindCloseFile(hfindfile: HANDLE): BOOL; stdcall; public name 'FindCloseFile';} {Exported in Ultibo}
+{function FindFirstFile(lpfilename: LPCSTR; var lpfindfiledata: WIN32_FIND_DATAA): HANDLE; stdcall; public name 'FindFirstFile';} {Exported in Ultibo}
+{function FindNextFile(hfindfile: HANDLE; var lpfindfiledata: WIN32_FIND_DATAA): BOOL; stdcall; public name 'FindNextFile';} {Exported in Ultibo}
+{function FlushFileBuffers(hfile: HANDLE): BOOL; stdcall; public name 'FlushFileBuffers';} {Exported in Ultibo}
+{function GetFileAttributes(lpfilename: LPCSTR): uint32_t; stdcall; public name 'GetFileAttributes';} {Exported in Ultibo}
+{function GetFileInformationByHandle(hfile: HANDLE; var lpfileinformation: BY_HANDLE_FILE_INFORMATION): BOOL; stdcall; public name 'GetFileInformationByHandle';} {Exported in Ultibo}
+{function GetFileSize(hfile: HANDLE; lpfilesizehigh: LPDWORD): uint32_t; stdcall; public name 'GetFileSize';} {Exported in Ultibo}
+{function GetFullPathName(lpfilename: LPCSTR; nbufferlength: uint32_t; lpbuffer: LPSTR; var lpfilepart: LPSTR): uint32_t; stdcall; public name 'GetFullPathName';} {Exported in Ultibo}
+{function GetShortPathName(lpszlongpath: LPCSTR; lpszshortpath: LPSTR; cchbuffer: uint32_t): uint32_t; stdcall; public name 'GetShortPathName';} {Exported in Ultibo}
+{function MoveFile(lpexistingfilename, lpnewfilename: LPCSTR): BOOL; stdcall; public name 'MoveFile';} {Exported in Ultibo}
+{function ReadFile(hfile: HANDLE; lpbuffer: LPVOID; nnumberofbytestoread: uint32_t; lpnumberofbytesread: LPDWORD; lpoverlapped: LPOVERLAPPED): BOOL; stdcall; public name 'ReadFile';} {Exported in Ultibo}
+{procedure SetFileApisToANSI; stdcall; public name 'SetFileApisToANSI';} {Exported in Ultibo}
+{procedure SetFileApisToOEM; stdcall; public name 'SetFileApisToOEM';} {Exported in Ultibo}
+{function SetFileAttributes(lpfilename: LPCSTR; dwfileattributes: uint32_t): BOOL; stdcall; public name 'SetFileAttributes';} {Exported in Ultibo}
+{function SetFilePointer(hfile: HANDLE; ldistancetomove: LONG; lpdistancetomovehigh: PLONG; dwmovemethod: uint32_t): uint32_t; stdcall; public name 'SetFilePointer';} {Exported in Ultibo}
+{function SetFilePointerEx(hfile: HANDLE; lidistancetomove: LARGE_INTEGER; lpnewfilepointer: PLARGE_INTEGER; dwmovemethod: uint32_t): BOOL; stdcall; public name 'SetFilePointerEx';} {Exported in Ultibo}
+{function WriteFile(hfile: HANDLE; lpbuffer: LPCVOID; nnumberofbytestowrite: uint32_t; lpnumberofbyteswritten: LPDWORD; lpoverlapped: LPOVERLAPPED): BOOL; stdcall; public name 'WriteFile';} {Exported in Ultibo}
+{function GetLongPathName(lpszshortpath: LPCSTR; lpszlongpath: LPSTR; cchbuffer: uint32_t): uint32_t; stdcall; public name 'GetLongPathName';} {Exported in Ultibo}
 
-function fs_set_file_short_name(filename, shortname: PCHAR): BOOL; stdcall; public name 'fs_set_file_short_name';
-function fs_set_file_short_name_ex(handle: THANDLE; shortname: PCHAR): BOOL; stdcall; public name 'fs_set_file_short_name_ex';
-function fs_create_hard_link(linkname, filename: PCHAR): BOOL; stdcall; public name 'fs_create_hard_link';
-function fs_create_symbolic_link(linkname, targetname: PCHAR; directory: BOOL): BOOL; stdcall; public name 'fs_create_symbolic_link';
+{function SetFileShortName(hfile: HANDLE; lpshortname: LPCSTR): BOOL; stdcall; public name 'SetFileShortName';} {Exported in Ultibo}
+{function CreateHardLink(lpfilename, lpexistingfilename: LPCSTR; lpsecurityattributes: LPSECURITY_ATTRIBUTES): BOOL; stdcall; public name 'CreateHardLink';} {Exported in Ultibo}
+{function CreateSymbolicLink(lpsymlinkfilename, lptargetfilename: LPCSTR; dwflags: uint32_t): BOOL; stdcall; public name 'CreateSymbolicLink';} {Exported in Ultibo}
 
 {Directory Functions}
-function fs_create_directory(pathname: PCHAR): BOOL; stdcall; public name 'fs_create_directory';
-function fs_get_current_directory(pathname: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'fs_get_current_directory';
-function fs_remove_directory(pathname: PCHAR): BOOL; stdcall; public name 'fs_remove_directory';
-function fs_set_current_directory(pathname: PCHAR): BOOL; stdcall; public name 'fs_set_current_directory';
+{function CreateDirectory(lppathname: LPCSTR; lpsecurityattributes: LPSECURITY_ATTRIBUTES): BOOL; stdcall; public name 'CreateDirectory';} {Exported in Ultibo}
+{function GetCurrentDirectory(nbufferlength: uint32_t; lpbuffer: LPSTR): uint32_t; stdcall; public name 'GetCurrentDirectory';} {Exported in Ultibo}
+{function RemoveDirectory(lppathname: LPCSTR): BOOL; stdcall; public name 'RemoveDirectory';} {Exported in Ultibo}
+{function SetCurrentDirectory(lppathname: LPCSTR): BOOL; stdcall; public name 'SetCurrentDirectory';} {Exported in Ultibo}
 
 {==============================================================================}
 {FileSystem Helper Functions}
@@ -4859,6 +4848,21 @@ function file_sys_redirect_input(handle: THANDLE): BOOL; stdcall; public name 'f
 function file_sys_redirect_output(handle: THANDLE): BOOL; stdcall; public name 'file_sys_redirect_output';
 
 function compare_partitions(partition1, partition2: PVOID): int; stdcall; public name 'compare_partitions';
+
+function disk_media_type_to_string(_type: TMEDIA_TYPE; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'disk_media_type_to_string';
+function floppy_type_to_string(_type: TFLOPPY_TYPE; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'floppy_type_to_string';
+function image_type_to_string(_type: TIMAGE_TYPE; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'image_type_to_string';
+
+function drive_type_to_string(_type: TDRIVE_TYPE; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'drive_type_to_string';
+
+function file_sys_type_to_string(_type: TFILE_SYS_TYPE; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'file_sys_type_to_string';
+function string_to_file_sys_type(filesystype: PCHAR): TFILE_SYS_TYPE; stdcall; public name 'string_to_file_sys_type';
+
+function partition_id_to_string(id: uint8_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'partition_id_to_string';
+function string_to_partition_id(partitionid: PCHAR): uint8_t; stdcall; public name 'string_to_partition_id';
+
+function cache_mode_to_string(cachemode: TCACHE_MODE; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'cache_mode_to_string';
+function cache_state_to_string(cachestate: TCACHE_STATE; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'cache_state_to_string';
 {$ENDIF}
 {==============================================================================}
 {Winsock Functions}
@@ -34225,7 +34229,7 @@ end;
 
 {==============================================================================}
 
-function media_type_to_string(_type: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+function network_media_type_to_string(_type: uint16_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
  Result:=APIStringToPCharBuffer(Network.MediaTypeToString(_type),_string,len);
@@ -35168,7 +35172,7 @@ end;
 function file_sys_start: uint32_t; stdcall;
 begin
  {}
- Result:=FileSysStart;
+ Result:=FileSystem.FileSysStart;
 end;
 
 {==============================================================================}
@@ -35176,7 +35180,7 @@ end;
 function file_sys_stop: uint32_t; stdcall;
 begin
  {}
- Result:=FileSysStop;
+ Result:=FileSystem.FileSysStop;
 end;
 
 {==============================================================================}
@@ -35185,7 +35189,7 @@ function file_sys_start_completed: BOOL; stdcall;
 {Returns True if the filesystem has been started}
 begin
  {}
- Result:=FileSysStartCompleted;
+ Result:=FileSystem.FileSysStartCompleted;
 end;
 
 {==============================================================================}
@@ -35193,882 +35197,361 @@ end;
 procedure file_sys_async_start(data: PVOID); stdcall;
 begin
  {}
- FileSysAsyncStart(data);
+ FileSystem.FileSysAsyncStart(data);
 end;
 
+{==============================================================================}
 {Drive Functions}
-function fs_get_path_drive(path: PCHAR): uint8_t; stdcall;
-{No Volume Support}
-begin
- {}
- Result:=FSGetPathDrive(String(path));
-end;
-
-{==============================================================================}
-
-function fs_get_drive_type(drive: uint8_t): TDRIVE_TYPE; stdcall;
-{No Volume Support}
-begin
- {}
- Result:=FSGetDriveType(drive);
-end;
-
-{==============================================================================}
-
-function fs_get_drive_data(drive: uint8_t): TDRIVE_DATA; stdcall;
-{No Volume Support}
-begin
- {}
- Result:=FSGetDriveData(drive);
-end;
-
-{==============================================================================}
-
-function fs_get_drive_attr(drive: uint8_t): uint32_t; stdcall;
-{No Volume Support}
-begin
- {}
- Result:=FSGetDriveAttr(drive);
-end;
-
-{==============================================================================}
-
-function fs_get_drive_label(drive: uint8_t; _label: PCHAR; len: uint32_t): uint32_t; stdcall;
-{No Volume Support}
-begin
- {}
- Result:=APIStringToPCharBuffer(FSGetDriveLabel(drive),_label,len);
-end;
-
-{==============================================================================}
-
-function fs_set_drive_label(drive: uint8_t; _label: PCHAR): BOOL; stdcall;
-{No Volume Support}
-begin
- {}
- Result:=FSSetDriveLabel(drive,String(_label));
-end;
-
-{==============================================================================}
-
-function fs_get_drive_serial(drive: uint8_t): uint32_t; stdcall;
-{No Volume Support}
-begin
- {}
- Result:=FSGetDriveSerial(drive);
-end;
-
-{==============================================================================}
-
-function fs_set_drive_serial(drive: uint8_t; serial: uint32_t): BOOL; stdcall;
-{No Volume Support}
-begin
- {}
- Result:=FSSetDriveSerial(drive,serial);
-end;
-
-{==============================================================================}
-
-function fs_is_drive_valid(drive: uint8_t): BOOL; stdcall;
-{No Volume Support}
-begin
- {}
- Result:=FSIsDriveValid(drive);
-end;
-
-{==============================================================================}
-
-function fs_get_valid_drives: uint32_t; stdcall;
-{No Volume Support}
-begin
- {}
- Result:=FSGetValidDrives;
-end;
-
-{==============================================================================}
-
-function fs_get_valid_drive_strings(drives: PCHAR; len: uint32_t): uint32_t; stdcall;
-{No Volume Support}
-begin
- {}
- Result:=APIStringToPCharBuffer(FSGetValidDriveStrings,drives,len);
-end;
-
-{==============================================================================}
-
-function fs_get_drive_free_space(drive: uint8_t): uint32_t; stdcall;
-{No Volume Support}
-begin
- {}
- Result:=FSGetDriveFreeSpace(drive);
-end;
-
-{==============================================================================}
-
-function fs_get_drive_free_space_ex(drive: uint8_t): int64_t; stdcall;
-{No Volume Support}
-begin
- {}
- Result:=FSGetDriveFreeSpaceEx(drive);
-end;
-
-{==============================================================================}
-
-function fs_get_drive_total_space(drive: uint8_t): uint32_t; stdcall;
-{No Volume Support}
-begin
- {}
- Result:=FSGetDriveTotalSpace(drive);
-end;
-
-{==============================================================================}
-
-function fs_get_drive_total_space_ex(drive: uint8_t): int64_t; stdcall;
-{No Volume Support}
-begin
- {}
- Result:=FSGetDriveTotalSpaceEx(drive);
-end;
-
-{==============================================================================}
-
-function fs_get_drive_information(path: PCHAR; var clustersize: uint32_t; var totalclustercount, freeclustercount: int64_t): BOOL; stdcall;
-begin
- {}
- Result:=FSGetDriveInformation(String(path),clustersize,totalclustercount,freeclustercount);
-end;
-
-{==============================================================================}
-
-function fs_get_current_drive: uint8_t; stdcall;
-{No Volume Support}
-begin
- {}
- Result:=FSGetCurrentDrive;
-end;
-
-{==============================================================================}
-
-function fs_set_current_drive(drive: PCHAR): BOOL; stdcall;
-{No Volume Support}
-begin
- {}
- Result:=FSSetCurrentDrive(String(drive));
-end;
 
 {==============================================================================}
 {File Functions}
-function fs_file_open(filename: PCHAR; mode: int): THANDLE; stdcall;
+function FileOpen(filename: PCHAR; mode: int): THANDLE; stdcall;
 begin
  {}
- Result:=FSFileOpen(String(filename),mode);
+ Result:=FileSystem.FSFileOpen(String(filename),mode);
 end;
 
 {==============================================================================}
 
-function fs_file_create(filename: PCHAR): THANDLE; stdcall;
+function FileCreate(filename: PCHAR): THANDLE; stdcall;
 begin
  {}
- Result:=FSFileCreate(String(filename));
+ Result:=FileSystem.FSFileCreate(String(filename));
 end;
 
 {==============================================================================}
 
-function fs_delete_file(filename: PCHAR): BOOL; stdcall;
+procedure FileClose(handle: int); stdcall;
 begin
  {}
- Result:=FSDeleteFile(String(filename));
+ FileSystem.FSFileClose(handle);
 end;
 
 {==============================================================================}
 
-procedure fs_file_close(handle: int); stdcall;
+function RenameFile(const oldname, newname: PCHAR): BOOL; stdcall;
 begin
  {}
- FSFileClose(handle);
+ Result:=FileSystem.FSRenameFile(String(oldname),String(newname));
 end;
 
 {==============================================================================}
 
-function fs_rename_file(oldname, newname: PCHAR): BOOL; stdcall;
+function FileSeek(handle: THANDLE; offset, origin: int32_t): int32_t; stdcall;
 begin
  {}
- Result:=FSRenameFile(String(oldname),String(newname));
+ Result:=FileSystem.FSFileSeek(handle,offset,origin);
 end;
 
 {==============================================================================}
 
-function fs_file_seek(handle: THANDLE; offset, origin: int32_t): int32_t; stdcall;
+function FileFlush(handle: int): BOOL; stdcall;
 begin
  {}
- Result:=FSFileSeek(handle,offset,origin);
+ Result:=FileSystem.FSFileFlush(handle);
 end;
 
 {==============================================================================}
 
-function fs_file_flush(handle: int): BOOL; stdcall;
+function FileTruncate(handle: int): BOOL; stdcall;
 begin
  {}
- Result:=FSFileFlush(handle);
+ Result:=FileSystem.FSFileTruncate(handle);
 end;
 
 {==============================================================================}
 
-function fs_file_truncate(handle: int): BOOL; stdcall;
+function EndOfFile(handle: int): BOOL; stdcall;
 begin
  {}
- Result:=FSFileTruncate(handle);
+ Result:=FileSystem.FSEndOfFile(handle);
 end;
 
 {==============================================================================}
 
-function fs_set_end_of_file(handle: THANDLE): BOOL; stdcall;
+function FilePos(handle: THANDLE): int32_t; stdcall;
 begin
  {}
- Result:=FSSetEndOfFile(handle);
+ Result:=FileSystem.FSFilePos(handle);
 end;
 
 {==============================================================================}
 
-function fs_end_of_file(handle: int): BOOL; stdcall;
+function FileSize(handle: THANDLE): int32_t; stdcall;
 begin
  {}
- Result:=FSEndOfFile(handle);
+ Result:=FileSystem.FSFileSize(handle);
 end;
 
 {==============================================================================}
 
-function fs_file_pos(handle: THANDLE): int32_t; stdcall;
+function FileAge(filename: PCHAR): int; stdcall;
 begin
  {}
- Result:=FSFilePos(handle);
+ Result:=FileSystem.FSFileAge(String(filename));
 end;
 
 {==============================================================================}
 
-function fs_file_size(handle: THANDLE): int32_t; stdcall;
+function FileExists(filename: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSFileSize(handle);
+ Result:=FileSystem.FSFileExists(String(filename));
 end;
 
 {==============================================================================}
 
-function fs_file_age(filename: PCHAR): int; stdcall;
+function FileGetAttr(filename: PCHAR): int; stdcall;
 begin
  {}
- Result:=FSFileAge(String(filename));
+ Result:=FileSystem.FSFileGetAttr(String(filename));
 end;
 
 {==============================================================================}
 
-function fs_file_exists(filename: PCHAR): BOOL; stdcall;
+function FileGetDate(handle: int): int; stdcall;
 begin
  {}
- Result:=FSFileExists(String(filename));
+ Result:=FileSystem.FSFileGetDate(handle);
 end;
 
 {==============================================================================}
 
-function fs_file_get_attr(filename: PCHAR): int; stdcall;
+function FileSetAttr(filename: PCHAR; attr: int): int; stdcall;
 begin
  {}
- Result:=FSFileGetAttr(String(filename));
+ Result:=FileSystem.FSFileSetAttr(String(filename),attr);
 end;
 
 {==============================================================================}
 
-function fs_file_get_date(handle: int): int; stdcall;
+function FileSetDate(handle: int; age: int): int; stdcall;
 begin
  {}
- Result:=FSFileGetDate(handle);
+ Result:=FileSystem.FSFileSetDate(handle,age);
 end;
 
 {==============================================================================}
 
-function fs_file_set_attr(filename: PCHAR; attr: int): int; stdcall;
+function FileRead(handle: THANDLE; buffer: PVOID; count: int32_t): int32_t; stdcall;
 begin
  {}
- Result:=FSFileSetAttr(String(filename),attr);
+ Result:=FileSystem.FSFileRead(handle,buffer,count);
 end;
 
 {==============================================================================}
 
-function fs_file_set_date(handle: int; age: int): int; stdcall;
+function FileWrite(handle: THANDLE; buffer: PVOID; count: int32_t): int32_t; stdcall;
 begin
  {}
- Result:=FSFileSetDate(handle,age);
-end;
-
-{==============================================================================}
-
-function fs_file_read(handle: THANDLE; buffer: PVOID; count: int32_t): int32_t; stdcall;
-begin
- {}
- Result:=FSFileRead(handle,buffer,count);
-end;
-
-{==============================================================================}
-
-function fs_file_write(handle: THANDLE; buffer: PVOID; count: int32_t): int32_t; stdcall;
-begin
- {}
- Result:=FSFileWrite(handle,buffer,count);
+ Result:=FileSystem.FSFileWrite(handle,buffer,count);
 end;
 
 {==============================================================================}
 {Directory Functions}
-function fs_create_dir(dirname: PCHAR): BOOL; stdcall;
+function CreateDir(dirname: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSCreateDir(String(dirname));
+ Result:=FileSystem.FSCreateDir(String(dirname));
 end;
 
 {==============================================================================}
 
-function fs_remove_dir(dirname: PCHAR): BOOL; stdcall;
+function RemoveDir(dirname: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSRemoveDir(String(dirname));
+ Result:=FileSystem.FSRemoveDir(String(dirname));
 end;
 
 {==============================================================================}
 
-function fs_rename_dir(oldname, newname: PCHAR): BOOL; stdcall;
+function RenameDir(const oldname, newname: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSRenameDir(String(oldname),String(newname));
+ Result:=FileSystem.FSRenameDir(String(oldname),String(newname));
 end;
 
 {==============================================================================}
 
-function fs_get_current_dir(dirname: PCHAR; len: uint32_t): uint32_t; stdcall;
+function GetCurrentDir(dirname: PCHAR; len: uint32_t): uint32_t; stdcall;
 {No Volume Support}
 begin
  {}
- Result:=APIStringToPCharBuffer(FSGetCurrentDir,dirname,len);
+ Result:=APIStringToPCharBuffer(FileSystem.FSGetCurrentDir,dirname,len);
 end;
 
 {==============================================================================}
 
-function fs_set_current_dir(dirname: PCHAR): BOOL; stdcall;
+function SetCurrentDir(dirname: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSSetCurrentDir(String(dirname));
+ Result:=FileSystem.FSSetCurrentDir(String(dirname));
 end;
 
 {==============================================================================}
 
-function fs_directory_exists(dirname: PCHAR): BOOL; stdcall;
+function DirectoryExists(dirname: PCHAR): BOOL; stdcall;
 begin
  {}
- Result:=FSDirectoryExists(String(dirname));
+ Result:=FileSystem.FSDirectoryExists(String(dirname));
 end;
 
 {==============================================================================}
 
-procedure fs_force_directories(dirname: PCHAR); stdcall;
+procedure ForceDirectories(dirname: PCHAR); stdcall;
 begin
  {}
- FSForceDirectories(String(dirname));
+ FileSystem.FSForceDirectories(String(dirname));
 end;
 
 {==============================================================================}
 
-procedure fs_delete_tree(dirname: PCHAR); stdcall;
+procedure DeleteTree(dirname: PCHAR); stdcall;
 begin
  {}
- FSDeleteTree(String(dirname));
+ FileSystem.FSDeleteTree(String(dirname));
 end;
 
 {==============================================================================}
 {Search Functions}
-function fs_find_first(path: PCHAR; attr: int; var searchrec: SEARCH_REC): int; stdcall;
-begin
- {}
- Result:=FSFindFirst(String(path),attr,searchrec);
-end;
-
-{==============================================================================}
-
-function fs_find_next(var searchrec: SEARCH_REC): int; stdcall;
-begin
- {}
- Result:=FSFindNext(searchrec);
-end;
-
-{==============================================================================}
-
-procedure fs_find_close(var searchrec: SEARCH_REC); stdcall;
-begin
- {}
- FSFindClose(searchrec);
-end;
 
 {==============================================================================}
 {Additional Functions}
-function fs_file_copy(sourcefile, destfile: PCHAR; failifexists: BOOL): BOOL; stdcall;
+function FileCopy(const sourcefile, destfile: PCHAR; failifexists: BOOL): BOOL; stdcall;
 begin
  {}
- Result:=FSFileCopy(String(sourcefile),String(destfile),failifexists);
+ Result:=FileSystem.FSFileCopy(String(sourcefile),String(destfile),failifexists);
 end;
 
 {==============================================================================}
 
-function fs_file_copy_ex(sourcefile, destfile: PCHAR; failifexists: BOOL; usesourcedate: BOOL; destdate: int; usesourceattr: BOOL; destattr: int): BOOL; stdcall;
+function FileCopyEx(const sourcefile, destfile: PCHAR; failifexists: BOOL; usesourcedate: BOOL; destdate: int; usesourceattr: BOOL; destattr: int): BOOL; stdcall;
 begin
  {}
- Result:=FSFileCopyEx(String(sourcefile),String(destfile),failifexists,usesourcedate,destdate,usesourceattr,destattr);
+ Result:=FileSystem.FSFileCopyEx(String(sourcefile),String(destfile),failifexists,usesourcedate,destdate,usesourceattr,destattr);
 end;
 
 {==============================================================================}
 
-function fs_get_short_name(filename: PCHAR; shortname: PCHAR; len: uint32_t): uint32_t; stdcall;
+function GetShortName(filename: PCHAR; shortname: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- Result:=APIStringToPCharBuffer(FSGetShortName(String(filename)),shortname,len);
+ Result:=APIStringToPCharBuffer(FileSystem.FSGetShortName(String(filename)),shortname,len);
 end;
 
 {==============================================================================}
 
-function fs_get_long_name(filename: PCHAR; longname: PCHAR; len: uint32_t): uint32_t; stdcall;
+function GetLongName(filename: PCHAR; longname: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- Result:=APIStringToPCharBuffer(FSGetLongName(String(filename)),longname,len);
+ Result:=APIStringToPCharBuffer(FileSystem.FSGetLongName(String(filename)),longname,len);
 end;
 
 {==============================================================================}
 
-function fs_get_true_name(filename: PCHAR; truename: PCHAR; len: uint32_t): uint32_t; stdcall;
+function GetTrueName(filename: PCHAR; truename: PCHAR; len: uint32_t): uint32_t; stdcall;
 begin
  {}
- Result:=APIStringToPCharBuffer(FSGetTrueName(String(filename)),truename,len);
+ Result:=APIStringToPCharBuffer(FileSystem.FSGetTrueName(String(filename)),truename,len);
 end;
 
 {==============================================================================}
 {Extended Functions}
-function fs_file_seek_ex(handle: THANDLE; const offset: int64_t; origin: int32_t): int64_t; stdcall;
+function FileSeekEx(handle: THANDLE; const offset: int64_t; origin: int32_t): int64_t; stdcall;
 begin
  {}
- Result:=FSFileSeekEx(handle,offset,origin);
+ Result:=FileSystem.FSFileSeekEx(handle,offset,origin);
 end;
 
 {==============================================================================}
 
-function fs_end_of_file_ex(handle: int): BOOL; stdcall;
+function EndOfFileEx(handle: int): BOOL; stdcall;
 begin
  {}
- Result:=FSEndOfFileEx(handle);
+ Result:=FileSystem.FSEndOfFileEx(handle);
 end;
 
 {==============================================================================}
 
-function fs_file_pos_ex(handle: THANDLE): int64_t; stdcall;
+function FilePosEx(handle: THANDLE): int64_t; stdcall;
 begin
  {}
- Result:=FSFilePosEx(handle);
+ Result:=FileSystem.FSFilePosEx(handle);
 end;
 
 {==============================================================================}
 
-function fs_file_size_ex(handle: THANDLE): int64_t; stdcall;
+function FileSizeEx(handle: THANDLE): int64_t; stdcall;
 begin
  {}
- Result:=FSFileSizeEx(handle);
+ Result:=FileSystem.FSFileSizeEx(handle);
 end;
 
 {==============================================================================}
 
-function fs_file_age_ex(filename: PCHAR): FILETIME; stdcall;
+function FileAgeEx(filename: PCHAR): FILETIME; stdcall;
 begin
  {}
- Result:=FSFileAgeEx(String(filename));
+ Result:=FileSystem.FSFileAgeEx(String(filename));
 end;
 
 {==============================================================================}
 
-function fs_file_get_attr_ex(handle: int): int; stdcall;
+function FileGetAttrEx(handle: int): int; stdcall;
 begin
  {}
- Result:=FSFileGetAttrEx(handle);
+ Result:=FileSystem.FSFileGetAttrEx(handle);
 end;
 
 {==============================================================================}
 
-function fs_file_get_date_ex(handle: int): FILETIME; stdcall;
+function FileGetDateEx(handle: int): FILETIME; stdcall;
 begin
  {}
- Result:=FSFileGetDateEx(handle);
+ Result:=FileSystem.FSFileGetDateEx(handle);
 end;
 
 {==============================================================================}
 
-function fs_file_set_date_ex(handle: int; age: FILETIME): int; stdcall;
+function FileSetDateEx(handle: int; age: FILETIME): int; stdcall;
 begin
  {}
- Result:=FSFileSetDateEx(handle,age);
+ Result:=FileSystem.FSFileSetDateEx(handle,age);
 end;
 
 {==============================================================================}
 
-function fs_get_file_time(handle: THANDLE; createtime, accesstime, writetime: PFILETIME): BOOL; stdcall;
+function FindFirstEx(path: PCHAR; var searchrec: TFileSearchRec): int; stdcall;
 begin
  {}
- Result:=FSGetFileTime(handle,createtime,accesstime,writetime);
+ Result:=FileSystem.FSFindFirstEx(String(path),searchrec);
 end;
 
 {==============================================================================}
 
-function fs_set_file_time(handle: THANDLE; createtime, accesstime, writetime: PFILETIME): BOOL; stdcall;
+function FindNextEx(var searchrec: TFileSearchRec): int; stdcall;
 begin
  {}
- Result:=FSSetFileTime(handle,createtime,accesstime,writetime);
+ Result:=FileSystem.FSFindNextEx(searchrec);
 end;
 
 {==============================================================================}
 
-function fs_find_first_ex(path: PCHAR; var searchrec: FILE_SEARCH_REC): int; stdcall;
+procedure FindCloseEx(var searchrec: TFileSearchRec); stdcall;
 begin
  {}
- Result:=FSFindFirstEx(String(path),searchrec);
-end;
-
-{==============================================================================}
-
-function fs_find_next_ex(var searchrec: FILE_SEARCH_REC): int; stdcall;
-begin
- {}
- Result:=FSFindNextEx(searchrec);
-end;
-
-{==============================================================================}
-
-procedure fs_find_close_ex(var searchrec: FILE_SEARCH_REC); stdcall;
-begin
- {}
- FSFindCloseEx(searchrec);
+ FileSystem.FSFindCloseEx(searchrec);
 end;
 
 {==============================================================================}
 {FileSystem Functions (Win32 Compatibility)}
 {Drive Functions}
-function fs_define_dos_device(devicename, targetpath: PCHAR; flags: uint32_t): BOOL; stdcall;
-begin
- {}
- Result:=FSDefineDosDevice(String(devicename),String(targetpath),flags);
-end;
-
-{==============================================================================}
-
-function fs_get_disk_type(rootpath: PCHAR): uint32_t; stdcall; // Equivalent to Win32 GetDriveType
-begin
- {}
- Result:=FSGetDiskType(String(rootpath));
-end;
-
-{==============================================================================}
-
-function fs_get_disk_free_space(rootpath: PCHAR; var sectorspercluster, bytespersector, numberoffreeclusters, totalnumberofclusters: uint32_t): BOOL; stdcall;
-begin
- {}
- Result:=FSGetDiskFreeSpace(String(rootpath),sectorspercluster,bytespersector,numberoffreeclusters,totalnumberofclusters);
-end;
-
-{==============================================================================}
-
-function fs_get_disk_free_space_ex(pathname: PCHAR; var freebytesavailabletocaller, totalnumberofbytes, totalnumberoffreebytes: uint64_t): BOOL; stdcall;
-begin
- {}
- Result:=FSGetDiskFreeSpaceEx(String(pathname),freebytesavailabletocaller,totalnumberofbytes,totalnumberoffreebytes);
-end;
-
-{==============================================================================}
-
-function fs_get_logical_drives: uint32_t; stdcall;
-begin
- {}
- Result:=FSGetLogicalDrives;
-end;
-
-{==============================================================================}
-
-function fs_get_logical_drive_strings(drives: PCHAR; len: uint32_t): uint32_t; stdcall;
-begin
- {}
- Result:=APIStringToPCharBuffer(FSGetLogicalDriveStrings,drives,len);
-end;
-
-{==============================================================================}
-
-function fs_get_volume_information(rootpath: PCHAR; volumename: PCHAR; volumelen: uint32_t; var volumeserialnumber, maximumcomponentlength, filesystemflags: uint32_t; systemname: PCHAR; systemlen: uint32_t): BOOL; stdcall;
-var
- VolumeBuffer:String;
- SystemBuffer:String;
-begin
- {}
- Result:=FSGetVolumeInformation(String(rootpath),VolumeBuffer,volumeserialnumber,maximumcomponentlength,filesystemflags,SystemBuffer);
- if Result then
-  begin
-   APIStringToPCharBuffer(VolumeBuffer,volumename,volumelen);
-   APIStringToPCharBuffer(SystemBuffer,systemname,systemlen);
-  end;
-end;
-
-{==============================================================================}
-
-function fs_query_dos_device(rootpath: PCHAR; name: PCHAR; len: uint32_t): uint32_t; stdcall;
-begin
- {}
- Result:=APIStringToPCharBuffer(FSQueryDosDevice(String(rootpath)),name,len);
-end;
-
-{==============================================================================}
-
-function fs_set_volume_label(volume: PCHAR; _label: PCHAR): BOOL; stdcall;
-begin
- {}
- Result:=FSSetVolumeLabel(String(volume),String(_label));
-end;
 
 {==============================================================================}
 {File Functions}
-function fs_are_file_apis_ansi: BOOL; stdcall;
-begin
- {}
- Result:=FSAreFileApisANSI;
-end;
-
-{==============================================================================}
-
-function fs_close_file(handle: THANDLE): BOOL; stdcall; // Equivalent to Win32 CloseHandle
-begin
- {}
- Result:=FSCloseFile(handle);
-end;
-
-{==============================================================================}
-
-function fs_copy_file(existingname, newname: PCHAR; failifexists: BOOL): BOOL; stdcall;
-begin
- {}
- Result:=FSCopyFile(String(existingname),String(newname),failifexists);
-end;
-
-{==============================================================================}
-
-function fs_create_file(filename: PCHAR; accessmode, sharemode, createflags, fileattributes: uint32_t): THANDLE; stdcall;
-begin
- {}
- Result:=FSCreateFile(String(filename),accessmode,sharemode,createflags,fileattributes);
-end;
-
-{==============================================================================}
-
-function fs_find_close_file(handle: THANDLE): BOOL; stdcall; // Equivalent to Win32 FindClose
-begin
- {}
- Result:=FSFindCloseFile(handle);
-end;
-
-{==============================================================================}
-
-function fs_find_first_file(filename: PCHAR; var finddata: TWin32FindData): THANDLE; stdcall;
-begin
- {}
- Result:=FSFindFirstFile(String(filename),finddata);
-end;
-
-{==============================================================================}
-
-function fs_find_next_file(handle: THANDLE; var finddata: TWin32FindData): BOOL; stdcall;
-begin
- {}
- Result:=FSFindNextFile(handle,finddata);
-end;
-
-{==============================================================================}
-
-function fs_flush_file_buffers(handle: THANDLE): BOOL; stdcall;
-begin
- {}
- Result:=FSFlushFileBuffers(handle);
-end;
-
-{==============================================================================}
-
-function fs_get_file_attributes(filename: PCHAR): uint32_t; stdcall;
-begin
- {}
- Result:=FSGetFileAttributes(String(filename));
-end;
-
-{==============================================================================}
-
-function fs_get_file_information_by_handle(handle: THANDLE; var fileinformation: TByHandleFileInformation): BOOL; stdcall;
-begin
- {}
- Result:=FSGetFileInformationByHandle(handle,fileinformation);
-end;
-
-{==============================================================================}
-
-function fs_get_file_size(handle: THANDLE; var filesizehigh: uint32_t): uint32_t; stdcall;
-begin
- {}
- Result:=FSGetFileSize(handle,filesizehigh);
-end;
-
-{==============================================================================}
-
-function fs_get_full_path_name(filename: PCHAR; name: PCHAR; len: uint32_t): uint32_t; stdcall;
-begin
- {}
- Result:=APIStringToPCharBuffer(FSGetFullPathName(String(filename)),name,len);
-end;
-
-{==============================================================================}
-
-function fs_get_short_path_name(longpath: PCHAR; name: PCHAR; len: uint32_t): uint32_t; stdcall;
-begin
- {}
- Result:=APIStringToPCharBuffer(FSGetShortPathName(String(longpath)),name,len);
-end;
-
-{==============================================================================}
-
-function fs_move_file(existingname, newname: PCHAR): BOOL; stdcall;
-begin
- {}
- Result:=FSMoveFile(String(existingname),String(newname));
-end;
-
-{==============================================================================}
-
-function fs_read_file(handle: THANDLE; buffer: PVOID; bytestoread: uint32_t; var bytesread: uint32_t): BOOL; stdcall;
-begin
- {}
- Result:=FSReadFile(handle,buffer,bytestoread,bytesread);
-end;
-
-{==============================================================================}
-
-function fs_set_file_apis_to_ansi: BOOL; stdcall;
-begin
- {}
- Result:=FSSetFileApisToANSI;
-end;
-
-{==============================================================================}
-
-function fs_set_file_apis_to_oem: BOOL; stdcall;
-begin
- {}
- Result:=FSSetFileApisToOEM;
-end;
-
-{==============================================================================}
-
-function fs_set_file_attributes(filename: PCHAR; fileattributes: uint32_t): BOOL; stdcall;
-begin
- {}
- Result:=FSSetFileAttributes(String(filename),fileattributes);
-end;
-
-{==============================================================================}
-
-function fs_set_file_pointer(handle: THANDLE; distancetomove: int32_t; var distancetomovehigh: int32_t; movemethod: uint32_t): uint32_t; stdcall;
-begin
- {}
- Result:=FSSetFilePointer(handle,distancetomove,distancetomovehigh,movemethod);
-end;
-
-{==============================================================================}
-
-function fs_set_file_pointer_ex(handle: THANDLE; const distancetomove: int64_t; var newfilepointer: int64_t; movemethod: uint32_t): BOOL; stdcall;
-begin
- {}
- Result:=FSSetFilePointerEx(handle,distancetomove,newfilepointer,movemethod);
-end;
-
-{==============================================================================}
-
-function fs_write_file(handle: THANDLE; buffer: PVOID; bytestowrite: uint32_t; var byteswritten: uint32_t): BOOL; stdcall;
-begin
- {}
- Result:=FSWriteFile(handle,buffer,bytestowrite,byteswritten);
-end;
-
-{==============================================================================}
-
-function fs_get_long_path_name(shortpath: PCHAR; name: PCHAR; len: uint32_t): uint32_t; stdcall;
-begin
- {}
- Result:=APIStringToPCharBuffer(FSGetLongPathName(String(shortpath)),name,len);
-end;
-
-{==============================================================================}
-
-function fs_set_file_short_name(filename, shortname: PCHAR): BOOL; stdcall;
-begin
- {}
- Result:=FSSetFileShortName(String(filename),String(shortname));
-end;
-
-{==============================================================================}
-
-function fs_set_file_short_name_ex(handle: THANDLE; shortname: PCHAR): BOOL; stdcall;
-begin
- {}
- Result:=FSSetFileShortNameEx(handle,String(shortname));
-end;
-
-{==============================================================================}
-
-function fs_create_hard_link(linkname, filename: PCHAR): BOOL; stdcall;
-begin
- {}
- Result:=FSCreateHardLink(String(linkname),String(filename));
-end;
-
-{==============================================================================}
-
-function fs_create_symbolic_link(linkname, targetname: PCHAR; directory: BOOL): BOOL; stdcall;
-begin
- {}
- Result:=FSCreateSymbolicLink(String(linkname),String(targetname),directory);
-end;
 
 {==============================================================================}
 {Directory Functions}
-function fs_create_directory(pathname: PCHAR): BOOL; stdcall;
-begin
- {}
- Result:=FSCreateDirectory(String(pathname));
-end;
-
-{==============================================================================}
-
-function fs_get_current_directory(pathname: PCHAR; len: uint32_t): uint32_t; stdcall;
-begin
- {}
- Result:=APIStringToPCharBuffer(FSGetCurrentDirectory,pathname,len);
-end;
-
-{==============================================================================}
-
-function fs_remove_directory(pathname: PCHAR): BOOL; stdcall;
-begin
- {}
- Result:=FSRemoveDirectory(String(pathname));
-end;
-
-{==============================================================================}
-
-function fs_set_current_directory(pathname: PCHAR): BOOL; stdcall;
-begin
- {}
- Result:=FSSetCurrentDirectory(String(pathname));
-end;
 
 {==============================================================================}
 {FileSystem Helper Functions}
@@ -36080,7 +35563,7 @@ function file_sys_redirect_input(handle: THANDLE): BOOL; stdcall;
        redirects the input of Read, ReadLn and the standard C library}
 begin
  {}
- Result:=FileSysRedirectInput(handle);
+ Result:=FileSystem.FileSysRedirectInput(handle);
 end;
 
 {==============================================================================}
@@ -36093,7 +35576,7 @@ function file_sys_redirect_output(handle: THANDLE): BOOL; stdcall;
        which also redirects the output of Write, WriteLn and the standard C library}
 begin
  {}
- Result:=FileSysRedirectOutput(handle);
+ Result:=FileSystem.FileSysRedirectOutput(handle);
 end;
 
 {==============================================================================}
@@ -36102,7 +35585,87 @@ function compare_partitions(partition1, partition2: PVOID): int; stdcall;
 {Sort partitions in order of start sector}
 begin
  {}
- Result:=ComparePartitions(partition1,partition2);
+ Result:=FileSystem.ComparePartitions(partition1,partition2);
+end;
+
+{==============================================================================}
+
+function disk_media_type_to_string(_type: TMEDIA_TYPE; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(FileSystem.MediaTypeToString(_type),_string,len);
+end;
+
+{==============================================================================}
+
+function floppy_type_to_string(_type: TFLOPPY_TYPE; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(FileSystem.FloppyTypeToString(_type),_string,len);
+end;
+
+{==============================================================================}
+
+function image_type_to_string(_type: TIMAGE_TYPE; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(FileSystem.ImageTypeToString(_type),_string,len);
+end;
+
+{==============================================================================}
+
+function drive_type_to_string(_type: TDRIVE_TYPE; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(FileSystem.DriveTypeToString(_type),_string,len);
+end;
+
+{==============================================================================}
+
+function file_sys_type_to_string(_type: TFILE_SYS_TYPE; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(FileSystem.FileSysTypeToString(_type),_string,len);
+end;
+
+{==============================================================================}
+
+function string_to_file_sys_type(filesystype: PCHAR): TFILE_SYS_TYPE; stdcall;
+begin
+ {}
+ Result:=FileSystem.StringToFileSysType(String(filesystype));
+end;
+
+{==============================================================================}
+
+function partition_id_to_string(id: uint8_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(FileSystem.PartitionIdToString(id),_string,len);
+end;
+
+{==============================================================================}
+
+function string_to_partition_id(partitionid: PCHAR): uint8_t; stdcall;
+begin
+ {}
+ Result:=FileSystem.StringToPartitionId(String(partitionid));
+end;
+
+{==============================================================================}
+
+function cache_mode_to_string(cachemode: TCACHE_MODE; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(FileSystem.CacheModeToString(cachemode),_string,len);
+end;
+
+{==============================================================================}
+
+function cache_state_to_string(cachestate: TCACHE_STATE; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(FileSystem.CacheStateToString(cachestate),_string,len);
 end;
 {$ENDIF}
 {==============================================================================}
