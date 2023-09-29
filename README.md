@@ -2,8 +2,6 @@
 
 Ultibo core API for C and C++
 
-Note: This is an early pre-release of the API for testing only, many items are not yet included.
-
 ### Supported interfaces:
 
 The includes directory contains header files for interfaces to the following Ultibo APIs
@@ -44,6 +42,7 @@ The includes directory contains header files for interfaces to the following Ult
 * ultibo/uart.h - 
 * ultibo/ultibo.h - 
 * ultibo/unicode.h - 
+* ultibo/usb.h - 
 
 In addition to the Ultibo interface headers a small number of headers that expose functionality not normally available in the Newlib C library are also provided
 

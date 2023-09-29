@@ -2795,7 +2795,7 @@ function usb_device_read_configuration(device: PUSB_DEVICE; index: uint8_t): uin
 function usb_device_get_string_descriptor(device: PUSB_DEVICE; index: uint8_t; data: PVOID; length: uint16_t): uint32_t; stdcall; public name 'usb_device_get_string_descriptor';
 function usb_device_get_string_descriptor_ex(device: PUSB_DEVICE; index: uint8_t; languageid: uint16_t; data: PVOID; length: uint16_t): uint32_t; stdcall; public name 'usb_device_get_string_descriptor_ex';
 
-function usb_device_read_string_language_ids(device: PUSB_DEVICE): TUSB_STRING_DESCRIPTOR_LANGIDS; stdcall; public name 'usb_device_read_string_language_ids';
+procedure usb_device_read_string_language_ids(device: PUSB_DEVICE; var languageids: TUSB_STRING_DESCRIPTOR_LANGIDS); stdcall; public name 'usb_device_read_string_language_ids';
 
 function usb_device_read_string_descriptor(device: PUSB_DEVICE; index: uint8_t; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'usb_device_read_string_descriptor';
 function usb_device_read_string_descriptor_ex(device: PUSB_DEVICE; index: uint8_t; languageid: uint16_t; value: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'usb_device_read_string_descriptor_ex';
@@ -2824,6 +2824,7 @@ function usb_device_find_endpoint_by_type_ex(device: PUSB_DEVICE; interrface: PU
 function usb_device_count_endpoints_by_type(device: PUSB_DEVICE; interrface: PUSB_INTERFACE; direction, transfertype: uint8_t): uint8_t; stdcall; public name 'usb_device_count_endpoints_by_type';
 
 function usb_device_find_alternate_by_index(device: PUSB_DEVICE; interrface: PUSB_INTERFACE; index: uint8_t): PUSB_ALTERNATE; stdcall; public name 'usb_device_find_alternate_by_index';
+function usb_device_find_alternate_by_setting(device: PUSB_DEVICE; interrface: PUSB_INTERFACE; alternatesetting: uint8_t): PUSB_ALTERNATE; stdcall; public name 'usb_device_find_alternate_by_setting';
 
 function usb_device_find_alternate_endpoint_by_index(device: PUSB_DEVICE; interrface: PUSB_INTERFACE; alternate: PUSB_ALTERNATE; index: uint8_t): PUSB_ENDPOINT_DESCRIPTOR; stdcall; public name 'usb_device_find_alternate_endpoint_by_index';
 function usb_device_find_alternate_endpoint_by_type(device: PUSB_DEVICE; interrface: PUSB_INTERFACE; alternate: PUSB_ALTERNATE; direction, transfertype: uint8_t): PUSB_ENDPOINT_DESCRIPTOR; stdcall; public name 'usb_device_find_alternate_endpoint_by_type';
@@ -2980,22 +2981,25 @@ function usb_is_bulk_endpoint(endpoint: PUSB_ENDPOINT_DESCRIPTOR): BOOL; stdcall
 function usb_is_interrupt_endpoint(endpoint: PUSB_ENDPOINT_DESCRIPTOR): BOOL; stdcall; public name 'usb_is_interrupt_endpoint';
 function usb_is_isochronous_endpoint(endpoint: PUSB_ENDPOINT_DESCRIPTOR): BOOL; stdcall; public name 'usb_is_isochronous_endpoint';
 
+function usb_status_to_string(status: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'usb_status_to_string';
+
+function usb_device_type_to_string(usbtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'usb_device_type_to_string';
+function usb_device_state_to_string(usbstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'usb_device_state_to_string';
+function usb_device_status_to_string(usbstatus: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'usb_device_status_to_string';
+
 function usb_device_state_to_notification(state: uint32_t): uint32_t; stdcall; public name 'usb_device_state_to_notification';
 function usb_device_status_to_notification(status: uint32_t): uint32_t; stdcall; public name 'usb_device_status_to_notification';
 
+function usb_host_type_to_string(hosttype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'usb_host_type_to_string';
+function usb_host_state_to_string(hoststate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'usb_host_state_to_string';
+
 function usb_host_state_to_notification(state: uint32_t): uint32_t; stdcall; public name 'usb_host_state_to_notification';
 
-procedure usb_log_device_configuration(device: PUSB_DEVICE); stdcall; public name 'usb_log_device_configuration';
-procedure usb_log_device_descriptor(device: PUSB_DEVICE; descriptor: PUSB_DEVICE_DESCRIPTOR); stdcall; public name 'usb_log_device_descriptor';
-procedure usb_log_configuration_descriptor(device: PUSB_DEVICE; descriptor: PUSB_CONFIGURATION_DESCRIPTOR); stdcall; public name 'usb_log_configuration_descriptor';
-procedure usb_log_interface_descriptor(device: PUSB_DEVICE; descriptor: PUSB_INTERFACE_DESCRIPTOR); stdcall; public name 'usb_log_interface_descriptor';
-procedure usb_log_endpoint_descriptor(device: PUSB_DEVICE; descriptor: PUSB_ENDPOINT_DESCRIPTOR); stdcall; public name 'usb_log_endpoint_descriptor';
-
-procedure usb_log_device_configuration_ex(device: PUSB_DEVICE; output: usb_log_output_proc; data: PVOID); stdcall; public name 'usb_log_device_configuration_ex';
-procedure usb_log_device_descriptor_ex(device: PUSB_DEVICE; descriptor: PUSB_DEVICE_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall; public name 'usb_log_device_descriptor_ex';
-procedure usb_log_configuration_descriptor_ex(device: PUSB_DEVICE; descriptor: PUSB_CONFIGURATION_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall; public name 'usb_log_configuration_descriptor_ex';
-procedure usb_log_interface_descriptor_ex(device: PUSB_DEVICE; descriptor: PUSB_INTERFACE_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall; public name 'usb_log_interface_descriptor_ex';
-procedure usb_log_endpoint_descriptor_ex(device: PUSB_DEVICE; descriptor: PUSB_ENDPOINT_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall; public name 'usb_log_endpoint_descriptor_ex';
+procedure usb_log_device_configuration(device: PUSB_DEVICE; output: usb_log_output_proc; data: PVOID); stdcall; public name 'usb_log_device_configuration';
+procedure usb_log_device_descriptor(device: PUSB_DEVICE; descriptor: PUSB_DEVICE_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall; public name 'usb_log_device_descriptor';
+procedure usb_log_configuration_descriptor(device: PUSB_DEVICE; descriptor: PUSB_CONFIGURATION_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall; public name 'usb_log_configuration_descriptor';
+procedure usb_log_interface_descriptor(device: PUSB_DEVICE; descriptor: PUSB_INTERFACE_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall; public name 'usb_log_interface_descriptor';
+procedure usb_log_endpoint_descriptor(device: PUSB_DEVICE; descriptor: PUSB_ENDPOINT_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall; public name 'usb_log_endpoint_descriptor';
 
 function usb_log_devices: uint32_t; stdcall; public name 'usb_log_devices';
 function usb_log_devices_ex(device: PUSB_DEVICE; output: usb_log_output_proc; devicecallback, treecallback: usb_device_enumerate_cb; data: PVOID): uint32_t; stdcall; public name 'usb_log_devices_ex';
@@ -3017,6 +3021,9 @@ function usb_hub_has_port_power_switching(hub: PUSB_HUB): BOOL; stdcall; public 
 function usb_hub_has_port_current_protection(hub: PUSB_HUB): BOOL; stdcall; public name 'usb_hub_has_port_current_protection';
 
 function usb_hub_get_tt_think_time(hub: PUSB_HUB): uint8_t; stdcall; public name 'usb_hub_get_tt_think_time';
+
+function usb_hub_type_to_string(hubtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'usb_hub_type_to_string';
+function usb_hub_state_to_string(hubstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall; public name 'usb_hub_state_to_string';
 
 function usb_hub_state_to_notification(state: uint32_t): uint32_t; stdcall; public name 'usb_hub_state_to_notification';
 {$ENDIF}
@@ -22650,15 +22657,14 @@ end;
 
 {==============================================================================}
 
-function usb_device_read_string_language_ids(device: PUSB_DEVICE): TUSB_STRING_DESCRIPTOR_LANGIDS; stdcall;
+procedure usb_device_read_string_language_ids(device: PUSB_DEVICE; var languageids: TUSB_STRING_DESCRIPTOR_LANGIDS); stdcall;
 {Get the list of supported string language identifiers from the specified device}
 {Device: The USB device to read the language identifiers from}
 {Return: An array of supported language identifiers (Unused values are returned as zero)}
 begin
  {}
- Result:=USBDeviceReadStringLanguageIds(device);
+ languageids:=USBDeviceReadStringLanguageIds(device);
 end;
-
 
 {==============================================================================}
 
@@ -22917,6 +22923,19 @@ end;
 
 {==============================================================================}
 
+function usb_device_find_alternate_by_setting(device: PUSB_DEVICE; interrface: PUSB_INTERFACE; alternatesetting: uint8_t): PUSB_ALTERNATE; stdcall;
+{Find the alternate setting with the specified value on the specified interface of the specified device}
+{Device: The USB device to find the alternate setting from}
+{Interrface: The interface to find the alternate setting from}
+{AlternateSetting: The value of the alternate setting to find}
+{Return: The alternate setting for the matching alternate setting of nil if no alternate setting matched}
+begin
+ {}
+ Result:=USBDeviceFindAlternateBySetting(device,interrface,alternatesetting);
+end;
+
+{==============================================================================}
+
 function usb_device_find_alternate_endpoint_by_index(device: PUSB_DEVICE; interrface: PUSB_INTERFACE; alternate: PUSB_ALTERNATE; index: uint8_t): PUSB_ENDPOINT_DESCRIPTOR; stdcall;
 {Find the endpoint with the specified index on the specified alternate setting interface of the specified device}
 {Device: The USB device to find the endpoint from}
@@ -22977,7 +22996,7 @@ end;
 function usb_device_set_state(device: PUSB_DEVICE; state: uint32_t): uint32_t; stdcall;
 {Set the state of the specified device and send a notification}
 {Device: The USB device to set the state for}
-{State: The new state to set and notify}
+{State: The new state to set and notify (eg USB_STATE_ATTACHED)}
 {Return: USB_STATUS_SUCCESS if completed or another error code on failure}
 begin
  {}
@@ -22989,7 +23008,7 @@ end;
 function usb_device_set_status(device: PUSB_DEVICE; status: uint32_t): uint32_t; stdcall;
 {Set the status of the specified device and send a notification}
 {Device: The USB device to set the status for}
-{Status: The new status to set and notify}
+{Status: The new status to set and notify (eg USB_STATUS_BOUND)}
 {Return: USB_STATUS_SUCCESS if completed or another error code on failure}
 begin
  {}
@@ -23115,7 +23134,7 @@ end;
 {==============================================================================}
 
 function usb_driver_create: PUSB_DRIVER; stdcall;
-{Create a new Driver entry}
+{Create a new USB Driver entry}
 {Return: Pointer to new Driver entry or nil if driver could not be created}
 begin
  {}
@@ -23125,7 +23144,7 @@ end;
 {==============================================================================}
 
 function usb_driver_create_ex(size: uint32_t): PUSB_DRIVER; stdcall;
-{Create a new Driver entry}
+{Create a new USB Driver entry}
 {Size: Size in bytes to allocate for new driver (Including the driver entry)}
 {Return: Pointer to new Driver entry or nil if driver could not be created}
 begin
@@ -23136,7 +23155,7 @@ end;
 {==============================================================================}
 
 function usb_driver_destroy(driver: PUSB_DRIVER): uint32_t; stdcall;
-{Destroy an existing Driver entry}
+{Destroy an existing USB Driver entry}
 begin
  {}
  Result:=USBDriverDestroy(driver);
@@ -23145,7 +23164,7 @@ end;
 {==============================================================================}
 
 function usb_driver_register(driver: PUSB_DRIVER): uint32_t; stdcall;
-{Register a new Driver in the Driver table}
+{Register a new Driver in the USB Driver table}
 begin
  {}
  Result:=USBDriverRegister(driver);
@@ -23154,7 +23173,7 @@ end;
 {==============================================================================}
 
 function usb_driver_deregister(driver: PUSB_DRIVER): uint32_t; stdcall;
-{Deregister a Driver from the Driver table}
+{Deregister a Driver from the USB Driver table}
 begin
  {}
  Result:=USBDriverDeregister(driver);
@@ -23163,6 +23182,7 @@ end;
 {==============================================================================}
 
 function usb_driver_find(driverid: uint32_t): PUSB_DRIVER; stdcall;
+{Find a driver by Id in the USB Driver table}
 begin
  {}
  Result:=USBDriverFind(driverid);
@@ -23171,6 +23191,7 @@ end;
 {==============================================================================}
 
 function usb_driver_find_by_name(name: PCHAR): PUSB_DRIVER; stdcall;
+{Find a driver by name in the Driver table}
 begin
  {}
  Result:=USBDriverFindByName(String(name));
@@ -23179,6 +23200,7 @@ end;
 {==============================================================================}
 
 function usb_driver_enumerate(callback: usb_driver_enumerate_cb; data: PVOID): uint32_t; stdcall;
+{Enumerate all drivers in the USB Driver table}
 begin
  {}
  Result:=USBDriverEnumerate(callback,data);
@@ -23189,7 +23211,7 @@ end;
 function usb_host_set_state(host: PUSB_HOST; state: uint32_t): uint32_t; stdcall;
 {Set the state of the specified host and send a notification}
 {Host: The USB host to set the state for}
-{State: The new state to set and notify}
+{State: The new state to set and notify (eg USBHOST_STATE_ENABLED)}
 {Return: USB_STATUS_SUCCESS if completed or another error code on failure}
 begin
  {}
@@ -23666,6 +23688,7 @@ end;
 procedure usb_hub_unbind_devices(device: PUSB_DEVICE; driver: PUSB_DRIVER; callback: usb_device_unbind_proc); stdcall;
 {Enumerate each device in the USB tree and call an unbind callback for each one}
 {Device: USB device at which to start the enueration}
+{Driver: The driver to unbind the device from (nil to unbind from current driver)}
 {Callback: Unbind callback function to execute for each device}
 begin
  {}
@@ -23846,7 +23869,7 @@ end;
 {==============================================================================}
 
 function usb_driver_get_count: uint32_t; stdcall;
-{Get the current driver count}
+{Get the current USB driver count}
 begin
  {}
  Result:=USBDriverGetCount;
@@ -23855,7 +23878,7 @@ end;
 {==============================================================================}
 
 function usb_driver_check(driver: PUSB_DRIVER): PUSB_DRIVER; stdcall;
-{Check if the supplied Driver is in the driver table}
+{Check if the supplied USB Driver is in the driver table}
 begin
  {}
  Result:=USBDriverCheck(driver);
@@ -23980,6 +24003,39 @@ end;
 
 {==============================================================================}
 
+function usb_status_to_string(status: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Translates a USB status code into a string}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(USBStatusToString(status),_string,len);
+end;
+
+{==============================================================================}
+
+function usb_device_type_to_string(usbtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(USBDeviceTypeToString(usbtype),_string,len);
+end;
+
+{==============================================================================}
+
+function usb_device_state_to_string(usbstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(USBDeviceStateToString(usbstate),_string,len);
+end;
+
+{==============================================================================}
+
+function usb_device_status_to_string(usbstatus: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(USBDeviceStatusToString(usbstatus),_string,len);
+end;
+
+{==============================================================================}
+
 function usb_device_state_to_notification(state: uint32_t): uint32_t; stdcall;
 {Convert a Device state value into the notification code for device notifications}
 begin
@@ -23998,6 +24054,22 @@ end;
 
 {==============================================================================}
 
+function usb_host_type_to_string(hosttype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(USBHostTypeToString(hosttype),_string,len);
+end;
+
+{==============================================================================}
+
+function usb_host_state_to_string(hoststate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+begin
+ {}
+ Result:=APIStringToPCharBuffer(USBHostStateToString(hoststate),_string,len);
+end;
+
+{==============================================================================}
+
 function usb_host_state_to_notification(state: uint32_t): uint32_t; stdcall;
 {Convert a Host state value into the notification code for device notifications}
 begin
@@ -24007,47 +24079,7 @@ end;
 
 {==============================================================================}
 
-procedure usb_log_device_configuration(device: PUSB_DEVICE); stdcall;
-begin
- {}
- USBLogDeviceConfiguration(device);
-end;
-
-{==============================================================================}
-
-procedure usb_log_device_descriptor(device: PUSB_DEVICE; descriptor: PUSB_DEVICE_DESCRIPTOR); stdcall;
-begin
- {}
- USBLogDeviceDescriptor(device,descriptor);
-end;
-
-{==============================================================================}
-
-procedure usb_log_configuration_descriptor(device: PUSB_DEVICE; descriptor: PUSB_CONFIGURATION_DESCRIPTOR); stdcall;
-begin
- {}
- USBLogConfigurationDescriptor(device,descriptor);
-end;
-
-{==============================================================================}
-
-procedure usb_log_interface_descriptor(device: PUSB_DEVICE; descriptor: PUSB_INTERFACE_DESCRIPTOR); stdcall;
-begin
- {}
- USBLogInterfaceDescriptor(device,descriptor);
-end;
-
-{==============================================================================}
-
-procedure usb_log_endpoint_descriptor(device: PUSB_DEVICE; descriptor: PUSB_ENDPOINT_DESCRIPTOR); stdcall;
-begin
- {}
- USBLogEndpointDescriptor(device,descriptor);
-end;
-
-{==============================================================================}
-
-procedure usb_log_device_configuration_ex(device: PUSB_DEVICE; output: usb_log_output_proc; data: PVOID); stdcall;
+procedure usb_log_device_configuration(device: PUSB_DEVICE; output: usb_log_output_proc; data: PVOID); stdcall;
 begin
  {}
  USBLogDeviceConfiguration(device,output,data);
@@ -24055,7 +24087,7 @@ end;
 
 {==============================================================================}
 
-procedure usb_log_device_descriptor_ex(device: PUSB_DEVICE; descriptor: PUSB_DEVICE_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall;
+procedure usb_log_device_descriptor(device: PUSB_DEVICE; descriptor: PUSB_DEVICE_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall;
 begin
  {}
  USBLogDeviceDescriptor(device,descriptor,output,data);
@@ -24063,7 +24095,7 @@ end;
 
 {==============================================================================}
 
-procedure usb_log_configuration_descriptor_ex(device: PUSB_DEVICE; descriptor: PUSB_CONFIGURATION_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall;
+procedure usb_log_configuration_descriptor(device: PUSB_DEVICE; descriptor: PUSB_CONFIGURATION_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall;
 begin
  {}
  USBLogConfigurationDescriptor(device,descriptor,output,data);
@@ -24071,7 +24103,7 @@ end;
 
 {==============================================================================}
 
-procedure usb_log_interface_descriptor_ex(device: PUSB_DEVICE; descriptor: PUSB_INTERFACE_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall;
+procedure usb_log_interface_descriptor(device: PUSB_DEVICE; descriptor: PUSB_INTERFACE_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall;
 begin
  {}
  USBLogInterfaceDescriptor(device,descriptor,output,data);
@@ -24079,7 +24111,7 @@ end;
 
 {==============================================================================}
 
-procedure usb_log_endpoint_descriptor_ex(device: PUSB_DEVICE; descriptor: PUSB_ENDPOINT_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall;
+procedure usb_log_endpoint_descriptor(device: PUSB_DEVICE; descriptor: PUSB_ENDPOINT_DESCRIPTOR; output: usb_log_output_proc; data: PVOID); stdcall;
 begin
  {}
  USBLogEndpointDescriptor(device,descriptor,output,data);
@@ -24196,6 +24228,24 @@ function usb_hub_get_tt_think_time(hub: PUSB_HUB): uint8_t; stdcall;
 begin
  {}
  Result:=USBHubGetTTThinkTime(hub);
+end;
+
+{==============================================================================}
+
+function usb_hub_type_to_string(hubtype: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return a string describing the supplied Hub type value}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(USBHubTypeToString(hubtype),_string,len);
+end;
+
+{==============================================================================}
+
+function usb_hub_state_to_string(hubstate: uint32_t; _string: PCHAR; len: uint32_t): uint32_t; stdcall;
+{Return a string describing the supplied Hub state value}
+begin
+ {}
+ Result:=APIStringToPCharBuffer(USBHubStateToString(hubstate),_string,len);
 end;
 
 {==============================================================================}
