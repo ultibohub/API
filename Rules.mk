@@ -5,7 +5,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2022 Garry Wood <garry@softoz.com.au>
+# Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,9 @@ endif
 # Include user customizations without error if file doesn't exist
 -include $(API_PATH)/Config.mk
 
-BOARD_TYPE ?= RPI2B
+BOARD_TYPE ?= unknown
+
+BUILD_MODE ?= release
 
 # Normalize board type
 ifeq ($(strip $(BOARD_TYPE)),rpia)
@@ -50,11 +52,17 @@ else ifeq ($(strip $(BOARD_TYPE)),rpi0)
 BOARD_TYPE = rpib
 else ifeq ($(strip $(BOARD_TYPE)),rpi0w)
 BOARD_TYPE = rpib
+else ifeq ($(strip $(BOARD_TYPE)),rpicm)
+BOARD_TYPE = rpib
 else ifeq ($(strip $(BOARD_TYPE)),rpi3b+)
+BOARD_TYPE = rpi3b
+else ifeq ($(strip $(BOARD_TYPE)),rpicm3)
 BOARD_TYPE = rpi3b
 else ifeq ($(strip $(BOARD_TYPE)),rpi02w)
 BOARD_TYPE = rpi3b
 else ifeq ($(strip $(BOARD_TYPE)),rpi400)
+BOARD_TYPE = rpi4b
+else ifeq ($(strip $(BOARD_TYPE)),rpicm4)
 BOARD_TYPE = rpi4b
 else ifeq ($(strip $(BOARD_TYPE)),qemu)
 BOARD_TYPE = qemuvpb
@@ -64,32 +72,41 @@ OPT_LEVEL ?= -O2
 
 # Setup board specific parameters
 ifeq ($(strip $(BOARD_TYPE)),rpib)
-CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv6 -mfpu=vfp -mfloat-abi=hard -D__DYNAMIC_REENT__
+CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv6 -mfpu=vfp -mfloat-abi=hard -D__DYNAMIC_REENT__ -D_POSIX_THREADS -Dultibo
 FPC_FLAGS ?= -B -Tultibo -Parm -CpARMV6 -WpRPIB @$(FPC_PATH)RPI.CFG $(OPT_LEVEL) -dRPIB $(PROJECT_NAME)
 TARGET_NAME ?= rpi
 TOOLS_PREFIX ?= arm-none-eabi-
 else ifeq ($(strip $(BOARD_TYPE)),rpi2b)
-CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard -D__DYNAMIC_REENT__
+CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard -D__DYNAMIC_REENT__ -D_POSIX_THREADS -Dultibo
 FPC_FLAGS ?= -B -Tultibo -Parm -CpARMV7A -WpRPI2B @$(FPC_PATH)RPI2.CFG $(OPT_LEVEL) -dRPI2B $(PROJECT_NAME)
 TARGET_NAME ?= rpi2
 TOOLS_PREFIX ?= arm-none-eabi-
 else ifeq ($(strip $(BOARD_TYPE)),rpi3b)
-CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard -D__DYNAMIC_REENT__
+CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard -D__DYNAMIC_REENT__ -D_POSIX_THREADS -Dultibo
 FPC_FLAGS ?= -B -Tultibo -Parm -CpARMV7A -WpRPI3B @$(FPC_PATH)RPI3.CFG $(OPT_LEVEL) -dRPI3B $(PROJECT_NAME)
 TARGET_NAME ?= rpi3
 TOOLS_PREFIX ?= arm-none-eabi-
 else ifeq ($(strip $(BOARD_TYPE)),rpi4b)
-CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard -D__DYNAMIC_REENT__
+CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard -D__DYNAMIC_REENT__ -D_POSIX_THREADS -Dultibo
 FPC_FLAGS ?= -B -Tultibo -Parm -CpARMV7A -WpRPI4B @$(FPC_PATH)RPI4.CFG $(OPT_LEVEL) -dRPI4B $(PROJECT_NAME)
 TARGET_NAME ?= rpi4
 TOOLS_PREFIX ?= arm-none-eabi-
 else ifeq ($(strip $(BOARD_TYPE)),qemuvpb)
-CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard -D__DYNAMIC_REENT__
+CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard -D__DYNAMIC_REENT__ -D_POSIX_THREADS -Dultibo
 FPC_FLAGS ?= -B -Tultibo -Parm -CpARMV7A -WpQEMUVPB @$(FPC_PATH)QEMUVPB.CFG $(OPT_LEVEL) -dQEMUVPB $(PROJECT_NAME)
 TARGET_NAME ?= qemuvpb
 TOOLS_PREFIX ?= arm-none-eabi-
 else
-$(error No valid board type specified.)
+$(error No valid board type specified (BOARD_TYPE = $(BOARD_TYPE)))
+endif
+
+# Setup build mode
+ifeq ($(strip $(BUILD_MODE)),debug)
+CC_FLAGS += -DDEBUG
+FPC_FLAGS += -dDEBUG
+else
+CC_FLAGS += -DRELEASE
+FPC_FLAGS += -dRELEASE
 endif
 
 CC	= $(TOOLS_PREFIX)gcc
@@ -105,21 +122,31 @@ AFLAGS	+= $(CC_FLAGS) $(INCLUDE)
 CFLAGS	+= $(CC_FLAGS) -Wall $(INCLUDE)
 CPPFLAGS+= $(CFLAGS) -std=c++14
 
+all: clean $(TARGET_NAME)
+
+%.a:
+	@$(shell) echo {$$LINKLIB $@} >>  __linklib.inc
+
 %.o: %.S
-	$(AS) $(AFLAGS) -c -o $@ $<
-	$(shell) echo {$$LINK $@} >>  __link.inc
-    
+	@$(AS) $(AFLAGS) -c -o $@ $<
+	@echo "AS $<"
+	@$(shell) echo {$$LINK $@} >>  __link.inc
+
 %.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $< 
-	$(shell) echo {$$LINK $@} >>  __link.inc
-    
+	@$(CC) $(CFLAGS) -c -o $@ $<
+	@echo "CC $<"
+	@$(shell) echo {$$LINK $@} >>  __link.inc
+
 %.o: %.cpp
-	$(CPP) $(CPPFLAGS) -c -o $@ $<
-	$(shell) echo {$$LINK $@} >>  __link.inc
+	@$(CPP) $(CPPFLAGS) -c -o $@ $<
+	@echo "CPP $<"
+	@$(shell) echo {$$LINK $@} >>  __link.inc
 
 $(TARGET_NAME): $(OBJS) $(LIBS)
-	$(FPC) $(FPC_FLAGS)
+	@echo "FPC $(PROJECT_NAME)"
+	@$(FPC) $(FPC_FLAGS)
 
 clean:
 	rm -f *.o *.a *.elf *.lst *.img *.bin *.map *~ *.ppu
-	rm __link.inc
+	rm -f __link.inc
+	rm -f __linklib.inc
