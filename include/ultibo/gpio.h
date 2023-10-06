@@ -186,7 +186,7 @@ struct _GPIO_INFO
 };
 
 /* GPIO Info Unknown */
-const GPIO_INFO GPIO_INFO_UNKNOWN = {
+static const GPIO_INFO GPIO_INFO_UNKNOWN = {
   NULL,
   GPIO_PIN_UNKNOWN,
   GPIO_FUNCTION_UNKNOWN,
