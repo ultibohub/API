@@ -26,10 +26,10 @@
 # THE SOFTWARE.
 #
 
-API_PATH = ..
+API_PATH = ../..
 
-OBJS = myfile.o
+OBJS = blinker.o
 
-PROJECT_NAME = apiproject.lpr
+PROJECT_NAME = blinkerproject.lpr
 
-include ../Rules.mk
+include ../../Rules.mk

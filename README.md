@@ -64,5 +64,8 @@ The library contains C++ classes for several of the interfaces above, more will 
 
 Located under the samples directory are a number of simple projects that show how to use the API
 
+* Hello World
+* Blinker
+
 * Blinktest
 
