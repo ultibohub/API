@@ -683,11 +683,11 @@ typedef struct _BY_HANDLE_FILE_INFORMATION
 } BY_HANDLE_FILE_INFORMATION;
 
 /* Compatibility variables */
-const CONDITION_VARIABLE CONDITION_VARIABLE_INIT = {NULL};
+static const CONDITION_VARIABLE CONDITION_VARIABLE_INIT = {NULL};
 
 /* ============================================================================== */
 /* Ultibo constants */
-const FILETIME TIME_NULL_TIME = {0x00000000, 0x00000000};
+static const FILETIME TIME_NULL_TIME = {0x00000000, 0x00000000};
 
 /* Drive constants */
 #define DEFAULT_DRIVE	0 // 0 is Current Drive

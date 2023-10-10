@@ -482,7 +482,7 @@ extern "C" {
 #define MMC_CSD_SPEC_VER_4	4 // Implements system specification 4.0 - 4.1
 
 /* MMC CSD TAAC Time units */
-const uint32_t MMC_CSD_TAAC_UNITS[] = {
+static const uint32_t MMC_CSD_TAAC_UNITS[] = {
 	1,
 	10,
 	100,
@@ -493,7 +493,7 @@ const uint32_t MMC_CSD_TAAC_UNITS[] = {
 	10000000};
 
 /* MMC CSD TAAC Time values */
-const uint32_t MMC_CSD_TAAC_VALUES[] = {
+static const uint32_t MMC_CSD_TAAC_VALUES[] = {
 	0,
 	10,
 	12,
@@ -526,7 +526,7 @@ const uint32_t MMC_CSD_TAAC_VALUES[] = {
 #define MMC_CCC_EXTENSION	(1 << 11) // (Class 11) Extension (CMD?)
 
 /* MMC CSD Transfer Speed Rate units */
-const uint32_t MMC_CSD_TRAN_SPEED_UNITS[] = {
+static const uint32_t MMC_CSD_TRAN_SPEED_UNITS[] = {
 	10000,
 	100000,
 	1000000,
@@ -537,7 +537,7 @@ const uint32_t MMC_CSD_TRAN_SPEED_UNITS[] = {
 	0};
 
 /* MMC CSD Transfer Speed Time values */
-const uint32_t MMC_CSD_TRAN_SPEED_VALUES[] = {
+static const uint32_t MMC_CSD_TRAN_SPEED_VALUES[] = {
 	0,
 	10,
 	12,
@@ -950,7 +950,7 @@ const uint32_t MMC_CSD_TRAN_SPEED_VALUES[] = {
 #define SD_SSR_SPEED_CLASS_10	0x04 // Class 10
 
 /* SD SSR AU Size values */
-const uint32_t SD_SSR_AU_SIZE_VALUES[] = {
+static const uint32_t SD_SSR_AU_SIZE_VALUES[] = {
 	0, // Not Defined
 	0x00004000, // 16 KB
 	0x00008000, // 32 KB
@@ -973,7 +973,7 @@ const uint32_t SD_SSR_AU_SIZE_VALUES[] = {
 #define SD_SSR_UHS_SPEED_GRADE_1	1 // 10MB/sec and above
 
 /* SD SSR UHS AU Size values */
-const uint32_t SD_SSR_UHS_AU_SIZE_VALUES[] = {
+static const uint32_t SD_SSR_UHS_AU_SIZE_VALUES[] = {
 	0, // Not Defined
 	0, // Not Used
 	0, // Not Used

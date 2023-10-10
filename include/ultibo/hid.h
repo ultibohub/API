@@ -230,7 +230,7 @@ extern "C" {
 #define HID_GLOBAL_UNIT_ENGLISH_VOLUME	0x00000033 // Volume (Cubic Inches)
 
 /* HID Global Item Unit Exponent Values (Section 6.2.2.7) */
-const unsigned int HID_GLOBAL_UNIT_EXPONENTS[0x10] = {
+static const unsigned int HID_GLOBAL_UNIT_EXPONENTS[0x10] = {
 	0,
 	1,
 	2,
@@ -248,7 +248,7 @@ const unsigned int HID_GLOBAL_UNIT_EXPONENTS[0x10] = {
 	-2,
 	-1};
 
-const double_t HID_GLOBAL_UNIT_MULTIPLIERS[0x10] = {
+static const double_t HID_GLOBAL_UNIT_MULTIPLIERS[0x10] = {
 	1,          // 10^0
 	10,         // 10^1
 	100,        // 10^2

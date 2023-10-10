@@ -626,9 +626,9 @@ struct _NETWORK_EVENT
 /* ============================================================================== */
 /* Network specific constants */
 /* Generic Network */
-const HARDWARE_ADDRESS HARDWARE_DEFAULT = {0x00,0x00,0x00,0x00,0x00,0x00};
-const HARDWARE_ADDRESS HARDWARE_LOOPBACK = {0x00,0x00,0x00,0x00,0x00,0x01};
-const HARDWARE_ADDRESS HARDWARE_BROADCAST = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
+static const HARDWARE_ADDRESS HARDWARE_DEFAULT = {0x00,0x00,0x00,0x00,0x00,0x00};
+static const HARDWARE_ADDRESS HARDWARE_LOOPBACK = {0x00,0x00,0x00,0x00,0x00,0x01};
+static const HARDWARE_ADDRESS HARDWARE_BROADCAST = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
 
 /* ============================================================================== */
 /* Ethernet specific types */
@@ -665,10 +665,10 @@ struct _SNAP_HEADER
 
 /* ============================================================================== */
 /* Ethernet specific constants */
-const HARDWARE_ADDRESS ETHERNET_DEFAULT = {0x00,0x00,0x00,0x00,0x00,0x00};
-const HARDWARE_ADDRESS ETHERNET_LOOPBACK = {0x00,0x00,0x00,0x00,0x00,0x01};
-const HARDWARE_ADDRESS ETHERNET_BROADCAST = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
-const HARDWARE_ADDRESS ETHERNET_MULTICAST = {0x01,0x00,0x5E,0x00,0x00,0x00};
+static const HARDWARE_ADDRESS ETHERNET_DEFAULT = {0x00,0x00,0x00,0x00,0x00,0x00};
+static const HARDWARE_ADDRESS ETHERNET_LOOPBACK = {0x00,0x00,0x00,0x00,0x00,0x01};
+static const HARDWARE_ADDRESS ETHERNET_BROADCAST = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
+static const HARDWARE_ADDRESS ETHERNET_MULTICAST = {0x01,0x00,0x5E,0x00,0x00,0x00};
 
 /* ============================================================================== */
 /* Initialization Functions */
