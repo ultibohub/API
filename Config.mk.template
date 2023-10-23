@@ -1,0 +1,23 @@
+#
+# Config.mk Template
+#
+# Rename this file to Config.mk and apply any customizations
+#
+
+# Board type (Configure here or pass on command line)
+# eg make BOARD_TYPE=rpi4b
+#BOARD_TYPE ?= rpi4b
+
+# Build mode (Configure here or pass on command line)
+# eg make BUILD_MODE=debug
+#BUILD_MODE ?= debug
+
+# Customize the tools prefix if not default
+#TOOLS_PREFIX = arm-none-eabi-
+
+# Customize the FPC path if not default
+#FPC_PATH = C:/Ultibo/Core/fpc/3.2.2/bin/i386-win32/
+#FPC_PATH = $(HOME)/ultibo/core/fpc/bin/
+
+# Define the tools folder (as, ld, gcc) if not in $PATH
+#TOOLS_PATH = 

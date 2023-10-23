@@ -26,20 +26,31 @@
 # THE SOFTWARE.
 #
 
+# Use default API path if not set
 ifeq ($(strip $(API_PATH)),)
 API_PATH = ..
 endif
 
+# Use default FPC path if not set
 ifeq ($(strip $(FPC_PATH)),)
+ifeq ($(OS),Windows_NT)
 FPC_PATH = C:/Ultibo/Core/fpc/3.2.2/bin/i386-win32/
+else
+FPC_PATH = $(HOME)/ultibo/core/fpc/bin/
+endif
 endif
 
 # Include user customizations without error if file doesn't exist
 -include $(API_PATH)/Config.mk
 
+# Default to unknown board
 BOARD_TYPE ?= unknown
 
+# Default to release build
 BUILD_MODE ?= release
+
+# Default to level 2 optimization
+OPT_LEVEL ?= -O2
 
 # Normalize board type
 ifeq ($(strip $(BOARD_TYPE)),rpia)
@@ -69,8 +80,6 @@ override BOARD_TYPE = rpi4b
 else ifeq ($(strip $(BOARD_TYPE)),qemu)
 override BOARD_TYPE = qemuvpb
 endif
-
-OPT_LEVEL ?= -O2
 
 # Setup board specific parameters
 ifeq ($(strip $(BOARD_TYPE)),rpib)
@@ -111,16 +120,16 @@ CC_FLAGS += -DRELEASE
 FPC_FLAGS += -dRELEASE
 endif
 
-# Setup default libs
+# Setup default libs if not set
 ifeq ($(strip $(LIBS)),)
 LIBS = c.a
 endif
 
-CC	= $(TOOLS_PREFIX)gcc
-CPP	= $(TOOLS_PREFIX)g++
+CC	= $(TOOLS_PATH)$(TOOLS_PREFIX)gcc
+CPP	= $(TOOLS_PATH)$(TOOLS_PREFIX)g++
 AS	= $(CC)
-LD	= $(TOOLS_PREFIX)ld
-AR	= $(TOOLS_PREFIX)ar
+LD	= $(TOOLS_PATH)$(TOOLS_PREFIX)ld
+AR	= $(TOOLS_PATH)$(TOOLS_PREFIX)ar
 FPC = $(FPC_PATH)fpc
 
 INCLUDE	+= -I $(API_PATH)/include
@@ -136,18 +145,18 @@ all: info clean $(TARGET_NAME)
 	@$(shell) echo {$$LINKLIB $@} >>  __linklib.inc
 
 %.o: %.S
-	@$(AS) $(AFLAGS) -c -o $@ $<
 	@echo "AS $<"
+	@$(AS) $(AFLAGS) -c -o $@ $<
 	@$(shell) echo {$$LINK $@} >>  __link.inc
 
 %.o: %.c
-	@$(CC) $(CFLAGS) -c -o $@ $<
 	@echo "CC $<"
+	@$(CC) $(CFLAGS) -c -o $@ $<
 	@$(shell) echo {$$LINK $@} >>  __link.inc
 
 %.o: %.cpp
-	@$(CPP) $(CPPFLAGS) -c -o $@ $<
 	@echo "CPP $<"
+	@$(CPP) $(CPPFLAGS) -c -o $@ $<
 	@$(shell) echo {$$LINK $@} >>  __link.inc
 
 $(TARGET_NAME): $(OBJS) $(LIBS)
