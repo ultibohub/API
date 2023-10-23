@@ -66,6 +66,7 @@ Located under the samples directory are a number of simple projects that show ho
 
 * Hello World
 * Blinker
+* Screen Output
 
 * Blinktest
 

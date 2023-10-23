@@ -26,10 +26,22 @@
 # THE SOFTWARE.
 #
 
+# Base path of the Ultibo API
 API_PATH = ..
 
+# List of C/C++ source files to compile (with .o extension)
 OBJS = myfile.o
 
+# List of static libraries to link (with .a extension)
+#LIBS =
+
+# Additional GCC defines and options
+#CFLAGS +=
+
+# Additional FPC defines and options
+FPCOPT += -dUSE_WEBSTATUS -dUSE_SHELL
+
+# Name of the Ultibo project file
 PROJECT_NAME = apiproject.lpr
 
 include ../Rules.mk

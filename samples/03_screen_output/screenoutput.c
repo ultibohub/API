@@ -95,7 +95,7 @@ int apimain(int argc, char **argv)
   currenty++;
   console_window_set_y(handle2, currenty);
   console_window_write_ln_ex(handle2, "This is some text in green", currentx, currenty, COLOR_GREEN, console_window_get_backcolor(handle2));
- 
+
   /* And one more time in yellow */
   currenty++;
   console_window_set_y(handle2, currenty);
@@ -110,7 +110,7 @@ int apimain(int argc, char **argv)
   /* What about some text at the bottom of the screen instead, we'll use console_window_write_ex()
    * instead so it doesn't scroll the screen up */
   console_window_write_ex(handle2, "This text should be in the last row of the screen", currentx, console_window_get_max_y(handle2), console_window_get_forecolor(handle2), console_window_get_backcolor(handle2));
- 
+
   /* Wait a bit more */
   thread_sleep(5 * 1000);
 
@@ -125,6 +125,6 @@ int apimain(int argc, char **argv)
 
   /* We're not doing a loop this time so we better halt this thread before it exits */
   thread_halt(0);
-  
+
   return 0;
 }
