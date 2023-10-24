@@ -55,11 +55,6 @@ In addition to the Ultibo interface headers a small number of headers that expos
 * sys/socket.h - 
 * sys/statfs.h - 
 
-### Class libraries:
-
-The library contains C++ classes for several of the interfaces above, more will be added in future
-
-
 ### Example projects:
 
 Located under the samples directory are a number of simple projects that show how to use the API
@@ -67,6 +62,7 @@ Located under the samples directory are a number of simple projects that show ho
 * Hello World
 * Blinker
 * Screen Output
+* Keyboard Input
 
 * Blinktest
 
