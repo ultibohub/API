@@ -125,6 +125,13 @@ ifeq ($(strip $(LIBS)),)
 LIBS = c.a
 endif
 
+# Setup quote character
+ifeq ($(OS),Windows_NT)
+QCHR = 
+else
+QCHR = '
+endif
+
 CC	= $(TOOLS_PATH)$(TOOLS_PREFIX)gcc
 CPP	= $(TOOLS_PATH)$(TOOLS_PREFIX)g++
 AS	= $(CC)
@@ -142,22 +149,22 @@ FPCOPT  += $(FPC_FLAGS)
 all: info clean $(TARGET_NAME)
 
 %.a:
-	@$(shell) echo {$$LINKLIB $@} >>  __linklib.inc
+	@$(shell) echo $(QCHR){$$LINKLIB $@}$(QCHR) >>  __linklib.inc
 
 %.o: %.S
 	@echo "AS $<"
 	@$(AS) $(AFLAGS) -c -o $@ $<
-	@$(shell) echo {$$LINK $@} >>  __link.inc
+	@$(shell) echo $(QCHR){$$LINK $@}$(QCHR) >>  __link.inc
 
 %.o: %.c
 	@echo "CC $<"
 	@$(CC) $(CFLAGS) -c -o $@ $<
-	@$(shell) echo {$$LINK $@} >>  __link.inc
+	@$(shell) echo $(QCHR){$$LINK $@}$(QCHR) >>  __link.inc
 
 %.o: %.cpp
 	@echo "CPP $<"
 	@$(CPP) $(CPPFLAGS) -c -o $@ $<
-	@$(shell) echo {$$LINK $@} >>  __link.inc
+	@$(shell) echo $(QCHR){$$LINK $@}$(QCHR) >>  __link.inc
 
 $(TARGET_NAME): $(OBJS) $(LIBS)
 	@echo "FPC $(PROJECT_NAME)"
