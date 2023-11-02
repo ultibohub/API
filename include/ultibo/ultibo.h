@@ -869,11 +869,11 @@ FILETIME STDCALL DateTimeToLocalFileTime(double_t datetime);
 double_t STDCALL SystemFileTimeToDateTime(FILETIME *filetime);
 FILETIME STDCALL DateTimeToSystemFileTime(double_t datetime);
 
-int32_t STDCALL FileTimeToUnixTime(FILETIME *filetime);
-FILETIME STDCALL UnixTimeToFileTime(int32_t unixtime);
+time_t STDCALL FileTimeToUnixTime(FILETIME *filetime);
+FILETIME STDCALL UnixTimeToFileTime(time_t unixtime);
 
-double_t STDCALL UnixTimeToDateTime(int32_t unixtime);
-int32_t STDCALL DateTimeToUnixTime(double_t datetime);
+double_t STDCALL UnixTimeToDateTime(time_t unixtime);
+time_t STDCALL DateTimeToUnixTime(double_t datetime);
 
 int STDCALL FileTimeToFileDate(FILETIME *filetime);
 FILETIME STDCALL FileDateToFileTime(int filedate);
