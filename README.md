@@ -19,6 +19,7 @@ The includes directory contains header files for interfaces to the following Ult
 * ultibo/graphicsconsole.h - 
 * ultibo/hid.h - 
 * ultibo/i2c.h - 
+* ultibo/iphlpapi.h - 
 * ultibo/joystick.h - 
 * ultibo/keyboard.h - 
 * ultibo/keymap.h - 
@@ -43,6 +44,8 @@ The includes directory contains header files for interfaces to the following Ult
 * ultibo/ultibo.h - 
 * ultibo/unicode.h - 
 * ultibo/usb.h - 
+* ultibo/winsock.h - 
+* ultibo/winsock2.h - 
 
 In addition to the Ultibo interface headers a small number of headers that expose functionality not normally available in the Newlib C library are also provided
 
