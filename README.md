@@ -17,6 +17,7 @@ The includes directory contains header files for interfaces to the following Ult
 * ultibo/globaltypes.h - 
 * ultibo/gpio.h - 
 * ultibo/graphicsconsole.h - 
+* ultibo/heapmanager.h - 
 * ultibo/hid.h - 
 * ultibo/i2c.h - 
 * ultibo/iphlpapi.h - 
