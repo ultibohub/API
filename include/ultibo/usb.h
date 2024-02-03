@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2024 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1045,24 +1045,27 @@ struct _USB_REQUEST
 	LONGBOOL startofframe; // The request needs to wait for the next start of frame to be started
 	uint32_t controlphase; // The currently processing phase of a control request
 	uint32_t nextdatapid; // The next Data PID for the data toggle during IN or OUT (Data0/Data1 etc)
-	uint32_t attemptedsize;
-	uint32_t attemptedpacketsremaining;
-	uint32_t attemptedbytesremaining;
-	uint32_t bytesattempted;
-	uint32_t bytestransferred;
-	uint32_t spliterrorcount;
-	uint32_t completesplitretries;
+	uint32_t attemptedpackets; // The number of packets attempted in the current transaction
+	uint32_t attemptedbytes; // The number of bytes attempted in the current transaction
+	uint32_t attemptedpacketsremaining; // The number of packets remaining in the current transaction
+	uint32_t attemptedbytesremaining; // The number of bytes remaining in the current transaction
+	uint32_t totalpacketsattempted; // The total number of packets attempted for this request
+	uint32_t totalbytesattempted; // The total number of bytes attempted for this request
+	uint32_t packetstransferred; // The number of packets transferred for this request
+	uint32_t bytestransferred; // The number of bytes transferred for this request
+	uint32_t spliterrorcount; // The number of split transaction errors for this request
+	uint32_t completesplitretries; // The number of complete split retries for this request
 	THREAD_HANDLE resubmitthread; // The handle of the thread performing resubmit for this request (or INVALID_HANDLE_VALUE)
 	SEMAPHORE_HANDLE resubmitsemaphore; // The handle of the semaphore used to signal the resubmit thread (or INVALID_HANDLE_VALUE)
-	// $IFDEF USB_DEBUG
+#ifdef USB_DEBUG
 	// Debug Statistics
-	uint32_t startsplitattempts;
-	uint32_t completesplitattempts;
-	uint32_t completesplitrestarts;
-	uint32_t startsplitnaks;
-	uint32_t completesplitnyets;
-	uint32_t completesplitnaks;
-	// $ENDIF
+	uint32_t startsplitattempts; // The number of start split attempts started for this request
+	uint32_t completesplitattempts; // The number of complete split attempts started for this request
+	uint32_t completesplitrestarts; // The number of complete split restarts processed for this request
+	uint32_t startsplitnaks; // The number of start split NAK responses received for this request
+	uint32_t completesplitnyets; // The number of complete split NYET responses received for this request
+	uint32_t completesplitnaks; // The number of complete split NAK responses received for this request
+#endif
 };
 
 /* ============================================================================== */

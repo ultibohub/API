@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2024 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -829,6 +829,7 @@ uint32_t STDCALL hid_parser_clean_state(HID_STATE *state);
 HID_COLLECTION * STDCALL hid_find_collection(HID_DEVICE *device, uint16_t page, uint16_t usage);
 
 uint32_t STDCALL hid_find_report_ids(HID_DEVICE *device, HID_COLLECTION *collection, uint8_t *minid, uint8_t *maxid);
+uint32_t STDCALL hid_find_report_sizes(HID_DEVICE *device, HID_COLLECTION *collection, uint8_t kind, uint32_t *minsize, uint32_t *maxsize);
 
 uint32_t STDCALL hid_count_reports(HID_DEVICE *device, HID_COLLECTION *collection, uint8_t kind, uint8_t id, uint32_t *count);
 uint32_t STDCALL hid_find_reports(HID_DEVICE *device, HID_COLLECTION *collection, uint8_t kind, uint8_t id, HID_REPORT *reports, uint32_t count);
