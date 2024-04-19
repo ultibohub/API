@@ -38,10 +38,13 @@ OBJS = myfile.o
 # Additional GCC defines and options
 #CFLAGS +=
 
+# Additional GCC include paths
+#INCLUDE +=
+
 # Additional FPC defines and options
 FPCOPT += -dUSE_WEBSTATUS -dUSE_SHELL
 
 # Name of the Ultibo project file
 PROJECT_NAME = apiproject.lpr
 
-include ../Rules.mk
+include $(API_PATH)/Rules.mk
