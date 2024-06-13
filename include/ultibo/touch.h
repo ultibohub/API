@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2024 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -62,9 +62,10 @@ extern "C" {
 #define TOUCH_FLAG_INVERT_X	0x00000040 // If set invert the X coordinate
 #define TOUCH_FLAG_INVERT_Y	0x00000080 // If set invert the Y coordinate
 #define TOUCH_FLAG_SWAP_MAX_XY	0x00000100 // If set swap the maximum X and Y values
+#define TOUCH_FLAG_RELEASE_TIMER	0x00000200 // If set enable the touch release timer for devices that don't provide release events
 
 /* Flags supported by TOUCH_CONTROL_GET/SET/CLEAR_FLAG */
-#define TOUCH_FLAG_MASK	TOUCH_FLAG_NON_BLOCK | TOUCH_FLAG_MOUSE_DATA | TOUCH_FLAG_MULTI_POINT | TOUCH_FLAG_PRESSURE | TOUCH_FLAG_SWAP_XY | TOUCH_FLAG_INVERT_X | TOUCH_FLAG_INVERT_Y | TOUCH_FLAG_SWAP_MAX_XY
+#define TOUCH_FLAG_MASK	TOUCH_FLAG_NON_BLOCK | TOUCH_FLAG_MOUSE_DATA | TOUCH_FLAG_MULTI_POINT | TOUCH_FLAG_PRESSURE | TOUCH_FLAG_SWAP_XY | TOUCH_FLAG_INVERT_X | TOUCH_FLAG_INVERT_Y | TOUCH_FLAG_SWAP_MAX_XY | TOUCH_FLAG_RELEASE_TIMER
 
 /* Touch Device Control Codes */
 #define TOUCH_CONTROL_GET_FLAG	1 // Get Flag
