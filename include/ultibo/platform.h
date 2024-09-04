@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2024 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -985,6 +985,14 @@ size_t STDCALL symbol_get_address(HANDLE handle, char *name);
 /* Logging Functions */
 void STDCALL logging_output(char *text);
 void STDCALL logging_output_ex(uint32_t facility, uint32_t severity, char *tag, char *content);
+
+/* ============================================================================== */
+/* Environment Functions */
+uint32_t STDCALL environment_get(char *name, char *value, uint32_t len);
+uint32_t STDCALL environment_set(char *name, char *value);
+uint32_t STDCALL environment_count(BOOL reset);
+uint32_t STDCALL environment_index(char *name);
+uint32_t STDCALL environment_string(uint32_t index, char *string, uint32_t len);
 
 /* ============================================================================== */
 /* Utility Functions */
