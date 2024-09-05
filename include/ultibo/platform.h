@@ -995,6 +995,11 @@ uint32_t STDCALL environment_index(char *name);
 uint32_t STDCALL environment_string(uint32_t index, char *string, uint32_t len);
 
 /* ============================================================================== */
+/* Environment Functions (From stdlib.h) */
+int setenv(const char *name, const char *value, int overwrite);
+int unsetenv(const char *name);
+
+/* ============================================================================== */
 /* Utility Functions */
 uint32_t STDCALL first_bit_set(uint32_t value);
 uint32_t STDCALL last_bit_set(uint32_t value);
