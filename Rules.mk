@@ -5,7 +5,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+# Copyright (c) 2024 Garry Wood <garry@softoz.com.au>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -83,27 +83,27 @@ endif
 
 # Setup board specific parameters
 ifeq ($(strip $(BOARD_TYPE)),rpib)
-CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv6 -mfpu=vfp -mfloat-abi=hard -D__DYNAMIC_REENT__ -D_POSIX_THREADS -DULTIBO -DRPIB
+CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv6 -mfpu=vfp -mfloat-abi=hard -D__DYNAMIC_REENT__ -D_POSIX_THREADS -DFD_SETSIZE=1024 -DULTIBO -DRPIB
 FPC_FLAGS ?= -B -Tultibo -Parm -CpARMV6 -WpRPIB @$(FPC_PATH)RPI.CFG $(OPT_LEVEL) -dRPIB $(PROJECT_NAME)
 TARGET_NAME ?= rpi
 TOOLS_PREFIX ?= arm-none-eabi-
 else ifeq ($(strip $(BOARD_TYPE)),rpi2b)
-CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard -D__DYNAMIC_REENT__ -D_POSIX_THREADS -DULTIBO -DRPI2B
+CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard -D__DYNAMIC_REENT__ -D_POSIX_THREADS -DFD_SETSIZE=1024 -DULTIBO -DRPI2B
 FPC_FLAGS ?= -B -Tultibo -Parm -CpARMV7A -WpRPI2B @$(FPC_PATH)RPI2.CFG $(OPT_LEVEL) -dRPI2B $(PROJECT_NAME)
 TARGET_NAME ?= rpi2
 TOOLS_PREFIX ?= arm-none-eabi-
 else ifeq ($(strip $(BOARD_TYPE)),rpi3b)
-CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard -D__DYNAMIC_REENT__ -D_POSIX_THREADS -DULTIBO -DRPI3B
+CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard -D__DYNAMIC_REENT__ -D_POSIX_THREADS -DFD_SETSIZE=1024 -DULTIBO -DRPI3B
 FPC_FLAGS ?= -B -Tultibo -Parm -CpARMV7A -WpRPI3B @$(FPC_PATH)RPI3.CFG $(OPT_LEVEL) -dRPI3B $(PROJECT_NAME)
 TARGET_NAME ?= rpi3
 TOOLS_PREFIX ?= arm-none-eabi-
 else ifeq ($(strip $(BOARD_TYPE)),rpi4b)
-CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard -D__DYNAMIC_REENT__ -D_POSIX_THREADS -DULTIBO -DRPI4B
+CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard -D__DYNAMIC_REENT__ -D_POSIX_THREADS -DFD_SETSIZE=1024 -DULTIBO -DRPI4B
 FPC_FLAGS ?= -B -Tultibo -Parm -CpARMV7A -WpRPI4B @$(FPC_PATH)RPI4.CFG $(OPT_LEVEL) -dRPI4B $(PROJECT_NAME)
 TARGET_NAME ?= rpi4
 TOOLS_PREFIX ?= arm-none-eabi-
 else ifeq ($(strip $(BOARD_TYPE)),qemuvpb)
-CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard -D__DYNAMIC_REENT__ -D_POSIX_THREADS -DULTIBO -DQEMUVPB
+CC_FLAGS ?= --specs=nosys.specs $(OPT_LEVEL) -mabi=aapcs -marm -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard -D__DYNAMIC_REENT__ -D_POSIX_THREADS -DFD_SETSIZE=1024 -DULTIBO -DQEMUVPB
 FPC_FLAGS ?= -B -Tultibo -Parm -CpARMV7A -WpQEMUVPB @$(FPC_PATH)QEMUVPB.CFG $(OPT_LEVEL) -dQEMUVPB $(PROJECT_NAME)
 TARGET_NAME ?= qemuvpb
 TOOLS_PREFIX ?= arm-none-eabi-
