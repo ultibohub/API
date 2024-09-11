@@ -69,6 +69,7 @@ Located under the samples directory are a number of simple projects that show ho
 * Keyboard Input
 * Time Date
 * File Handling
+* Log Output
 
 * Blinktest
 
