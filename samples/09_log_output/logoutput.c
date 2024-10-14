@@ -28,6 +28,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include "ultibo/platform.h"
@@ -108,7 +109,7 @@ int apimain(int argc, char **argv)
     logging_output(value);
 
     /* Sleep for a random amount of time to mix up the output */
-    thread_sleep(random_read_longint(350));
+    thread_sleep(abs(random_read_longint(350)));
   }
 
   /* The logging output is handled by its own thread so even in this simple example

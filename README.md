@@ -70,6 +70,7 @@ Located under the samples directory are a number of simple projects that show ho
 * Time Date
 * File Handling
 * Log Output
+* Multi Threading
 
 * Blinktest
 
