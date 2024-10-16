@@ -71,6 +71,7 @@ Located under the samples directory are a number of simple projects that show ho
 * File Handling
 * Log Output
 * Multi Threading
+* Multi CPU
 
 * Blinktest
 
