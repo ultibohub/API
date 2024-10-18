@@ -1,0 +1,64 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"pthread.h": "c",
+			"stdio.h": "c",
+			"stdlib.h": "c",
+			"unistd.h": "c",
+			"framebuffer.h": "c",
+			"globalconst.h": "c",
+			"globaltypes.h": "c",
+			"platform.h": "c",
+			"serial.h": "c",
+			"threads.h": "c",
+			"logging.h": "c",
+			"mouse.h": "c",
+			"touch.h": "c",
+			"keyboard.h": "c",
+			"console.h": "c",
+			"gpio.h": "c",
+			"pwm.h": "c",
+			"i2c.h": "c",
+			"ultibo.h": "c",
+			"sysutils.h": "c",
+			"locale.h": "c",
+			"system.h": "c",
+			"time.h": "c",
+			"socket.h": "c",
+			"select.h": "c"
+		},
+		"makefile.configurations": [
+
+			{
+				"name": "Raspberry Pi A/B/A+/B+/CM",
+				"makeArgs": ["BOARD_TYPE=rpib", "BUILD_MODE=debug"]
+			},
+			{
+				"name": "Raspberry Pi 2B",
+				"makeArgs": ["BOARD_TYPE=rpi2b", "BUILD_MODE=debug"]
+			},
+			{
+				"name": "Raspberry Pi 3B/3B+/3A+/Zero2W/CM3",
+				"makeArgs": ["BOARD_TYPE=rpi3b", "BUILD_MODE=debug"]
+			},
+			{
+				"name": "Raspberry Pi 4B/400/CM4",
+				"makeArgs": ["BOARD_TYPE=rpi4b", "BUILD_MODE=debug"]
+			},
+			{
+				"name": "Raspberry Pi Zero/ZeroW",
+				"makeArgs": ["BOARD_TYPE=rpi0", "BUILD_MODE=debug"]
+			},
+			{
+				"name": "QEMU VersatilePB",
+				"makeArgs": ["BOARD_TYPE=qemuvpb", "BUILD_MODE=debug"]
+			}
+			]
+		"makefile.configureOnOpen": true,
+	}
+}
