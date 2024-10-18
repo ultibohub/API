@@ -73,6 +73,7 @@ Located under the samples directory are a number of simple projects that show ho
 * Multi Threading
 * Multi CPU
 * Serial Connection
+* GPIO Handling
 
 * Blinktest
 
