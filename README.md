@@ -76,6 +76,7 @@ Located under the samples directory are a number of simple projects that show ho
 * GPIO Handling
 * Mouse Cursor
 * Bouncing Boxes
+* PWM Control
 
 * Blinktest
 
