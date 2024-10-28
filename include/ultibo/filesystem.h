@@ -127,11 +127,35 @@ extern "C" {
 #define FIND_WILDCARD_NAME	"*.*"
 #define FIND_WILDCARD_STREAM	"*"
 
+/* File Seek origins */
+#define fsFromBeginning	0
+#define fsFromCurrent	1
+#define fsFromEnd	2
+
 /* File Mode constants */
+#define fmOpenRead	0x0000
+#define fmOpenWrite	0x0001
+#define fmOpenReadWrite	0x0002
+#define fmShareCompat	0x0000
+#define fmShareExclusive	0x0010
+#define fmShareDenyWrite	0x0020
+#define fmShareDenyRead	0x0030
+#define fmShareDenyNone	0x0040
+
 #define fmOpenMask	0x000F
 #define fmShareMask	0x00F0
 
 /* File Attribute constants */
+#define faReadOnly	0x00000001
+#define faHidden	0x00000002
+#define faSysFile	0x00000004
+#define faVolumeID	0x00000008
+#define faDirectory	0x00000010
+#define faArchive	0x00000020
+#define faSymLink	0x00000400
+#define faVirtual	0x00010000
+#define faAnyFile	0x000001FF
+
 #define faDot	0x01000000
 #define faDotDot	0x02000000
 #define faFile	0x04000000
@@ -151,7 +175,7 @@ extern "C" {
 #define faNormal	0x00000080
 #define faTemporary	0x00000100
 #define faSparse	0x00000200
-#define faReparse	0x00000400 // See also faSymLink in filutilh.inc (SysUtils)
+#define faReparse	0x00000400 // See also faSymLink
 #define faCompressed	0x00000800
 #define faOffline	0x00001000
 #define faNotIndexed	0x00002000
