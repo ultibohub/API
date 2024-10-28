@@ -78,6 +78,7 @@ Located under the samples directory are a number of simple projects that show ho
 * Bouncing Boxes
 * PWM Control
 * Sense Hat
+* PWM Sound
 
 * Blinktest
 
