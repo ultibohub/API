@@ -79,6 +79,7 @@ Located under the samples directory are a number of simple projects that show ho
 * PWM Control
 * Sense Hat
 * PWM Sound
+* Joystick Gamepad
 
 * Blinktest
 
