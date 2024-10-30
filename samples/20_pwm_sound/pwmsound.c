@@ -399,6 +399,9 @@ static uint32_t pwmsound_play_sample(PWM_DEVICE * pwm, void *data, uint32_t size
   /* Perform DMA transfer */
   dma_transfer(dma_data, DMA_DIR_MEM_TO_DEV, DMA_DREQ_ID_PWM);
   
+  /* Free DMA Data */
+  free(dma_data);
+  
   /* Free Output */
   dma_release_buffer(output);
 
