@@ -2,6 +2,14 @@
  *
  * Multi CPU example project for Ultibo API
  *
+ * Multi CPU is a fundamental part of the design of Ultibo. It does not need
+ * to be enabled and while you can change some configuration it is generally
+ * just there whenever the target board has more than one CPU.
+ *
+ * In this example we'll look at some of the multi CPU information available
+ * in Ultibo.
+ *
+ *
  * This file is part of the Ultibo project, https://ultibo.org/
  *
  * The MIT License (MIT)

@@ -2,6 +2,13 @@
  *
  * Keyboard Input example project for Ultibo API
  *
+ * Example 03 showed some of the screen output capabilities, now we want to
+ * read from a connected keyboard and print the typed characters on the screen.
+ *
+ * In this example we also begin to use the USB which is an important element
+ * to allow Raspberry Pi to communicate with other devices.
+ *
+ *
  * This file is part of the Ultibo project, https://ultibo.org/
  *
  * The MIT License (MIT)

@@ -2,6 +2,13 @@
  *
  * Time Date example project for Ultibo API
  *
+ * The Raspberry Pi has no real time clock built in to the board so the normal
+ * way to get the correct time is from an internet time server.
+ *
+ * In this example the network will be started and an IP address obtained from
+ * DHCP, once that has happened the time will be obtained via NTP.
+ *
+ *
  * This file is part of the Ultibo project, https://ultibo.org/
  *
  * The MIT License (MIT)

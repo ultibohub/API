@@ -2,6 +2,11 @@
  *
  * Log Output example project for Ultibo API
  *
+ * A simple example of how to output logging information to a console window.
+ *
+ * Ultibo supports logging to the console, a file, a UART or to the network.
+ *
+ *
  * This file is part of the Ultibo project, https://ultibo.org/
  *
  * The MIT License (MIT)

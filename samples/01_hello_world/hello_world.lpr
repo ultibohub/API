@@ -4,8 +4,6 @@ program hello_world;
 
 { Sample 01 Hello World                                                        }
 {                                                                              }
-{  Standard hello world example redone in C to demonstrate the Ultibo API.     }
-{                                                                              }
 {  The project simply calls a "main" function in the C/C++ project and passes  }
 {  all command line arguments to it. The main function can then do anything it }
 {  requires by calling Ultibo API functions, standard C library funtions or    }

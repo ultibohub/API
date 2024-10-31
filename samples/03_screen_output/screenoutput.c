@@ -2,6 +2,11 @@
  *
  * Screen Output example project for Ultibo API
  *
+ * This example builds on the previous ones by demonstrating some of the console
+ * functions available in Ultibo and how to use them to manipulate text on the
+ * screen.
+ *
+ *
  * This file is part of the Ultibo project, https://ultibo.org/
  *
  * The MIT License (MIT)

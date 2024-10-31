@@ -4,8 +4,6 @@ program keyboard_input;
 
 { Sample 04 Keyboard Input                                                     }
 {                                                                              }
-{  Reading from a connected keyboard and printing the characters on the screen }
-{                                                                              }
 {  The project simply calls a "main" function in the C/C++ project and passes  }
 {  all command line arguments to it. The main function can then do anything it }
 {  requires by calling Ultibo API functions, standard C library funtions or    }

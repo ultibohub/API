@@ -2,6 +2,14 @@
  *
  * File Handling example project for Ultibo API
  *
+ * This example demonstrates just a few basic functions of file handling which
+ * is a major topic in itself.
+ *
+ * The standard C functions are used here but there are many more included in
+ * the Ultibo RTL. For more information on all of the available file functions
+ * see the Ultibo Wiki.
+ *
+ *
  * This file is part of the Ultibo project, https://ultibo.org/
  *
  * The MIT License (MIT)

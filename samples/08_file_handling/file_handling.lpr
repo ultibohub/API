@@ -4,8 +4,6 @@ program file_handling;
 
 { Sample 08 File Handling                                                      }
 {                                                                              }
-{  Demonstrating a few basic functions of file and folder handling             }
-{                                                                              }
 {  The project simply calls a "main" function in the C/C++ project and passes  }
 {  all command line arguments to it. The main function can then do anything it }
 {  requires by calling Ultibo API functions, standard C library funtions or    }

@@ -1,6 +1,10 @@
 /*
  *
- * Hello World sample project for Ultibo API
+ * Hello World example project for Ultibo API
+ *
+ * This example provides the classic first example but takes a couple of extra
+ * lines to achieve the result using Ultibo.
+ *
  *
  * This file is part of the Ultibo project, https://ultibo.org/
  *

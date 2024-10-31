@@ -4,8 +4,6 @@ program screen_output;
 
 { Sample 03 Screen Output                                                      }
 {                                                                              }
-{  Demonstrating some of the console functions available in Ultibo             }
-{                                                                              }
 {  The project simply calls a "main" function in the C/C++ project and passes  }
 {  all command line arguments to it. The main function can then do anything it }
 {  requires by calling Ultibo API functions, standard C library funtions or    }

@@ -4,10 +4,6 @@ program log_output;
 
 { Sample 09 Log Output                                                         }
 {                                                                              }
-{  How to output logging information to a console window                       }
-{                                                                              }
-{  Ultibo supports logging to the console, a file, a UART or to the network    }
-{                                                                              }
 {  The project simply calls a "main" function in the C/C++ project and passes  }
 {  all command line arguments to it. The main function can then do anything it }
 {  requires by calling Ultibo API functions, standard C library funtions or    }

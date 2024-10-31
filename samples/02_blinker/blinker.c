@@ -2,6 +2,10 @@
  *
  * Blinker example project for Ultibo API
  *
+ * This example shows the standard starting point for bare metal programming
+ * by blinking the activity LED on and off repeatedly.
+ *
+ *
  * This file is part of the Ultibo project, https://ultibo.org/
  *
  * The MIT License (MIT)

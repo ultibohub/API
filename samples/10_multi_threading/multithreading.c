@@ -2,6 +2,21 @@
  *
  * Multi Threading example project for Ultibo API
  *
+ * Ultibo always supports multi threading, it is built in to the design and
+ * cannot be removed.
+ *
+ * You can create as many threads as you require to run your application and
+ * Ultibo will manage them in the background. If you need to be specific about
+ * where, when and how a thread runs you can also do that but most times you
+ * will probably just want your threads to behave as normal.
+ *
+ * Ultibo uses preemptive thread scheduling so threads can be interrupted at
+ * any time. The scheduler manages which thread gets to run next and for how
+ * long. You can set priority levels on threads so they run more often but,
+ * like any OS, you should be mindful to yield CPU time so that every thread
+ * gets a fair go.
+ *
+ *
  * This file is part of the Ultibo project, https://ultibo.org/
  *
  * The MIT License (MIT)
