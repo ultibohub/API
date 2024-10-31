@@ -83,3 +83,6 @@ Located under the samples directory are a number of simple projects that show ho
 
 * Blinktest
 
+### Advanced examples:
+
+* Dedicated CPU
