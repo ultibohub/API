@@ -32,4 +32,6 @@ OBJS = pwmcontrol.o
 
 PROJECT_NAME = pwm_control.lpr
 
-include ../../Rules.mk
+FPCOPT += -dUSE_WEBSTATUS -dUSE_SHELL
+
+include $(API_PATH)/Rules.mk

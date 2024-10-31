@@ -32,4 +32,6 @@ OBJS = mousecursor.o
 
 PROJECT_NAME = mouse_cursor.lpr
 
-include ../../Rules.mk
+FPCOPT += -dUSE_WEBSTATUS -dUSE_SHELL
+
+include $(API_PATH)/Rules.mk

@@ -32,4 +32,6 @@ OBJS = logoutput.o
 
 PROJECT_NAME = log_output.lpr
 
-include ../../Rules.mk
+FPCOPT += -dUSE_WEBSTATUS -dUSE_SHELL
+
+include $(API_PATH)/Rules.mk

@@ -32,4 +32,6 @@ OBJS = filehandling.o
 
 PROJECT_NAME = file_handling.lpr
 
-include ../../Rules.mk
+FPCOPT += -dUSE_WEBSTATUS -dUSE_SHELL
+
+include $(API_PATH)/Rules.mk

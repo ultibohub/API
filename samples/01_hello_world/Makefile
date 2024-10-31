@@ -32,4 +32,6 @@ OBJS = helloworld.o
 
 PROJECT_NAME = hello_world.lpr
 
-include ../../Rules.mk
+FPCOPT += -dUSE_WEBSTATUS -dUSE_SHELL
+
+include $(API_PATH)/Rules.mk

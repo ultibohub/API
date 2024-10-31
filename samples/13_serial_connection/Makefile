@@ -32,4 +32,6 @@ OBJS = serialconnection.o
 
 PROJECT_NAME = serial_connection.lpr
 
-include ../../Rules.mk
+FPCOPT += -dUSE_WEBSTATUS -dUSE_SHELL
+
+include $(API_PATH)/Rules.mk

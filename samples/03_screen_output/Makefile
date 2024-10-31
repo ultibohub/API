@@ -32,4 +32,6 @@ OBJS = screenoutput.o
 
 PROJECT_NAME = screen_output.lpr
 
-include ../../Rules.mk
+FPCOPT += -dUSE_WEBSTATUS -dUSE_SHELL
+
+include $(API_PATH)/Rules.mk

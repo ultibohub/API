@@ -32,4 +32,6 @@ OBJS = gpiohandling.o
 
 PROJECT_NAME = gpio_handling.lpr
 
-include ../../Rules.mk
+FPCOPT += -dUSE_WEBSTATUS -dUSE_SHELL
+
+include $(API_PATH)/Rules.mk

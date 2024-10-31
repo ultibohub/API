@@ -72,8 +72,8 @@
 int apimain(int argc, char **argv)
 {
   int count;
-  char pwm0_desc[256];
-  char pwm1_desc[256];
+  char pwm0_desc[DEVICE_DESC_LENGTH];
+  char pwm1_desc[DEVICE_DESC_LENGTH];
 
   WINDOW_HANDLE handle;
 

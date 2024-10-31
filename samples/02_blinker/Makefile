@@ -32,4 +32,6 @@ OBJS = blinker.o
 
 PROJECT_NAME = blinkerproject.lpr
 
-include ../../Rules.mk
+FPCOPT += -dUSE_WEBSTATUS -dUSE_SHELL
+
+include $(API_PATH)/Rules.mk

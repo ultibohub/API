@@ -32,4 +32,6 @@ OBJS = keyboardinput.o
 
 PROJECT_NAME = keyboard_input.lpr
 
-include ../../Rules.mk
+FPCOPT += -dUSE_WEBSTATUS -dUSE_SHELL
+
+include $(API_PATH)/Rules.mk

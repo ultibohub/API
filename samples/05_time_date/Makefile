@@ -34,4 +34,6 @@ PROJECT_NAME = time_date.lpr
 
 CFLAGS += -D_USE_LONG_TIME_T
 
-include ../../Rules.mk
+FPCOPT += -dUSE_WEBSTATUS -dUSE_SHELL
+
+include $(API_PATH)/Rules.mk

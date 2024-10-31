@@ -55,6 +55,13 @@ uses
  GlobalConfig,
  Platform,
  Threads,
+ {$IFDEF USE_SHELL}
+ RemoteShell,      {Include the Shell units for Telnet command line access}
+ ShellUSB,
+ ShellUpdate,
+ ShellNetwork,
+ ShellFileSystem,
+ {$ENDIF}
  Syscalls,         {Include the Syscalls unit for standard C library support}
  UltiboUtils,
  HTTP,             {Include HTTP and WebStatus so we can see from a web browser what is happening}

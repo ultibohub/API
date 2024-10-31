@@ -59,10 +59,10 @@ uses
   Threads,
   {$IFDEF USE_WEBSTATUS}
   HTTP,             {Include the HTTP unit for the server classes}
-  WebStatus,
+  WebStatus,        {Include Web Status for browser access to Ultibo information}
   {$ENDIF}
   {$IFDEF USE_SHELL}
-  RemoteShell,
+  RemoteShell,      {Include the Shell units for Telnet command line access}
   ShellUSB,
   ShellUpdate,
   ShellNetwork,
@@ -89,6 +89,7 @@ var
 
 begin
   {$IFDEF USE_WEBSTATUS}
+  {Create the HTTP Listener and register the web status pages}
   HTTPListener := THTTPListener.Create;
   HTTPListener.Active := True;
   WebStatusRegister(HTTPListener, '', '', True);

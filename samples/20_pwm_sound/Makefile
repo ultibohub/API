@@ -32,4 +32,6 @@ OBJS = pwmsound.o
 
 PROJECT_NAME = pwm_sound.lpr
 
-include ../../Rules.mk
+FPCOPT += -dUSE_WEBSTATUS -dUSE_SHELL
+
+include $(API_PATH)/Rules.mk

@@ -32,4 +32,6 @@ OBJS = bouncingboxes.o
 
 PROJECT_NAME = bouncing_boxes.lpr
 
-include ../../Rules.mk
+FPCOPT += -dUSE_WEBSTATUS -dUSE_SHELL
+
+include $(API_PATH)/Rules.mk

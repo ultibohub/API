@@ -32,4 +32,6 @@ OBJS = dedicatedcpu.o dedicatedthread.o
 
 PROJECT_NAME = dedicated_cpu.lpr
 
-include ../../../Rules.mk
+FPCOPT += -dUSE_SHELL
+
+include $(API_PATH)/Rules.mk

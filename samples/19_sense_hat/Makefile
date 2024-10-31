@@ -32,4 +32,6 @@ OBJS = sensehat.o
 
 PROJECT_NAME = sense_hat.lpr
 
-include ../../Rules.mk
+FPCOPT += -dUSE_WEBSTATUS -dUSE_SHELL
+
+include $(API_PATH)/Rules.mk

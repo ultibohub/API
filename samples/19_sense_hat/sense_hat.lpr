@@ -54,6 +54,17 @@ uses
  GlobalConfig,
  Platform,
  Threads,
+ {$IFDEF USE_WEBSTATUS}
+ HTTP,             {Include the HTTP unit for the server classes}
+ WebStatus,        {Include Web Status for browser access to Ultibo information}
+ {$ENDIF}
+ {$IFDEF USE_SHELL}
+ RemoteShell,      {Include the Shell units for Telnet command line access}
+ ShellUSB,
+ ShellUpdate,
+ ShellNetwork,
+ ShellFileSystem,
+ {$ENDIF}
  Syscalls,         {Include the Syscalls unit for standard C library support}
  UltiboUtils,
  Latin1_8x8,       {Use the Latin1 8x8 font which is the right size for the LED matrix}
@@ -71,7 +82,18 @@ var
  argc:int;
  argv:PPChar;
 
+ {$IFDEF USE_WEBSTATUS}
+ HTTPListener: THTTPListener;
+ {$ENDIF}
+
 begin
+ {$IFDEF USE_WEBSTATUS}
+ {Create the HTTP Listener and register the web status pages}
+ HTTPListener := THTTPListener.Create;
+ HTTPListener.Active := True;
+ WebStatusRegister(HTTPListener, '', '', True);
+ {$ENDIF}
+
  {Allocate the command line arguments}
  argv:=AllocateCommandLine(SystemGetCommandLine,argc);
 
