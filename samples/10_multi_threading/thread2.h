@@ -11,4 +11,8 @@ extern "C" {
  */ 
 void * thread2_execute(void * args);
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif // _THREAD2_H

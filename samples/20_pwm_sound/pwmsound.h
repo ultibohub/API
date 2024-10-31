@@ -246,4 +246,8 @@ struct _BCM283X_PWM_REGISTERS
 BOOL STDCALL bcm27xx_pwm_clock_enabled(PWM_DEVICE *pwm);
 uint32_t STDCALL bcm27xx_pwm_clock_stop(PWM_DEVICE *pwm);
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif // _PWMSOUND_H

@@ -13,4 +13,8 @@ extern "C" {
  */ 
 ssize_t STDCALL thread1_execute(void * parameter);
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif // _THREAD1_H
