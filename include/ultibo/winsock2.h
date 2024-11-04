@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2024 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -59,7 +59,9 @@ extern "C" {
 /* Winsock2 specific constants */
 #define WINSOCK_VERSION	0x0202
 
+#ifndef FD_SETSIZE
 #define FD_SETSIZE	64
+#endif
 
 #define IOCPARM_MASK	0x7f
 #define IOC_VOID	0x20000000
@@ -865,7 +867,7 @@ typedef struct _sockaddr
 	char    sa_data[14];  // up to 14 bytes of direct address
 } sockaddr;
 
-typedef struct sockaddr SOCKADDR;
+typedef sockaddr SOCKADDR;
 
 /*  Structure used by kernel to pass protocol information in raw sockets.  */
 typedef struct _sockproto
