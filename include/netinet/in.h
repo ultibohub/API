@@ -104,8 +104,8 @@ struct sockaddr_in {
 #define	INET_ADDRSTRLEN		16
 #endif
 
-#define __BSD_VISIBLE 1
-#if __BSD_VISIBLE
+/* #define __BSD_VISIBLE 1 */
+/* #if __BSD_VISIBLE */
 /*
  * Constants and structures defined by the internet system,
  * Per RFC 790, September 1981, and numerous additions.
@@ -543,7 +543,7 @@ struct ip_mreq {
 	{ "fastforwarding", CTLTYPE_INT }, \
 }
 
-#endif /* __BSD_VISIBLE */
+/* #endif */ /* __BSD_VISIBLE */
 
 #ifdef _KERNEL
 

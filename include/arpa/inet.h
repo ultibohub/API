@@ -89,10 +89,12 @@ typedef	uint16_t	in_port_t;
 #endif
 
 #ifndef _POSIX_SOURCE
+#if __BSD_VISIBLE
 #ifdef	_BSD_SIZE_T_
 typedef	_BSD_SIZE_T_	size_t;
 #undef	_BSD_SIZE_T_
 #endif
+#endif /* __BSD_VISIBLE */
 #endif /* !_POSIX_SOURCE */
 
 /*
