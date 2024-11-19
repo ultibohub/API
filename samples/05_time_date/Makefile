@@ -32,7 +32,8 @@ OBJS = timedate.o
 
 PROJECT_NAME = time_date.lpr
 
-CFLAGS += -D_USE_LONG_TIME_T
+# Uncomment this line for compatibility with older GCC and Newlib versions
+# CFLAGS += -D_USE_LONG_TIME_T
 
 FPCOPT += -dUSE_WEBSTATUS -dUSE_SHELL
 

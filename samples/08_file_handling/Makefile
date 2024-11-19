@@ -32,6 +32,9 @@ OBJS = filehandling.o
 
 PROJECT_NAME = file_handling.lpr
 
+# Uncomment this line for compatibility with older GCC and Newlib versions
+# CFLAGS += -D_USE_LONG_TIME_T
+
 FPCOPT += -dUSE_WEBSTATUS -dUSE_SHELL
 
 include $(API_PATH)/Rules.mk
