@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2024 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -976,23 +976,23 @@ BOOL STDCALL SetCurrentDrive(char *drive);
 HANDLE STDCALL FileOpen(char *filename, int mode);
 HANDLE STDCALL FileCreate(char *filename);
 BOOL STDCALL DeleteFile(char *filename);
-void STDCALL FileClose(int handle);
+void STDCALL FileClose(HANDLE handle);
 BOOL STDCALL RenameFile(char *oldname, char *newname);
 int32_t STDCALL FileSeek(HANDLE handle, int32_t offset, int32_t origin);
-BOOL STDCALL FileFlush(int handle);
-BOOL STDCALL FileTruncate(int handle);
+BOOL STDCALL FileFlush(HANDLE handle);
+BOOL STDCALL FileTruncate(HANDLE handle);
 BOOL STDCALL SetEndOfFile(HANDLE handle);
 
-BOOL STDCALL EndOfFile(int handle);
+BOOL STDCALL EndOfFile(HANDLE handle);
 int32_t STDCALL FilePos(HANDLE handle);
 int32_t STDCALL FileSize(HANDLE handle);
 
 int STDCALL FileAge(char *filename);
 BOOL STDCALL FileExists(char *filename);
 int STDCALL FileGetAttr(char *filename);
-int STDCALL FileGetDate(int handle);
+int STDCALL FileGetDate(HANDLE handle);
 int STDCALL FileSetAttr(char *filename, int attr);
-int STDCALL FileSetDate(int handle, int age);
+int STDCALL FileSetDate(HANDLE handle, int age);
 
 int32_t STDCALL FileRead(HANDLE handle, void *buffer, int32_t count);
 int32_t STDCALL FileWrite(HANDLE handle, void *buffer, int32_t count);
@@ -1020,16 +1020,16 @@ uint32_t STDCALL GetTrueName(char *filename, char *truename, uint32_t len);
 /* Extended Functions */
 int64_t STDCALL FileSeekEx(HANDLE handle, int64_t offset, int32_t origin);
 
-BOOL STDCALL EndOfFileEx(int handle);
+BOOL STDCALL EndOfFileEx(HANDLE handle);
 int64_t STDCALL FilePosEx(HANDLE handle);
 int64_t STDCALL FileSizeEx(HANDLE handle);
 
 FILETIME STDCALL FileAgeEx(char *filename);
 
-int STDCALL FileGetAttrEx(int handle);
+int STDCALL FileGetAttrEx(HANDLE handle);
 
-FILETIME STDCALL FileGetDateEx(int handle);
-int STDCALL FileSetDateEx(int handle, FILETIME age);
+FILETIME STDCALL FileGetDateEx(HANDLE handle);
+int STDCALL FileSetDateEx(HANDLE handle, FILETIME age);
 
 BOOL STDCALL GetFileTime(HANDLE handle, FILETIME *createtime, FILETIME *accesstime, FILETIME *writetime);
 BOOL STDCALL SetFileTime(HANDLE handle, FILETIME *createtime, FILETIME *accesstime, FILETIME *writetime);
