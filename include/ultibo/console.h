@@ -30,8 +30,6 @@
 extern "C" {
 #endif
 
-#include <stdio.h> 
-
 #include "ultibo/globaltypes.h"
 #include "ultibo/globalconst.h"
 #include "ultibo/devices.h"
@@ -629,35 +627,7 @@ uint32_t STDCALL console_window_read_ln_ex(WINDOW_HANDLE handle, char *text, uin
 uint32_t STDCALL console_window_read_chr(WINDOW_HANDLE handle, char *ch);
 uint32_t STDCALL console_window_read_chr_ex(WINDOW_HANDLE handle, char *ch, char *prompt, uint32_t x, uint32_t y, uint32_t forecolor, uint32_t backcolor, BOOL echo, BOOL scroll);
 
-#if !defined(__GNU_VISIBLE) || __GNU_VISIBLE == 0
-/* These are only available in stdio.h if __GNU_VISIBLE is defined as 1 (see features.h) */
-int asprintf(char **__restrict, const char *__restrict, ...) _ATTRIBUTE ((__format__ (__printf__, 2, 3)));
-int vasprintf(char **, const char *, __VALIST) _ATTRIBUTE ((__format__ (__printf__, 2, 0)));
-#endif 
-
-int STDCALL console_window_printf(WINDOW_HANDLE handle, char *format, ...)
-{
-    int res = -1;
-    char *str;
-    va_list args;
-
-    va_start(args, format);
-
-    // Use vasprintf() to print to an allocated string
-    res = vasprintf(&str, format, args);
-    if (res >= 0)
-    {
-        // Write the string to the console
-        if (console_window_write(handle, str) != ERROR_SUCCESS)
-            res = -1;
-
-        // Free the string allocated by vasprintf()
-        free(str);
-    }
-    va_end(args);
-
-    return res;
-}
+int STDCALL console_window_printf(WINDOW_HANDLE handle, char *format, ...);
 
 /* ============================================================================== */
 /* CRT Console Functions */
@@ -691,6 +661,8 @@ void STDCALL console_read(char *text, uint32_t *len);
 void STDCALL console_read_ln(char *text, uint32_t *len);
 void STDCALL console_read_chr(char *ch);
 
+int STDCALL console_printf(char *format, ...);
+
 /* ============================================================================== */
 /* Console Helper Functions */
 uint32_t STDCALL console_device_get_count(void);
@@ -722,37 +694,6 @@ uint32_t STDCALL console_window_mode_to_string(uint32_t windowmode, char *value,
 FONT_HANDLE STDCALL console_window_get_default_font(void);
 
 BOOL STDCALL console_window_redirect_output(WINDOW_HANDLE handle);
-
-/* ============================================================================== */
-/* Extended Console Functions */
-int STDCALL console_printf(char *format, ...)
-{
-    int res = -1;
-    char *str;
-    va_list args;
-    WINDOW_HANDLE handle;
-
-    handle = console_window_get_default(console_device_get_default());
-    if (handle == INVALID_HANDLE_VALUE)
-        return res;    
-
-    va_start(args, format);
-
-    // Use vasprintf() to print to an allocated string
-    res = vasprintf(&str, format, args);
-    if (res >= 0)
-    {
-        // Write the string to the console
-        if (console_window_write(handle, str) != ERROR_SUCCESS)
-            res = -1;
-
-        // Free the string allocated by vasprintf()
-        free(str);
-    }
-    va_end(args);
-
-    return res;
-}
 
 #ifdef __cplusplus
 }
