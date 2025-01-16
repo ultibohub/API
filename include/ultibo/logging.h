@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include <stdio.h> 
 
 #include "ultibo/globaltypes.h"
 #include "ultibo/globalconst.h"
@@ -148,6 +150,36 @@ LOGGING_DEVICE * STDCALL logging_device_find_by_description(char *description);
 uint32_t STDCALL logging_device_enumerate(logging_enumerate_cb callback, void *data);
 
 uint32_t STDCALL logging_device_notification(LOGGING_DEVICE *logging, logging_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
+
+#if !defined(__GNU_VISIBLE) || __GNU_VISIBLE == 0
+/* These are only available in stdio.h if __GNU_VISIBLE is defined as 1 (see features.h) */
+int asprintf(char **__restrict, const char *__restrict, ...) _ATTRIBUTE ((__format__ (__printf__, 2, 3)));
+int vasprintf(char **, const char *, __VALIST) _ATTRIBUTE ((__format__ (__printf__, 2, 0)));
+#endif 
+
+int STDCALL logging_device_outputf(LOGGING_DEVICE *logging, char *format, ...)
+{
+    int res = -1;
+    char *str;
+    va_list args;
+
+    va_start(args, format);
+
+    // Use vasprintf() to print to an allocated string
+    res = vasprintf(&str, format, args);
+    if (res >= 0)
+    {
+        // Output the string to the log
+        if (logging_device_output(logging, str) != ERROR_SUCCESS)
+            res = -1;
+
+        // Free the string allocated by vasprintf()
+        free(str);
+    }
+    va_end(args);
+
+    return res;
+}
 
 /* ============================================================================== */
 /* Logging Helper Functions */

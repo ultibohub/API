@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2024 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include <stdio.h> 
 
 #include "ultibo/globaltypes.h"
 #include "ultibo/globalconst.h"
@@ -985,6 +987,35 @@ size_t STDCALL symbol_get_address(HANDLE handle, char *name);
 /* Logging Functions */
 void STDCALL logging_output(char *text);
 void STDCALL logging_output_ex(uint32_t facility, uint32_t severity, char *tag, char *content);
+
+#if !defined(__GNU_VISIBLE) || __GNU_VISIBLE == 0
+/* These are only available in stdio.h if __GNU_VISIBLE is defined as 1 (see features.h) */
+int asprintf(char **__restrict, const char *__restrict, ...) _ATTRIBUTE ((__format__ (__printf__, 2, 3)));
+int vasprintf(char **, const char *, __VALIST) _ATTRIBUTE ((__format__ (__printf__, 2, 0)));
+#endif 
+
+int STDCALL logging_outputf(char *format, ...)
+{
+    int res = -1;
+    char *str;
+    va_list args;
+
+    va_start(args, format);
+
+    // Use vasprintf() to print to an allocated string
+    res = vasprintf(&str, format, args);
+    if (res >= 0)
+    {
+        // Output the string to the log
+        logging_output(str);
+
+        // Free the string allocated by vasprintf()
+        free(str);
+    }
+    va_end(args);
+
+    return res;
+}
 
 /* ============================================================================== */
 /* Environment Functions */
