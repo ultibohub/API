@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1014,6 +1014,10 @@ BOOL STDCALL CreateSymbolicLinkA(char *lpsymlinkfilename, char *lptargetfilename
 BOOL STDCALL CreateSymbolicLinkW(WCHAR *lpsymlinkfilename, WCHAR *lptargetfilename, uint32_t dwflags);
 
 BOOL STDCALL GetFileInformationByHandle(HANDLE hfile, BY_HANDLE_FILE_INFORMATION *lpfileinformation);
+
+uint32_t STDCALL GetFinalPathNameByHandle(HANDLE hfile, char *lpszFilePath, uint32_t cchFilePath, uint32_t dwFlags);
+uint32_t STDCALL GetFinalPathNameByHandleA(HANDLE hfile, char *lpszFilePath, uint32_t cchFilePath, uint32_t dwFlags);
+uint32_t STDCALL GetFinalPathNameByHandleW(HANDLE hfile, WCHAR *lpszFilePath, uint32_t cchFilePath, uint32_t dwFlags);
 
 /* ============================================================================== */
 /* File Functions (Ultibo) */

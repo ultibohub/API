@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2024 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1074,6 +1074,7 @@ uint32_t STDCALL SetFilePointer(HANDLE hfile, long ldistancetomove, long *lpdist
 BOOL STDCALL SetFilePointerEx(HANDLE hfile, LARGE_INTEGER lidistancetomove, LARGE_INTEGER *lpnewfilepointer, uint32_t dwmovemethod);
 BOOL STDCALL WriteFile(HANDLE hfile, void *lpbuffer, uint32_t nnumberofbytestowrite, DWORD *lpnumberofbyteswritten, OVERLAPPED *lpoverlapped);
 uint32_t STDCALL GetLongPathName(char *lpszshortpath, char *lpszlongpath, uint32_t cchbuffer);
+uint32_t STDCALL GetFinalPathNameByHandle(HANDLE hfile, char *lpszFilePath, uint32_t cchFilePath, uint32_t dwFlags);
 
 BOOL STDCALL SetFileShortName(HANDLE hfile, char *lpshortname);
 BOOL STDCALL CreateHardLink(char *lpfilename, char *lpexistingfilename, SECURITY_ATTRIBUTES *lpsecurityattributes);
