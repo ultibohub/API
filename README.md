@@ -4,7 +4,7 @@ Ultibo core API for C and C++
 
 ### Supported interfaces:
 
-The includes directory contains header files for interfaces to the following Ultibo APIs
+The includes folder contains header files for interfaces to the following Ultibo APIs
 
 * ultibo/console.h - Text console device interfaces, windowing and output
 * ultibo/devices.h - Base device interface and common devices such as clock, timer and random
@@ -55,13 +55,34 @@ In addition to the Ultibo interface headers a small number of headers that expos
 * arpa/inet.h - Definitions for internet operations
 * netinet/in.h - Internet address family definitions
 * netinet6/in6.h - IPv6 address family definitions
+* sys/_iovec.h - Vector I/O data structure
+* sys/_pthreadtypes.h - Structure definitions for pthreads (Redefined)
+* sys/cpuset.h - Definitions for manipulating CPU sets
 * sys/dirent.h - Directory entry definition and access
 * sys/socket.h - Internet protocol sockets interface
+* sys/stat.h - File information definitions (Redefined)
 * sys/statfs.h - Filesystem statistics definitions
+* sys/statvfs.h - Filesystem statistics definitions
+* sys/uio.h - Definitions for vector I/O operations
+
+### Additional functions:
+
+The src folder contains C sources for some additional functions not relevant to the standard Ultibo run time
+
+These modules don't need to be added to your project Makefile, precompiled versions are already included in the Ultibo run time. 
+
+To use these functions simply include the appropriate header in your source and the linker will find the precompiled object files when compiling.
+
+* console/consoleprintf.c - Implementation of console_printf() for ultibo/console.h
+* console/consolewindowprintf.c - Implementation of console_window_printf() for ultibo/console.h
+* platform/loggingoutputf.c - Implementation of logging_outputf() for ultibo/platform.h
+* logging/loggingdeviceoutputf.c - Implementation of logging_device_outputf() for ultibo/logging.h
+* platform/serialprintf.c - Implementation of serial_printf() for ultibo/platform.h
+* serial/serialdeviceprintf.c - Implementation of serial_device_printf() for ultibo/serial.h
 
 ### Example projects:
 
-Located under the samples directory are a number of simple projects that show how to use the API
+Located under the samples folder are a number of simple projects that show how to use the API
 
 * Hello World
 * Blinker

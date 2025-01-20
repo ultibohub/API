@@ -39,6 +39,7 @@
 
 #include <sys/types.h>
 #include <sys/_types.h>
+#include <sys/_iovec.h>
 #include <netinet/in.h>
 #include <netdb.h>
 

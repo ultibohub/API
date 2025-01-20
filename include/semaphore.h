@@ -43,16 +43,17 @@ typedef	__uint32_t	sem_t;
 #define	SEM_FAILED	((sem_t *)0)
 
 __BEGIN_DECLS
-int	 sem_close(sem_t *);
-int	 sem_destroy(sem_t *);
-int	 sem_getvalue(sem_t * __restrict, int * __restrict);
-int	 sem_init(sem_t *, int, unsigned int);
-sem_t	*sem_open(const char *, int, ...);
-int	 sem_post(sem_t *);
-int	 sem_timedwait(sem_t * __restrict, const struct timespec * __restrict);
-int	 sem_trywait(sem_t *);
-int	 sem_unlink(const char *);
-int	 sem_wait(sem_t *);
+int sem_close(sem_t *sem);
+int sem_destroy(sem_t *sem);
+int sem_getvalue(sem_t *restrict sem, int *restrict sval);
+int sem_init(sem_t *sem, int pshared, unsigned int value);
+sem_t *sem_open(const char *name, int oflag);
+sem_t *sem_open_ext(const char *name, int oflag, mode_t mode, unsigned int value);
+int sem_post(sem_t *sem);
+int sem_timedwait(sem_t *restrict sem, const struct timespec *restrict abstime);
+int sem_trywait(sem_t *sem);
+int sem_unlink(const char *name);
+int sem_wait(sem_t *sem);
 __END_DECLS
 
 #endif /* !_SEMAPHORE_H_ */

@@ -1029,6 +1029,46 @@ void STDCALL millisecond_delay_ex(uint32_t milliseconds, BOOL wait);
 uint32_t get_tick_count(void);
 uint64_t get_tick_count64(void);
 
+/* ============================================================================== */
+/* LIBC Functions (From stdlib.h) */
+int posix_memalign(void **memptr, size_t alignment, size_t size);
+char *realpath(const char *__restrict path, char *__restrict resolved_path);
+int getpagesize(void);
+
+/* ============================================================================== */
+/* LIBC Functions (From unistd.h) */
+int dup3(int oldfd, int newfd, int flags);
+int getentropy(void *buffer, size_t length);
+int usleep(useconds_t useconds);
+int symlink(const char *path1, const char *path2);
+
+int ftruncate(int fd, off_t length);
+int truncate(const char *path, off_t length);
+
+int fdatasync(int fd);
+
+/* ============================================================================== */
+/* LIBC Functions (From sys/mman.h) */
+void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
+int munmap(void *addr, size_t length);
+
+/* ============================================================================== */
+/* LIBC Functions (From sys/time.h) */
+int settimeofday(const struct timeval *tv, const struct timezone *tz);
+
+/* ============================================================================== */
+/* LIBC Functions (From sched.h) */
+int sched_getcpu(void);
+#ifdef _SYS_CPUSET_H_
+int sched_setaffinity(pid_t pid, size_t cpusetsize, cpu_set_t *mask);
+int sched_getaffinity(pid_t pid, size_t cpusetsize, cpu_set_t *mask);
+#endif /* _SYS_CPUSET_H_ */
+
+/* ============================================================================== */
+/* LIBC Functions (Non Standard) */
+void msleep(unsigned int msecs);
+pid_t gettid(void);
+
 #ifdef __cplusplus
 }
 #endif

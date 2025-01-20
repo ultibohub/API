@@ -1,7 +1,11 @@
-/*
- * Copyright (c) 1983, 1993
- *	The Regents of the University of California.  All rights reserved.
+/*-
+ * SPDX-License-Identifier: (BSD-3-Clause AND ISC)
  *
+ * ++Copyright++ 1983, 1993
+ * -
+ * Copyright (c) 1983, 1993
+ *    The Regents of the University of California.  All rights reserved.
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -10,14 +14,10 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,7 +31,7 @@
  * SUCH DAMAGE.
  * -
  * Portions Copyright (c) 1993 by Digital Equipment Corporation.
- *
+ * 
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
  * copyright notice and this permission notice appear in all copies, and that
@@ -47,20 +47,23 @@
  * PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
  * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
  * SOFTWARE.
- *
+ * -
+ * --Copyright--
+ */
+
+/*%
  *	@(#)inet.h	8.1 (Berkeley) 6/2/93
- *	From: Id: inet.h,v 8.5 1997/01/29 08:48:09 vixie Exp $
- * $FreeBSD: src/include/arpa/inet.h,v 1.22 2002/04/10 10:51:53 mike Exp $
+ *	$Id: inet.h,v 1.3 2005/04/27 04:56:16 sra Exp $
+ * $FreeBSD$
  */
 
 #ifndef _ARPA_INET_H_
 #define	_ARPA_INET_H_
 
-/* External definitions for functions in inet(3), addr2ascii(3) */
+/* External definitions for functions in inet(3). */
 
 #include <sys/cdefs.h>
-#include <sys/types.h>
-#include <machine/ansi.h>
+#include <sys/_types.h>
 
 /* Required for byteorder(3) functions. */
 #include <machine/endian.h>
@@ -78,39 +81,30 @@ typedef	__uint32_t	uint32_t;
 #define	_UINT32_T_DECLARED
 #endif
 
-#ifndef	_IN_ADDR_T_DECLARED
+#ifndef _IN_ADDR_T_DECLARED
 typedef	uint32_t	in_addr_t;
 #define	_IN_ADDR_T_DECLARED
 #endif
 
-#ifndef	_IN_PORT_T_DECLARED
+#ifndef _IN_PORT_T_DECLARED
 typedef	uint16_t	in_port_t;
 #define	_IN_PORT_T_DECLARED
 #endif
 
-#ifndef _POSIX_SOURCE
 #if __BSD_VISIBLE
-#ifdef	_BSD_SIZE_T_
-typedef	_BSD_SIZE_T_	size_t;
-#undef	_BSD_SIZE_T_
+#ifndef _SIZE_T_DECLARED
+typedef	__size_t	size_t;
+#define	_SIZE_T_DECLARED
 #endif
-#endif /* __BSD_VISIBLE */
-#endif /* !_POSIX_SOURCE */
+#endif
 
 /*
  * XXX socklen_t is used by a POSIX.1-2001 interface, but not required by
  * POSIX.1-2001.
  */
-
-
-#ifndef __socklen_t_defined
-typedef unsigned int socklen_t;
-#define __socklen_t_defined 1
-#endif
-
-#ifdef	_BSD_SOCKLEN_T_
-typedef	_BSD_SOCKLEN_T_	socklen_t;
-#undef	_BSD_SOCKLEN_T_
+#ifndef _SOCKLEN_T_DECLARED
+typedef	__socklen_t	socklen_t;
+#define	_SOCKLEN_T_DECLARED
 #endif
 
 #ifndef _STRUCT_IN_ADDR_DECLARED
@@ -120,30 +114,23 @@ struct in_addr {
 #define	_STRUCT_IN_ADDR_DECLARED
 #endif
 
-#define	inet_addr	__inet_addr
-#define	inet_aton	__inet_aton
-#define	inet_lnaof	__inet_lnaof
-#define	inet_makeaddr	__inet_makeaddr
-#define	inet_neta	__inet_neta
-#define	inet_netof	__inet_netof
-#define	inet_network	__inet_network
-#define	inet_net_ntop	__inet_net_ntop
-#define	inet_net_pton	__inet_net_pton
-#define	inet_ntoa	__inet_ntoa
-#define	inet_pton	__inet_pton
-#define	inet_ntop	__inet_ntop
-#define	inet_nsap_addr	__inet_nsap_addr
-#define	inet_nsap_ntoa	__inet_nsap_ntoa
-
 __BEGIN_DECLS
-in_addr_t	 inet_addr(const char *);
-char		*inet_ntoa(struct in_addr);
-const char	*inet_ntop(int, const void *, char *, socklen_t);
-int		 inet_pton(int, const char *, void *);
+#ifndef _BYTEORDER_PROTOTYPED
+#define	_BYTEORDER_PROTOTYPED
+uint32_t	 htonl(uint32_t);
+uint16_t	 htons(uint16_t);
+uint32_t	 ntohl(uint32_t);
+uint16_t	 ntohs(uint16_t);
+#endif
 
-int		 ascii2addr(int, const char *, void *);
-char		*addr2ascii(int, const void *, int, char *);
+in_addr_t	 inet_addr(const char *);
+char	*inet_ntoa(struct in_addr);
 int		 inet_aton(const char *, struct in_addr *);
+const char	*inet_ntop(int, const void * __restrict, char * __restrict,
+		    socklen_t);
+int		 inet_pton(int, const char * __restrict, void * __restrict);
+
+#if __BSD_VISIBLE
 in_addr_t	 inet_lnaof(struct in_addr);
 struct in_addr	 inet_makeaddr(in_addr_t, in_addr_t);
 char *		 inet_neta(in_addr_t, char *, size_t);
@@ -151,12 +138,12 @@ in_addr_t	 inet_netof(struct in_addr);
 in_addr_t	 inet_network(const char *);
 char		*inet_net_ntop(int, const void *, int, char *, size_t);
 int		 inet_net_pton(int, const char *, void *, size_t);
+char		*inet_ntoa_r(struct in_addr, char *buf, socklen_t size);
+char		*inet_cidr_ntop(int, const void *, int, char *, size_t);
+int		 inet_cidr_pton(int, const char *, void *, int *);
 unsigned	 inet_nsap_addr(const char *, unsigned char *, int);
 char		*inet_nsap_ntoa(int, const unsigned char *, char *);
-uint32_t	 htonl(uint32_t hostlong);
-uint16_t	 htons(uint16_t hostshort);
-uint32_t	 ntohl(uint32_t netlong);
-uint16_t	 ntohs(uint16_t netshort);
+#endif /* __BSD_VISIBLE */
 __END_DECLS
 
 #endif /* !_ARPA_INET_H_ */

@@ -10,7 +10,7 @@ extern "C" {
 
 struct dirent
   {
-#ifndef __USE_FILE_OFFSET64
+#ifndef _FILE_OFFSET64
     ino_t d_ino;
     off_t d_off;
 #else
@@ -22,7 +22,17 @@ struct dirent
     char d_name[256];		/* We must not include limits.h! */
   };
 
-#ifdef __USE_LARGEFILE64
+#ifdef __LARGE64_FILES
+
+/* Definitions missing from sys/types.h */
+#ifndef __machine_ino64_t_defined
+typedef unsigned long long ino64_t;
+#endif
+
+#ifndef __machine_off64_t_defined
+typedef long long off64_t;
+#endif
+
 struct dirent64
   {
     ino64_t d_ino;
@@ -90,7 +100,7 @@ int readdir_r(DIR *__restrict, struct dirent *__restrict,
 void rewinddir(DIR *);
 int closedir(DIR *);
 
-#ifdef __USE_LARGEFILE64
+#ifdef __LARGE64_FILES
 struct dirent64 *readdir64 (DIR *);
 int readdir64_r (DIR *__restrict, struct dirent64 *__restrict,
 			struct dirent64 **__restrict);
