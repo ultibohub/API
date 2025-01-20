@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -237,6 +237,8 @@ SERIAL_DEVICE * STDCALL serial_device_find_by_description(char *description);
 uint32_t STDCALL serial_device_enumerate(serial_enumerate_cb callback, void *data);
 
 uint32_t STDCALL serial_device_notification(SERIAL_DEVICE *serial, serial_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
+
+int STDCALL serial_device_printf(SERIAL_DEVICE *serial, char *format, ...);
 
 /* ============================================================================== */
 /* Serial Helper Functions */

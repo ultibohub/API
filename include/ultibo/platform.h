@@ -822,6 +822,8 @@ uint32_t STDCALL serial_close(void);
 uint32_t STDCALL serial_read(void *buffer, uint32_t size, uint32_t *count);
 uint32_t STDCALL serial_write(void *buffer, uint32_t size, uint32_t *count);
 
+int STDCALL serial_printf(char *format, ...);
+
 /* ============================================================================== */
 /* Peripheral Functions */
 size_t STDCALL peripheral_get_base(void);
