@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -384,8 +384,8 @@ uint32_t STDCALL joystick_device_register(JOYSTICK_DEVICE *joystick);
 uint32_t STDCALL joystick_device_deregister(JOYSTICK_DEVICE *joystick);
 
 JOYSTICK_DEVICE * STDCALL joystick_device_find(uint32_t joystickid);
-JOYSTICK_DEVICE * STDCALL joystick_device_find_by_name(char *name);
-JOYSTICK_DEVICE * STDCALL joystick_device_find_by_description(char *description);
+JOYSTICK_DEVICE * STDCALL joystick_device_find_by_name(const char *name);
+JOYSTICK_DEVICE * STDCALL joystick_device_find_by_description(const char *description);
 uint32_t STDCALL joystick_device_enumerate(joystick_enumerate_cb callback, void *data);
 
 uint32_t STDCALL joystick_device_notification(JOYSTICK_DEVICE *joystick, joystick_notification_cb callback, void *data, uint32_t notification, uint32_t flags);

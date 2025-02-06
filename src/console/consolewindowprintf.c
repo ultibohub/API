@@ -40,7 +40,7 @@ int vasprintf(char **, const char *, __VALIST) _ATTRIBUTE ((__format__ (__printf
  *
  * Supports the same set of formatting variables as printf()
  */
-int STDCALL console_window_printf(WINDOW_HANDLE handle, char *format, ...)
+int STDCALL console_window_printf(WINDOW_HANDLE handle, const char *format, ...)
 {
     int res = -1;
     char *str;

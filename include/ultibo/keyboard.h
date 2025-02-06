@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -289,8 +289,8 @@ uint32_t STDCALL keyboard_device_register(KEYBOARD_DEVICE *keyboard);
 uint32_t STDCALL keyboard_device_deregister(KEYBOARD_DEVICE *keyboard);
 
 KEYBOARD_DEVICE * STDCALL keyboard_device_find(uint32_t keyboardid);
-KEYBOARD_DEVICE * STDCALL keyboard_device_find_by_name(char *name);
-KEYBOARD_DEVICE * STDCALL keyboard_device_find_by_description(char *description);
+KEYBOARD_DEVICE * STDCALL keyboard_device_find_by_name(const char *name);
+KEYBOARD_DEVICE * STDCALL keyboard_device_find_by_description(const char *description);
 uint32_t STDCALL keyboard_device_enumerate(keyboard_enumerate_cb callback, void *data);
 
 uint32_t STDCALL keyboard_device_notification(KEYBOARD_DEVICE *keyboard, keyboard_notification_cb callback, void *data, uint32_t notification, uint32_t flags);

@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -701,8 +701,8 @@ uint32_t STDCALL network_device_register(NETWORK_DEVICE *network);
 uint32_t STDCALL network_device_deregister(NETWORK_DEVICE *network);
 
 NETWORK_DEVICE * STDCALL network_device_find(uint32_t networkid);
-NETWORK_DEVICE * STDCALL network_device_find_by_name(char *name);
-NETWORK_DEVICE * STDCALL network_device_find_by_description(char *description);
+NETWORK_DEVICE * STDCALL network_device_find_by_name(const char *name);
+NETWORK_DEVICE * STDCALL network_device_find_by_description(const char *description);
 uint32_t STDCALL network_device_enumerate(network_enumerate_cb callback, void *data);
 
 uint32_t STDCALL network_device_notification(NETWORK_DEVICE *network, network_notification_cb callback, void *data, uint32_t notification, uint32_t flags);

@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2024 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -530,11 +530,11 @@ typedef struct _fd_set
 	SOCKET fd_array[FD_SETSIZE];
 } fd_set;
 
-typedef struct _timeval
+typedef struct _wstimeval
 {
 	int32_t tv_sec;
 	int32_t tv_usec;
-} timeval;
+} wstimeval;
 
 typedef struct _hostent
 {
@@ -656,27 +656,27 @@ int STDCALL getsockname(SOCKET s, SOCKADDR *name, int *namelen);
 int STDCALL getsockopt(SOCKET s, int level, int optname, char *optval, int *optlen);
 u_long STDCALL htonl(u_long hostlong);
 u_short STDCALL htons(u_short hostshort);
-u_long STDCALL inet_addr(char *cp);
+u_long STDCALL inet_addr(const char *cp);
 char * STDCALL inet_ntoa(in_addr inaddr);
 int STDCALL listen(SOCKET s, int backlog);
 u_long STDCALL ntohl(u_long netlong);
 u_short STDCALL ntohs(u_short netshort);
 int STDCALL recv(SOCKET s, char *buf, int len, int flags);
 int STDCALL recvfrom(SOCKET s, char *buf, int len, int flags, SOCKADDR *from, int *fromlen);
-int STDCALL select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, timeval *timeout);
-int STDCALL send(SOCKET s, char *buf, int len, int flags);
-int STDCALL sendto(SOCKET s, char *buf, int len, int flags, SOCKADDR *toaddr, int tolen);
-int STDCALL setsockopt(SOCKET s, int level, int optname, char *optval, int optlen);
+int STDCALL select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, wstimeval *timeout);
+int STDCALL send(SOCKET s, const char *buf, int len, int flags);
+int STDCALL sendto(SOCKET s, const char *buf, int len, int flags, SOCKADDR *toaddr, int tolen);
+int STDCALL setsockopt(SOCKET s, int level, int optname, const char *optval, int optlen);
 int STDCALL shutdown(SOCKET s, int how);
 SOCKET STDCALL socket(int af, int type, int protocol);
 
-hostent * STDCALL gethostbyaddr(char *addr, int len, int family);
-hostent * STDCALL gethostbyname(char *name);
+hostent * STDCALL gethostbyaddr(const char *addr, int len, int family);
+hostent * STDCALL gethostbyname(const char *name);
 int STDCALL gethostname(char *name, int namelen);
-servent * STDCALL getservbyport(int port, char *proto);
-servent * STDCALL getservbyname(char *name, char *proto);
+servent * STDCALL getservbyport(int port, const char *proto);
+servent * STDCALL getservbyname(const char *name, const char *proto);
 protoent * STDCALL getprotobynumber(int proto);
-protoent * STDCALL getprotobyname(char *name);
+protoent * STDCALL getprotobyname(const char *name);
 
 int STDCALL WSAStartup(uint16_t wversionrequired, WSADATA *wsadata);
 int STDCALL WSACleanup(void);
@@ -686,12 +686,12 @@ BOOL STDCALL WSAIsBlocking(void);
 int STDCALL WSAUnhookBlockingHook(void);
 FARPROC STDCALL WSASetBlockingHook(FARPROC lpblockfunc);
 int STDCALL WSACancelBlockingCall(void);
-HANDLE STDCALL WSAAsyncGetServByName(HWND hwnd, u_int wmsg, char *name, char *proto, char *buf, int buflen);
-HANDLE STDCALL WSAAsyncGetServByPort(HWND hwnd, u_int wmsg, int port, char *proto, char *buf, int buflen);
-HANDLE STDCALL WSAAsyncGetProtoByName(HWND hwnd, u_int wmsg, char *name, char *buf, int buflen);
+HANDLE STDCALL WSAAsyncGetServByName(HWND hwnd, u_int wmsg, const char *name, const char *proto, char *buf, int buflen);
+HANDLE STDCALL WSAAsyncGetServByPort(HWND hwnd, u_int wmsg, int port, const char *proto, char *buf, int buflen);
+HANDLE STDCALL WSAAsyncGetProtoByName(HWND hwnd, u_int wmsg, const char *name, char *buf, int buflen);
 HANDLE STDCALL WSAAsyncGetProtoByNumber(HWND hwnd, u_int wmsg, int number, char *buf, int buflen);
-HANDLE STDCALL WSAAsyncGetHostByName(HWND hwnd, u_int wmsg, char *name, char *buf, int buflen);
-HANDLE STDCALL WSAAsyncGetHostByAddr(HWND hwnd, u_int wmsg, char *addr, int len, int family, char *buf, int buflen);
+HANDLE STDCALL WSAAsyncGetHostByName(HWND hwnd, u_int wmsg, const char *name, char *buf, int buflen);
+HANDLE STDCALL WSAAsyncGetHostByAddr(HWND hwnd, u_int wmsg, const char *addr, int len, int family, char *buf, int buflen);
 int STDCALL WSACancelAsyncRequest(HANDLE hasynctaskhandle);
 int STDCALL WSAAsyncSelect(SOCKET s, HWND hwnd, u_int wmsg, int32_t levent);
 int STDCALL WSARecvEx(SOCKET s, char *buf, int len, int *flags);
@@ -721,7 +721,7 @@ void STDCALL FD_ZERO(fd_set *fdset);
 int STDCALL WsControl(uint32_t proto, uint32_t action, void *prequestinfo, uint32_t *pcbrequestinfolen, void *presponseinfo, uint32_t *pcbresponseinfolen);
 
 netent * STDCALL getnetbyaddr(void *addr, int len, int type);
-netent * STDCALL getnetbyname(char *name);
+netent * STDCALL getnetbyname(const char *name);
 
 /* ============================================================================== */
 /* Winsock Enhanced Functions */

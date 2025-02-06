@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2024 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -762,11 +762,11 @@ typedef struct _fd_set
 	SOCKET fd_array[FD_SETSIZE];
 } fd_set;
 
-typedef struct _timeval
+typedef struct _wstimeval
 {
 	int32_t tv_sec;
 	int32_t tv_usec;
-} timeval;
+} wstimeval;
 
 typedef struct _hostent
 {
@@ -1189,29 +1189,29 @@ int32_t STDCALL getsockname(SOCKET s, SOCKADDR *name, int32_t *namelen);
 int32_t STDCALL getsockopt(SOCKET s, int32_t level, int32_t optname, char *optval, int32_t *optlen);
 u_long STDCALL htonl(u_long hostlong);
 u_short STDCALL htons(u_short hostshort);
-u_long STDCALL inet_addr(char *cp);
+u_long STDCALL inet_addr(const char *cp);
 char * STDCALL inet_ntoa(in_addr inaddr);
 int32_t STDCALL listen(SOCKET s, int32_t backlog);
 u_long STDCALL ntohl(u_long netlong);
 u_short STDCALL ntohs(u_short netshort);
 int32_t STDCALL recv(SOCKET s, char *buf, int32_t len, int32_t flags);
 int32_t STDCALL recvfrom(SOCKET s, char *buf, int32_t len, int32_t flags, SOCKADDR *from, int32_t *fromlen);
-int32_t STDCALL select(int32_t nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, timeval *timeout);
-int32_t STDCALL send(SOCKET s, char *buf, int32_t len, int32_t flags);
-int32_t STDCALL sendto(SOCKET s, char *buf, int32_t len, int32_t flags, SOCKADDR *addrto, int32_t tolen);
-int32_t STDCALL setsockopt(SOCKET s, int32_t level, int32_t optname, char *optval, int32_t optlen); // overload;
+int32_t STDCALL select(int32_t nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, wstimeval *timeout);
+int32_t STDCALL send(SOCKET s, const char *buf, int32_t len, int32_t flags);
+int32_t STDCALL sendto(SOCKET s, const char *buf, int32_t len, int32_t flags, SOCKADDR *addrto, int32_t tolen);
+int32_t STDCALL setsockopt(SOCKET s, int32_t level, int32_t optname, const char *optval, int32_t optlen); // overload;
 int32_t STDCALL shutdown(SOCKET s, int32_t how);
 SOCKET STDCALL socket(int32_t af, int32_t type, int32_t protocol);
 
 hostent * STDCALL gethostbyaddr(void *addr, int32_t len, int32_t family);
-hostent * STDCALL gethostbyname(char *name);
+hostent * STDCALL gethostbyname(const char *name);
 int32_t STDCALL gethostname(char *name, int32_t len);
-servent * STDCALL getservbyport(int32_t port, char *proto);
-servent * STDCALL getservbyname(char *name, char *proto);
+servent * STDCALL getservbyport(int32_t port, const char *proto);
+servent * STDCALL getservbyname(const char *name, const char *proto);
 protoent * STDCALL getprotobynumber(int32_t proto);
-protoent * STDCALL getprotobyname(char *name);
+protoent * STDCALL getprotobyname(const char *name);
 
-int32_t STDCALL getaddrinfo(char *pnodename, char *pservicename, ADDRINFO *phints, ADDRINFO **ppresult);
+int32_t STDCALL getaddrinfo(const char *pnodename, const char *pservicename, ADDRINFO *phints, ADDRINFO **ppresult);
 void STDCALL freeaddrinfo(ADDRINFO *ai);
 int STDCALL getnameinfo(SOCKADDR *sa, int salen, char *host, uint32_t hostlen, char *serv, uint32_t servlen, int flags);
 
@@ -1223,20 +1223,20 @@ BOOL STDCALL WSAIsBlocking(void);
 int32_t STDCALL WSAUnhookBlockingHook(void);
 FARPROC STDCALL WSASetBlockingHook(FARPROC lpblockfunc);
 int32_t STDCALL WSACancelBlockingCall(void);
-HANDLE STDCALL WSAAsyncGetServByName(HWND hwindow, u_int wmsg, char *name, char *proto, char *buf, int32_t buflen);
-HANDLE STDCALL WSAAsyncGetServByPort(HWND hwindow, u_int wmsg, u_int port, char *proto, char *buf, int32_t buflen);
-HANDLE STDCALL WSAAsyncGetProtoByName(HWND hwindow, u_int wmsg, char *name, char *buf, int32_t buflen);
+HANDLE STDCALL WSAAsyncGetServByName(HWND hwindow, u_int wmsg, const char *name, const char *proto, char *buf, int32_t buflen);
+HANDLE STDCALL WSAAsyncGetServByPort(HWND hwindow, u_int wmsg, u_int port, const char *proto, char *buf, int32_t buflen);
+HANDLE STDCALL WSAAsyncGetProtoByName(HWND hwindow, u_int wmsg, const char *name, char *buf, int32_t buflen);
 HANDLE STDCALL WSAAsyncGetProtoByNumber(HWND hwindow, u_int wmsg, int32_t number, char *buf, int32_t buflen);
-HANDLE STDCALL WSAAsyncGetHostByName(HWND hwindow, u_int wmsg, char *name, char *buf, int32_t buflen);
-HANDLE STDCALL WSAAsyncGetHostByAddr(HWND hwindow, u_int wmsg, char *addr, int32_t len, int32_t family, char *buf, int32_t buflen);
+HANDLE STDCALL WSAAsyncGetHostByName(HWND hwindow, u_int wmsg, const char *name, char *buf, int32_t buflen);
+HANDLE STDCALL WSAAsyncGetHostByAddr(HWND hwindow, u_int wmsg, const char *addr, int32_t len, int32_t family, char *buf, int32_t buflen);
 int32_t STDCALL WSACancelAsyncRequest(HANDLE hasynctaskhandle);
 int32_t STDCALL WSAAsyncSelect(SOCKET s, HWND hwindow, u_int wmsg, int32_t levent);
 BOOL STDCALL __WSAFDIsSet(SOCKET s, fd_set *fdset);
 
 /*  WinSock 2 API new function prototypes  */
-int32_t STDCALL inet_pton(int32_t family, char *pszaddrstring, void *paddrbuf);
-int32_t STDCALL InetPtonA(int32_t family, char *pszaddrstring, void *paddrbuf);
-int32_t STDCALL InetPtonW(int32_t family, WCHAR *pszaddrstring, void *paddrbuf);
+int32_t STDCALL inet_pton(int32_t family, const char *pszaddrstring, void *paddrbuf);
+int32_t STDCALL InetPtonA(int32_t family, const char *pszaddrstring, void *paddrbuf);
+int32_t STDCALL InetPtonW(int32_t family, const WCHAR *pszaddrstring, void *paddrbuf);
 
 char * STDCALL inet_ntop(int32_t family, void *paddr, char *pstringbuf, int32_t stringbufsize);
 char * STDCALL InetNtopA(int32_t family, void *paddr, char *pstringbuf, int32_t stringbufsize);
@@ -1318,7 +1318,7 @@ void STDCALL FD_ZERO(fd_set *fdset);
 int STDCALL WsControl(uint32_t proto, uint32_t action, void *prequestinfo, uint32_t *pcbrequestinfolen, void *presponseinfo, uint32_t *pcbresponseinfolen);
 
 netent * STDCALL getnetbyaddr(void *addr, int len, int type);
-netent * STDCALL getnetbyname(char *name);
+netent * STDCALL getnetbyname(const char *name);
 
 /* ============================================================================== */
 /* Winsock2 Enhanced Functions */

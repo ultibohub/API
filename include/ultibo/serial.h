@@ -232,13 +232,13 @@ uint32_t STDCALL serial_device_register(SERIAL_DEVICE *serial);
 uint32_t STDCALL serial_device_deregister(SERIAL_DEVICE *serial);
 
 SERIAL_DEVICE * STDCALL serial_device_find(uint32_t serialid);
-SERIAL_DEVICE * STDCALL serial_device_find_by_name(char *name);
-SERIAL_DEVICE * STDCALL serial_device_find_by_description(char *description);
+SERIAL_DEVICE * STDCALL serial_device_find_by_name(const char *name);
+SERIAL_DEVICE * STDCALL serial_device_find_by_description(const char *description);
 uint32_t STDCALL serial_device_enumerate(serial_enumerate_cb callback, void *data);
 
 uint32_t STDCALL serial_device_notification(SERIAL_DEVICE *serial, serial_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
-int STDCALL serial_device_printf(SERIAL_DEVICE *serial, char *format, ...);
+int STDCALL serial_device_printf(SERIAL_DEVICE *serial, const char *format, ...) _ATTRIBUTE ((__format__ (__printf__, 2, 3)));
 
 /* ============================================================================== */
 /* Serial Helper Functions */
@@ -270,7 +270,7 @@ uint32_t STDCALL serial_flow_control_to_string(uint32_t flow, char *string, uint
 /* Serial Logging Helper Functions */
 uint32_t STDCALL serial_logging_device_add(SERIAL_DEVICE *serial);
 uint32_t STDCALL serial_logging_device_remove(SERIAL_DEVICE *serial);
-uint32_t STDCALL serial_logging_device_parameters(SERIAL_DEVICE *serial, char *parameters, uint32_t *baudrate, uint32_t *parity, uint32_t *databits, uint32_t *stopbits);
+uint32_t STDCALL serial_logging_device_parameters(SERIAL_DEVICE *serial, const char *parameters, uint32_t *baudrate, uint32_t *parity, uint32_t *databits, uint32_t *stopbits);
 
 #ifdef __cplusplus
 }

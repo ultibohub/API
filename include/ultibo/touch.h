@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2024 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -230,8 +230,8 @@ uint32_t STDCALL touch_device_register(TOUCH_DEVICE *touch);
 uint32_t STDCALL touch_device_deregister(TOUCH_DEVICE *touch);
 
 TOUCH_DEVICE * STDCALL touch_device_find(uint32_t touchid);
-TOUCH_DEVICE * STDCALL touch_device_find_by_name(char *name);
-TOUCH_DEVICE * STDCALL touch_device_find_by_description(char *description);
+TOUCH_DEVICE * STDCALL touch_device_find_by_name(const char *name);
+TOUCH_DEVICE * STDCALL touch_device_find_by_description(const char *description);
 uint32_t STDCALL touch_device_enumerate(touch_enumerate_cb callback, void *data);
 
 uint32_t STDCALL touch_device_notification(TOUCH_DEVICE *touch, touch_notification_cb callback, void *data, uint32_t notification, uint32_t flags);

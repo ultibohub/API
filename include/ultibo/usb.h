@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2024 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1156,7 +1156,7 @@ struct _USB_HUB
 };
 
 /* USB Logging specific types */
-typedef void STDCALL (*usb_log_output_proc)(char *text, void *data);
+typedef void STDCALL (*usb_log_output_proc)(const char *text, void *data);
 
 /* ============================================================================== */
 /* Initialization Functions */
@@ -1239,8 +1239,8 @@ uint32_t STDCALL usb_device_release(USB_DEVICE *device);
 
 USB_DEVICE * STDCALL usb_device_find(uint32_t usbid);
 USB_DEVICE * STDCALL usb_device_find_by_id(uint16_t vendorid, uint16_t productid);
-USB_DEVICE * STDCALL usb_device_find_by_name(char *name);
-USB_DEVICE * STDCALL usb_device_find_by_description(char *description);
+USB_DEVICE * STDCALL usb_device_find_by_name(const char *name);
+USB_DEVICE * STDCALL usb_device_find_by_description(const char *description);
 uint32_t STDCALL usb_device_enumerate(usb_device_enumerate_cb callback, void *data);
 
 uint32_t STDCALL usb_device_notification(USB_DEVICE *device, usb_device_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
@@ -1254,7 +1254,7 @@ uint32_t STDCALL usb_driver_register(USB_DRIVER *driver);
 uint32_t STDCALL usb_driver_deregister(USB_DRIVER *driver);
 
 USB_DRIVER * STDCALL usb_driver_find(uint32_t driverid);
-USB_DRIVER * STDCALL usb_driver_find_by_name(char *name);
+USB_DRIVER * STDCALL usb_driver_find_by_name(const char *name);
 uint32_t STDCALL usb_driver_enumerate(usb_driver_enumerate_cb callback, void *data);
 
 // Host Methods
@@ -1268,8 +1268,8 @@ uint32_t STDCALL usb_host_register(USB_HOST *host);
 uint32_t STDCALL usb_host_deregister(USB_HOST *host);
 
 USB_HOST * STDCALL usb_host_find(uint32_t hostid);
-USB_HOST * STDCALL usb_host_find_by_name(char *name);
-USB_HOST * STDCALL usb_host_find_by_description(char *description);
+USB_HOST * STDCALL usb_host_find_by_name(const char *name);
+USB_HOST * STDCALL usb_host_find_by_description(const char *description);
 uint32_t STDCALL usb_host_enumerate(usb_host_enumerate_cb callback, void *data);
 
 uint32_t STDCALL usb_host_notification(USB_HOST *host, usb_host_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
@@ -1316,8 +1316,8 @@ USB_HUB * STDCALL usb_hub_allocate(USB_DEVICE *device);
 uint32_t STDCALL usb_hub_release(USB_HUB *hub);
 
 USB_HUB * STDCALL usb_hub_find(uint32_t hubid);
-USB_HUB * STDCALL usb_hub_find_by_name(char *name);
-USB_HUB * STDCALL usb_hub_find_by_description(char *description);
+USB_HUB * STDCALL usb_hub_find_by_name(const char *name);
+USB_HUB * STDCALL usb_hub_find_by_description(const char *description);
 uint32_t STDCALL usb_hub_enumerate(usb_hub_enumerate_cb callback, void *data);
 
 uint32_t STDCALL usb_hub_notification(USB_HUB *hub, usb_hub_notification_cb callback, void *data, uint32_t notification, uint32_t flags);

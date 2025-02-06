@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -2454,8 +2454,8 @@ uint32_t STDCALL mmc_device_deregister(MMC_DEVICE *mmc);
 
 MMC_DEVICE * STDCALL mmc_device_find(uint32_t mmcid);
 MMC_DEVICE * STDCALL mmc_device_find_by_device(DEVICE *device);
-MMC_DEVICE * STDCALL mmc_device_find_by_name(char *name);
-MMC_DEVICE * STDCALL mmc_device_find_by_description(char *description);
+MMC_DEVICE * STDCALL mmc_device_find_by_name(const char *name);
+MMC_DEVICE * STDCALL mmc_device_find_by_description(const char *description);
 uint32_t STDCALL mmc_device_enumerate(mmc_enumerate_cb callback, void *data);
 
 uint32_t STDCALL mmc_device_notification(MMC_DEVICE *mmc, mmc_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
@@ -2572,7 +2572,7 @@ uint32_t STDCALL sdio_driver_register(SDIO_DRIVER *driver);
 uint32_t STDCALL sdio_driver_deregister(SDIO_DRIVER *driver);
 
 SDIO_DRIVER * STDCALL sdio_driver_find(uint32_t driverid);
-SDIO_DRIVER * STDCALL sdio_driver_find_by_name(char *name);
+SDIO_DRIVER * STDCALL sdio_driver_find_by_name(const char *name);
 uint32_t STDCALL sdio_driver_enumerate(sdio_driver_enumerate_cb callback, void *data);
 
 /* ============================================================================== */

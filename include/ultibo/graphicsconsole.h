@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -133,8 +133,8 @@ uint32_t STDCALL graphics_window_draw_circle(WINDOW_HANDLE handle, uint32_t x, u
 uint32_t STDCALL graphics_window_draw_char(WINDOW_HANDLE handle, char ch, uint32_t x, uint32_t y);
 uint32_t STDCALL graphics_window_draw_char_ex(WINDOW_HANDLE handle, FONT_HANDLE font, char ch, uint32_t x, uint32_t y, uint32_t forecolor, uint32_t backcolor);
 
-uint32_t STDCALL graphics_window_draw_text(WINDOW_HANDLE handle, char *text, uint32_t x, uint32_t y);
-uint32_t STDCALL graphics_window_draw_text_ex(WINDOW_HANDLE handle, FONT_HANDLE font, char *text, uint32_t x, uint32_t y, uint32_t forecolor, uint32_t backcolor);
+uint32_t STDCALL graphics_window_draw_text(WINDOW_HANDLE handle, const char *text, uint32_t x, uint32_t y);
+uint32_t STDCALL graphics_window_draw_text_ex(WINDOW_HANDLE handle, FONT_HANDLE font, const char *text, uint32_t x, uint32_t y, uint32_t forecolor, uint32_t backcolor);
 
 uint32_t STDCALL graphics_window_draw_pixel(WINDOW_HANDLE handle, uint32_t x, uint32_t y, uint32_t color);
 uint32_t STDCALL graphics_window_draw_image(WINDOW_HANDLE handle, uint32_t x, uint32_t y, void *image, uint32_t width, uint32_t height, uint32_t format);

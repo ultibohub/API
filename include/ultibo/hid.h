@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2024 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -885,8 +885,8 @@ uint32_t STDCALL hid_device_register(HID_DEVICE *device);
 uint32_t STDCALL hid_device_deregister(HID_DEVICE *device);
 
 HID_DEVICE * STDCALL hid_device_find(uint32_t hidid);
-HID_DEVICE * STDCALL hid_device_find_by_name(char *name);
-HID_DEVICE * STDCALL hid_device_find_by_description(char *description);
+HID_DEVICE * STDCALL hid_device_find_by_name(const char *name);
+HID_DEVICE * STDCALL hid_device_find_by_description(const char *description);
 uint32_t STDCALL hid_device_enumerate(hid_device_enumerate_cb callback, void *data);
 
 uint32_t STDCALL hid_device_notification(HID_DEVICE *device, hid_device_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
@@ -901,7 +901,7 @@ uint32_t STDCALL hid_consumer_register(HID_CONSUMER *consumer);
 uint32_t STDCALL hid_consumer_deregister(HID_CONSUMER *consumer);
 
 HID_CONSUMER * STDCALL hid_consumer_find(uint32_t consumerid);
-HID_CONSUMER * STDCALL hid_consumer_find_by_name(char *name);
+HID_CONSUMER * STDCALL hid_consumer_find_by_name(const char *name);
 uint32_t STDCALL hid_consumer_enumerate(hid_consumer_enumerate_cb callback, void *data);
 
 /* ============================================================================== */

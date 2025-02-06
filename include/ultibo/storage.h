@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -157,8 +157,8 @@ uint32_t STDCALL storage_device_deregister(STORAGE_DEVICE *storage);
 
 STORAGE_DEVICE * STDCALL storage_device_find(uint32_t storageid);
 STORAGE_DEVICE * STDCALL storage_device_find_by_device(DEVICE *device);
-STORAGE_DEVICE * STDCALL storage_device_find_by_name(char *name);
-STORAGE_DEVICE * STDCALL storage_device_find_by_description(char *description);
+STORAGE_DEVICE * STDCALL storage_device_find_by_name(const char *name);
+STORAGE_DEVICE * STDCALL storage_device_find_by_description(const char *description);
 uint32_t STDCALL storage_device_enumerate(storage_enumerate_cb callback, void *data);
 
 uint32_t STDCALL storage_device_notification(STORAGE_DEVICE *storage, storage_notification_cb callback, void *data, uint32_t notification, uint32_t flags);

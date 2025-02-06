@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -212,8 +212,8 @@ uint32_t STDCALL uart_device_register(UART_DEVICE *uart);
 uint32_t STDCALL uart_device_deregister(UART_DEVICE *uart);
 
 UART_DEVICE * STDCALL uart_device_find(uint32_t uartid);
-UART_DEVICE * STDCALL uart_device_find_by_name(char *name);
-UART_DEVICE * STDCALL uart_device_find_by_description(char *description);
+UART_DEVICE * STDCALL uart_device_find_by_name(const char *name);
+UART_DEVICE * STDCALL uart_device_find_by_description(const char *description);
 uint32_t STDCALL uart_device_enumerate(uart_enumerate_cb callback, void *data);
 
 uint32_t STDCALL uart_device_notification(UART_DEVICE *uart, uart_notification_cb callback, void *data, uint32_t notification, uint32_t flags);

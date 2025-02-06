@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -803,40 +803,40 @@ DEVICE * STDCALL device_create_ex(uint32_t size);
 uint32_t STDCALL device_destroy(DEVICE *device);
 
 uint32_t STDCALL device_get_name(DEVICE *device, char *name, uint32_t len);
-uint32_t STDCALL device_set_name(DEVICE *device, char *name);
+uint32_t STDCALL device_set_name(DEVICE *device, const char *name);
 
 uint32_t STDCALL device_get_description(DEVICE *device, char *name, uint32_t len);
-uint32_t STDCALL device_set_description(DEVICE *device, char *description);
+uint32_t STDCALL device_set_description(DEVICE *device, const char *description);
 
 uint32_t STDCALL device_register(DEVICE *device);
 uint32_t STDCALL device_deregister(DEVICE *device);
 
 DEVICE * STDCALL device_find(uint32_t deviceclass, uint32_t deviceid);
 DEVICE * STDCALL device_find_by_device_data(void *devicedata);
-DEVICE * STDCALL device_find_by_name(char *name);
-DEVICE * STDCALL device_find_by_name_ex(uint32_t deviceclass, char *name);
-DEVICE * STDCALL device_find_by_description(char *description);
-DEVICE * STDCALL device_find_by_description_ex(uint32_t deviceclass, char *description);
+DEVICE * STDCALL device_find_by_name(const char *name);
+DEVICE * STDCALL device_find_by_name_ex(uint32_t deviceclass, const char *name);
+DEVICE * STDCALL device_find_by_description(const char *description);
+DEVICE * STDCALL device_find_by_description_ex(uint32_t deviceclass, const char *description);
 uint32_t STDCALL device_enumerate(uint32_t deviceclass, device_enumerate_cb callback, void *data);
 
 uint32_t STDCALL device_notification(DEVICE *device, uint32_t deviceclass, device_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
-BOOL STDCALL device_firmware_create(uint32_t deviceclass, char *name, void *buffer, uint32_t size);
+BOOL STDCALL device_firmware_create(uint32_t deviceclass, const char *name, void *buffer, uint32_t size);
 
-HANDLE STDCALL device_firmware_register(uint32_t deviceclass, char *name, device_firmware_handler handler);
+HANDLE STDCALL device_firmware_register(uint32_t deviceclass, const char *name, device_firmware_handler handler);
 uint32_t STDCALL device_firmware_deregister(HANDLE handle);
 
-DEVICE_FIRMWARE * STDCALL device_firmware_find(uint32_t deviceclass, char *name);
+DEVICE_FIRMWARE * STDCALL device_firmware_find(uint32_t deviceclass, const char *name);
 DEVICE_FIRMWARE * STDCALL device_firmware_find_by_handle(HANDLE handle);
 
-uint32_t STDCALL device_firmware_open(uint32_t deviceclass, char *name, uint32_t timeout, HANDLE *handle);
+uint32_t STDCALL device_firmware_open(uint32_t deviceclass, const char *name, uint32_t timeout, HANDLE *handle);
 uint32_t STDCALL device_firmware_close(HANDLE handle);
 
 int32_t STDCALL device_firmware_size(HANDLE handle);
 int32_t STDCALL device_firmware_seek(HANDLE handle, int32_t position);
 int32_t STDCALL device_firmware_read(HANDLE handle, void *buffer, int32_t count);
 
-uint32_t STDCALL device_firmware_acquire(uint32_t deviceclass, char *name, uint32_t timeout, HANDLE *handle, void *buffer, uint32_t *size);
+uint32_t STDCALL device_firmware_acquire(uint32_t deviceclass, const char *name, uint32_t timeout, HANDLE *handle, void *buffer, uint32_t *size);
 uint32_t STDCALL device_firmware_release(HANDLE handle, void *buffer, uint32_t size);
 
 NOTIFIER * STDCALL notifier_allocate(DEVICE *device, uint32_t deviceclass, device_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
@@ -855,13 +855,13 @@ DRIVER * STDCALL driver_create_ex(uint32_t size);
 uint32_t STDCALL driver_destroy(DRIVER *driver);
 
 uint32_t STDCALL driver_get_name(DRIVER *driver, char *name, uint32_t len);
-uint32_t STDCALL driver_set_name(DRIVER *driver, char *name);
+uint32_t STDCALL driver_set_name(DRIVER *driver, const char *name);
 
 uint32_t STDCALL driver_register(DRIVER *driver);
 uint32_t STDCALL driver_deregister(DRIVER *driver);
 
 DRIVER * STDCALL driver_find(uint32_t driverclass, uint32_t driverid);
-DRIVER * STDCALL driver_find_by_name(char *name);
+DRIVER * STDCALL driver_find_by_name(const char *name);
 uint32_t STDCALL driver_enumerate(uint32_t driverclass, driver_enumerate_cb callback, void *data);
 
 /* ============================================================================== */
@@ -887,8 +887,8 @@ uint32_t STDCALL clock_device_register(CLOCK_DEVICE *clock);
 uint32_t STDCALL clock_device_deregister(CLOCK_DEVICE *clock);
 
 CLOCK_DEVICE * STDCALL clock_device_find(uint32_t clockid);
-CLOCK_DEVICE * STDCALL clock_device_find_by_name(char *name);
-CLOCK_DEVICE * STDCALL clock_device_find_by_description(char *description);
+CLOCK_DEVICE * STDCALL clock_device_find_by_name(const char *name);
+CLOCK_DEVICE * STDCALL clock_device_find_by_description(const char *description);
 uint32_t STDCALL clock_device_enumerate(clock_enumerate_cb callback, void *data);
 
 uint32_t STDCALL clock_device_notification(CLOCK_DEVICE *clock, clock_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
@@ -918,8 +918,8 @@ uint32_t STDCALL timer_device_register(TIMER_DEVICE *timer);
 uint32_t STDCALL timer_device_deregister(TIMER_DEVICE *timer);
 
 TIMER_DEVICE * STDCALL timer_device_find(uint32_t timerid);
-TIMER_DEVICE * STDCALL timer_device_find_by_name(char *name);
-TIMER_DEVICE * STDCALL timer_device_find_by_description(char *description);
+TIMER_DEVICE * STDCALL timer_device_find_by_name(const char *name);
+TIMER_DEVICE * STDCALL timer_device_find_by_description(const char *description);
 uint32_t STDCALL timer_device_enumerate(timer_enumerate_cb callback, void *data);
 
 uint32_t STDCALL timer_device_notification(TIMER_DEVICE *timer, timer_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
@@ -945,8 +945,8 @@ uint32_t STDCALL random_device_register(RANDOM_DEVICE *random);
 uint32_t STDCALL random_device_deregister(RANDOM_DEVICE *random);
 
 RANDOM_DEVICE * STDCALL random_device_find(uint32_t randomid);
-RANDOM_DEVICE * STDCALL random_device_find_by_name(char *name);
-RANDOM_DEVICE * STDCALL random_device_find_by_description(char *description);
+RANDOM_DEVICE * STDCALL random_device_find_by_name(const char *name);
+RANDOM_DEVICE * STDCALL random_device_find_by_description(const char *description);
 uint32_t STDCALL random_device_enumerate(random_enumerate_cb callback, void *data);
 
 uint32_t STDCALL random_device_notification(RANDOM_DEVICE *random, random_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
@@ -969,8 +969,8 @@ uint32_t STDCALL mailbox_device_register(MAILBOX_DEVICE *mailbox);
 uint32_t STDCALL mailbox_device_deregister(MAILBOX_DEVICE *mailbox);
 
 MAILBOX_DEVICE * STDCALL mailbox_device_find(uint32_t mailboxid);
-MAILBOX_DEVICE * STDCALL mailbox_device_find_by_name(char *name);
-MAILBOX_DEVICE * STDCALL mailbox_device_find_by_description(char *description);
+MAILBOX_DEVICE * STDCALL mailbox_device_find_by_name(const char *name);
+MAILBOX_DEVICE * STDCALL mailbox_device_find_by_description(const char *description);
 uint32_t STDCALL mailbox_device_enumerate(mailbox_enumerate_cb callback, void *data);
 
 uint32_t STDCALL mailbox_device_notification(MAILBOX_DEVICE *mailbox, mailbox_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
@@ -993,8 +993,8 @@ uint32_t STDCALL watchdog_device_register(WATCHDOG_DEVICE *watchdog);
 uint32_t STDCALL watchdog_device_deregister(WATCHDOG_DEVICE *watchdog);
 
 WATCHDOG_DEVICE * STDCALL watchdog_device_find(uint32_t watchdogid);
-WATCHDOG_DEVICE * STDCALL watchdog_device_find_by_name(char *name);
-WATCHDOG_DEVICE * STDCALL watchdog_device_find_by_description(char *description);
+WATCHDOG_DEVICE * STDCALL watchdog_device_find_by_name(const char *name);
+WATCHDOG_DEVICE * STDCALL watchdog_device_find_by_description(const char *description);
 uint32_t STDCALL watchdog_device_enumerate(watchdog_enumerate_cb callback, void *data);
 
 uint32_t STDCALL watchdog_device_notification(WATCHDOG_DEVICE *watchdog, watchdog_notification_cb callback, void *data, uint32_t notification, uint32_t flags);

@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -225,8 +225,8 @@ uint32_t STDCALL spi_device_register(SPI_DEVICE *spi);
 uint32_t STDCALL spi_device_deregister(SPI_DEVICE *spi);
 
 SPI_DEVICE * STDCALL spi_device_find(uint32_t spiid);
-SPI_DEVICE * STDCALL spi_device_find_by_name(char *name);
-SPI_DEVICE * STDCALL spi_device_find_by_description(char *description);
+SPI_DEVICE * STDCALL spi_device_find_by_name(const char *name);
+SPI_DEVICE * STDCALL spi_device_find_by_description(const char *description);
 uint32_t STDCALL spi_device_enumerate(spi_enumerate_cb callback, void *data);
 
 uint32_t STDCALL spi_device_notification(SPI_DEVICE *spi, spi_notification_cb callback, void *data, uint32_t notification, uint32_t flags);

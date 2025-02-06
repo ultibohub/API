@@ -203,7 +203,7 @@ typedef uint32_t STDCALL (*console_device_draw_box_proc)(CONSOLE_DEVICE *console
 typedef uint32_t STDCALL (*console_device_draw_line_proc)(CONSOLE_DEVICE *console, uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint32_t color, uint32_t width);
 typedef uint32_t STDCALL (*console_device_plot_line_proc)(CONSOLE_DEVICE *console, uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint32_t color, uint32_t width);
 typedef uint32_t STDCALL (*console_device_draw_char_proc)(CONSOLE_DEVICE *console, FONT_HANDLE handle, char ch, uint32_t x, uint32_t y, uint32_t forecolor, uint32_t backcolor);
-typedef uint32_t STDCALL (*console_device_draw_text_proc)(CONSOLE_DEVICE *console, FONT_HANDLE handle, char *text, uint32_t x, uint32_t y, uint32_t forecolor, uint32_t backcolor, uint32_t len);
+typedef uint32_t STDCALL (*console_device_draw_text_proc)(CONSOLE_DEVICE *console, FONT_HANDLE handle, const char *text, uint32_t x, uint32_t y, uint32_t forecolor, uint32_t backcolor, uint32_t len);
 typedef uint32_t STDCALL (*console_device_draw_pixel_proc)(CONSOLE_DEVICE *console, uint32_t x, uint32_t y, uint32_t color);
 typedef uint32_t STDCALL (*console_device_draw_block_proc)(CONSOLE_DEVICE *console, uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint32_t color);
 typedef uint32_t STDCALL (*console_device_draw_circle_proc)(CONSOLE_DEVICE *console, uint32_t x, uint32_t y, uint32_t color, uint32_t width, uint32_t radius);
@@ -451,7 +451,7 @@ uint32_t STDCALL console_device_draw_box(CONSOLE_DEVICE *console, uint32_t x1, u
 uint32_t STDCALL console_device_draw_line(CONSOLE_DEVICE *console, uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint32_t color, uint32_t width);
 uint32_t STDCALL console_device_plot_line(CONSOLE_DEVICE *console, uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint32_t color, uint32_t width);
 uint32_t STDCALL console_device_draw_char(CONSOLE_DEVICE *console, FONT_HANDLE handle, char ch, uint32_t x, uint32_t y, uint32_t forecolor, uint32_t backcolor);
-uint32_t STDCALL console_device_draw_text(CONSOLE_DEVICE *console, FONT_HANDLE handle, char *text, uint32_t x, uint32_t y, uint32_t forecolor, uint32_t backcolor, uint32_t len);
+uint32_t STDCALL console_device_draw_text(CONSOLE_DEVICE *console, FONT_HANDLE handle, const char *text, uint32_t x, uint32_t y, uint32_t forecolor, uint32_t backcolor, uint32_t len);
 uint32_t STDCALL console_device_draw_pixel(CONSOLE_DEVICE *console, uint32_t x, uint32_t y, uint32_t color);
 uint32_t STDCALL console_device_draw_block(CONSOLE_DEVICE *console, uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint32_t color);
 uint32_t STDCALL console_device_draw_circle(CONSOLE_DEVICE *console, uint32_t x, uint32_t y, uint32_t color, uint32_t width, uint32_t radius);
@@ -491,8 +491,8 @@ uint32_t STDCALL console_device_deregister(CONSOLE_DEVICE *console);
 
 CONSOLE_DEVICE * STDCALL console_device_find(uint32_t consoleid);
 CONSOLE_DEVICE * STDCALL console_device_find_by_device(DEVICE *device);
-CONSOLE_DEVICE * STDCALL console_device_find_by_name(char *name);
-CONSOLE_DEVICE * STDCALL console_device_find_by_description(char *description);
+CONSOLE_DEVICE * STDCALL console_device_find_by_name(const char *name);
+CONSOLE_DEVICE * STDCALL console_device_find_by_description(const char *description);
 uint32_t STDCALL console_device_enumerate(console_enumerate_cb callback, void *data);
 
 uint32_t STDCALL console_device_notification(CONSOLE_DEVICE *console, console_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
@@ -591,7 +591,7 @@ uint32_t STDCALL console_window_cursor_blink(WINDOW_HANDLE handle, BOOL enabled)
 uint32_t STDCALL console_window_cursor_color(WINDOW_HANDLE handle, uint32_t color);
 uint32_t STDCALL console_window_cursor_reverse(WINDOW_HANDLE handle, BOOL enabled);
 
-uint32_t STDCALL console_window_add_history(WINDOW_HANDLE handle, char *value);
+uint32_t STDCALL console_window_add_history(WINDOW_HANDLE handle, const char *value);
 uint32_t STDCALL console_window_clear_history(WINDOW_HANDLE handle);
 uint32_t STDCALL console_window_first_history(WINDOW_HANDLE handle, char *value, uint32_t len);
 uint32_t STDCALL console_window_last_history(WINDOW_HANDLE handle, char *value, uint32_t len);
@@ -608,11 +608,11 @@ uint32_t STDCALL console_window_scroll_right(WINDOW_HANDLE handle, uint32_t row,
 uint32_t STDCALL console_window_clear(WINDOW_HANDLE handle);
 uint32_t STDCALL console_window_clear_ex(WINDOW_HANDLE handle, uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, BOOL cursor);
 
-uint32_t STDCALL console_window_write(WINDOW_HANDLE handle, char *text);
-uint32_t STDCALL console_window_write_ex(WINDOW_HANDLE handle, char *text, uint32_t x, uint32_t y, uint32_t forecolor, uint32_t backcolor);
+uint32_t STDCALL console_window_write(WINDOW_HANDLE handle, const char *text);
+uint32_t STDCALL console_window_write_ex(WINDOW_HANDLE handle, const char *text, uint32_t x, uint32_t y, uint32_t forecolor, uint32_t backcolor);
 
-uint32_t STDCALL console_window_write_ln(WINDOW_HANDLE handle, char *text);
-uint32_t STDCALL console_window_write_ln_ex(WINDOW_HANDLE handle, char *text, uint32_t x, uint32_t y, uint32_t forecolor, uint32_t backcolor);
+uint32_t STDCALL console_window_write_ln(WINDOW_HANDLE handle, const char *text);
+uint32_t STDCALL console_window_write_ln_ex(WINDOW_HANDLE handle, const char *text, uint32_t x, uint32_t y, uint32_t forecolor, uint32_t backcolor);
 
 uint32_t STDCALL console_window_write_chr(WINDOW_HANDLE handle, char ch);
 uint32_t STDCALL console_window_write_chr_ex(WINDOW_HANDLE handle, char ch, uint32_t x, uint32_t y, uint32_t forecolor, uint32_t backcolor);
@@ -627,7 +627,7 @@ uint32_t STDCALL console_window_read_ln_ex(WINDOW_HANDLE handle, char *text, uin
 uint32_t STDCALL console_window_read_chr(WINDOW_HANDLE handle, char *ch);
 uint32_t STDCALL console_window_read_chr_ex(WINDOW_HANDLE handle, char *ch, char *prompt, uint32_t x, uint32_t y, uint32_t forecolor, uint32_t backcolor, BOOL echo, BOOL scroll);
 
-int STDCALL console_window_printf(WINDOW_HANDLE handle, char *format, ...);
+int STDCALL console_window_printf(WINDOW_HANDLE handle, const char *format, ...) _ATTRIBUTE ((__format__ (__printf__, 2, 3)));
 
 /* ============================================================================== */
 /* CRT Console Functions */
@@ -653,15 +653,15 @@ void STDCALL console_window(int x1, int y1, int x2, int y2);
 void STDCALL console_scroll_up(int row, int lines);
 void STDCALL console_scroll_down(int row, int lines);
 
-void STDCALL console_write(char *text);
-void STDCALL console_write_ln(char *text);
+void STDCALL console_write(const char *text);
+void STDCALL console_write_ln(const char *text);
 void STDCALL console_write_chr(char ch);
 
 void STDCALL console_read(char *text, uint32_t *len);
 void STDCALL console_read_ln(char *text, uint32_t *len);
 void STDCALL console_read_chr(char *ch);
 
-int STDCALL console_printf(char *format, ...);
+int STDCALL console_printf(const char *format, ...) _ATTRIBUTE ((__format__ (__printf__, 1, 2)));
 
 /* ============================================================================== */
 /* Console Helper Functions */

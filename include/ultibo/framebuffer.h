@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -287,8 +287,8 @@ uint32_t STDCALL framebuffer_device_register(FRAMEBUFFER_DEVICE *framebuffer);
 uint32_t STDCALL framebuffer_device_deregister(FRAMEBUFFER_DEVICE *framebuffer);
 
 FRAMEBUFFER_DEVICE * STDCALL framebuffer_device_find(uint32_t framebufferid);
-FRAMEBUFFER_DEVICE * STDCALL framebuffer_device_find_by_name(char *name);
-FRAMEBUFFER_DEVICE * STDCALL framebuffer_device_find_by_description(char *description);
+FRAMEBUFFER_DEVICE * STDCALL framebuffer_device_find_by_name(const char *name);
+FRAMEBUFFER_DEVICE * STDCALL framebuffer_device_find_by_description(const char *description);
 uint32_t STDCALL framebuffer_device_enumerate(framebuffer_enumerate_cb callback, void *data);
 
 uint32_t STDCALL framebuffer_device_notification(FRAMEBUFFER_DEVICE *framebuffer, framebuffer_notification_cb callback, void *data, uint32_t notification, uint32_t flags);

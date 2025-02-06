@@ -90,10 +90,10 @@ typedef uint32_t STDCALL (*logging_notification_cb)(DEVICE *device, void *data, 
 /* Logging Device Methods */
 typedef uint32_t STDCALL (*logging_device_start_proc)(LOGGING_DEVICE *logging);
 typedef uint32_t STDCALL (*logging_device_stop_proc)(LOGGING_DEVICE *logging);
-typedef uint32_t STDCALL (*logging_device_output_proc)(LOGGING_DEVICE *logging, char *data);
-typedef uint32_t STDCALL (*logging_device_output_ex_proc)(LOGGING_DEVICE *logging, uint32_t facility, uint32_t severity, char *tag, char *content); // Syslog compatible output
+typedef uint32_t STDCALL (*logging_device_output_proc)(LOGGING_DEVICE *logging, const char *data);
+typedef uint32_t STDCALL (*logging_device_output_ex_proc)(LOGGING_DEVICE *logging, uint32_t facility, uint32_t severity, const char *tag, const char *content); // Syslog compatible output
 typedef char * STDCALL (*logging_device_get_target_proc)(LOGGING_DEVICE *logging);
-typedef uint32_t STDCALL (*logging_device_set_target_proc)(LOGGING_DEVICE *logging, char *target);
+typedef uint32_t STDCALL (*logging_device_set_target_proc)(LOGGING_DEVICE *logging, const char *target);
 
 /* Logging Device */
 struct _LOGGING_DEVICE
@@ -126,11 +126,11 @@ struct _LOGGING_DEVICE
 uint32_t STDCALL logging_device_start(LOGGING_DEVICE *logging);
 uint32_t STDCALL logging_device_stop(LOGGING_DEVICE *logging);
 
-uint32_t STDCALL logging_device_output(LOGGING_DEVICE *logging, char *data);
-uint32_t STDCALL logging_device_output_ex(LOGGING_DEVICE *logging, uint32_t facility, uint32_t severity, char *tag, char *content);
+uint32_t STDCALL logging_device_output(LOGGING_DEVICE *logging, const char *data);
+uint32_t STDCALL logging_device_output_ex(LOGGING_DEVICE *logging, uint32_t facility, uint32_t severity, const char *tag, const char *content);
 
 uint32_t STDCALL logging_device_get_target(LOGGING_DEVICE *logging, char *target, uint32_t len);
-uint32_t STDCALL logging_device_set_target(LOGGING_DEVICE *logging, char *target);
+uint32_t STDCALL logging_device_set_target(LOGGING_DEVICE *logging, const char *target);
 
 LOGGING_DEVICE * STDCALL logging_device_create(BOOL _default);
 LOGGING_DEVICE * STDCALL logging_device_create_ex(uint32_t size, BOOL _default);
@@ -142,14 +142,14 @@ uint32_t STDCALL logging_device_deregister(LOGGING_DEVICE *logging);
 LOGGING_DEVICE * STDCALL logging_device_find(uint32_t loggingid);
 LOGGING_DEVICE * STDCALL logging_device_find_by_type(uint32_t loggingtype);
 LOGGING_DEVICE * STDCALL logging_device_find_by_device(DEVICE *device);
-LOGGING_DEVICE * STDCALL logging_device_find_by_name(char *name);
-LOGGING_DEVICE * STDCALL logging_device_find_by_description(char *description);
+LOGGING_DEVICE * STDCALL logging_device_find_by_name(const char *name);
+LOGGING_DEVICE * STDCALL logging_device_find_by_description(const char *description);
 
 uint32_t STDCALL logging_device_enumerate(logging_enumerate_cb callback, void *data);
 
 uint32_t STDCALL logging_device_notification(LOGGING_DEVICE *logging, logging_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
-int STDCALL logging_device_outputf(LOGGING_DEVICE *logging, char *format, ...);
+int STDCALL logging_device_outputf(LOGGING_DEVICE *logging, const char *format, ...) _ATTRIBUTE ((__format__ (__printf__, 2, 3)));
 
 /* ============================================================================== */
 /* Logging Helper Functions */

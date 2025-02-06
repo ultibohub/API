@@ -305,18 +305,18 @@ BOOL STDCALL device_tree_valid(void);
 size_t STDCALL device_tree_get_base(void);
 uint32_t STDCALL device_tree_get_size(void);
 
-uint32_t STDCALL device_tree_read(char *path, char *name, void *buffer, uint32_t *size);
-uint32_t STDCALL device_tree_read32(char *path, char *name, uint32_t *value);
-uint32_t STDCALL device_tree_read64(char *path, char *name, uint64_t *value);
-uint32_t STDCALL device_tree_read_string(char *path, char *name, char *value, uint32_t len);
+uint32_t STDCALL device_tree_read(const char *path, const char *name, void *buffer, uint32_t *size);
+uint32_t STDCALL device_tree_read32(const char *path, const char *name, uint32_t *value);
+uint32_t STDCALL device_tree_read64(const char *path, const char *name, uint64_t *value);
+uint32_t STDCALL device_tree_read_string(const char *path, const char *name, char *value, uint32_t len);
 
 /* ============================================================================== */
 /* Boot Functions */
 void STDCALL boot_blink(void);
 void STDCALL boot_output(uint32_t value);
 void STDCALL boot_console_start(void);
-void STDCALL boot_console_write(char *value);
-void STDCALL boot_console_write_ex(char *value, uint32_t x, uint32_t y);
+void STDCALL boot_console_write(const char *value);
+void STDCALL boot_console_write_ex(const char *value, uint32_t x, uint32_t y);
 uint32_t STDCALL boot_console_get_x(void);
 uint32_t STDCALL boot_console_get_y(void);
 
@@ -691,14 +691,14 @@ uint32_t STDCALL dma_get_channels(void);
 /* ============================================================================== */
 /* Handle Functions */
 HANDLE STDCALL handle_create(HANDLE data, uint32_t _type);
-HANDLE_ENTRY * STDCALL handle_create_ex(char *name, uint32_t flags, HANDLE data, uint32_t _type);
+HANDLE_ENTRY * STDCALL handle_create_ex(const char *name, uint32_t flags, HANDLE data, uint32_t _type);
 uint32_t STDCALL handle_destroy(HANDLE handle);
 
 HANDLE_ENTRY * STDCALL handle_get(HANDLE handle);
-HANDLE_ENTRY * STDCALL handle_find(char *name);
+HANDLE_ENTRY * STDCALL handle_find(const char *name);
 uint32_t STDCALL handle_enumerate(handle_enumerate_cb callback, void *data);
 
-HANDLE STDCALL handle_open(char *name);
+HANDLE STDCALL handle_open(const char *name);
 uint32_t STDCALL handle_close(HANDLE handle);
 HANDLE STDCALL handle_duplicate(HANDLE handle);
 
@@ -822,7 +822,7 @@ uint32_t STDCALL serial_close(void);
 uint32_t STDCALL serial_read(void *buffer, uint32_t size, uint32_t *count);
 uint32_t STDCALL serial_write(void *buffer, uint32_t size, uint32_t *count);
 
-int STDCALL serial_printf(char *format, ...);
+int STDCALL serial_printf(const char *format, ...) _ATTRIBUTE ((__format__ (__printf__, 1, 2)));
 
 /* ============================================================================== */
 /* Peripheral Functions */
@@ -967,35 +967,36 @@ char STDCALL wide_char_to_code_page(WCHAR ch);
 /* ============================================================================== */
 /* Name Functions */
 uint32_t STDCALL host_get_name(char *name, uint32_t len);
-BOOL STDCALL host_set_name(char *name);
+BOOL STDCALL host_set_name(const char *name);
 uint32_t STDCALL host_get_domain(char *domain, uint32_t len);
-BOOL STDCALL host_set_domain(char *domain);
+BOOL STDCALL host_set_domain(const char *domain);
 
 /* ============================================================================== */
 /* Module Functions */
-HANDLE STDCALL module_load(char *name);
+HANDLE STDCALL module_load(const char *name);
+HANDLE STDCALL module_load_ex(const char *name, uint32_t flags);
 BOOL STDCALL module_unload(HANDLE handle);
 uint32_t STDCALL module_get_name(HANDLE handle, char *name, uint32_t len);
 
 /* ============================================================================== */
 /* Symbol Functions */
-BOOL STDCALL symbol_add(HANDLE handle, char *name, size_t address);
-BOOL STDCALL symbol_remove(HANDLE handle, char *name);
-size_t STDCALL symbol_get_address(HANDLE handle, char *name);
+BOOL STDCALL symbol_add(HANDLE handle, const char *name, size_t address);
+BOOL STDCALL symbol_remove(HANDLE handle, const char *name);
+size_t STDCALL symbol_get_address(HANDLE handle, const char *name);
 
 /* ============================================================================== */
 /* Logging Functions */
-void STDCALL logging_output(char *text);
-void STDCALL logging_output_ex(uint32_t facility, uint32_t severity, char *tag, char *content);
+void STDCALL logging_output(const char *text);
+void STDCALL logging_output_ex(uint32_t facility, uint32_t severity, const char *tag, const char *content);
 
-int STDCALL logging_outputf(char *format, ...);
+int STDCALL logging_outputf(const char *format, ...) _ATTRIBUTE ((__format__ (__printf__, 1, 2)));
 
 /* ============================================================================== */
 /* Environment Functions */
-uint32_t STDCALL environment_get(char *name, char *value, uint32_t len);
-uint32_t STDCALL environment_set(char *name, char *value);
+uint32_t STDCALL environment_get(const char *name, char *value, uint32_t len);
+uint32_t STDCALL environment_set(const char *name, const char *value);
 uint32_t STDCALL environment_count(BOOL reset);
-uint32_t STDCALL environment_index(char *name);
+uint32_t STDCALL environment_index(const char *name);
 uint32_t STDCALL environment_string(uint32_t index, char *string, uint32_t len);
 
 /* ============================================================================== */

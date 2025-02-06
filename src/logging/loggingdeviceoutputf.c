@@ -40,7 +40,7 @@ int vasprintf(char **, const char *, __VALIST) _ATTRIBUTE ((__format__ (__printf
  *
  * Supports the same set of formatting variables as printf()
  */
-int STDCALL logging_device_outputf(LOGGING_DEVICE *logging, char *format, ...)
+int STDCALL logging_device_outputf(LOGGING_DEVICE *logging, const char *format, ...)
 {
     int res = -1;
     char *str;

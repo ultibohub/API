@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -187,8 +187,8 @@ BOOL STDCALL keymap_resolve_deadkey(KEYMAP_HANDLE handle, uint16_t deadcode, uin
 
 uint32_t STDCALL keymap_get_properties(KEYMAP_HANDLE handle, KEYMAP_PROPERTIES *properties);
 
-KEYMAP_HANDLE STDCALL keymap_find_by_name(char *name);
-KEYMAP_HANDLE STDCALL keymap_find_by_description(char *description);
+KEYMAP_HANDLE STDCALL keymap_find_by_name(const char *name);
+KEYMAP_HANDLE STDCALL keymap_find_by_description(const char *description);
 uint32_t STDCALL keymap_enumerate(keymap_enumerate_cb callback, void *data);
 
 /* ============================================================================== */

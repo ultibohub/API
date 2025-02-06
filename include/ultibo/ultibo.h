@@ -783,17 +783,17 @@ BOOL STDCALL GetComputerName(char *lpbuffer, uint32_t *nsize);
 BOOL STDCALL GetComputerNameA(char *lpbuffer, uint32_t *nsize);
 BOOL STDCALL GetComputerNameW(WCHAR *lpbuffer, uint32_t *nsize);
 
-BOOL STDCALL SetComputerName(char *lpcomputername);
-BOOL STDCALL SetComputerNameA(char *lpcomputername);
-BOOL STDCALL SetComputerNameW(WCHAR *lpcomputername);
+BOOL STDCALL SetComputerName(const char *lpcomputername);
+BOOL STDCALL SetComputerNameA(const char *lpcomputername);
+BOOL STDCALL SetComputerNameW(const WCHAR *lpcomputername);
 
 BOOL STDCALL GetComputerNameEx(COMPUTER_NAME_FORMAT nametype, char *lpbuffer, uint32_t *nsize);
 BOOL STDCALL GetComputerNameExA(COMPUTER_NAME_FORMAT nametype, char *lpbuffer, uint32_t *nsize);
 BOOL STDCALL GetComputerNameExW(COMPUTER_NAME_FORMAT nametype, WCHAR *lpbuffer, uint32_t *nsize);
 
-BOOL STDCALL SetComputerNameEx(COMPUTER_NAME_FORMAT nametype, char *lpbuffer);
-BOOL STDCALL SetComputerNameExA(COMPUTER_NAME_FORMAT nametype, char *lpbuffer);
-BOOL STDCALL SetComputerNameExW(COMPUTER_NAME_FORMAT nametype, WCHAR *lpbuffer);
+BOOL STDCALL SetComputerNameEx(COMPUTER_NAME_FORMAT nametype, const char *lpbuffer);
+BOOL STDCALL SetComputerNameExA(COMPUTER_NAME_FORMAT nametype, const char *lpbuffer);
+BOOL STDCALL SetComputerNameExW(COMPUTER_NAME_FORMAT nametype, const WCHAR *lpbuffer);
 
 BOOL STDCALL ExitUltibo(uint32_t dwreserved, UINT ureserved);
 BOOL STDCALL ExitUltiboEx(UINT uflags, uint32_t dwreserved);
@@ -846,7 +846,7 @@ int32_t STDCALL GetTimeAdjust(void);
 void STDCALL SetTimeAdjust(int32_t adjust);
 
 uint32_t STDCALL GetCurrentTimezone(char *name, uint32_t len);
-BOOL STDCALL SetCurrentTimezone(char *name);
+BOOL STDCALL SetCurrentTimezone(const char *name);
 
 int32_t STDCALL GetTimezoneActiveOffset(void);
 int32_t STDCALL GetTimezoneStandardOffset(void);
@@ -888,9 +888,9 @@ double_t STDCALL ConvertDateTime(double_t datetime, int offset, BOOL local);
 
 /* ============================================================================== */
 /* Drive Functions (Compatibility) */
-UINT STDCALL GetDiskType(char *lprootpathname); // GetDriveType - Already defined below
-UINT STDCALL GetDriveTypeA(char *lprootpathname);
-UINT STDCALL GetDriveTypeW(WCHAR *lprootpathname);
+UINT STDCALL GetDiskType(const char *lprootpathname); // GetDriveType - Already defined below
+UINT STDCALL GetDriveTypeA(const char *lprootpathname);
+UINT STDCALL GetDriveTypeW(const WCHAR *lprootpathname);
 
 uint32_t STDCALL GetLogicalDrives(void);
 
@@ -898,38 +898,38 @@ uint32_t STDCALL GetLogicalDriveStrings(uint32_t nbufferlength, char *lpbuffer);
 uint32_t STDCALL GetLogicalDriveStringsA(uint32_t nbufferlength, char *lpbuffer);
 uint32_t STDCALL GetLogicalDriveStringsW(uint32_t nbufferlength, WCHAR *lpbuffer);
 
-BOOL STDCALL DefineDosDevice(uint32_t dwflags, char *lpdevicename, char *lptargetpath);
-BOOL STDCALL DefineDosDeviceA(uint32_t dwflags, char *lpdevicename, char *lptargetpath);
-BOOL STDCALL DefineDosDeviceW(uint32_t dwflags, WCHAR *lpdevicename, WCHAR *lptargetpath);
+BOOL STDCALL DefineDosDevice(uint32_t dwflags, const char *lpdevicename, const char *lptargetpath);
+BOOL STDCALL DefineDosDeviceA(uint32_t dwflags, const char *lpdevicename, const char *lptargetpath);
+BOOL STDCALL DefineDosDeviceW(uint32_t dwflags, const WCHAR *lpdevicename, const WCHAR *lptargetpath);
 
-uint32_t STDCALL QueryDosDevice(char *lpdevicename, char *lptargetpath, uint32_t ucchmax);
-uint32_t STDCALL QueryDosDeviceA(char *lpdevicename, char *lptargetpath, uint32_t ucchmax);
-uint32_t STDCALL QueryDosDeviceW(WCHAR *lpdevicename, WCHAR *lptargetpath, uint32_t ucchmax);
+uint32_t STDCALL QueryDosDevice(const char *lpdevicename, char *lptargetpath, uint32_t ucchmax);
+uint32_t STDCALL QueryDosDeviceA(const char *lpdevicename, char *lptargetpath, uint32_t ucchmax);
+uint32_t STDCALL QueryDosDeviceW(const WCHAR *lpdevicename, WCHAR *lptargetpath, uint32_t ucchmax);
 
-BOOL STDCALL SetVolumeLabel(char *lprootpathname, char *lpvolumename);
-BOOL STDCALL SetVolumeLabelA(char *lprootpathname, char *lpvolumename);
-BOOL STDCALL SetVolumeLabelW(WCHAR *lprootpathname, WCHAR *lpvolumename);
+BOOL STDCALL SetVolumeLabel(const char *lprootpathname, const char *lpvolumename);
+BOOL STDCALL SetVolumeLabelA(const char *lprootpathname, const char *lpvolumename);
+BOOL STDCALL SetVolumeLabelW(const WCHAR *lprootpathname, const WCHAR *lpvolumename);
 
-BOOL STDCALL GetVolumeInformation(char *lprootpathname, char *lpvolumenamebuffer, uint32_t nvolumenamesize, DWORD *lpvolumeserialnumber, uint32_t *lpmaximumcomponentlength, uint32_t *lpfilesystemflags, char *lpfilesystemnamebuffer, uint32_t nfilesystemnamesize);
-BOOL STDCALL GetVolumeInformationA(char *lprootpathname, char *lpvolumenamebuffer, uint32_t nvolumenamesize, DWORD *lpvolumeserialnumber, uint32_t *lpmaximumcomponentlength, uint32_t *lpfilesystemflags, char *lpfilesystemnamebuffer, uint32_t nfilesystemnamesize);
-BOOL STDCALL GetVolumeInformationW(WCHAR *lprootpathname, WCHAR *lpvolumenamebuffer, uint32_t nvolumenamesize, DWORD *lpvolumeserialnumber, uint32_t *lpmaximumcomponentlength, uint32_t *lpfilesystemflags, WCHAR *lpfilesystemnamebuffer, uint32_t nfilesystemnamesize);
+BOOL STDCALL GetVolumeInformation(const char *lprootpathname, char *lpvolumenamebuffer, uint32_t nvolumenamesize, DWORD *lpvolumeserialnumber, uint32_t *lpmaximumcomponentlength, uint32_t *lpfilesystemflags, char *lpfilesystemnamebuffer, uint32_t nfilesystemnamesize);
+BOOL STDCALL GetVolumeInformationA(const char *lprootpathname, char *lpvolumenamebuffer, uint32_t nvolumenamesize, DWORD *lpvolumeserialnumber, uint32_t *lpmaximumcomponentlength, uint32_t *lpfilesystemflags, char *lpfilesystemnamebuffer, uint32_t nfilesystemnamesize);
+BOOL STDCALL GetVolumeInformationW(const WCHAR *lprootpathname, WCHAR *lpvolumenamebuffer, uint32_t nvolumenamesize, DWORD *lpvolumeserialnumber, uint32_t *lpmaximumcomponentlength, uint32_t *lpfilesystemflags, WCHAR *lpfilesystemnamebuffer, uint32_t nfilesystemnamesize);
 
-BOOL STDCALL GetDiskFreeSpace(char *lprootpathname, uint32_t *lpsectorspercluster, uint32_t *lpbytespersector, uint32_t *lpnumberoffreeclusters, uint32_t *lptotalnumberofclusters);
-BOOL STDCALL GetDiskFreeSpaceA(char *lprootpathname, uint32_t *lpsectorspercluster, uint32_t *lpbytespersector, uint32_t *lpnumberoffreeclusters, uint32_t *lptotalnumberofclusters);
-BOOL STDCALL GetDiskFreeSpaceW(WCHAR *lprootpathname, uint32_t *lpsectorspercluster, uint32_t *lpbytespersector, uint32_t *lpnumberoffreeclusters, uint32_t *lptotalnumberofclusters);
+BOOL STDCALL GetDiskFreeSpace(const char *lprootpathname, uint32_t *lpsectorspercluster, uint32_t *lpbytespersector, uint32_t *lpnumberoffreeclusters, uint32_t *lptotalnumberofclusters);
+BOOL STDCALL GetDiskFreeSpaceA(const char *lprootpathname, uint32_t *lpsectorspercluster, uint32_t *lpbytespersector, uint32_t *lpnumberoffreeclusters, uint32_t *lptotalnumberofclusters);
+BOOL STDCALL GetDiskFreeSpaceW(const WCHAR *lprootpathname, uint32_t *lpsectorspercluster, uint32_t *lpbytespersector, uint32_t *lpnumberoffreeclusters, uint32_t *lptotalnumberofclusters);
 
-BOOL STDCALL GetDiskFreeSpaceEx(char *lpdirectoryname, ULARGE_INTEGER *lpfreebytesavailabletocaller, ULARGE_INTEGER *lptotalnumberofbytes, ULARGE_INTEGER *lptotalnumberoffreebytes);
-BOOL STDCALL GetDiskFreeSpaceExA(char *lpdirectoryname, ULARGE_INTEGER *lpfreebytesavailabletocaller, ULARGE_INTEGER *lptotalnumberofbytes, ULARGE_INTEGER *lptotalnumberoffreebytes);
-BOOL STDCALL GetDiskFreeSpaceExW(WCHAR *lpdirectoryname, ULARGE_INTEGER *lpfreebytesavailabletocaller, ULARGE_INTEGER *lptotalnumberofbytes, ULARGE_INTEGER *lptotalnumberoffreebytes);
+BOOL STDCALL GetDiskFreeSpaceEx(const char *lpdirectoryname, ULARGE_INTEGER *lpfreebytesavailabletocaller, ULARGE_INTEGER *lptotalnumberofbytes, ULARGE_INTEGER *lptotalnumberoffreebytes);
+BOOL STDCALL GetDiskFreeSpaceExA(const char *lpdirectoryname, ULARGE_INTEGER *lpfreebytesavailabletocaller, ULARGE_INTEGER *lptotalnumberofbytes, ULARGE_INTEGER *lptotalnumberoffreebytes);
+BOOL STDCALL GetDiskFreeSpaceExW(const WCHAR *lpdirectoryname, ULARGE_INTEGER *lpfreebytesavailabletocaller, ULARGE_INTEGER *lptotalnumberofbytes, ULARGE_INTEGER *lptotalnumberoffreebytes);
 
 /* ============================================================================== */
 /* Drive Functions (Ultibo) */
-uint8_t STDCALL GetPathDrive(char *path);
+uint8_t STDCALL GetPathDrive(const char *path);
 DRIVE_TYPE STDCALL GetDriveType(uint8_t drive);
 void STDCALL GetDriveData(uint8_t drive, DRIVE_DATA *data);
 uint32_t STDCALL GetDriveAttr(uint8_t drive);
 uint32_t STDCALL GetDriveLabel(uint8_t drive, char *label, uint32_t len);
-BOOL STDCALL SetDriveLabel(uint8_t drive, char *label);
+BOOL STDCALL SetDriveLabel(uint8_t drive, const char *label);
 uint32_t STDCALL GetDriveSerial(uint8_t drive);
 BOOL STDCALL SetDriveSerial(uint8_t drive, uint32_t serial);
 BOOL STDCALL IsDriveValid(uint8_t drive);
@@ -940,10 +940,10 @@ int64_t STDCALL GetDriveFreeSpaceEx(uint8_t drive);
 uint32_t STDCALL GetDriveTotalSpace(uint8_t drive);
 int64_t STDCALL GetDriveTotalSpaceEx(uint8_t drive);
 
-BOOL STDCALL GetDriveInformation(char *path, uint32_t *clustersize, int64_t *totalclustercount, int64_t *freeclustercount);
+BOOL STDCALL GetDriveInformation(const char *path, uint32_t *clustersize, int64_t *totalclustercount, int64_t *freeclustercount);
 
 uint8_t STDCALL GetCurrentDrive(void);
-BOOL STDCALL SetCurrentDrive(char *drive);
+BOOL STDCALL SetCurrentDrive(const char *drive);
 
 /* ============================================================================== */
 /* File Functions (Compatibility) */
@@ -951,29 +951,29 @@ BOOL STDCALL AreFileApisANSI(void);
 void STDCALL SetFileApisToOEM(void);
 void STDCALL SetFileApisToANSI(void);
 
-HANDLE STDCALL CreateFile(char *lpfilename, uint32_t dwdesiredaccess, uint32_t dwsharemode, SECURITY_ATTRIBUTES *lpsecurityattributes, uint32_t dwcreationdisposition, uint32_t dwflagsandattributes, HANDLE htemplatefile);
-HANDLE STDCALL CreateFileA(char *lpfilename, uint32_t dwdesiredaccess, uint32_t dwsharemode, SECURITY_ATTRIBUTES *lpsecurityattributes, uint32_t dwcreationdisposition, uint32_t dwflagsandattributes, HANDLE htemplatefile);
-HANDLE STDCALL CreateFileW(WCHAR *lpfilename, uint32_t dwdesiredaccess, uint32_t dwsharemode, SECURITY_ATTRIBUTES *lpsecurityattributes, uint32_t dwcreationdisposition, uint32_t dwflagsandattributes, HANDLE htemplatefile);
+HANDLE STDCALL CreateFile(const char *lpfilename, uint32_t dwdesiredaccess, uint32_t dwsharemode, SECURITY_ATTRIBUTES *lpsecurityattributes, uint32_t dwcreationdisposition, uint32_t dwflagsandattributes, HANDLE htemplatefile);
+HANDLE STDCALL CreateFileA(const char *lpfilename, uint32_t dwdesiredaccess, uint32_t dwsharemode, SECURITY_ATTRIBUTES *lpsecurityattributes, uint32_t dwcreationdisposition, uint32_t dwflagsandattributes, HANDLE htemplatefile);
+HANDLE STDCALL CreateFileW(const WCHAR *lpfilename, uint32_t dwdesiredaccess, uint32_t dwsharemode, SECURITY_ATTRIBUTES *lpsecurityattributes, uint32_t dwcreationdisposition, uint32_t dwflagsandattributes, HANDLE htemplatefile);
 
-BOOL STDCALL SetFileAttributes(char *lpfilename, uint32_t dwfileattributes);
-BOOL STDCALL SetFileAttributesA(char *lpfilename, uint32_t dwfileattributes);
-BOOL STDCALL SetFileAttributesW(WCHAR *lpfilename, uint32_t dwfileattributes);
+BOOL STDCALL SetFileAttributes(const char *lpfilename, uint32_t dwfileattributes);
+BOOL STDCALL SetFileAttributesA(const char *lpfilename, uint32_t dwfileattributes);
+BOOL STDCALL SetFileAttributesW(const WCHAR *lpfilename, uint32_t dwfileattributes);
 
-uint32_t STDCALL GetFileAttributes(char *lpfilename);
-uint32_t STDCALL GetFileAttributesA(char *lpfilename);
-uint32_t STDCALL GetFileAttributesW(WCHAR *lpfilename);
+uint32_t STDCALL GetFileAttributes(const char *lpfilename);
+uint32_t STDCALL GetFileAttributesA(const char *lpfilename);
+uint32_t STDCALL GetFileAttributesW(const WCHAR *lpfilename);
 
-BOOL STDCALL DeleteFile(char *lpfilename);
-BOOL STDCALL DeleteFileA(char *lpfilename);
-BOOL STDCALL DeleteFileW(WCHAR *lpfilename);
+BOOL STDCALL DeleteFile(const char *lpfilename);
+BOOL STDCALL DeleteFileA(const char *lpfilename);
+BOOL STDCALL DeleteFileW(const WCHAR *lpfilename);
 
-BOOL STDCALL MoveFile(char *lpexistingfilename, char *lpnewfilename);
-BOOL STDCALL MoveFileA(char *lpexistingfilename, char *lpnewfilename);
-BOOL STDCALL MoveFileW(WCHAR *lpexistingfilename, WCHAR *lpnewfilename);
+BOOL STDCALL MoveFile(const char *lpexistingfilename, const char *lpnewfilename);
+BOOL STDCALL MoveFileA(const char *lpexistingfilename, const char *lpnewfilename);
+BOOL STDCALL MoveFileW(const WCHAR *lpexistingfilename, const WCHAR *lpnewfilename);
 
-HANDLE STDCALL FindFirstFile(char *lpfilename, WIN32_FIND_DATAA *lpfindfiledata);
-HANDLE STDCALL FindFirstFileA(char *lpfilename, WIN32_FIND_DATAA *lpfindfiledata);
-HANDLE STDCALL FindFirstFileW(WCHAR *lpfilename, WIN32_FIND_DATAW *lpfindfiledata);
+HANDLE STDCALL FindFirstFile(const char *lpfilename, WIN32_FIND_DATAA *lpfindfiledata);
+HANDLE STDCALL FindFirstFileA(const char *lpfilename, WIN32_FIND_DATAA *lpfindfiledata);
+HANDLE STDCALL FindFirstFileW(const WCHAR *lpfilename, WIN32_FIND_DATAW *lpfindfiledata);
 
 BOOL STDCALL FindNextFile(HANDLE hfindfile, WIN32_FIND_DATAA *lpfindfiledata);
 BOOL STDCALL FindNextFileA(HANDLE hfindfile, WIN32_FIND_DATAA *lpfindfiledata);
@@ -997,21 +997,21 @@ BOOL STDCALL SetFilePointerEx(HANDLE hfile, LARGE_INTEGER lidistancetomove, LARG
 
 BOOL STDCALL FlushFileBuffers(HANDLE hfile);
 
-BOOL STDCALL CopyFile(char *lpexistingfilename, char *lpnewfilename, BOOL bfailifexists);
-BOOL STDCALL CopyFileA(char *lpexistingfilename, char *lpnewfilename, BOOL bfailifexists);
-BOOL STDCALL CopyFileW(WCHAR *lpexistingfilename, WCHAR *lpnewfilename, BOOL bfailifexists);
+BOOL STDCALL CopyFile(const char *lpexistingfilename, const char *lpnewfilename, BOOL bfailifexists);
+BOOL STDCALL CopyFileA(const char *lpexistingfilename, const char *lpnewfilename, BOOL bfailifexists);
+BOOL STDCALL CopyFileW(const WCHAR *lpexistingfilename, const WCHAR *lpnewfilename, BOOL bfailifexists);
 
-BOOL STDCALL SetFileShortName(HANDLE hfile, char *lpshortname);
-BOOL STDCALL SetFileShortNameA(HANDLE hfile, char *lpshortname);
-BOOL STDCALL SetFileShortNameW(HANDLE hfile, WCHAR *lpshortname);
+BOOL STDCALL SetFileShortName(HANDLE hfile, const char *lpshortname);
+BOOL STDCALL SetFileShortNameA(HANDLE hfile, const char *lpshortname);
+BOOL STDCALL SetFileShortNameW(HANDLE hfile, const WCHAR *lpshortname);
 
-BOOL STDCALL CreateHardLink(char *lpfilename, char *lpexistingfilename, SECURITY_ATTRIBUTES *lpsecurityattributes);
-BOOL STDCALL CreateHardLinkA(char *lpfilename, char *lpexistingfilename, SECURITY_ATTRIBUTES *lpsecurityattributes);
-BOOL STDCALL CreateHardLinkW(WCHAR *lpfilename, WCHAR *lpexistingfilename, SECURITY_ATTRIBUTES *lpsecurityattributes);
+BOOL STDCALL CreateHardLink(const char *lpfilename, const char *lpexistingfilename, SECURITY_ATTRIBUTES *lpsecurityattributes);
+BOOL STDCALL CreateHardLinkA(const char *lpfilename, const char *lpexistingfilename, SECURITY_ATTRIBUTES *lpsecurityattributes);
+BOOL STDCALL CreateHardLinkW(const WCHAR *lpfilename, const WCHAR *lpexistingfilename, SECURITY_ATTRIBUTES *lpsecurityattributes);
 
-BOOL STDCALL CreateSymbolicLink(char *lpsymlinkfilename, char *lptargetfilename, uint32_t dwflags);
-BOOL STDCALL CreateSymbolicLinkA(char *lpsymlinkfilename, char *lptargetfilename, uint32_t dwflags);
-BOOL STDCALL CreateSymbolicLinkW(WCHAR *lpsymlinkfilename, WCHAR *lptargetfilename, uint32_t dwflags);
+BOOL STDCALL CreateSymbolicLink(const char *lpsymlinkfilename, const char *lptargetfilename, uint32_t dwflags);
+BOOL STDCALL CreateSymbolicLinkA(const char *lpsymlinkfilename, const char *lptargetfilename, uint32_t dwflags);
+BOOL STDCALL CreateSymbolicLinkW(const WCHAR *lpsymlinkfilename, const WCHAR *lptargetfilename, uint32_t dwflags);
 
 BOOL STDCALL GetFileInformationByHandle(HANDLE hfile, BY_HANDLE_FILE_INFORMATION *lpfileinformation);
 
@@ -1024,33 +1024,33 @@ uint32_t STDCALL GetFinalPathNameByHandleW(HANDLE hfile, WCHAR *lpszFilePath, ui
 
 /* ============================================================================== */
 /* Directory Functions (Compatibility) */
-BOOL STDCALL CreateDirectory(char *lppathname, SECURITY_ATTRIBUTES *lpsecurityattributes);
-BOOL STDCALL CreateDirectoryA(char *lppathname, SECURITY_ATTRIBUTES *lpsecurityattributes);
-BOOL STDCALL CreateDirectoryW(WCHAR *lppathname, SECURITY_ATTRIBUTES *lpsecurityattributes);
+BOOL STDCALL CreateDirectory(const char *lppathname, SECURITY_ATTRIBUTES *lpsecurityattributes);
+BOOL STDCALL CreateDirectoryA(const char *lppathname, SECURITY_ATTRIBUTES *lpsecurityattributes);
+BOOL STDCALL CreateDirectoryW(const WCHAR *lppathname, SECURITY_ATTRIBUTES *lpsecurityattributes);
 
-BOOL STDCALL RemoveDirectory(char *lppathname);
-BOOL STDCALL RemoveDirectoryA(char *lppathname);
-BOOL STDCALL RemoveDirectoryW(WCHAR *lppathname);
+BOOL STDCALL RemoveDirectory(const char *lppathname);
+BOOL STDCALL RemoveDirectoryA(const char *lppathname);
+BOOL STDCALL RemoveDirectoryW(const WCHAR *lppathname);
 
-BOOL STDCALL SetCurrentDirectory(char *lppathname);
-BOOL STDCALL SetCurrentDirectoryA(char *lppathname);
-BOOL STDCALL SetCurrentDirectoryW(WCHAR *lppathname);
+BOOL STDCALL SetCurrentDirectory(const char *lppathname);
+BOOL STDCALL SetCurrentDirectoryA(const char *lppathname);
+BOOL STDCALL SetCurrentDirectoryW(const WCHAR *lppathname);
 
 uint32_t STDCALL GetCurrentDirectory(uint32_t nbufferlength, char *lpbuffer);
 uint32_t STDCALL GetCurrentDirectoryA(uint32_t nbufferlength, char *lpbuffer);
 uint32_t STDCALL GetCurrentDirectoryW(uint32_t nbufferlength, WCHAR *lpbuffer);
 
-uint32_t STDCALL GetLongPathName(char *lpszshortpath, char *lpszlongpath, uint32_t cchbuffer);
-uint32_t STDCALL GetLongPathNameA(char *lpszshortpath, char *lpszlongpath, uint32_t cchbuffer);
-uint32_t STDCALL GetLongPathNameW(WCHAR *lpszshortpath, WCHAR *lpszlongpath, uint32_t cchbuffer);
+uint32_t STDCALL GetLongPathName(const char *lpszshortpath, char *lpszlongpath, uint32_t cchbuffer);
+uint32_t STDCALL GetLongPathNameA(const char *lpszshortpath, char *lpszlongpath, uint32_t cchbuffer);
+uint32_t STDCALL GetLongPathNameW(const WCHAR *lpszshortpath, WCHAR *lpszlongpath, uint32_t cchbuffer);
 
-uint32_t STDCALL GetShortPathName(char *lpszlongpath, char *lpszshortpath, uint32_t cchbuffer);
-uint32_t STDCALL GetShortPathNameA(char *lpszlongpath, char *lpszshortpath, uint32_t cchbuffer);
-uint32_t STDCALL GetShortPathNameW(WCHAR *lpszlongpath, WCHAR *lpszshortpath, uint32_t cchbuffer);
+uint32_t STDCALL GetShortPathName(const char *lpszlongpath, char *lpszshortpath, uint32_t cchbuffer);
+uint32_t STDCALL GetShortPathNameA(const char *lpszlongpath, char *lpszshortpath, uint32_t cchbuffer);
+uint32_t STDCALL GetShortPathNameW(const WCHAR *lpszlongpath, WCHAR *lpszshortpath, uint32_t cchbuffer);
 
-uint32_t STDCALL GetFullPathName(char *lpfilename, uint32_t nbufferlength, char *lpbuffer, char *lpfilepart);
-uint32_t STDCALL GetFullPathNameA(char *lpfilename, uint32_t nbufferlength, char *lpbuffer, char *lpfilepart);
-uint32_t STDCALL GetFullPathNameW(WCHAR *lpfilename, uint32_t nbufferlength, WCHAR *lpbuffer, WCHAR *lpfilepart);
+uint32_t STDCALL GetFullPathName(const char *lpfilename, uint32_t nbufferlength, char *lpbuffer, char *lpfilepart);
+uint32_t STDCALL GetFullPathNameA(const char *lpfilename, uint32_t nbufferlength, char *lpbuffer, char *lpfilepart);
+uint32_t STDCALL GetFullPathNameW(const WCHAR *lpfilename, uint32_t nbufferlength, WCHAR *lpbuffer, WCHAR *lpfilepart);
 
 /* ============================================================================== */
 /* Directory Functions (Ultibo) */
@@ -1063,9 +1063,9 @@ WCHAR * STDCALL GetCommandLineW(void);
 
 /* ============================================================================== */
 /* Command Line Functions (Ultibo) */
-BOOL STDCALL IsParamPresent(char *param);
-int STDCALL GetParamIndex(char *param);
-uint32_t STDCALL GetParamValue(char *param, char *value, uint32_t len);
+BOOL STDCALL IsParamPresent(const char *param);
+int STDCALL GetParamIndex(const char *param);
+uint32_t STDCALL GetParamValue(const char *param, char *value, uint32_t len);
 
 /* ============================================================================== */
 /* Environment Functions (Compatibility) */
@@ -1077,17 +1077,17 @@ BOOL STDCALL FreeEnvironmentStrings(char *pstr);
 BOOL STDCALL FreeEnvironmentStringsA(char *pstr);
 BOOL STDCALL FreeEnvironmentStringsW(WCHAR *pstr);
 
-uint32_t STDCALL GetEnvironmentVariable(char *lpname, char *lpbuffer, uint32_t nsize);
-uint32_t STDCALL GetEnvironmentVariableA(char *lpname, char *lpbuffer, uint32_t nsize);
-uint32_t STDCALL GetEnvironmentVariableW(WCHAR *lpname, WCHAR *lpbuffer, uint32_t nsize);
+uint32_t STDCALL GetEnvironmentVariable(const char *lpname, char *lpbuffer, uint32_t nsize);
+uint32_t STDCALL GetEnvironmentVariableA(const char *lpname, char *lpbuffer, uint32_t nsize);
+uint32_t STDCALL GetEnvironmentVariableW(const WCHAR *lpname, WCHAR *lpbuffer, uint32_t nsize);
 
-BOOL STDCALL SetEnvironmentVariable(char *lpname, char *lpvalue);
-BOOL STDCALL SetEnvironmentVariableA(char *lpname, char *lpvalue);
-BOOL STDCALL SetEnvironmentVariableW(WCHAR *lpname, WCHAR *lpvalue);
+BOOL STDCALL SetEnvironmentVariable(const char *lpname, const char *lpvalue);
+BOOL STDCALL SetEnvironmentVariableA(const char *lpname, const char *lpvalue);
+BOOL STDCALL SetEnvironmentVariableW(const WCHAR *lpname, const WCHAR *lpvalue);
 
-uint32_t STDCALL ExpandEnvironmentStrings(char *lpsrc, char *lpdst, uint32_t nsize);
-uint32_t STDCALL ExpandEnvironmentStringsA(char *lpsrc, char *lpdst, uint32_t nsize);
-uint32_t STDCALL ExpandEnvironmentStringsW(WCHAR *lpsrc, WCHAR *lpdst, uint32_t nsize);
+uint32_t STDCALL ExpandEnvironmentStrings(const char *lpsrc, char *lpdst, uint32_t nsize);
+uint32_t STDCALL ExpandEnvironmentStringsA(const char *lpsrc, char *lpdst, uint32_t nsize);
+uint32_t STDCALL ExpandEnvironmentStringsW(const WCHAR *lpsrc, WCHAR *lpdst, uint32_t nsize);
 
 /* ============================================================================== */
 /* Error Functions (Compatibility) */
@@ -1101,7 +1101,7 @@ void STDCALL SetLastError(uint32_t dwerrcode);
 /* GUID Functions (Ultibo) */
 GUID STDCALL CreateGUID(void);
 uint32_t STDCALL GUIDToString(GUID *value, char *string, uint32_t len);
-GUID STDCALL StringToGUID(char *value);
+GUID STDCALL StringToGUID(const char *value);
 BOOL STDCALL NullGUID(GUID *guid);
 BOOL STDCALL CompareGUID(GUID *guid1, GUID *guid2);
 
@@ -1139,8 +1139,8 @@ BOOL STDCALL BufferSwap(void *buffer, uint32_t size);
 
 /* ============================================================================== */
 /* Hash Functions (Ultibo) */
-uint32_t STDCALL GenerateNameHash(char *name, int size);
-uint32_t STDCALL GenerateStringHash(char *value, BOOL casesensitive);
+uint32_t STDCALL GenerateNameHash(const char *name, int size);
+uint32_t STDCALL GenerateStringHash(const char *value, BOOL casesensitive);
 
 /* ============================================================================== */
 /* Locale Functions (Compatibility) */
@@ -1156,9 +1156,9 @@ BOOL STDCALL SetThreadLocale(LCID localeid);
 /* Locale Functions (Ultibo) */
 BOOL STDCALL SetSystemDefaultLCID(LCID localeid);
 
-uint32_t STDCALL WideCharToString(WCHAR *buffer, char *string, uint32_t len);
-uint32_t STDCALL WideCharLenToString(WCHAR *buffer, int length, char *string, uint32_t len);
-BOOL STDCALL StringToWideChar(char *string, WCHAR *buffer, int size);
+uint32_t STDCALL WideCharToString(const WCHAR *buffer, char *string, uint32_t len);
+uint32_t STDCALL WideCharLenToString(const WCHAR *buffer, int length, char *string, uint32_t len);
+BOOL STDCALL StringToWideChar(const char *string, WCHAR *buffer, int size);
 
 /* ============================================================================== */
 /* Code Page Functions (Compatibility) */
@@ -1331,7 +1331,7 @@ uint32_t STDCALL WaitForMultipleObjectsEx(uint32_t ncount, HANDLE *lphandles, BO
 
 /* ============================================================================== */
 /* Thread Functions (Ultibo) */
-THREAD_ID STDCALL BeginThreadEx(thread_func threadfunction, void *parameter, THREAD_ID *threadid, size_t *stacksize, uint32_t priority, uint32_t affinity, uint32_t cpu, char *name);
+THREAD_ID STDCALL BeginThreadEx(thread_func threadfunction, void *parameter, THREAD_ID *threadid, size_t *stacksize, uint32_t priority, uint32_t affinity, uint32_t cpu, const char *name);
 
 /* ============================================================================== */
 /* Message Functions (Compatibility) */
@@ -1361,25 +1361,25 @@ void * STDCALL InterlockedCompareExchangePointer(void *destination, void *exchan
 
 /* ============================================================================== */
 /* Mutex Functions (Compatibility) */
-HANDLE STDCALL CreateMutex(SECURITY_ATTRIBUTES *lpmutexattributes, BOOL binitialowner, char *lpname);
-HANDLE STDCALL CreateMutexA(SECURITY_ATTRIBUTES *lpmutexattributes, BOOL binitialowner, char *lpname);
-HANDLE STDCALL CreateMutexW(SECURITY_ATTRIBUTES *lpmutexattributes, BOOL binitialowner, WCHAR *lpname);
+HANDLE STDCALL CreateMutex(SECURITY_ATTRIBUTES *lpmutexattributes, BOOL binitialowner, const char *lpname);
+HANDLE STDCALL CreateMutexA(SECURITY_ATTRIBUTES *lpmutexattributes, BOOL binitialowner, const char *lpname);
+HANDLE STDCALL CreateMutexW(SECURITY_ATTRIBUTES *lpmutexattributes, BOOL binitialowner, const WCHAR *lpname);
 
-HANDLE STDCALL OpenMutex(uint32_t dwdesiredaccess, BOOL binherithandle, char *lpname);
-HANDLE STDCALL OpenMutexA(uint32_t dwdesiredaccess, BOOL binherithandle, char *lpname);
-HANDLE STDCALL OpenMutexW(uint32_t dwdesiredaccess, BOOL binherithandle, WCHAR *lpname);
+HANDLE STDCALL OpenMutex(uint32_t dwdesiredaccess, BOOL binherithandle, const char *lpname);
+HANDLE STDCALL OpenMutexA(uint32_t dwdesiredaccess, BOOL binherithandle, const char *lpname);
+HANDLE STDCALL OpenMutexW(uint32_t dwdesiredaccess, BOOL binherithandle, const WCHAR *lpname);
 
 BOOL STDCALL ReleaseMutex(HANDLE hmutex);
 
 /* ============================================================================== */
 /* Semaphore Functions (Compatibility) */
-HANDLE STDCALL CreateSemaphore(SECURITY_ATTRIBUTES *lpsemaphoreattributes, long linitialcount, long lmaximumcount, char *lpname);
-HANDLE STDCALL CreateSemaphoreA(SECURITY_ATTRIBUTES *lpsemaphoreattributes, long linitialcount, long lmaximumcount, char *lpname);
-HANDLE STDCALL CreateSemaphoreW(SECURITY_ATTRIBUTES *lpsemaphoreattributes, long linitialcount, long lmaximumcount, WCHAR *lpname);
+HANDLE STDCALL CreateSemaphore(SECURITY_ATTRIBUTES *lpsemaphoreattributes, long linitialcount, long lmaximumcount, const char *lpname);
+HANDLE STDCALL CreateSemaphoreA(SECURITY_ATTRIBUTES *lpsemaphoreattributes, long linitialcount, long lmaximumcount, const char *lpname);
+HANDLE STDCALL CreateSemaphoreW(SECURITY_ATTRIBUTES *lpsemaphoreattributes, long linitialcount, long lmaximumcount, const WCHAR *lpname);
 
-HANDLE STDCALL OpenSemaphore(uint32_t dwdesiredaccess, BOOL binherithandle, char *lpname);
-HANDLE STDCALL OpenSemaphoreA(uint32_t dwdesiredaccess, BOOL binherithandle, char *lpname);
-HANDLE STDCALL OpenSemaphoreW(uint32_t dwdesiredaccess, BOOL binherithandle, WCHAR *lpname);
+HANDLE STDCALL OpenSemaphore(uint32_t dwdesiredaccess, BOOL binherithandle, const char *lpname);
+HANDLE STDCALL OpenSemaphoreA(uint32_t dwdesiredaccess, BOOL binherithandle, const char *lpname);
+HANDLE STDCALL OpenSemaphoreW(uint32_t dwdesiredaccess, BOOL binherithandle, const WCHAR *lpname);
 
 BOOL STDCALL ReleaseSemaphore(HANDLE hsemaphore, long lreleasecount, long *lppreviouscount);
 
@@ -1408,13 +1408,13 @@ void STDCALL DeleteConditionVariable(CONDITION_VARIABLE *conditionvariable);
 
 /* ============================================================================== */
 /* Event Functions (Compatibility) */
-HANDLE STDCALL CreateEvent(SECURITY_ATTRIBUTES *lpeventattributes, BOOL bmanualreset, BOOL binitialstate, char *lpname);
-HANDLE STDCALL CreateEventA(SECURITY_ATTRIBUTES *lpeventattributes, BOOL bmanualreset, BOOL binitialstate, char *lpname);
-HANDLE STDCALL CreateEventW(SECURITY_ATTRIBUTES *lpeventattributes, BOOL bmanualreset, BOOL binitialstate, WCHAR *lpname);
+HANDLE STDCALL CreateEvent(SECURITY_ATTRIBUTES *lpeventattributes, BOOL bmanualreset, BOOL binitialstate, const char *lpname);
+HANDLE STDCALL CreateEventA(SECURITY_ATTRIBUTES *lpeventattributes, BOOL bmanualreset, BOOL binitialstate, const char *lpname);
+HANDLE STDCALL CreateEventW(SECURITY_ATTRIBUTES *lpeventattributes, BOOL bmanualreset, BOOL binitialstate, const WCHAR *lpname);
 
-HANDLE STDCALL OpenEvent(uint32_t dwdesiredaccess, BOOL binherithandle, char *lpname);
-HANDLE STDCALL OpenEventA(uint32_t dwdesiredaccess, BOOL binherithandle, char *lpname);
-HANDLE STDCALL OpenEventW(uint32_t dwdesiredaccess, BOOL binherithandle, WCHAR *lpname);
+HANDLE STDCALL OpenEvent(uint32_t dwdesiredaccess, BOOL binherithandle, const char *lpname);
+HANDLE STDCALL OpenEventA(uint32_t dwdesiredaccess, BOOL binherithandle, const char *lpname);
+HANDLE STDCALL OpenEventW(uint32_t dwdesiredaccess, BOOL binherithandle, const WCHAR *lpname);
 
 BOOL STDCALL SetEvent(HANDLE hevent);
 BOOL STDCALL ResetEvent(HANDLE hevent);
@@ -1438,9 +1438,9 @@ BOOL STDCALL TerminateProcess(HANDLE hprocess, UINT uexitcode);
 
 /* ============================================================================== */
 /* Debug Functions (Compatibility) */
-void STDCALL OutputDebugString(char *lpoutputstring);
-void STDCALL OutputDebugStringA(char *lpoutputstring);
-void STDCALL OutputDebugStringW(WCHAR *lpoutputstring);
+void STDCALL OutputDebugString(const char *lpoutputstring);
+void STDCALL OutputDebugStringA(const char *lpoutputstring);
+void STDCALL OutputDebugStringW(const WCHAR *lpoutputstring);
 
 /* ============================================================================== */
 /* Library Functions (Compatibility) */

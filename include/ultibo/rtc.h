@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -125,8 +125,8 @@ uint32_t STDCALL rtc_device_register(RTC_DEVICE *rtc);
 uint32_t STDCALL rtc_device_deregister(RTC_DEVICE *rtc);
 
 RTC_DEVICE * STDCALL rtc_device_find(uint32_t rtcid);
-RTC_DEVICE * STDCALL rtc_device_find_by_name(char *name);
-RTC_DEVICE * STDCALL rtc_device_find_by_description(char *description);
+RTC_DEVICE * STDCALL rtc_device_find_by_name(const char *name);
+RTC_DEVICE * STDCALL rtc_device_find_by_description(const char *description);
 uint32_t STDCALL rtc_device_enumerate(rtc_enumerate_cb callback, void *data);
 
 uint32_t STDCALL rtc_device_notification(RTC_DEVICE *rtc, rtc_notification_cb callback, void *data, uint32_t notification, uint32_t flags);

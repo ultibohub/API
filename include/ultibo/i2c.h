@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -159,8 +159,8 @@ uint32_t STDCALL i2c_device_register(I2C_DEVICE *i2c);
 uint32_t STDCALL i2c_device_deregister(I2C_DEVICE *i2c);
 
 I2C_DEVICE * STDCALL i2c_device_find(uint32_t i2cid);
-I2C_DEVICE * STDCALL i2c_device_find_by_name(char *name);
-I2C_DEVICE * STDCALL i2c_device_find_by_description(char *description);
+I2C_DEVICE * STDCALL i2c_device_find_by_name(const char *name);
+I2C_DEVICE * STDCALL i2c_device_find_by_description(const char *description);
 uint32_t STDCALL i2c_device_enumerate(i2c_enumerate_cb callback, void *data);
 
 uint32_t STDCALL i2c_device_notification(I2C_DEVICE *i2c, i2c_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
@@ -186,8 +186,8 @@ uint32_t STDCALL i2c_slave_register(I2C_DEVICE *i2c);
 uint32_t STDCALL i2c_slave_deregister(I2C_DEVICE *i2c);
 
 I2C_DEVICE * STDCALL i2c_slave_find(uint32_t i2cid);
-I2C_DEVICE * STDCALL i2c_slave_find_by_name(char *name);
-I2C_DEVICE * STDCALL i2c_slave_find_by_description(char *description);
+I2C_DEVICE * STDCALL i2c_slave_find_by_name(const char *name);
+I2C_DEVICE * STDCALL i2c_slave_find_by_description(const char *description);
 
 /* ============================================================================== */
 /* I2C Helper Functions */

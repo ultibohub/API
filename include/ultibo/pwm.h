@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -190,8 +190,8 @@ uint32_t STDCALL pwm_device_register(PWM_DEVICE *pwm);
 uint32_t STDCALL pwm_device_deregister(PWM_DEVICE *pwm);
 
 PWM_DEVICE * STDCALL pwm_device_find(uint32_t pwmid);
-PWM_DEVICE * STDCALL pwm_device_find_by_name(char *name);
-PWM_DEVICE * STDCALL pwm_device_find_by_description(char *description);
+PWM_DEVICE * STDCALL pwm_device_find_by_name(const char *name);
+PWM_DEVICE * STDCALL pwm_device_find_by_description(const char *description);
 uint32_t STDCALL pwm_device_enumerate(pwm_enumerate_cb callback, void *data);
 
 uint32_t STDCALL pwm_device_notification(PWM_DEVICE *pwm, pwm_notification_cb callback, void *data, uint32_t notification, uint32_t flags);

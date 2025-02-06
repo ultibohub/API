@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -249,7 +249,7 @@ struct _DTB_PROPERTY_QUADWORD
 
 /* ============================================================================== */
 /* Device Tree Logging specific types */
-typedef void STDCALL (*dtb_log_output_cb)(char *text, void *data);
+typedef void STDCALL (*dtb_log_output_cb)(const char *text, void *data);
 typedef char * STDCALL (*dtb_decode_value_cb)(HANDLE node, HANDLE handle, void *value, uint32_t size, void *data);
 
 /* ============================================================================== */
@@ -259,8 +259,8 @@ BOOL STDCALL device_tree_validate(size_t address, uint32_t *size);
 HANDLE STDCALL device_tree_next_node(HANDLE parent, HANDLE previous);
 HANDLE STDCALL device_tree_next_property(HANDLE node, HANDLE previous);
 
-HANDLE STDCALL device_tree_get_node(char *path, HANDLE parent);
-HANDLE STDCALL device_tree_get_property(HANDLE node, char *name);
+HANDLE STDCALL device_tree_get_node(const char *path, HANDLE parent);
+HANDLE STDCALL device_tree_get_property(HANDLE node, const char *name);
 
 uint32_t STDCALL device_tree_get_node_name(HANDLE handle, char *name, uint32_t len);
 uint32_t STDCALL device_tree_split_node_name(HANDLE handle, char *nodename, uint32_t namelen, char *unitaddress, uint32_t addresslen);

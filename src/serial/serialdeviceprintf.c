@@ -41,7 +41,7 @@ int vasprintf(char **, const char *, __VALIST) _ATTRIBUTE ((__format__ (__printf
  * Supports the same set of formatting variables as printf()
  */
 
-int STDCALL serial_device_printf(SERIAL_DEVICE *serial, char *format, ...)
+int STDCALL serial_device_printf(SERIAL_DEVICE *serial, const char *format, ...)
 {
     int res = -1;
     char *str;

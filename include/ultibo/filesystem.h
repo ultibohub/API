@@ -951,12 +951,12 @@ void STDCALL file_sys_async_start(void *data);
 /* ============================================================================== */
 /* FileSystem Functions (Ultibo) */
 /* Drive Functions */
-uint8_t STDCALL GetPathDrive(char *path);
+uint8_t STDCALL GetPathDrive(const char *path);
 DRIVE_TYPE STDCALL GetDriveType(uint8_t drive);
 void STDCALL GetDriveData(uint8_t drive, DRIVE_DATA *data);
 uint32_t STDCALL GetDriveAttr(uint8_t drive);
 uint32_t STDCALL GetDriveLabel(uint8_t drive, char *label, uint32_t len);
-BOOL STDCALL SetDriveLabel(uint8_t drive, char *label);
+BOOL STDCALL SetDriveLabel(uint8_t drive, const char *label);
 uint32_t STDCALL GetDriveSerial(uint8_t drive);
 BOOL STDCALL SetDriveSerial(uint8_t drive, uint32_t serial);
 BOOL STDCALL IsDriveValid(uint8_t drive);
@@ -967,17 +967,17 @@ int64_t STDCALL GetDriveFreeSpaceEx(uint8_t drive);
 uint32_t STDCALL GetDriveTotalSpace(uint8_t drive);
 int64_t STDCALL GetDriveTotalSpaceEx(uint8_t drive);
 
-BOOL STDCALL GetDriveInformation(char *path, uint32_t *clustersize, int64_t *totalclustercount, int64_t *freeclustercount);
+BOOL STDCALL GetDriveInformation(const char *path, uint32_t *clustersize, int64_t *totalclustercount, int64_t *freeclustercount);
 
 uint8_t STDCALL GetCurrentDrive(void);
-BOOL STDCALL SetCurrentDrive(char *drive);
+BOOL STDCALL SetCurrentDrive(const char *drive);
 
 /* File Functions */
-HANDLE STDCALL FileOpen(char *filename, int mode);
-HANDLE STDCALL FileCreate(char *filename);
-BOOL STDCALL DeleteFile(char *filename);
+HANDLE STDCALL FileOpen(const char *filename, int mode);
+HANDLE STDCALL FileCreate(const char *filename);
+BOOL STDCALL DeleteFile(const char *filename);
 void STDCALL FileClose(HANDLE handle);
-BOOL STDCALL RenameFile(char *oldname, char *newname);
+BOOL STDCALL RenameFile(const char *oldname, const char *newname);
 int32_t STDCALL FileSeek(HANDLE handle, int32_t offset, int32_t origin);
 BOOL STDCALL FileFlush(HANDLE handle);
 BOOL STDCALL FileTruncate(HANDLE handle);
@@ -987,35 +987,35 @@ BOOL STDCALL EndOfFile(HANDLE handle);
 int32_t STDCALL FilePos(HANDLE handle);
 int32_t STDCALL FileSize(HANDLE handle);
 
-int STDCALL FileAge(char *filename);
-BOOL STDCALL FileExists(char *filename);
-int STDCALL FileGetAttr(char *filename);
+int STDCALL FileAge(const char *filename);
+BOOL STDCALL FileExists(const char *filename);
+int STDCALL FileGetAttr(const char *filename);
 int STDCALL FileGetDate(HANDLE handle);
-int STDCALL FileSetAttr(char *filename, int attr);
+int STDCALL FileSetAttr(const char *filename, int attr);
 int STDCALL FileSetDate(HANDLE handle, int age);
 
 int32_t STDCALL FileRead(HANDLE handle, void *buffer, int32_t count);
 int32_t STDCALL FileWrite(HANDLE handle, void *buffer, int32_t count);
 
 /* Directory Functions */
-BOOL STDCALL CreateDir(char *dirname);
-BOOL STDCALL RemoveDir(char *dirname);
-BOOL STDCALL RenameDir(char *oldname, char *newname);
+BOOL STDCALL CreateDir(const char *dirname);
+BOOL STDCALL RemoveDir(const char *dirname);
+BOOL STDCALL RenameDir(const char *oldname, const char *newname);
 uint32_t STDCALL GetCurrentDir(char *dirname, uint32_t len);
-BOOL STDCALL SetCurrentDir(char *dirname);
-BOOL STDCALL DirectoryExists(char *dirname);
+BOOL STDCALL SetCurrentDir(const char *dirname);
+BOOL STDCALL DirectoryExists(const char *dirname);
 void STDCALL ForceDirectories(char *dirname);
-void STDCALL DeleteTree(char *dirname);
+void STDCALL DeleteTree(const char *dirname);
 
 /* Search Functions */
 
 /* Additional Functions */
-BOOL STDCALL FileCopy(char *sourcefile, char *destfile, BOOL failifexists);
-BOOL STDCALL FileCopyEx(char *sourcefile, char *destfile, BOOL failifexists, BOOL usesourcedate, int destdate, BOOL usesourceattr, int destattr);
+BOOL STDCALL FileCopy(const char *sourcefile, const char *destfile, BOOL failifexists);
+BOOL STDCALL FileCopyEx(const char *sourcefile, const char *destfile, BOOL failifexists, BOOL usesourcedate, int destdate, BOOL usesourceattr, int destattr);
 
-uint32_t STDCALL GetShortName(char *filename, char *shortname, uint32_t len);
-uint32_t STDCALL GetLongName(char *filename, char *longname, uint32_t len);
-uint32_t STDCALL GetTrueName(char *filename, char *truename, uint32_t len);
+uint32_t STDCALL GetShortName(const char *filename, char *shortname, uint32_t len);
+uint32_t STDCALL GetLongName(const char *filename, char *longname, uint32_t len);
+uint32_t STDCALL GetTrueName(const char *filename, char *truename, uint32_t len);
 
 /* Extended Functions */
 int64_t STDCALL FileSeekEx(HANDLE handle, int64_t offset, int32_t origin);
@@ -1024,7 +1024,7 @@ BOOL STDCALL EndOfFileEx(HANDLE handle);
 int64_t STDCALL FilePosEx(HANDLE handle);
 int64_t STDCALL FileSizeEx(HANDLE handle);
 
-FILETIME STDCALL FileAgeEx(char *filename);
+FILETIME STDCALL FileAgeEx(const char *filename);
 
 int STDCALL FileGetAttrEx(HANDLE handle);
 
@@ -1034,57 +1034,57 @@ int STDCALL FileSetDateEx(HANDLE handle, FILETIME age);
 BOOL STDCALL GetFileTime(HANDLE handle, FILETIME *createtime, FILETIME *accesstime, FILETIME *writetime);
 BOOL STDCALL SetFileTime(HANDLE handle, FILETIME *createtime, FILETIME *accesstime, FILETIME *writetime);
 
-int STDCALL FindFirstEx(char *path, FILE_SEARCH_REC *searchrec);
+int STDCALL FindFirstEx(const char *path, FILE_SEARCH_REC *searchrec);
 int STDCALL FindNextEx(FILE_SEARCH_REC *searchrec);
 void STDCALL FindCloseEx(FILE_SEARCH_REC *searchrec);
 
 /* ============================================================================== */
 /* FileSystem Functions (Win32 Compatibility) */
 /* Drive Functions */
-BOOL STDCALL DefineDosDevice(uint32_t dwflags, char *lpdevicename, char *lptargetpath);
-UINT STDCALL GetDiskType(char *lprootpathname); // GetDriveType - Already defined above
-BOOL STDCALL GetDiskFreeSpace(char *lprootpathname, uint32_t *lpsectorspercluster, uint32_t *lpbytespersector, uint32_t *lpnumberoffreeclusters, uint32_t *lptotalnumberofclusters);
-BOOL STDCALL GetDiskFreeSpaceEx(char *lpdirectoryname, ULARGE_INTEGER *lpfreebytesavailabletocaller, ULARGE_INTEGER *lptotalnumberofbytes, ULARGE_INTEGER *lptotalnumberoffreebytes);
+BOOL STDCALL DefineDosDevice(uint32_t dwflags, const char *lpdevicename, const char *lptargetpath);
+UINT STDCALL GetDiskType(const char *lprootpathname); // GetDriveType - Already defined above
+BOOL STDCALL GetDiskFreeSpace(const char *lprootpathname, uint32_t *lpsectorspercluster, uint32_t *lpbytespersector, uint32_t *lpnumberoffreeclusters, uint32_t *lptotalnumberofclusters);
+BOOL STDCALL GetDiskFreeSpaceEx(const char *lpdirectoryname, ULARGE_INTEGER *lpfreebytesavailabletocaller, ULARGE_INTEGER *lptotalnumberofbytes, ULARGE_INTEGER *lptotalnumberoffreebytes);
 uint32_t STDCALL GetLogicalDrives(void);
 uint32_t STDCALL GetLogicalDriveStrings(uint32_t nbufferlength, char *lpbuffer);
-BOOL STDCALL GetVolumeInformation(char *lprootpathname, char *lpvolumenamebuffer, uint32_t nvolumenamesize, DWORD *lpvolumeserialnumber, uint32_t *lpmaximumcomponentlength, uint32_t *lpfilesystemflags, char *lpfilesystemnamebuffer, uint32_t nfilesystemnamesize);
-uint32_t STDCALL QueryDosDevice(char *lpdevicename, char *lptargetpath, uint32_t ucchmax);
-BOOL STDCALL SetVolumeLabel(char *lprootpathname, char *lpvolumename);
+BOOL STDCALL GetVolumeInformation(const char *lprootpathname, char *lpvolumenamebuffer, uint32_t nvolumenamesize, DWORD *lpvolumeserialnumber, uint32_t *lpmaximumcomponentlength, uint32_t *lpfilesystemflags, char *lpfilesystemnamebuffer, uint32_t nfilesystemnamesize);
+uint32_t STDCALL QueryDosDevice(const char *lpdevicename, char *lptargetpath, uint32_t ucchmax);
+BOOL STDCALL SetVolumeLabel(const char *lprootpathname, const char *lpvolumename);
 
 /* File Functions */
 BOOL STDCALL AreFileApisANSI(void);
 BOOL STDCALL CloseHandle(HANDLE hobject);
-BOOL STDCALL CopyFile(char *lpexistingfilename, char *lpnewfilename, BOOL bfailifexists);
-HANDLE STDCALL CreateFile(char *lpfilename, uint32_t dwdesiredaccess, uint32_t dwsharemode, SECURITY_ATTRIBUTES *lpsecurityattributes, uint32_t dwcreationdisposition, uint32_t dwflagsandattributes, HANDLE htemplatefile);
+BOOL STDCALL CopyFile(const char *lpexistingfilename, const char *lpnewfilename, BOOL bfailifexists);
+HANDLE STDCALL CreateFile(const char *lpfilename, uint32_t dwdesiredaccess, uint32_t dwsharemode, SECURITY_ATTRIBUTES *lpsecurityattributes, uint32_t dwcreationdisposition, uint32_t dwflagsandattributes, HANDLE htemplatefile);
 BOOL STDCALL FindCloseFile(HANDLE hfindfile);
-HANDLE STDCALL FindFirstFile(char *lpfilename, WIN32_FIND_DATAA *lpfindfiledata);
+HANDLE STDCALL FindFirstFile(const char *lpfilename, WIN32_FIND_DATAA *lpfindfiledata);
 BOOL STDCALL FindNextFile(HANDLE hfindfile, WIN32_FIND_DATAA *lpfindfiledata);
 BOOL STDCALL FlushFileBuffers(HANDLE hfile);
-uint32_t STDCALL GetFileAttributes(char *lpfilename);
+uint32_t STDCALL GetFileAttributes(const char *lpfilename);
 BOOL STDCALL GetFileInformationByHandle(HANDLE hfile, BY_HANDLE_FILE_INFORMATION *lpfileinformation);
 uint32_t STDCALL GetFileSize(HANDLE hfile, DWORD *lpfilesizehigh);
-uint32_t STDCALL GetFullPathName(char *lpfilename, uint32_t nbufferlength, char *lpbuffer, char *lpfilepart);
-uint32_t STDCALL GetShortPathName(char *lpszlongpath, char *lpszshortpath, uint32_t cchbuffer);
-BOOL STDCALL MoveFile(char *lpexistingfilename, char *lpnewfilename);
+uint32_t STDCALL GetFullPathName(const char *lpfilename, uint32_t nbufferlength, char *lpbuffer, char *lpfilepart);
+uint32_t STDCALL GetShortPathName(const char *lpszlongpath, char *lpszshortpath, uint32_t cchbuffer);
+BOOL STDCALL MoveFile(const char *lpexistingfilename, const char *lpnewfilename);
 BOOL STDCALL ReadFile(HANDLE hfile, void *lpbuffer, uint32_t nnumberofbytestoread, DWORD *lpnumberofbytesread, OVERLAPPED *lpoverlapped);
 void STDCALL SetFileApisToANSI(void);
 void STDCALL SetFileApisToOEM(void);
-BOOL STDCALL SetFileAttributes(char *lpfilename, uint32_t dwfileattributes);
+BOOL STDCALL SetFileAttributes(const char *lpfilename, uint32_t dwfileattributes);
 uint32_t STDCALL SetFilePointer(HANDLE hfile, long ldistancetomove, long *lpdistancetomovehigh, uint32_t dwmovemethod);
 BOOL STDCALL SetFilePointerEx(HANDLE hfile, LARGE_INTEGER lidistancetomove, LARGE_INTEGER *lpnewfilepointer, uint32_t dwmovemethod);
 BOOL STDCALL WriteFile(HANDLE hfile, void *lpbuffer, uint32_t nnumberofbytestowrite, DWORD *lpnumberofbyteswritten, OVERLAPPED *lpoverlapped);
-uint32_t STDCALL GetLongPathName(char *lpszshortpath, char *lpszlongpath, uint32_t cchbuffer);
+uint32_t STDCALL GetLongPathName(const char *lpszshortpath, char *lpszlongpath, uint32_t cchbuffer);
 uint32_t STDCALL GetFinalPathNameByHandle(HANDLE hfile, char *lpszFilePath, uint32_t cchFilePath, uint32_t dwFlags);
 
-BOOL STDCALL SetFileShortName(HANDLE hfile, char *lpshortname);
-BOOL STDCALL CreateHardLink(char *lpfilename, char *lpexistingfilename, SECURITY_ATTRIBUTES *lpsecurityattributes);
-BOOL STDCALL CreateSymbolicLink(char *lpsymlinkfilename, char *lptargetfilename, uint32_t dwflags);
+BOOL STDCALL SetFileShortName(HANDLE hfile, const char *lpshortname);
+BOOL STDCALL CreateHardLink(const char *lpfilename, const char *lpexistingfilename, SECURITY_ATTRIBUTES *lpsecurityattributes);
+BOOL STDCALL CreateSymbolicLink(const char *lpsymlinkfilename, const char *lptargetfilename, uint32_t dwflags);
 
 /* Directory Functions */
-BOOL STDCALL CreateDirectory(char *lppathname, SECURITY_ATTRIBUTES *lpsecurityattributes);
+BOOL STDCALL CreateDirectory(const char *lppathname, SECURITY_ATTRIBUTES *lpsecurityattributes);
 uint32_t STDCALL GetCurrentDirectory(uint32_t nbufferlength, char *lpbuffer);
-BOOL STDCALL RemoveDirectory(char *lppathname);
-BOOL STDCALL SetCurrentDirectory(char *lppathname);
+BOOL STDCALL RemoveDirectory(const char *lppathname);
+BOOL STDCALL SetCurrentDirectory(const char *lppathname);
 
 /* ============================================================================== */
 /* FileSystem Helper Functions */

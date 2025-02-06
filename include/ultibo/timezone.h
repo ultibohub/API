@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -127,9 +127,9 @@ int32_t STDCALL timezone_get_daylight_bias(TIMEZONE_ENTRY *timezone);
 double_t STDCALL timezone_get_daylight_date(TIMEZONE_ENTRY *timezone, BOOL next);
 SYSTEMTIME STDCALL timezone_get_daylight_start(TIMEZONE_ENTRY *timezone);
 
-TIMEZONE_ENTRY * STDCALL timezone_find(char *name);
-TIMEZONE_ENTRY * STDCALL timezone_find_by_standard(char *standardname);
-TIMEZONE_ENTRY * STDCALL timezone_find_by_daylight(char *daylightname);
+TIMEZONE_ENTRY * STDCALL timezone_find(const char *name);
+TIMEZONE_ENTRY * STDCALL timezone_find_by_standard(const char *standardname);
+TIMEZONE_ENTRY * STDCALL timezone_find_by_daylight(const char *daylightname);
 
 uint32_t STDCALL timezone_enumerate(timezone_enumerate_cb callback, void *data);
 

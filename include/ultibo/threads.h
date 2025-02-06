@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1102,15 +1102,15 @@ uint32_t STDCALL queue_unlock(QUEUE_HANDLE queue);
 
 /* ============================================================================== */
 /* Thread Functions */
-THREAD_HANDLE STDCALL thread_create(thread_start_proc startproc, uint32_t stacksize, uint32_t priority, char *name, void *parameter);
-THREAD_HANDLE STDCALL thread_create_ex(thread_start_proc startproc, uint32_t stacksize, uint32_t priority, uint32_t affinity, uint32_t cpu, char *name, void *parameter);
+THREAD_HANDLE STDCALL thread_create(thread_start_proc startproc, uint32_t stacksize, uint32_t priority, const char *name, void *parameter);
+THREAD_HANDLE STDCALL thread_create_ex(thread_start_proc startproc, uint32_t stacksize, uint32_t priority, uint32_t affinity, uint32_t cpu, const char *name, void *parameter);
 uint32_t STDCALL thread_destroy(THREAD_HANDLE thread);
 
 THREAD_HANDLE STDCALL thread_get_current(void);
 uint32_t STDCALL thread_set_current(THREAD_HANDLE thread);
 
 uint32_t STDCALL thread_get_name(THREAD_HANDLE thread, char *name, uint32_t len);
-uint32_t STDCALL thread_set_name(THREAD_HANDLE thread, char *name);
+uint32_t STDCALL thread_set_name(THREAD_HANDLE thread, const char *name);
 
 uint32_t STDCALL thread_get_cpu(THREAD_HANDLE thread);
 uint32_t STDCALL thread_set_cpu(THREAD_HANDLE thread, uint32_t cpu);
@@ -1322,7 +1322,7 @@ uint32_t STDCALL tasker_trigger(void);
 /* See: \source\rtl\inc\system.inc and \source\rtl\inc\systemh.inc */
 
 THREAD_ID STDCALL begin_thread(void *signalaction, size_t stacksize, thread_func threadfunction, void *threadparameter, uint32_t creationflags, THREAD_ID *threadid);
-THREAD_ID STDCALL begin_thread_ex(void *signalaction, size_t stacksize, thread_func threadfunction, void *threadparameter, uint32_t creationflags, uint32_t priority, uint32_t affinity, uint32_t cpu, char *name, THREAD_ID *threadid);
+THREAD_ID STDCALL begin_thread_ex(void *signalaction, size_t stacksize, thread_func threadfunction, void *threadparameter, uint32_t creationflags, uint32_t priority, uint32_t affinity, uint32_t cpu, const char *name, THREAD_ID *threadid);
 
 void STDCALL end_thread(uint32_t exitcode);
 

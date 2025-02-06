@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -278,8 +278,8 @@ uint32_t STDCALL mouse_device_register(MOUSE_DEVICE *mouse);
 uint32_t STDCALL mouse_device_deregister(MOUSE_DEVICE *mouse);
 
 MOUSE_DEVICE * STDCALL mouse_device_find(uint32_t mouseid);
-MOUSE_DEVICE * STDCALL mouse_device_find_by_name(char *name);
-MOUSE_DEVICE * STDCALL mouse_device_find_by_description(char *description);
+MOUSE_DEVICE * STDCALL mouse_device_find_by_name(const char *name);
+MOUSE_DEVICE * STDCALL mouse_device_find_by_description(const char *description);
 uint32_t STDCALL mouse_device_enumerate(mouse_enumerate_cb callback, void *data);
 
 uint32_t STDCALL mouse_device_notification(MOUSE_DEVICE *mouse, mouse_notification_cb callback, void *data, uint32_t notification, uint32_t flags);

@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -302,16 +302,16 @@ uint32_t STDCALL font_get_properties(FONT_HANDLE handle, FONT_PROPERTIES *proper
 uint32_t STDCALL font_char_width(FONT_HANDLE handle, uint16_t character);
 uint32_t STDCALL font_char_height(FONT_HANDLE handle, uint16_t character);
 
-uint32_t STDCALL font_text_width(FONT_HANDLE handle, char *text);
-uint32_t STDCALL font_text_height(FONT_HANDLE handle, char *text);
+uint32_t STDCALL font_text_width(FONT_HANDLE handle, const char *text);
+uint32_t STDCALL font_text_height(FONT_HANDLE handle, const char *text);
 
-FONT_HANDLE STDCALL font_find_by_name(char *name);
-FONT_HANDLE STDCALL font_find_by_description(char *description);
+FONT_HANDLE STDCALL font_find_by_name(const char *name);
+FONT_HANDLE STDCALL font_find_by_description(const char *description);
 uint32_t STDCALL font_enumerate(font_enumerate_cb callback, void *data);
 
 /* ============================================================================== */
 /* PSF Font Functions */
-FONT_HANDLE STDCALL psf_font_load(char *filename);
+FONT_HANDLE STDCALL psf_font_load(const char *filename);
 FONT_HANDLE STDCALL psf_font_load_ex(void *data, uint32_t size);
 
 /* ============================================================================== */
