@@ -286,6 +286,12 @@ non-TCP/IP transports such as DECNet, OSI TP4, etc.  */
 
 #define AF_MAX	29
 
+/*  Definitions used for sockaddr_storage structure paddings design.  */
+#define _SS_MAXSIZE 128                   // Maximum size
+#define _SS_ALIGNSIZE (sizeof(__int64_t)) // Desired alignment
+#define _SS_PAD1SIZE (_SS_ALIGNSIZE - sizeof(unsigned short))
+#define _SS_PAD2SIZE (_SS_MAXSIZE - (sizeof(unsigned short) + _SS_PAD1SIZE + _SS_ALIGNSIZE))
+
 /*  Protocol families, same as address families for now.  */
 #define PF_UNSPEC	AF_UNSPEC
 #define PF_UNIX	AF_UNIX
@@ -875,6 +881,22 @@ typedef struct _sockproto
 	u_short sp_family;
 	u_short sp_protocol;
 } sockproto;
+
+/*  RFC 2553: protocol-independent placeholder for socket addresses  */
+typedef struct _sockaddr_storage
+{
+    u_short ss_family;             // address family
+
+    char __ss_pad1[_SS_PAD1SIZE];  // 6 byte pad, this is to make
+                                   //   implementation specific pad up to
+                                   //   alignment field that follows explicit
+                                   //   in the data structure
+    __int64_t __ss_align;          // Field to force desired structure
+    char __ss_pad2[_SS_PAD2SIZE];  // 112 byte pad to achieve desired size;
+                                   //   _SS_MAXSIZE value minus size of
+                                   //   ss_family, __ss_pad1, and
+                                   //   __ss_align fields is 112
+} sockaddr_storage;
 
 /*  Structure used for manipulating linger option.  */
 typedef struct _linger
