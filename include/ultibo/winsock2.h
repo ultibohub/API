@@ -743,15 +743,15 @@ Use the WSA constants instead.  */
 #define NI_MAXSERV	32 // Max size of a service name
 
 #define INET_ADDRSTR_ANY	"0.0.0.0"
-#define INET6_ADDRSTR_INIT	"0::0"
+#define INET6_ADDRSTR_ANY	"::"
 
 #define INET_ADDRSTR_BROADCAST	"255.255.255.255"
 
 #define INET_ADDRSTRLEN	16 // Max size of numeric form of IPv4 address
 #define INET6_ADDRSTRLEN	46 // Max size of numeric form of IPv6 address
 
-//#define IN6ADDR_ANY_INIT:TIn6Addr	(u6_addr16: (0, 0, 0, 0, 0, 0, 0, 0)) //To Do //Make these const
-//#define IN6ADDR_LOOPBACK_INIT:TIn6Addr	(u6_addr8: (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1)) //To Do //Make these const
+#define IN6ADDR_ANY_INIT {{{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }}}
+#define IN6ADDR_LOOPBACK_INIT {{{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01 }}}
 
 /* ============================================================================== */
 /* Winsock2 specific types */
