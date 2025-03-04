@@ -45,12 +45,12 @@ typedef	__uint32_t	sem_t;
 __BEGIN_DECLS
 int sem_close(sem_t *sem);
 int sem_destroy(sem_t *sem);
-int sem_getvalue(sem_t *restrict sem, int *restrict sval);
+int sem_getvalue(sem_t *__restrict sem, int *__restrict sval);
 int sem_init(sem_t *sem, int pshared, unsigned int value);
 sem_t *sem_open(const char *name, int oflag);
 sem_t *sem_open_ext(const char *name, int oflag, mode_t mode, unsigned int value);
 int sem_post(sem_t *sem);
-int sem_timedwait(sem_t *restrict sem, const struct timespec *restrict abstime);
+int sem_timedwait(sem_t *__restrict sem, const struct timespec *__restrict abstime);
 int sem_trywait(sem_t *sem);
 int sem_unlink(const char *name);
 int sem_wait(sem_t *sem);
