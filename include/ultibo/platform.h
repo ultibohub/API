@@ -1048,6 +1048,12 @@ int truncate(const char *path, off_t length);
 
 int fdatasync(int fd);
 
+int sethostname (const char *name, size_t size);
+#if !(defined (_WINSOCK_H) || defined (_WINSOCKAPI_) || defined (__USE_W32_SOCKETS))
+/* winsock[2].h defines as __stdcall, and with int as 2nd arg */
+ int gethostname (char *name, size_t size);
+#endif
+
 /* ============================================================================== */
 /* LIBC Functions (From sys/mman.h) */
 void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
