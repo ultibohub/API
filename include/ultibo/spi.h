@@ -66,7 +66,7 @@ extern "C" {
 
 /* SPI Transfer Flags */
 #define SPI_TRANSFER_NONE	0x00000000
-#define SPI_TRANSFER_DMA	0x00000001 // Use DMA for transfer (Write/Read) (Note: Buffers must be DMA compatible)
+#define SPI_TRANSFER_DMA	0x00000001 // Use DMA for transfer (Write/Read) (If supported) (Note: Buffers must be DMA compatible)
 #define SPI_TRANSFER_PIO	0x00000002 // Use PIO (Polling) for transfer (Write/Read)
 #define SPI_TRANSFER_DELAY	0x00000004 // Add a delay after each byte written (Write/Read) (Note: Only available with PIO transfer unless provided directly by hardware)
 

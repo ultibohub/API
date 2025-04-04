@@ -60,6 +60,8 @@ struct _I2CGPIO_DEVICE
 	uint32_t timeout; // Clock timeout in milliseconds
 	LONGBOOL outputonly; // Clock line is output only, no test for SCL high
 	LONGBOOL opendrain; // Clock and Data are open drain, no need to simulate by switching direction
+    // Transfer Properties
+	LONGBOOL ignorenak; // If True Ignore NAK responses and continue
 };
 
 /* ============================================================================== */

@@ -57,6 +57,12 @@ extern "C" {
 #define I2C_FLAG_SLAVE	0x00000001 // Device is a slave not a master
 #define I2C_FLAG_10BIT	0x00000002 // Device supports 10bit addressing
 #define I2C_FLAG_16BIT	0x00000004 // Device supports 16bit addressing
+#define I2C_FLAG_DMA	0x00000008 // Device supports DMA transfers
+
+/* I2C Transfer Flags */
+#define I2C_TRANSFER_NONE	0x00000000
+#define I2C_TRANSFER_DMA	0x00000001 // Use DMA for transfer (Write/Read) (If supported) (Note: Buffers must be DMA compatible)
+#define I2C_TRANSFER_IGNORE_NAK	0x00000002 // Ignore NAK responses and continue (For compatibility with unusual devices)
 
 /* ============================================================================== */
 /* I2C specific types */
@@ -85,10 +91,10 @@ typedef uint32_t STDCALL (*i2c_notification_cb)(DEVICE *device, void *data, uint
 typedef uint32_t STDCALL (*i2c_device_start_proc)(I2C_DEVICE *i2c, uint32_t rate);
 typedef uint32_t STDCALL (*i2c_device_stop_proc)(I2C_DEVICE *i2c);
 
-typedef uint32_t STDCALL (*i2c_device_read_proc)(I2C_DEVICE *i2c, uint16_t address, void *buffer, uint32_t size, uint32_t *count);
-typedef uint32_t STDCALL (*i2c_device_write_proc)(I2C_DEVICE *i2c, uint16_t address, void *buffer, uint32_t size, uint32_t *count);
-typedef uint32_t STDCALL (*i2c_device_write_read_proc)(I2C_DEVICE *i2c, uint16_t address, void *initial, uint32_t len, void *data, uint32_t size, uint32_t *count);
-typedef uint32_t STDCALL (*i2c_device_write_write_proc)(I2C_DEVICE *i2c, uint16_t address, void *initial, uint32_t len, void *data, uint32_t size, uint32_t *count);
+typedef uint32_t STDCALL (*i2c_device_read_proc)(I2C_DEVICE *i2c, uint16_t address, void *buffer, uint32_t size, uint32_t flags, uint32_t *count);
+typedef uint32_t STDCALL (*i2c_device_write_proc)(I2C_DEVICE *i2c, uint16_t address, void *buffer, uint32_t size, uint32_t flags, uint32_t *count);
+typedef uint32_t STDCALL (*i2c_device_write_read_proc)(I2C_DEVICE *i2c, uint16_t address, void *initial, uint32_t len, void *data, uint32_t size, uint32_t flags, uint32_t *count);
+typedef uint32_t STDCALL (*i2c_device_write_write_proc)(I2C_DEVICE *i2c, uint16_t address, void *initial, uint32_t len, void *data, uint32_t size, uint32_t flags, uint32_t *count);
 
 typedef uint32_t STDCALL (*i2c_device_get_rate_proc)(I2C_DEVICE *i2c);
 typedef uint32_t STDCALL (*i2c_device_set_rate_proc)(I2C_DEVICE *i2c, uint32_t rate);
@@ -138,9 +144,16 @@ uint32_t STDCALL i2c_device_start(I2C_DEVICE *i2c, uint32_t rate);
 uint32_t STDCALL i2c_device_stop(I2C_DEVICE *i2c);
 
 uint32_t STDCALL i2c_device_read(I2C_DEVICE *i2c, uint16_t address, void *buffer, uint32_t size, uint32_t *count);
+uint32_t STDCALL i2c_device_read_ex(I2C_DEVICE *i2c, uint16_t address, void *buffer, uint32_t size, uint32_t flags, uint32_t *count);
+
 uint32_t STDCALL i2c_device_write(I2C_DEVICE *i2c, uint16_t address, void *buffer, uint32_t size, uint32_t *count);
+uint32_t STDCALL i2c_device_write_ex(I2C_DEVICE *i2c, uint16_t address, void *buffer, uint32_t size, uint32_t flags, uint32_t *count);
+
 uint32_t STDCALL i2c_device_write_read(I2C_DEVICE *i2c, uint16_t address, void *initial, uint32_t len, void *data, uint32_t size, uint32_t *count);
+uint32_t STDCALL i2c_device_write_read_ex(I2C_DEVICE *i2c, uint16_t address, void *initial, uint32_t len, void *data, uint32_t size, uint32_t flags, uint32_t *count);
+
 uint32_t STDCALL i2c_device_write_write(I2C_DEVICE *i2c, uint16_t address, void *initial, uint32_t len, void *data, uint32_t size, uint32_t *count);
+uint32_t STDCALL i2c_device_write_write_ex(I2C_DEVICE *i2c, uint16_t address, void *initial, uint32_t len, void *data, uint32_t size, uint32_t flags, uint32_t *count);
 
 uint32_t STDCALL i2c_device_get_rate(I2C_DEVICE *i2c);
 uint32_t STDCALL i2c_device_set_rate(I2C_DEVICE *i2c, uint32_t rate);
