@@ -5,7 +5,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2024 Garry Wood <garry@softoz.com.au>
+# Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -33,12 +33,15 @@ API_PATH = ..
 OBJS = myfile.o
 
 # List of static libraries to link (with .a extension)
+# (eg LIBS = freetype.a sqlite3.a)
 #LIBS =
 
-# Additional GCC defines and options
+# Additional GCC and G++ defines and options
 #CFLAGS +=
+#CPPFLAGS +=
 
-# Additional GCC include paths
+# Additional GCC and G++ include paths
+# (eg INCLUDE += -I $(API_PATH)/libs/freetype2 -I $(API_PATH)/libs/sqlite3)
 #INCLUDE +=
 
 # Additional FPC defines and options

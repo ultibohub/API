@@ -69,9 +69,9 @@ In addition to the Ultibo interface headers a small number of headers that expos
 
 The src folder contains C sources for some additional functions not relevant to the standard Ultibo run time
 
-These modules don't need to be added to your project Makefile, precompiled versions are already included in the Ultibo run time. 
+These modules don't need to be added to your project Makefile, precompiled versions are already included in the Ultibo run time 
 
-To use these functions simply include the appropriate header in your source and the linker will find the precompiled object files when compiling.
+To use these functions simply include the appropriate header in your source and the linker will find the precompiled object files when compiling
 
 * console/consoleprintf.c - Implementation of console_printf() for ultibo/console.h
 * console/consolewindowprintf.c - Implementation of console_window_printf() for ultibo/console.h
@@ -79,6 +79,20 @@ To use these functions simply include the appropriate header in your source and 
 * logging/loggingdeviceoutputf.c - Implementation of logging_device_outputf() for ultibo/logging.h
 * platform/serialprintf.c - Implementation of serial_printf() for ultibo/platform.h
 * serial/serialdeviceprintf.c - Implementation of serial_device_printf() for ultibo/serial.h
+
+### Third party libraries:
+
+The libs folder contains header files for interfaces to the following third party libraries
+
+These are included in the Ultibo RTL as precompiled static libraries for each platform and can be included in your project by adding them to the LIBS = line of your Makefile
+
+* fftw3f - FFTW Fast Fourier Transforms
+* freetype2 - FreeType Font Rendering
+* libpng16 - PNG (Portable Network Graphics) Image Format
+* lua - LUA Language Interpreter
+* sqlite3 - SQLite Database Engine
+* vc4 - VideoCore IV Graphics Processor Interfaces
+* zlib - ZLIB Data Compression
 
 ### Example projects:
 

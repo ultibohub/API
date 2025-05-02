@@ -5,7 +5,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2024 Garry Wood <garry@softoz.com.au>
+# Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -53,7 +53,21 @@ BOARD_TYPE ?= unknown
 BUILD_MODE ?= release
 
 # Default to level 2 optimization
+# Override in Config.mk or project Makefile (eg OPT_LEVEL = -O3)
 OPT_LEVEL ?= -O2
+
+# Default to C standard of the compiler
+# Override in Config.mk or project Makefile (eg C_STD = -std=gnu17)
+C_STD ?= 
+
+# Default to C++17 standard
+# Override in Config.mk or project Makefile (eg CPP_STD = -std=gnu++17)
+CPP_STD ?= -std=c++17
+
+# Default to all warnings
+# Override in Config.mk or project Makefile (eg C_WARN = -Wall -Wextra)
+C_WARN ?= -Wall
+CPP_WARN ?= -Wall
 
 # Normalize board type
 ifeq ($(strip $(BOARD_TYPE)),rpia)
@@ -174,8 +188,8 @@ FPC = $(FPC_PATH)fpc
 INCLUDE	+= -I $(API_PATH)/include
 
 AFLAGS	+= $(CC_FLAGS) $(INCLUDE)
-CFLAGS	+= $(CC_FLAGS) -Wall $(INCLUDE)
-CPPFLAGS+= $(CFLAGS) -std=c++14
+CFLAGS	+= $(CC_FLAGS) $(C_WARN) $(INCLUDE) $(C_STD)
+CPPFLAGS+= $(CC_FLAGS) $(CPP_WARN) $(INCLUDE) $(CPP_STD)
 FPCOPT  += $(FPC_FLAGS)
 
 all: info clean $(TARGET_NAME)
@@ -208,7 +222,7 @@ $(TARGET_NAME): $(OBJS) $(LIBS)
 	@$(FPC) $(FPCOPT)
 
 clean:
-	rm -f *.o *.a *.elf *.lst *.img *.bin *.map *~ *.ppu link*.res
+	rm -f *.o *.elf *.lst *.img *.bin *.map *~ *.ppu link*.res
 	rm -f __link.inc
 	rm -f __linklib.inc
 
