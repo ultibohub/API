@@ -21,4 +21,5 @@
 #FPC_PATH = $(HOME)/ultibo/core/fpc/bin/
 
 # Define the tools folder (as, ld, gcc) if not in $PATH
-#TOOLS_PATH = 
+#TOOLS_PATH = C:/Ultibo/GCC/bin/
+#TOOLS_PATH = $(HOME)/arm-gnu-toolchain-13.3.rel1-x86_64-arm-none-eabi/bin/

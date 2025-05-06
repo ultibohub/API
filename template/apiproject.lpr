@@ -66,7 +66,7 @@ uses
   ShellUSB,
   ShellUpdate,
   ShellNetwork,
-  ShellFileSystem,
+  ShellFilesystem,
   {$ENDIF}
   Syscalls,         {Include the Syscalls unit for standard C library support}
   UltiboUtils,
