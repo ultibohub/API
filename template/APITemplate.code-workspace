@@ -55,7 +55,7 @@
 				"name": "QEMU VersatilePB",
 				"makeArgs": ["BOARD_TYPE=qemuvpb", "BUILD_MODE=debug"]
 			}
-			]
+			],
 		"makefile.configureOnOpen": true,
 	}
 }
