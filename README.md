@@ -90,6 +90,7 @@ These are included in the Ultibo RTL as precompiled static libraries for each pl
 * freetype2 - FreeType Font Rendering
 * libpng16 - PNG (Portable Network Graphics) Image Format
 * lua - LUA Language Interpreter
+* lvgl - Light and Versatile Graphics Library
 * sqlite3 - SQLite Database Engine
 * vc4 - VideoCore IV Graphics Processor Interfaces
 * zlib - ZLIB Data Compression
@@ -119,3 +120,4 @@ Located under the samples folder are a number of simple projects that show how t
 ### Advanced examples:
 
 * Dedicated CPU
+* LVGL Demo
