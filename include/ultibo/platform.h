@@ -556,6 +556,7 @@ uint32_t STDCALL clock_get_count(void);
 int64_t STDCALL clock_get_total(void);
 
 uint32_t STDCALL clock_update_offset(void);
+uint32_t STDCALL clock_calculate_offset(double_t datetime, int32_t *offset, BOOL *daylight);
 
 uint32_t STDCALL clock_get_rate(uint32_t clockid);
 uint32_t STDCALL clock_set_rate(uint32_t clockid, uint32_t rate, BOOL turbo);

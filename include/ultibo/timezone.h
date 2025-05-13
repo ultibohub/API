@@ -142,6 +142,9 @@ uint32_t STDCALL timezone_set_default(TIMEZONE_ENTRY *timezone);
 TIMEZONE_ENTRY * STDCALL timezone_check(TIMEZONE_ENTRY *timezone);
 
 uint32_t STDCALL timezone_update_offset(void);
+uint32_t STDCALL timezone_update_environment(void);
+
+uint32_t STDCALL timezone_calculate_offset(double_t datetime, int32_t *offset, BOOL *daylight);
 
 double_t STDCALL timezone_start_to_date_time(SYSTEMTIME *start, uint16_t year);
 uint32_t STDCALL timezone_start_to_description(SYSTEMTIME *start, char *description, uint32_t len);
