@@ -17,6 +17,9 @@ extern "C" {
 /* Define clock frequencies for the PWM clock */
 #define PWMSOUND_PWM_OSC_CLOCK 54000000
 #define PWMSOUND_PWM_PLLD_CLOCK 750000000
+
+/* Define the DMA data request ID for the PWM device */
+#define PWMSOUND_DMA_DREQ_ID_PWM DMA_DREQ_ID_PWM1 
 #else
 /* Define ID and channel for the PWM devices */
 #define PWMSOUND_PWM1_ID 0
@@ -27,6 +30,9 @@ extern "C" {
 /* Define clock frequencies for the PWM clock */
 #define PWMSOUND_PWM_OSC_CLOCK 19200000   
 #define PWMSOUND_PWM_PLLD_CLOCK 500000000 
+
+/* Define the DMA data request ID for the PWM device */
+#define PWMSOUND_DMA_DREQ_ID_PWM DMA_DREQ_ID_PWM 
 #endif
 
 /* Define sound parameters */

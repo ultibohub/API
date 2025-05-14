@@ -384,6 +384,8 @@ static uint32_t pwmsound_play_sample(PWM_DEVICE * pwm, void *data, uint32_t size
 
     return res;
   }
+  memset(dma_data, 0, sizeof(DMA_DATA));
+
   dma_data->source = output;
   dma_data->dest = bcm27xx_pwm->address + BCM283X_PWM_FIF1;
   dma_data->size = samples * sizeof(uint32_t);
@@ -397,7 +399,7 @@ static uint32_t pwmsound_play_sample(PWM_DEVICE * pwm, void *data, uint32_t size
   bcm283x_regs->DMAC = bcm283x_regs->DMAC | BCM283X_PWM_DMAC_ENAB;
 
   /* Perform DMA transfer */
-  dma_transfer(dma_data, DMA_DIR_MEM_TO_DEV, DMA_DREQ_ID_PWM);
+  dma_transfer(dma_data, DMA_DIR_MEM_TO_DEV, PWMSOUND_DMA_DREQ_ID_PWM);
   
   /* Free DMA Data */
   free(dma_data);
