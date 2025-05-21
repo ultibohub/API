@@ -88,6 +88,7 @@ These are included in the Ultibo RTL as precompiled static libraries for each pl
 
 * fftw3f - FFTW Fast Fourier Transforms
 * freetype2 - FreeType Font Rendering
+* libmad -  MPEG Audio Decoder
 * libpng16 - PNG (Portable Network Graphics) Image Format
 * lua - LUA Language Interpreter
 * lvgl - Light and Versatile Graphics Library
