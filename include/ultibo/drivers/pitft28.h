@@ -23,8 +23,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef _ULTIBO_I2CGPIO_H
-#define _ULTIBO_I2CGPIO_H
+#ifndef _ULTIBO_PITFT28_H
+#define _ULTIBO_PITFT28_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,48 +32,49 @@ extern "C" {
 
 #include "ultibo/gpio.h"
 #include "ultibo/i2c.h"
+#include "ultibo/spi.h"
+#include "ultibo/framebuffer.h"
+#include "ultibo/touch.h"
 
 /* ============================================================================== */
-/* I2CGPIO specific constants */
-#define I2CGPIO_I2C_DESCRIPTION	"GPIO Software I2C" // Description of I2CGPIO I2C device
+/* PiTFT28 specific constants */
+#define PITFT28_FRAMEBUFFER_DESCRIPTION	"Adafruit PiTFT 2.8" LCD" // Description of PiTFT28 device
 
-#define I2CGPIO_I2C_MAX_SIZE	0xFFFF
-#define I2CGPIO_I2C_MIN_CLOCK	10000 // Arbitrary minimum of 10KHz, actual rate is determined by Delay parameter
-#define I2CGPIO_I2C_MAX_CLOCK	100000 // Arbitrary maximum of 100KHz, actual rate is determined by Delay parameter
+#define PITFT28_SIGNATURE	0xAF000028
 
-#define I2CGPIO_RETRY_COUNT	3
+#define PITFT28_SCREEN_WIDTH	240
+#define PITFT28_SCREEN_HEIGHT	320
 
-#define I2CGPIO_DEFAULT_TIMEOUT	100
+/* PiTFT28 GPIO constants */
+#define PITFT28_LCD_DC	GPIO_PIN_25
+#define PITFT28_TOUCH_IRQ	GPIO_PIN_24
+
+#define PITFT28_LCD_BL	GPIO_PIN_2 // STMPE GPIO
 
 /* ============================================================================== */
-/* I2CGPIO specific types */
-typedef struct _I2CGPIO_DEVICE I2CGPIO_DEVICE;
-struct _I2CGPIO_DEVICE
+/* PiTFT28 specific types */
+typedef struct _PITFT28LCD PITFT28LCD;
+struct _PITFT28LCD
 {
-	// I2C Properties
-	I2C_DEVICE i2c;
-	// I2CGPIO Properties
-	GPIO_DEVICE *gpio; // The GPIO device this device is connected to
-	uint32_t sda; // GPIO pin for the SDA line
-	uint32_t scl; // GPIO pin for the SCL line
-	uint32_t delay; // Clock and Data delay in microseconds
-	uint32_t timeout; // Clock timeout in milliseconds
-	LONGBOOL outputonly; // Clock line is output only, no test for SCL high
-	LONGBOOL opendrain; // Clock and Data are open drain, no need to simulate by switching direction
-    // Transfer Properties
-	LONGBOOL ignorenak; // If True Ignore NAK responses and continue
+	uint32_t signature; // Signature for entry validation
+	uint32_t rotation; // Framebuffer rotation (eg FRAMEBUFFER_ROTATION_180)
+	SPI_DEVICE *spi; // SPI device for this display
+	I2C_DEVICE *i2c; // I2C device for this display
+	GPIO_DEVICE *gpio; // GPIO device for this display
+	TOUCH_DEVICE *touch; // Touch (STMPE or FT6236) device for this display
+	GPIO_DEVICE *backlight; // Backlight GPIO (STMPE) device for this display
+	FRAMEBUFFER_DEVICE *framebuffer; // Framebuffer (ILI9340) device for this display
 };
 
 /* ============================================================================== */
-/* I2CGPIO Functions */
-I2C_DEVICE * STDCALL i2cgpio_create(GPIO_DEVICE *gpio, uint32_t sda, uint32_t scl, uint32_t delay, uint32_t timeout, BOOL outputonly, BOOL opendrain);
-uint32_t STDCALL i2cgpio_destroy(I2C_DEVICE *i2c);
-
-/* ============================================================================== */
-/* I2CGPIO Helper Functions */
+/* PiTFT28 Functions */
+HANDLE STDCALL pitft28_start(uint32_t rotation, char *device, uint16_t displayselect, uint16_t touchselect);
+HANDLE STDCALL pitft28_resistive_start(uint32_t rotation, char *device, uint16_t displayselect, uint16_t touchselect);
+HANDLE STDCALL pitft28_capacitive_start(uint32_t rotation, char *spidevice, char *i2cdevice, uint16_t displayselect, uint16_t touchaddress);
+BOOL STDCALL pitft28_stop(HANDLE handle);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // _ULTIBO_I2CGPIO_H
+#endif //  _ULTIBO_PITFT28_H

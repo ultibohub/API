@@ -23,8 +23,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef _ULTIBO_I2CGPIO_H
-#define _ULTIBO_I2CGPIO_H
+#ifndef _ULTIBO_I2CLCD_H
+#define _ULTIBO_I2CLCD_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,48 +32,47 @@ extern "C" {
 
 #include "ultibo/gpio.h"
 #include "ultibo/i2c.h"
+#include "ultibo/console.h"
 
 /* ============================================================================== */
-/* I2CGPIO specific constants */
-#define I2CGPIO_I2C_DESCRIPTION	"GPIO Software I2C" // Description of I2CGPIO I2C device
+/* I2CLCD specific constants */
+#define I2CLCD_CONSOLE_DESCRIPTION	"Generic I2C LCD" // Description of I2CLCD device
 
-#define I2CGPIO_I2C_MAX_SIZE	0xFFFF
-#define I2CGPIO_I2C_MIN_CLOCK	10000 // Arbitrary minimum of 10KHz, actual rate is determined by Delay parameter
-#define I2CGPIO_I2C_MAX_CLOCK	100000 // Arbitrary maximum of 100KHz, actual rate is determined by Delay parameter
+#define I2CLCD_SIGNATURE	0x00CF8574
 
-#define I2CGPIO_RETRY_COUNT	3
-
-#define I2CGPIO_DEFAULT_TIMEOUT	100
+/* I2CLCD GPIO constants */
+#define I2CLCD_PIN_RS	GPIO_PIN_0 // GPIO pin for the LCD RS line
+#define I2CLCD_PIN_RW	GPIO_PIN_1 // GPIO pin for the LCD RW line
+#define I2CLCD_PIN_EN	GPIO_PIN_2 // GPIO pin for the LCD EN line
+#define I2CLCD_PIN_BACKLIGHT	GPIO_PIN_3 // GPIO pin for the LCD Backlight
+#define I2CLCD_PIN_D4	GPIO_PIN_4 // GPIO pin for the LCD D4 line
+#define I2CLCD_PIN_D5	GPIO_PIN_5 // GPIO pin for the LCD D5 line
+#define I2CLCD_PIN_D6	GPIO_PIN_6 // GPIO pin for the LCD D6 line
+#define I2CLCD_PIN_D7	GPIO_PIN_7 // GPIO pin for the LCD D7 line
 
 /* ============================================================================== */
-/* I2CGPIO specific types */
-typedef struct _I2CGPIO_DEVICE I2CGPIO_DEVICE;
-struct _I2CGPIO_DEVICE
+/* I2CLCD specific types */
+typedef struct _I2CLCD_DISPLAY I2CLCD_DISPLAY;
+struct _I2CLCD_DISPLAY
 {
-	// I2C Properties
-	I2C_DEVICE i2c;
-	// I2CGPIO Properties
-	GPIO_DEVICE *gpio; // The GPIO device this device is connected to
-	uint32_t sda; // GPIO pin for the SDA line
-	uint32_t scl; // GPIO pin for the SCL line
-	uint32_t delay; // Clock and Data delay in microseconds
-	uint32_t timeout; // Clock timeout in milliseconds
-	LONGBOOL outputonly; // Clock line is output only, no test for SCL high
-	LONGBOOL opendrain; // Clock and Data are open drain, no need to simulate by switching direction
-    // Transfer Properties
-	LONGBOOL ignorenak; // If True Ignore NAK responses and continue
+	uint32_t signature; // Signature for entry validation
+	uint32_t width; // Width in columns of this display
+	uint32_t height; // Height in rows of this display
+	I2C_DEVICE *i2c; // I2C device for this display
+	GPIO_DEVICE *gpio; // GPIO (PCF8574) device for this display
+	CONSOLE_DEVICE *console; // Console (HD44780) device for this display
 };
 
 /* ============================================================================== */
-/* I2CGPIO Functions */
-I2C_DEVICE * STDCALL i2cgpio_create(GPIO_DEVICE *gpio, uint32_t sda, uint32_t scl, uint32_t delay, uint32_t timeout, BOOL outputonly, BOOL opendrain);
-uint32_t STDCALL i2cgpio_destroy(I2C_DEVICE *i2c);
+/* I2CLCD Functions */
+HANDLE STDCALL i2clcd_start(char *device, uint16_t address, uint32_t width, uint32_t height);
+BOOL STDCALL i2clcd_stop(HANDLE handle);
 
-/* ============================================================================== */
-/* I2CGPIO Helper Functions */
+BOOL STDCALL i2clcd_backlight_on(HANDLE handle);
+BOOL STDCALL i2clcd_backlight_off(HANDLE handle);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // _ULTIBO_I2CGPIO_H
+#endif // _ULTIBO_I2CLCD_H

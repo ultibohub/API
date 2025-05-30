@@ -23,57 +23,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef _ULTIBO_I2CGPIO_H
-#define _ULTIBO_I2CGPIO_H
+#ifndef _ULTIBO_IPSTFT19_H
+#define _ULTIBO_IPSTFT19_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #include "ultibo/gpio.h"
-#include "ultibo/i2c.h"
+#include "ultibo/spi.h"
+#include "ultibo/framebuffer.h"
 
 /* ============================================================================== */
-/* I2CGPIO specific constants */
-#define I2CGPIO_I2C_DESCRIPTION	"GPIO Software I2C" // Description of I2CGPIO I2C device
+/* IPSTFT19 specific constants */
+#define IPSTFT19_FRAMEBUFFER_DESCRIPTION	"Adafruit 1.9" IPS TFT" // Description of IPSTFT19 device
 
-#define I2CGPIO_I2C_MAX_SIZE	0xFFFF
-#define I2CGPIO_I2C_MIN_CLOCK	10000 // Arbitrary minimum of 10KHz, actual rate is determined by Delay parameter
-#define I2CGPIO_I2C_MAX_CLOCK	100000 // Arbitrary maximum of 100KHz, actual rate is determined by Delay parameter
+#define IPSTFT19_SIGNATURE	0xAF000019
 
-#define I2CGPIO_RETRY_COUNT	3
+#define IPSTFT19_SCREEN_WIDTH	170
+#define IPSTFT19_SCREEN_HEIGHT	320
+#define IPSTFT19_COLSTART	35
+#define IPSTFT19_DEFAULT_ROTATION	FRAMEBUFFER_ROTATION_90
 
-#define I2CGPIO_DEFAULT_TIMEOUT	100
+/* IPSTFT19 GPIO constants */
+#define IPSTFT19_LCD_DC	GPIO_PIN_25
+#define IPSTFT19_LCD_RST	GPIO_PIN_27 // Add this one
+#define IPSTFT19_LCD_BL	GPIO_PIN_18
 
 /* ============================================================================== */
-/* I2CGPIO specific types */
-typedef struct _I2CGPIO_DEVICE I2CGPIO_DEVICE;
-struct _I2CGPIO_DEVICE
+/* IPSTFT19 specific types */
+typedef struct _IPSTFT19LCD IPSTFT19LCD;
+struct _IPSTFT19LCD
 {
-	// I2C Properties
-	I2C_DEVICE i2c;
-	// I2CGPIO Properties
-	GPIO_DEVICE *gpio; // The GPIO device this device is connected to
-	uint32_t sda; // GPIO pin for the SDA line
-	uint32_t scl; // GPIO pin for the SCL line
-	uint32_t delay; // Clock and Data delay in microseconds
-	uint32_t timeout; // Clock timeout in milliseconds
-	LONGBOOL outputonly; // Clock line is output only, no test for SCL high
-	LONGBOOL opendrain; // Clock and Data are open drain, no need to simulate by switching direction
-    // Transfer Properties
-	LONGBOOL ignorenak; // If True Ignore NAK responses and continue
+	uint32_t signature; // Signature for entry validation
+	uint32_t rotation; // Framebuffer rotation (eg FRAMEBUFFER_ROTATION_180)
+	SPI_DEVICE *spi; // SPI device for this display
+	GPIO_DEVICE *gpio; // GPIO device for this display
+	FRAMEBUFFER_DEVICE *framebuffer; // Framebuffer (ST7789) device for this display
 };
 
 /* ============================================================================== */
-/* I2CGPIO Functions */
-I2C_DEVICE * STDCALL i2cgpio_create(GPIO_DEVICE *gpio, uint32_t sda, uint32_t scl, uint32_t delay, uint32_t timeout, BOOL outputonly, BOOL opendrain);
-uint32_t STDCALL i2cgpio_destroy(I2C_DEVICE *i2c);
-
-/* ============================================================================== */
-/* I2CGPIO Helper Functions */
+/* IPSTFT19 Functions */
+HANDLE STDCALL ipstft19_start(uint32_t rotation, char *device, uint16_t displayselect);
+BOOL STDCALL ipstft19_stop(HANDLE handle);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // _ULTIBO_I2CGPIO_H
+#endif // _ULTIBO_IPSTFT19_H

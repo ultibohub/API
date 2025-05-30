@@ -185,7 +185,7 @@ extern "C" {
 #define THREAD_FLAG_CANCEL_DISABLE	0x00000004 // Indicates that thread cancellation is disabled for a thread, for support of external thread APIs (eg pThreads)(Not used internally by Ultibo)
 #define THREAD_FLAG_CANCEL_ASYNCHRONOUS	0x00000008 // Indicates that asynchronous thread cancellation is enabled for a thread, for support of external thread APIs (eg pThreads)(Not used internally by Ultibo)
 
-#define THREAD_FLAG_INTERNAL	THREAD_FLAG_NONE + $80000000 // Note: Temporary value to avoid warning
+#define THREAD_FLAG_INTERNAL	THREAD_FLAG_NONE + 0x80000000 // Note: Temporary value to avoid warning
 
 /* Thread state constants */
 #define THREAD_STATE_RUNNING	1 // Thread is currently running

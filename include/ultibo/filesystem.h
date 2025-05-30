@@ -862,7 +862,7 @@ typedef struct _MASTER_BOOT_RECORD
 {
 	MASTER_BOOT_CODE bootcode;
 	PARTITION_TABLE partitiontable;
-	uint16_t signature; // Magic Number $AA55
+	uint16_t signature; // Magic Number 0xAA55
 } PACKED MASTER_BOOT_RECORD;
 
 typedef uint8_t EXT_MASTER_BOOT_CODE[440];
@@ -873,14 +873,14 @@ typedef struct _EXT_MASTER_BOOT_RECORD
 	uint32_t disksignature;
 	uint16_t reserved1;
 	PARTITION_TABLE partitiontable;
-	uint16_t signature; // Magic Number $AA55
+	uint16_t signature; // Magic Number 0xAA55
 } PACKED EXT_MASTER_BOOT_RECORD;
 
 typedef struct _PARTITION_RECORD
 {
 	uint8_t dummy[446];
 	PARTITION_TABLE partitiontable; // Only first 2 ever used
-	uint16_t signature; // Magic Number $AA55
+	uint16_t signature; // Magic Number 0xAA55
 } PACKED PARTITION_RECORD;
 
 /* Sector types */
@@ -901,7 +901,7 @@ typedef struct _BOOT_SECTOR
 	char volumename[11]; // Volume Label or "NO NAME"
 	char systemname[8]; // System Type FAT12, FAT16, FAT32 etc
 	BOOT_SECTOR_CODE bootcode; // Executable Code
-	uint16_t signature; // Magic Number $AA55
+	uint16_t signature; // Magic Number 0xAA55
 } PACKED BOOT_SECTOR;
 
 typedef uint8_t EXT_BOOT_SECTOR_JUMP[3];
@@ -919,7 +919,7 @@ typedef struct _EXT_BOOT_SECTOR
 	char volumename[11]; // Volume Label or "NO NAME"
 	char systemname[8]; // System Type FAT12, FAT16, FAT32 etc
 	EXT_BOOT_SECTOR_CODE bootcode; // Executable Code
-	uint16_t signature; // Magic Number $AA55
+	uint16_t signature; // Magic Number 0xAA55
 } PACKED EXT_BOOT_SECTOR;
 
 typedef uint8_t NTFS_BOOT_SECTOR_JUMP[3];
@@ -931,7 +931,7 @@ typedef struct _NTFS_BOOT_SECTOR
 	char oemname[8]; // Always NTFS
 	NTFS_BIOS_PB bpb; // See Above (73 Bytes BPB and ExtBPB)
 	NTFS_BOOT_SECTOR_CODE bootcode; // Executable Code
-	uint16_t signature; // Magic Number $AA55
+	uint16_t signature; // Magic Number 0xAA55
 } PACKED NTFS_BOOT_SECTOR;
 
 typedef struct _EXTFS_BOOT_SECTOR

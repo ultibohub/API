@@ -41,7 +41,7 @@ extern "C" {
 #define HANDLE_FLAG_NAMED	0x00000001 // Set if the handle has a name
 #define HANDLE_FLAG_DUPLICATE	0x00000002 // Set if the handle can be duplicated
 
-#define HANDLE_FLAG_INTERNAL	HANDLE_FLAG_NONE + $80000000 // Note: Temporary value to avoid warning
+#define HANDLE_FLAG_INTERNAL	HANDLE_FLAG_NONE + 0x80000000 // Note: Temporary value to avoid warning
 
 /* Handle constants */
 #define HANDLE_SIGNATURE	0xCD15E20A
