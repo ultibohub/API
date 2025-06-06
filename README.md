@@ -79,6 +79,7 @@ To use these functions simply include the appropriate header in your source and 
 * logging/loggingdeviceoutputf.c - Implementation of logging_device_outputf() for ultibo/logging.h
 * platform/serialprintf.c - Implementation of serial_printf() for ultibo/platform.h
 * serial/serialdeviceprintf.c - Implementation of serial_device_printf() for ultibo/serial.h
+* fcntl/fcntl.c - Implementation of fcntl() with variable arguments for fcntl.h
 
 ### Third party libraries:
 
