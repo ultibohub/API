@@ -140,10 +140,10 @@ int	fstat (int __fd, struct stat *__sbuf );
 int	mkdir (const char *_path, mode_t __mode );
 int	mkfifo (const char *__path, mode_t __mode );
 int	stat (const char *__restrict __path, struct stat *__restrict __sbuf );
+int	lstat (const char *__restrict __path, struct stat *__restrict __buf );
 mode_t	umask (mode_t __mask );
 
 #if defined (__SPU__) || defined(__rtems__) || defined(__CYGWIN__)
-int	lstat (const char *__restrict __path, struct stat *__restrict __buf );
 int	mknod (const char *__path, mode_t __mode, dev_t __dev );
 #endif
 
