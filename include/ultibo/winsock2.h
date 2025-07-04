@@ -334,6 +334,7 @@ non-TCP/IP transports such as DECNet, OSI TP4, etc.  */
 #define MSG_OOB	0x1 // process out-of-band data
 #define MSG_PEEK	0x2 // peek at incoming message
 #define MSG_DONTROUTE	0x4 // send without using routing tables
+#define MSG_WAITALL	0x8; // do not complete until packet is completely filled
 
 #define MSG_INTERRUPT	0x10 // send/recv in the interrupt context
 #define MSG_MAXIOVLEN	16
@@ -1209,7 +1210,7 @@ typedef WSANAMESPACE_INFOA WSANAMESPACE_INFO;
 
 /*  WinSock 2 extensions -- data types for the condition function in  */
 /*  WSAAccept() and overlapped I/O completion routine.  */
-typedef int32_t STDCALL (*LPCONDITIONPROC)(WSABUF *lpcallerid, WSABUF *lpcallerdata, QOS *lpsqos, QOS *lpgqos, WSABUF *lpcalleeid, WSABUF *lpcalleedata, GROUP g, uint32_t dwcallbackdata);
+typedef int32_t STDCALL (*LPCONDITIONPROC)(WSABUF *lpcallerid, WSABUF *lpcallerdata, QOS *lpsqos, QOS *lpgqos, WSABUF *lpcalleeid, WSABUF *lpcalleedata, GROUP *g, uintptr_t dwcallbackdata);
 typedef void STDCALL (*LPWSAOVERLAPPED_COMPLETION_ROUTINE)(uint32_t dwerror, uint32_t cbtransferred, WSAOVERLAPPED *lpoverlapped, uint32_t dwflags);
 
 /* Structure used in getaddrinfo() call */
@@ -1243,12 +1244,18 @@ int32_t STDCALL ioctlsocket(SOCKET s, int32_t cmd, u_long *arg);
 int32_t STDCALL getpeername(SOCKET s, SOCKADDR *name, int32_t *namelen);
 int32_t STDCALL getsockname(SOCKET s, SOCKADDR *name, int32_t *namelen);
 int32_t STDCALL getsockopt(SOCKET s, int32_t level, int32_t optname, char *optval, int32_t *optlen);
+uint64_t STDCALL htond(double_t hostdouble);
+uint32_t STDCALL htonf(float_t hostfloat);
 u_long STDCALL htonl(u_long hostlong);
+uint64_t STDCALL htonll(uint64_t hostlonglong);
 u_short STDCALL htons(u_short hostshort);
 u_long STDCALL inet_addr(const char *cp);
 char * STDCALL inet_ntoa(in_addr inaddr);
 int32_t STDCALL listen(SOCKET s, int32_t backlog);
+double_t STDCALL ntohd(uint64_t netdouble);
+float_t STDCALL ntohf(uint32_t netfloat);
 u_long STDCALL ntohl(u_long netlong);
+uint64_t STDCALL ntohll(uint64_t netlonglong);
 u_short STDCALL ntohs(u_short netshort);
 int32_t STDCALL recv(SOCKET s, char *buf, int32_t len, int32_t flags);
 int32_t STDCALL recvfrom(SOCKET s, char *buf, int32_t len, int32_t flags, SOCKADDR *from, int32_t *fromlen);
@@ -1298,7 +1305,7 @@ char * STDCALL inet_ntop(int32_t family, void *paddr, char *pstringbuf, int32_t 
 char * STDCALL InetNtopA(int32_t family, void *paddr, char *pstringbuf, int32_t stringbufsize);
 WCHAR * STDCALL InetNtopW(int32_t family, void *paddr, WCHAR *pstringbuf, int32_t stringbufsize);
 
-SOCKET STDCALL WSAAccept(SOCKET s, SOCKADDR addr, int32_t *addrlen, LPCONDITIONPROC lpfncondition, uint32_t dwcallbackdata);
+SOCKET STDCALL WSAAccept(SOCKET s, SOCKADDR *addr, int32_t *addrlen, LPCONDITIONPROC lpfncondition, uintptr_t dwcallbackdata);
 BOOL STDCALL WSACloseEvent(WSAEVENT hevent);
 int32_t STDCALL WSAConnect(SOCKET s, SOCKADDR *name, int32_t namelen, WSABUF *lpcallerdata, WSABUF *lpcalleedata, QOS *lpsqos, QOS *lpgqos);
 BOOL STDCALL WSAConnectByList(SOCKET s, SOCKET_ADDRESS_LIST *socketaddresslist, uint32_t *localaddresslength, SOCKADDR *localaddress, uint32_t *remoteaddresslength, SOCKADDR *remoteaddress, wstimeval *timeout, WSAOVERLAPPED *reserved);
@@ -1324,30 +1331,30 @@ int32_t STDCALL WSAProviderConfigChange(HANDLE *lpnotificationhandle, WSAOVERLAP
 int32_t STDCALL WSARecv(SOCKET s, WSABUF *lpbuffers, uint32_t dwbuffercount, uint32_t *lpnumberofbytesrecvd, uint32_t *lpflags, WSAOVERLAPPED *lpoverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpcompletionroutine);
 int32_t STDCALL WSARecvDisconnect(SOCKET s, WSABUF *lpinbounddisconnectdata);
 int32_t STDCALL WSARecvFrom(SOCKET s, WSABUF *lpbuffers, uint32_t dwbuffercount, uint32_t *lpnumberofbytesrecvd, uint32_t *lpflags, SOCKADDR *lpfrom, int32_t *lpfromlen, WSAOVERLAPPED *lpoverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpcompletionroutine);
-int32_t STDCALL WSARecvMsg(SOCKET s, WSAMSG *lpmsg, uint32_t lpdwnumberofbytesrecvd, WSAOVERLAPPED *lpoverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpcompletionroutine);
+int32_t STDCALL WSARecvMsg(SOCKET s, WSAMSG *lpmsg, uint32_t *lpdwnumberofbytesrecvd, WSAOVERLAPPED *lpoverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpcompletionroutine);
 BOOL STDCALL WSAResetEvent(WSAEVENT hevent);
 int32_t STDCALL WSASend(SOCKET s, WSABUF *lpbuffers, uint32_t dwbuffercount, uint32_t *lpnumberofbytessent, uint32_t dwflags, WSAOVERLAPPED *lpoverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpcompletionroutine);
 int32_t STDCALL WSASendDisconnect(SOCKET s, WSABUF *lpoutbounddisconnectdata);
 int32_t STDCALL WSASendTo(SOCKET s, WSABUF *lpbuffers, uint32_t dwbuffercount, uint32_t *lpnumberofbytessent, uint32_t dwflags, SOCKADDR *lpto, int32_t itolen, WSAOVERLAPPED *lpoverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpcompletionroutine);
-int32_t STDCALL WSASendMsg(SOCKET s, WSAMSG *lpmsg, uint32_t dwflags, uint32_t lpnumberofbytessent, WSAOVERLAPPED *lpoverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpcompletionroutine);
+int32_t STDCALL WSASendMsg(SOCKET s, WSAMSG *lpmsg, uint32_t dwflags, uint32_t *lpnumberofbytessent, WSAOVERLAPPED *lpoverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpcompletionroutine);
 BOOL STDCALL WSASetEvent(WSAEVENT hevent);
 SOCKET STDCALL WSASocketA(int32_t af, int32_t itype, int32_t protocol, WSAPROTOCOL_INFOA *lpprotocolinfo, GROUP g, uint32_t dwflags);
 SOCKET STDCALL WSASocketW(int32_t af, int32_t itype, int32_t protocol, WSAPROTOCOL_INFOW *lpprotocolinfo, GROUP g, uint32_t dwflags);
 
 uint32_t STDCALL WSAWaitForMultipleEvents(uint32_t cevents, WSAEVENT *lphevents, BOOL fwaitall, uint32_t dwtimeout, BOOL falertable);
-int32_t STDCALL WSAAddressToStringA(SOCKADDR *lpsaaddress, uint32_t *dwaddresslength, WSAPROTOCOL_INFOA *lpprotocolinfo, char *lpszaddressstring, uint32_t *lpdwaddressstringlength);
-int32_t STDCALL WSAAddressToStringW(SOCKADDR *lpsaaddress, uint32_t *dwaddresslength, WSAPROTOCOL_INFOW *lpprotocolinfo, WCHAR *lpszaddressstring, uint32_t *lpdwaddressstringlength);
+int32_t STDCALL WSAAddressToStringA(SOCKADDR *lpsaaddress, uint32_t dwaddresslength, WSAPROTOCOL_INFOA *lpprotocolinfo, char *lpszaddressstring, uint32_t *lpdwaddressstringlength);
+int32_t STDCALL WSAAddressToStringW(SOCKADDR *lpsaaddress, uint32_t dwaddresslength, WSAPROTOCOL_INFOW *lpprotocolinfo, WCHAR *lpszaddressstring, uint32_t *lpdwaddressstringlength);
 
-int32_t STDCALL WSAStringToAddressA(char *addressstring, int32_t *addressfamily, WSAPROTOCOL_INFOA *lpprotocolinfo, SOCKADDR *lpaddress, int32_t *lpaddresslength);
-int32_t STDCALL WSAStringToAddressW(WCHAR *addressstring, int32_t *addressfamily, WSAPROTOCOL_INFOA *lpprotocolinfo, SOCKADDR *lpaddress, int32_t *lpaddresslength);
+int32_t STDCALL WSAStringToAddressA(const char *addressstring, int32_t addressfamily, WSAPROTOCOL_INFOA *lpprotocolinfo, SOCKADDR *lpaddress, int32_t *lpaddresslength);
+int32_t STDCALL WSAStringToAddressW(const WCHAR *addressstring, int32_t addressfamily, WSAPROTOCOL_INFOA *lpprotocolinfo, SOCKADDR *lpaddress, int32_t *lpaddresslength);
 
 /*  Registration and Name Resolution API functions  */
-int32_t STDCALL WSALookupServiceBeginA(WSAQUERYSETA *lpqsrestrictions, uint32_t *dwcontrolflags, HANDLE *lphlookup);
-int32_t STDCALL WSALookupServiceBeginW(WSAQUERYSETW *lpqsrestrictions, uint32_t *dwcontrolflags, HANDLE *lphlookup);
+int32_t STDCALL WSALookupServiceBeginA(WSAQUERYSETA *lpqsrestrictions, uint32_t dwcontrolflags, HANDLE *lphlookup);
+int32_t STDCALL WSALookupServiceBeginW(WSAQUERYSETW *lpqsrestrictions, uint32_t dwcontrolflags, HANDLE *lphlookup);
 
-int32_t STDCALL WSALookupServiceNextA(HANDLE *hlookup, uint32_t *dwcontrolflags, uint32_t *lpdwbufferlength, WSAQUERYSETA *lpqsresults);
-int32_t STDCALL WSALookupServiceNextW(HANDLE *hlookup, uint32_t *dwcontrolflags, uint32_t *lpdwbufferlength, WSAQUERYSETW *lpqsresults);
-int32_t STDCALL WSALookupServiceEnd(HANDLE *hlookup);
+int32_t STDCALL WSALookupServiceNextA(HANDLE hlookup, uint32_t dwcontrolflags, uint32_t *lpdwbufferlength, WSAQUERYSETA *lpqsresults);
+int32_t STDCALL WSALookupServiceNextW(HANDLE hlookup, uint32_t dwcontrolflags, uint32_t *lpdwbufferlength, WSAQUERYSETW *lpqsresults);
+int32_t STDCALL WSALookupServiceEnd(HANDLE hlookup);
 int32_t STDCALL WSAInstallServiceClassA(WSASERVICECLASSINFOA *lpserviceclassinfo);
 int32_t STDCALL WSAInstallServiceClassW(WSASERVICECLASSINFOW *lpserviceclassinfo);
 int32_t STDCALL WSARemoveServiceClass(GUID *lpserviceclassid);
@@ -1359,8 +1366,8 @@ int32_t STDCALL WSAEnumNameSpaceProvidersW(uint32_t *lpdwbufferlength, WSANAMESP
 
 int32_t STDCALL WSAGetServiceClassNameByClassIdA(GUID *lpserviceclassid, char *lpszserviceclassname, uint32_t *lpdwbufferlength);
 int32_t STDCALL WSAGetServiceClassNameByClassIdW(GUID *lpserviceclassid, WCHAR *lpszserviceclassname, uint32_t *lpdwbufferlength);
-int32_t STDCALL WSASetServiceA(WSAQUERYSETA *lpqsreginfo, WSAESETSERVICEOP *essoperation, uint32_t *dwcontrolflags);
-int32_t STDCALL WSASetServiceW(WSAQUERYSETW *lpqsreginfo, WSAESETSERVICEOP *essoperation, uint32_t *dwcontrolflags);
+int32_t STDCALL WSASetServiceA(WSAQUERYSETA *lpqsreginfo, WSAESETSERVICEOP essoperation, uint32_t dwcontrolflags);
+int32_t STDCALL WSASetServiceW(WSAQUERYSETW *lpqsreginfo, WSAESETSERVICEOP essoperation, uint32_t dwcontrolflags);
 
 int32_t STDCALL WSAMakeSyncReply(uint16_t buflen, uint16_t error);
 int32_t STDCALL WSAMakeSelectReply(uint16_t event, uint16_t error);

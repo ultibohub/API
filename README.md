@@ -9,7 +9,7 @@ The includes folder contains header files for interfaces to the following Ultibo
 * ultibo/console.h - Text console device interfaces, windowing and output
 * ultibo/devices.h - Base device interface and common devices such as clock, timer and random
 * ultibo/devicetree.h - Device tree interfaces and enumeration
-* ultibo/dma.h - DMA controller access 
+* ultibo/dma.h - DMA controller access
 * ultibo/filesystem.h - Standard file system interfaces for all supported file systems
 * ultibo/font.h - Text mode font handling and enumeration
 * ultibo/framebuffer.h - Framebuffer device access and configuration
@@ -40,7 +40,7 @@ The includes folder contains header files for interfaces to the following Ultibo
 * ultibo/tftframebuffer.h - TFT framebuffer device access and configuration
 * ultibo/threads.h - Thread and synchronization interfaces
 * ultibo/timezone.h - Timezone handling and enumeration
-* ultibo/touch.h - Touch device access and configuration 
+* ultibo/touch.h - Touch device access and configuration
 * ultibo/uart.h - UART device access and configuration
 * ultibo/ultibo.h - Ultibo specific and compatibility interfaces
 * ultibo/unicode.h - Uncode text functionality
@@ -69,7 +69,7 @@ In addition to the Ultibo interface headers a small number of headers that expos
 
 The src folder contains C sources for some additional functions not relevant to the standard Ultibo run time
 
-These modules don't need to be added to your project Makefile, precompiled versions are already included in the Ultibo run time 
+These modules don't need to be added to your project Makefile, precompiled versions are already included in the Ultibo run time
 
 To use these functions simply include the appropriate header in your source and the linker will find the precompiled object files when compiling
 

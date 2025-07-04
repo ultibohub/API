@@ -76,7 +76,7 @@ struct _OVERLAPPED
   size_t Internal;
   size_t InternalHigh;
   union
-    {
+  {
     struct
     {
       DWORD Offset;
