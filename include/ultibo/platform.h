@@ -978,6 +978,7 @@ HANDLE STDCALL module_load(const char *name);
 HANDLE STDCALL module_load_ex(const char *name, uint32_t flags);
 BOOL STDCALL module_unload(HANDLE handle);
 uint32_t STDCALL module_get_name(HANDLE handle, char *name, uint32_t len);
+HANDLE STDCALL module_get_handle(char *name);
 
 /* ============================================================================== */
 /* Symbol Functions */
