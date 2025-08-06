@@ -336,7 +336,7 @@ extern "C" {
   to take action.
   Situations in which a channel will halt include but probably are not limited to:
   - The transfer has completed, thereby setting the transfer_completed flag as documented above.
-  - A Start Split or Complete Split transaction has finished.                 
+  - A Start Split or Complete Split transaction has finished.
   - The hub sent a NYET packet when trying to execute a Complete Split transaction, thereby signalling that the Split transaction is not yet complete.
   - The device sent a NAK packet, thereby signalling it had no data to send at the time, when trying to execute an IN interrupt transfer.
   - One of several errors has occurred, such as an AHB error, data toggle error, tranasction error, stall condition, or frame overrun error */
@@ -464,13 +464,13 @@ struct _DWC_HOST_CHANNEL
   Controller.  There is no official documentation for these; however, the
   register locations (and to some extent the meanings) can be found in other
   code, such as the Linux driver for this hardware that Synopsys contributed.
- 
+
   We do not explicitly define every bit in the registers because the majority
   are not used by our driver and would complicate this file.  For example, we
   do not attempt to document any features that are specific to suspend,
   hibernation, the OTG protocol, or to the core acting in device mode rather
   than host mode.
- 
+
   The bits and fields we do use in our driver we have tried to completely
   document based on our understanding of what they do.  We cannot guarantee
   that all the information is correct, as we do not have access to any official
@@ -547,7 +547,7 @@ struct _DWC_REGISTERS
 	uint32_t globalfifoconfig;
 	// 0x0060 : ADP Control (Attach Detection Protocol)
 	uint32_t adpcontrol;
-	// 0x0064 : Reserved 
+	// 0x0064 : Reserved
 	uint32_t reserved0x0064[39];
 	// 0x0100 : Host Periodic Transmit FIFO Size
 	// The low 16 bits of this register configure the offset of the Periodic Transmit FIFO, in 4-byte words, from the start of the memory reserved by the controller for dynamic FIFOs.

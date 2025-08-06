@@ -1,7 +1,7 @@
 /*
  *
  * Sense HAT example project for Ultibo API
- * 
+ *
  * A very simple example that shows how you can use the Raspberry Pi SenseHAT
  * with Ultibo.
  *
@@ -18,8 +18,8 @@
  * the config.txt file:
  *
  * device_tree=
- * 
- * 
+ *
+ *
  * This file is part of the Ultibo project, https://ultibo.org/
  *
  * The MIT License (MIT)
@@ -69,7 +69,7 @@ int apimain(int argc, char **argv)
   char description[DEVICE_DESC_LENGTH];
   FRAMEBUFFER_DEVICE *framebuffer_device;
 
-  /* Get the framebuffer device which represents our SenseHAT 8x8 LED matrix, 
+  /* Get the framebuffer device which represents our SenseHAT 8x8 LED matrix,
    * the description can be found in the header of the SenseHAT driver unit
    */
   framebuffer_device = framebuffer_device_find_by_description("Raspberry Pi Sense HAT Framebuffer");
@@ -94,9 +94,9 @@ int apimain(int argc, char **argv)
   graphics_window_clear(windowhandle);
 
   /* The SenseHAT joystick appears in Ultibo as a keyboard so we can just
-   * use console_get_key() to check for the Left, Right, Up, Down and Enter 
-   * keys will be sent by the joystick.  
-   
+   * use console_get_key() to check for the Left, Right, Up, Down and Enter
+   * keys will be sent by the joystick.
+
    * If you have a real keyboard plugged in you will also see that the arrow
    * and enter keys do the same thing
    */
@@ -116,9 +116,9 @@ int apimain(int argc, char **argv)
         /* The Left, Right, Up and Down arrows will appear as extended keys so
          * the first character received will be 0, we call console_get_key()
          * again to receive the actual character.
-         
+
          * You can find the complete list of these extended keys here:
-         
+
          * https://www.freepascal.org/docs-html/rtl/keyboard/kbdscancode.html
          */
         console_get_key(&character, NULL);
@@ -176,7 +176,7 @@ int apimain(int argc, char **argv)
 
         /* Sleep for a little longer after the last character before returning
          * to check for the next key press
-         */   
+         */
         thread_sleep(1000);
 
         /* Clear the display */
@@ -186,8 +186,8 @@ int apimain(int argc, char **argv)
 
     /* No need to sleep on each loop, console_get_key() will wait until a key is pressed */
   }
-  
+
   /* No need to halt, since we never exit the loop */
-  
+
   return 0;
 }

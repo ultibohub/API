@@ -152,7 +152,7 @@ extern "C" {
 #define ADAPTER_STATUS_UP	1
 
 /* Configuration Types */
-#define CONFIG_TYPE_AUTO	0 
+#define CONFIG_TYPE_AUTO	0
 #define CONFIG_TYPE_STATIC	1
 #define CONFIG_TYPE_RARP	2
 #define CONFIG_TYPE_BOOTP	3
@@ -244,7 +244,7 @@ extern "C" {
 
 /* Generic MII registers (Management Interface) */
 #define MII_BMCR	0x00 // Basic mode control register
-#define MII_BMSR	0x01 // Basic mode status register 
+#define MII_BMSR	0x01 // Basic mode status register
 #define MII_PHYSID1	0x02 // PHYS ID 1
 #define MII_PHYSID2	0x03 // PHYS ID 2
 #define MII_ADVERTISE	0x04 // Advertisement control reg

@@ -1,11 +1,11 @@
 /*
  *
  * Mouse Cursor example project for Ultibo API
- * 
+ *
  * This is a simple example that shows how to read data from the mouse buffer
  * and use it to track the position of a mouse cursor on the screen.
- * 
- * 
+ *
+ *
  * This file is part of the Ultibo project, https://ultibo.org/
  *
  * The MIT License (MIT)
@@ -70,11 +70,11 @@ int apimain(int argc, char **argv)
   /* Let's setup the mouse cursor so we can move it around the screen. The Raspberry Pi
    * has cursor support built in to the graphics processor (GPU) so we can use that to
    * display the cursor on screen.
-   * 
+   *
    * First we need to find out how big the screen is in pixels wide and high, to do this
    * we ask for the default framebuffer device and then retrieve the properties which will
    * give us the size as well as lots of other information.
-   * 
+   *
    * Get the default framebuffer device
    */
   framebuffer_device = framebuffer_device_get_default();
@@ -94,7 +94,7 @@ int apimain(int argc, char **argv)
    * use the built in arrow which is the default cursor. If you read the description of the
    * framebuffer_device_set_cursor function you will see that you can define a block of pixels
    * to create your own cursor shape, to use the default we simply pass zero or nil for all
-   * the parameters except the framebuffer device itself 
+   * the parameters except the framebuffer device itself
    */
   framebuffer_device_set_cursor(framebuffer_device, 0, 0, 0, 0, NULL, 0);
 
@@ -113,7 +113,7 @@ int apimain(int argc, char **argv)
      * attached then messages from all of them will appear in the same buffer.
      *
      * What happens if no mouse is attached?
-     * 
+     *
      * The mouse_read() function will simply wait forever, Ultibo has dynamic USB attach
      * and detach so as soon as you plug in a mouse the messages will start to arrive
      */
@@ -153,7 +153,7 @@ int apimain(int argc, char **argv)
         else
           sprintf(buttons, "Other");
       }
-      
+
       /* Display the mouse data in the right window */
       sprintf(value, "Mouse OffsetX = %d OffsetY = %d Buttons = %s", (int)mouse_data.offsetx, (int)mouse_data.offsety, buttons);
       console_window_write_ln(handle2, value);
@@ -168,15 +168,15 @@ int apimain(int argc, char **argv)
         scaling_x = (double_t)mouse_data.maximumx / screen_width;
         if (scaling_x <= 0)
           scaling_x = 1.0;
-        
+
         cursor_x = (int32_t)mouse_data.offsetx / scaling_x;
       }
       else
         cursor_x += mouse_data.offsetx;
-      
+
       if (cursor_x < 0)
         cursor_x = 0;
-      if (cursor_x > screen_width - 1) 
+      if (cursor_x > screen_width - 1)
         cursor_x = screen_width - 1;
 
       /* Check if the Y value is absolute */
@@ -186,7 +186,7 @@ int apimain(int argc, char **argv)
         scaling_y = (double_t)mouse_data.maximumy / screen_height;
         if (scaling_y <= 0)
           scaling_y = 1.0;
-        
+
         cursor_y = (int32_t)mouse_data.offsety / scaling_y;
       }
       else
@@ -194,7 +194,7 @@ int apimain(int argc, char **argv)
 
       if (cursor_y < 0)
         cursor_y = 0;
-      if (cursor_y > screen_height - 1) 
+      if (cursor_y > screen_height - 1)
         cursor_y = screen_height - 1;
 
       /* And move the cursor on the screen */
@@ -206,7 +206,7 @@ int apimain(int argc, char **argv)
       console_window_write_ln(handle2, "An error occurred reading the mouse, trying again");
     }
   }
-  
+
   /* No need to halt, since we never exit the loop */
 
   return 0;

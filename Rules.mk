@@ -58,7 +58,7 @@ OPT_LEVEL ?= -O2
 
 # Default to C standard of the compiler
 # Override in Config.mk or project Makefile (eg C_STD = -std=gnu17)
-C_STD ?= 
+C_STD ?=
 
 # Default to C++17 standard
 # Override in Config.mk or project Makefile (eg CPP_STD = -std=gnu++17)
@@ -173,7 +173,7 @@ endif
 
 # Setup quote character
 ifeq ($(OS),Windows_NT)
-QCHR = 
+QCHR =
 else
 QCHR = '
 endif

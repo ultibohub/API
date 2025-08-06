@@ -24,7 +24,7 @@ extern "C" {
 #define stat64 stat
 #endif
 #else
-struct	stat 
+struct	stat
 {
   dev_t		st_dev;
   ino_t		st_ino;

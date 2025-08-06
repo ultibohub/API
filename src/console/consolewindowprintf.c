@@ -34,7 +34,7 @@
 /* These are only available in stdio.h if __GNU_VISIBLE is defined as 1 (see features.h) */
 int asprintf(char **__restrict, const char *__restrict, ...) _ATTRIBUTE ((__format__ (__printf__, 2, 3)));
 int vasprintf(char **, const char *, __VALIST) _ATTRIBUTE ((__format__ (__printf__, 2, 0)));
-#endif 
+#endif
 
 /* Implementation of console_window_printf() for Ultibo API
  *

@@ -68,7 +68,7 @@ ARMv7
  mkdir $HOME/libraries/lvgl-9.2.2/armv7
 
  export PATH=$HOME/arm-gnu-toolchain-13.3.rel1-x86_64-arm-none-eabi/bin:$PATH
- 
+
  make all BOARD_TYPE=rpi3b ARCH_TYPE=arm
 
  copy liblvgl.a to $HOME/libraries/lvgl-9.2.2/armv7
@@ -88,5 +88,5 @@ ARMv8
  export PATH=$HOME/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin:$PATH
 
  make all BOARD_TYPE=rpi4b ARCH_TYPE=aarch64
- 
+
  copy liblvgl.a to $HOME/libraries/lvgl-9.2.2/armv8

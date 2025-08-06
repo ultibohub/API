@@ -49,11 +49,11 @@ extern "C" {
 #define BCMSDHOST_SDARG	0x04 // Argument to SD card             - 32 R/W
 #define BCMSDHOST_SDTOUT	0x08 // Start value for timeout counter - 32 R/W
 #define BCMSDHOST_SDCDIV	0x0c // Start value for clock divider   - 11 R/W
-#define BCMSDHOST_SDRSP0	0x10 // SD card response (31:0)         - 32 R  
-#define BCMSDHOST_SDRSP1	0x14 // SD card response (63:32)        - 32 R  
-#define BCMSDHOST_SDRSP2	0x18 // SD card response (95:64)        - 32 R  
-#define BCMSDHOST_SDRSP3	0x1c // SD card response (127:96)       - 32 R  
-#define BCMSDHOST_SDHSTS	0x20 // SD host status                  - 11 R  
+#define BCMSDHOST_SDRSP0	0x10 // SD card response (31:0)         - 32 R
+#define BCMSDHOST_SDRSP1	0x14 // SD card response (63:32)        - 32 R
+#define BCMSDHOST_SDRSP2	0x18 // SD card response (95:64)        - 32 R
+#define BCMSDHOST_SDRSP3	0x1c // SD card response (127:96)       - 32 R
+#define BCMSDHOST_SDHSTS	0x20 // SD host status                  - 11 R
 #define BCMSDHOST_SDVDD	0x30 // SD card power control           -  1 R/W
 #define BCMSDHOST_SDEDM	0x34 // Emergency Debug Mode            - 13 R/W
 #define BCMSDHOST_SDHCFG	0x38 // Host configuration              -  2 R/W

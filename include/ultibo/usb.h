@@ -265,7 +265,7 @@ extern "C" {
 #define USB_PACKETID_UNDEF_F	0x0f
 
 /* USB Class Codes (bDeviceClass / bInterfaceClass) (See: https://www.usb.org/defined-class-codes) (Note that only the hub class is defined in the USB 2.0 specification itself the other standard class codes are defined in additional specifications) */
-#define USB_CLASS_CODE_INTERFACE_SPECIFIC	0x00 // Use class code info from Interface Descriptors 
+#define USB_CLASS_CODE_INTERFACE_SPECIFIC	0x00 // Use class code info from Interface Descriptors
 #define USB_CLASS_CODE_AUDIO	0x01 // Audio device
 #define USB_CLASS_CODE_COMMUNICATIONS_AND_CDC_CONTROL	0x02 // Communication device class
 #define USB_CLASS_CODE_COMMS	USB_CLASS_CODE_COMMUNICATIONS_AND_CDC_CONTROL
@@ -313,7 +313,7 @@ extern "C" {
 #define USB_SUBCLASS_MASS_STORAGE_UFI	0x04 // UFI Specifies how to interface Floppy Disk Drives to USB
 #define USB_SUBCLASS_MASS_STORAGE_SFF8070I	0x05 // Obsolete Was SFF-8070i
 #define USB_SUBCLASS_MASS_STORAGE_SCSI	0x06 // SCSI transparent command set
-#define USB_SUBCLASS_MASS_STORAGE_LSDFS	0x07 // LSD FS 
+#define USB_SUBCLASS_MASS_STORAGE_LSDFS	0x07 // LSD FS
 #define USB_SUBCLASS_MASS_STORAGE_IEEE1667	0x08 // IEEE 1667 Standard Protocol for Authentication in Host Attachments of Transient Storage Devices (IEEE 1667) available at www.ieee1667.com
 #define USB_SUBCLASS_MASS_STORAGE_VENDOR_SPECIFIC	0xff // Specific to device vendor, De facto use
 /* Content Security Devices */
@@ -360,8 +360,8 @@ extern "C" {
 /* Mass Storage Devices */
 #define USB_PROTOCOL_MASS_STORAGE_CBI	0x00 // CBI (with command completion interrupt) USB Mass Storage Class Control/Bulk/Interrupt Transport
 #define USB_PROTOCOL_MASS_STORAGE_CB	0x01 // CBI (with no command completion interrupt) USB Mass Storage Class Control/Bulk/Interrupt Transport
-#define USB_PROTOCOL_MASS_STORAGE_BBB	0x50 // BBB USB Mass Storage Class Bulk-Only Transport 
-#define USB_PROTOCOL_MASS_STORAGE_UAS	0x62 // UAS 
+#define USB_PROTOCOL_MASS_STORAGE_BBB	0x50 // BBB USB Mass Storage Class Bulk-Only Transport
+#define USB_PROTOCOL_MASS_STORAGE_UAS	0x62 // UAS
 #define USB_PROTOCOL_MASS_STORAGE_VENDOR_SPECIFIC	0xff // Specific to device vendor, De facto use
 /* Hub Devices */
 #define USB_PROTOCOL_HUB_FULLSPEED	0x00 // Full speed Hub
@@ -386,7 +386,7 @@ extern "C" {
 /* Miscellaneous */
 #define USB_PROTOCOL_MISCELLANEOUS_ACTIVESYNC	0x01 // Active Sync device
 #define USB_PROTOCOL_MISCELLANEOUS_PALMSYNC	0x02 // Palm Sync
-#define USB_PROTOCOL_MISCELLANEOUS_IAD	0x01 // Interface Association Descriptor. The usage of this class code triple is defined in the Interface Association Descriptor ECN 
+#define USB_PROTOCOL_MISCELLANEOUS_IAD	0x01 // Interface Association Descriptor. The usage of this class code triple is defined in the Interface Association Descriptor ECN
 #define USB_PROTOCOL_MISCELLANEOUS_WAMP	0x02 // Wire Adapter Multifunction Peripheral programming interface. Definition can be found in the Wireless USB Specification in Chapter 8
 #define USB_PROTOCOL_MISCELLANEOUS_CBAF	0x01 // Cable Based Association Framework. This is defined in the Association Model addendum to the Wireless USB specification
 #define USB_PROTOCOL_MISCELLANEOUS_RNDIS_ETHERNET	0x01 // RNDIS over Ethernet
@@ -396,7 +396,7 @@ extern "C" {
 #define USB_PROTOCOL_MISCELLANEOUS_RNDIS_IPV4	0x05 // RNDIS for Raw IPv4
 #define USB_PROTOCOL_MISCELLANEOUS_RNDIS_IPV6	0x06 // RNDIS for Raw IPv6
 #define USB_PROTOCOL_MISCELLANEOUS_RNDIS_GPRS	0x07 // RNDIS for GPRS
-#define USB_PROTOCOL_MISCELLANEOUS_USB3VISION_CONTROL	0x00 // USB3 Vision Control Interface 
+#define USB_PROTOCOL_MISCELLANEOUS_USB3VISION_CONTROL	0x00 // USB3 Vision Control Interface
 #define USB_PROTOCOL_MISCELLANEOUS_USB3VISION_EVENT	0x01 // USB3 Vision Event Interface
 #define USB_PROTOCOL_MISCELLANEOUS_USB3VISION_STREAM	0x02 // USB3 Vision Streaming Interface
 /* Application Specific */

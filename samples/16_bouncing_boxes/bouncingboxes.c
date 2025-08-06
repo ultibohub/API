@@ -1,7 +1,7 @@
 /*
  *
  * Bouncing Boxes example project for Ultibo API
- * 
+ *
  * A simple demonstration of animation using the framebuffer device in Ultibo
  * with a virtual width and height that allows fast swapping between pages.
  *
@@ -28,8 +28,8 @@
  *
  *  And the original C source code here:
  *   https://github.com/rst-/raspberry-compote/blob/master/fb/fbtestXIII.c
- * 
- * 
+ *
+ *
  * This file is part of the Ultibo project, https://ultibo.org/
  *
  * The MIT License (MIT)
@@ -87,21 +87,21 @@ static FRAMEBUFFER_PALETTE vga_palette = {
   .start = 0,
   .count = 256,
   .entries = {
-    0xFF000000, 0xFF0000AA, 0xFF00AA00, 0xFF00AAAA, 0xFFAA0000, 0xFFAA00AA, 0xFFAA5500, 0xFFAAAAAA, 0xFF555555, 0xFF5555FF, 0xFF55FF55, 0xFF55FFFF, 0xFFFF5555, 0xFFFF55FF, 0xFFFFFF55, 0xFFFFFFFF, 
-    0xFF000000, 0xFF141414, 0xFF202020, 0xFF2C2C2C, 0xFF383838, 0xFF444444, 0xFF505050, 0xFF606060, 0xFF707070, 0xFF808080, 0xFF909090, 0xFFA0A0A0, 0xFFB4B4B4, 0xFFC8C8C8, 0xFFE0E0E0, 0xFFFCFCFC, 
-    0xFF0000FC, 0xFF4000FC, 0xFF7C00FC, 0xFFBC00FC, 0xFFFC00FC, 0xFFFC00BC, 0xFFFC007C, 0xFFFC0040, 0xFFFC0000, 0xFFFC4000, 0xFFFC7C00, 0xFFFCBC00, 0xFFFCFC00, 0xFFBCFC00, 0xFF7CFC00, 0xFF40FC00, 
-    0xFF00FC00, 0xFF00FC40, 0xFF00FC7C, 0xFF00FCBC, 0xFF00FCFC, 0xFF00BCFC, 0xFF007CFC, 0xFF0040FC, 0xFF7C7CFC, 0xFF9C7CFC, 0xFFBC7CFC, 0xFFDC7CFC, 0xFFFC7CFC, 0xFFFC7CDC, 0xFFFC7CBC, 0xFFFC7C9C, 
-    0xFFFC7C7C, 0xFFFC9C7C, 0xFFFCBC7C, 0xFFFCDC7C, 0xFFFCFC7C, 0xFFDCFC7C, 0xFFBCFC7C, 0xFF9CFC7C, 0xFF7CFC7C, 0xFF7CFC9C, 0xFF7CFCBC, 0xFF7CFCDC, 0xFF7CFCFC, 0xFF7CDCFC, 0xFF7CBCFC, 0xFF7C9CFC, 
-    0xFFB4B4FC, 0xFFC4B4FC, 0xFFD8B4FC, 0xFFE8B4FC, 0xFFFCB4FC, 0xFFFCB4E8, 0xFFFCB4D8, 0xFFFCB4C4, 0xFFFCB4B4, 0xFFFCC4B4, 0xFFFCD8B4, 0xFFFCE8B4, 0xFFFCFCB4, 0xFFE8FCB4, 0xFFD8FCB4, 0xFFC4FCB4, 
-    0xFFB4FCB4, 0xFFB4FCC4, 0xFFB4FCD8, 0xFFB4FCE8, 0xFFB4FCFC, 0xFFB4E8FC, 0xFFB4D8FC, 0xFFB4C4FC, 0xFF000070, 0xFF1C0070, 0xFF380070, 0xFF540070, 0xFF700070, 0xFF700054, 0xFF700038, 0xFF70001C, 
-    0xFF700000, 0xFF701C00, 0xFF703800, 0xFF705400, 0xFF707000, 0xFF547000, 0xFF387000, 0xFF1C7000, 0xFF007000, 0xFF00701C, 0xFF007038, 0xFF007054, 0xFF007070, 0xFF005470, 0xFF003870, 0xFF001C70, 
-    0xFF383870, 0xFF443870, 0xFF543870, 0xFF603870, 0xFF703870, 0xFF703860, 0xFF703854, 0xFF703844, 0xFF703838, 0xFF704438, 0xFF705438, 0xFF706038, 0xFF707038, 0xFF607038, 0xFF547038, 0xFF447038, 
-    0xFF387038, 0xFF387044, 0xFF387054, 0xFF387060, 0xFF387070, 0xFF386070, 0xFF385470, 0xFF384470, 0xFF505070, 0xFF585070, 0xFF605070, 0xFF685070, 0xFF705070, 0xFF705068, 0xFF705060, 0xFF705058, 
-    0xFF705050, 0xFF705850, 0xFF706050, 0xFF706850, 0xFF707050, 0xFF687050, 0xFF607050, 0xFF587050, 0xFF507050, 0xFF507058, 0xFF507060, 0xFF507068, 0xFF507070, 0xFF506870, 0xFF506070, 0xFF505870, 
-    0xFF000040, 0xFF100040, 0xFF200040, 0xFF300040, 0xFF400040, 0xFF400030, 0xFF400020, 0xFF400010, 0xFF400000, 0xFF401000, 0xFF402000, 0xFF403000, 0xFF404000, 0xFF304000, 0xFF204000, 0xFF104000, 
-    0xFF004000, 0xFF004010, 0xFF004020, 0xFF004030, 0xFF004040, 0xFF003040, 0xFF002040, 0xFF001040, 0xFF202040, 0xFF282040, 0xFF302040, 0xFF382040, 0xFF402040, 0xFF402038, 0xFF402030, 0xFF402028, 
-    0xFF402020, 0xFF402820, 0xFF403020, 0xFF403820, 0xFF404020, 0xFF384020, 0xFF304020, 0xFF284020, 0xFF204020, 0xFF204028, 0xFF204030, 0xFF204038, 0xFF204040, 0xFF203840, 0xFF203040, 0xFF202840, 
-    0xFF2C2C40, 0xFF302C40, 0xFF342C40, 0xFF3C2C40, 0xFF402C40, 0xFF402C3C, 0xFF402C34, 0xFF402C30, 0xFF402C2C, 0xFF40302C, 0xFF40342C, 0xFF403C2C, 0xFF40402C, 0xFF3C402C, 0xFF34402C, 0xFF30402C, 
+    0xFF000000, 0xFF0000AA, 0xFF00AA00, 0xFF00AAAA, 0xFFAA0000, 0xFFAA00AA, 0xFFAA5500, 0xFFAAAAAA, 0xFF555555, 0xFF5555FF, 0xFF55FF55, 0xFF55FFFF, 0xFFFF5555, 0xFFFF55FF, 0xFFFFFF55, 0xFFFFFFFF,
+    0xFF000000, 0xFF141414, 0xFF202020, 0xFF2C2C2C, 0xFF383838, 0xFF444444, 0xFF505050, 0xFF606060, 0xFF707070, 0xFF808080, 0xFF909090, 0xFFA0A0A0, 0xFFB4B4B4, 0xFFC8C8C8, 0xFFE0E0E0, 0xFFFCFCFC,
+    0xFF0000FC, 0xFF4000FC, 0xFF7C00FC, 0xFFBC00FC, 0xFFFC00FC, 0xFFFC00BC, 0xFFFC007C, 0xFFFC0040, 0xFFFC0000, 0xFFFC4000, 0xFFFC7C00, 0xFFFCBC00, 0xFFFCFC00, 0xFFBCFC00, 0xFF7CFC00, 0xFF40FC00,
+    0xFF00FC00, 0xFF00FC40, 0xFF00FC7C, 0xFF00FCBC, 0xFF00FCFC, 0xFF00BCFC, 0xFF007CFC, 0xFF0040FC, 0xFF7C7CFC, 0xFF9C7CFC, 0xFFBC7CFC, 0xFFDC7CFC, 0xFFFC7CFC, 0xFFFC7CDC, 0xFFFC7CBC, 0xFFFC7C9C,
+    0xFFFC7C7C, 0xFFFC9C7C, 0xFFFCBC7C, 0xFFFCDC7C, 0xFFFCFC7C, 0xFFDCFC7C, 0xFFBCFC7C, 0xFF9CFC7C, 0xFF7CFC7C, 0xFF7CFC9C, 0xFF7CFCBC, 0xFF7CFCDC, 0xFF7CFCFC, 0xFF7CDCFC, 0xFF7CBCFC, 0xFF7C9CFC,
+    0xFFB4B4FC, 0xFFC4B4FC, 0xFFD8B4FC, 0xFFE8B4FC, 0xFFFCB4FC, 0xFFFCB4E8, 0xFFFCB4D8, 0xFFFCB4C4, 0xFFFCB4B4, 0xFFFCC4B4, 0xFFFCD8B4, 0xFFFCE8B4, 0xFFFCFCB4, 0xFFE8FCB4, 0xFFD8FCB4, 0xFFC4FCB4,
+    0xFFB4FCB4, 0xFFB4FCC4, 0xFFB4FCD8, 0xFFB4FCE8, 0xFFB4FCFC, 0xFFB4E8FC, 0xFFB4D8FC, 0xFFB4C4FC, 0xFF000070, 0xFF1C0070, 0xFF380070, 0xFF540070, 0xFF700070, 0xFF700054, 0xFF700038, 0xFF70001C,
+    0xFF700000, 0xFF701C00, 0xFF703800, 0xFF705400, 0xFF707000, 0xFF547000, 0xFF387000, 0xFF1C7000, 0xFF007000, 0xFF00701C, 0xFF007038, 0xFF007054, 0xFF007070, 0xFF005470, 0xFF003870, 0xFF001C70,
+    0xFF383870, 0xFF443870, 0xFF543870, 0xFF603870, 0xFF703870, 0xFF703860, 0xFF703854, 0xFF703844, 0xFF703838, 0xFF704438, 0xFF705438, 0xFF706038, 0xFF707038, 0xFF607038, 0xFF547038, 0xFF447038,
+    0xFF387038, 0xFF387044, 0xFF387054, 0xFF387060, 0xFF387070, 0xFF386070, 0xFF385470, 0xFF384470, 0xFF505070, 0xFF585070, 0xFF605070, 0xFF685070, 0xFF705070, 0xFF705068, 0xFF705060, 0xFF705058,
+    0xFF705050, 0xFF705850, 0xFF706050, 0xFF706850, 0xFF707050, 0xFF687050, 0xFF607050, 0xFF587050, 0xFF507050, 0xFF507058, 0xFF507060, 0xFF507068, 0xFF507070, 0xFF506870, 0xFF506070, 0xFF505870,
+    0xFF000040, 0xFF100040, 0xFF200040, 0xFF300040, 0xFF400040, 0xFF400030, 0xFF400020, 0xFF400010, 0xFF400000, 0xFF401000, 0xFF402000, 0xFF403000, 0xFF404000, 0xFF304000, 0xFF204000, 0xFF104000,
+    0xFF004000, 0xFF004010, 0xFF004020, 0xFF004030, 0xFF004040, 0xFF003040, 0xFF002040, 0xFF001040, 0xFF202040, 0xFF282040, 0xFF302040, 0xFF382040, 0xFF402040, 0xFF402038, 0xFF402030, 0xFF402028,
+    0xFF402020, 0xFF402820, 0xFF403020, 0xFF403820, 0xFF404020, 0xFF384020, 0xFF304020, 0xFF284020, 0xFF204020, 0xFF204028, 0xFF204030, 0xFF204038, 0xFF204040, 0xFF203840, 0xFF203040, 0xFF202840,
+    0xFF2C2C40, 0xFF302C40, 0xFF342C40, 0xFF3C2C40, 0xFF402C40, 0xFF402C3C, 0xFF402C34, 0xFF402C30, 0xFF402C2C, 0xFF40302C, 0xFF40342C, 0xFF403C2C, 0xFF40402C, 0xFF3C402C, 0xFF34402C, 0xFF30402C,
     0xFF2C402C, 0xFF2C4030, 0xFF2C4034, 0xFF2C403C, 0xFF2C4040, 0xFF2C3C40, 0xFF2C3440, 0xFF2C3040, 0xFF000000, 0xFF000000, 0xFF000000, 0xFF000000, 0xFF000000, 0xFF000000, 0xFF000000, 0xFF000000}
 };
 
@@ -111,11 +111,11 @@ static FRAMEBUFFER_PALETTE vga_palette = {
  * With some optimizations it is possible to get a high frame rate even at a screen size
  * of 1920 x 1080, out of interest the 'orignal' functions plus another variation have been
  * left here to show the optimization process.
- * 
+ *
  * The functions put_pixel() and fill_rect1() were ported directly from the original source
  * but the calculation of the pixel_offset value for each pixel in the frame seems to be
  * too slow (it's possible that the C compiler did extra optimization on the original).
- * 
+ *
  * The fill_rect2() function is an intermediate step which improved the rate dramatically
  * but was optimized a little more by the final fill_rect() which is the most efficient
  * version and obtains 60 frames per second at any screen size
@@ -226,7 +226,7 @@ static void draw()
   random_seed(clock_get_count());
 
   /* Setup the rectangle dimensions, actually they are a square but you could set Width and
-   * Height to be different. There are lots of values you can experiment with in this function 
+   * Height to be different. There are lots of values you can experiment with in this function
    */
   width = framebuffer_properties.physicalwidth / 10;
   height = width;
@@ -261,7 +261,7 @@ static void draw()
      * page 1 and while page 1 is on screen we will draw page 0. Doing it that way means
      * you don't see any sign of the drawing happening, it just looks like the boxes are
      * smoothly floating around the screen.
-     * 
+     *
      * This variable determines the Y offset to pass to the framebuffer device and also
      * the offset from the start of our framebuffer memory
      */
@@ -277,8 +277,8 @@ static void draw()
     value that determines the current position, there is also a direction X and a
     direction Y which determines which direction the box is moving (Up/Down/Left/Right)
     and also how fast it is moving.
-    
-    The width and height of each box were set above to a static value, can you see 
+
+    The width and height of each box were set above to a static value, can you see
     how you could make the boxes different sizes? */
     for (element = 0; element < NUM_ELEMENTS; element++)
     {
@@ -306,11 +306,11 @@ static void draw()
 
       /* Check for the left and right sides of the screen. We want our boxes to
        * 'bounce' whenever they hit the side of the screen and go the other way.
-       *      
+       *
        * Here we check for the X position being either less than 0 which is the
        * left side of the screen or greater than the screen width minus the box
        * width which will be the right side of the screen.
-       * 
+       *
        * If we reach either of those we invert the direction value so our box
        * moves in the opposite direction. Notice that the direction values are
        * signed integers so they an be either positive or negative
@@ -336,12 +336,12 @@ static void draw()
     }
 
     /* After drawing our frame we need to make sure that all of our pixels have
-     * actually been written back to memory by the CPU. 
+     * actually been written back to memory by the CPU.
      *
      * Since the Raspberry Pi uses both Level 1 and Level 2 caching in order to
-     * improve the performance it may have only written our pixels to cache so 
+     * improve the performance it may have only written our pixels to cache so
      * far and not to memory.
-     * 
+     *
      * Because the graphics processor (GPU) is separate from the CPU it cannot
      * see into the CPU cache so we need to clean the cache to make the CPU
      * write everything to memory. The framebuffer properties gives us a flag
@@ -366,10 +366,10 @@ static void draw()
     /* Because the actual video hardware only refreshes the screen 60 times per second
      * (or 60 FPS) then even though we have changed the Y offset above if we start
      * drawing on the next page immediately it may still be showing on screen.
-     * 
+     *
      * This would produce a tearing effect of horizontal lines on the screen which
      * doesn't look good for our smooth animation.
-     * 
+     *
      * In order to handle this we check the framebuffer properties to see if the
      * device supports waiting for vertical sync (the time between each frame)
      * before we proceed. If it doesn't support this option then we do the best we
@@ -403,7 +403,7 @@ int apimain(int argc, char **argv)
   /* When doing animation we'd like to be sure the CPU is not too busy doing something else
    * to make time for our thread. Because the main thread will always be created on CPU0 and
    * on the Raspberry Pi we know that CPU0 is also reponsible for most of the interrupts in
-   * the system then we'll ask the scheduler to move us to another CPU just so we have a 
+   * the system then we'll ask the scheduler to move us to another CPU just so we have a
    * little bit less to compete with
    */
   thread_set_cpu(thread_get_current(), CPU_ID_3);
@@ -429,7 +429,7 @@ int apimain(int argc, char **argv)
 
     /* Wait for second to allow any messages generated by releasing the framebuffer to
      * propogate through the system. To do this properly we really should tell the console
-     * not to attach to the framebuffer during boot, one of the many details needed when 
+     * not to attach to the framebuffer during boot, one of the many details needed when
      * creating real world applications
      */
     thread_sleep(1000);
@@ -465,7 +465,7 @@ int apimain(int argc, char **argv)
     thread_sleep(1000);
 
     /* Because we set 8 bit color for the framebuffer to do this example we also
-     * need to set a palette. The framebuffer device or the driver might provide 
+     * need to set a palette. The framebuffer device or the driver might provide
      * a default palette but the simplest option is to set the one we want.
      *
      * Here we pass a prebuilt structure that contains the VGA Mode 13h color
@@ -475,7 +475,7 @@ int apimain(int argc, char **argv)
 
     /* We need to get the framebuffer properties again because we want to know the
      * address of the framebuffer memory and also the length of each line in bytes
-     * which is known as the pitch 
+     * which is known as the pitch
      */
     framebuffer_device_get_properties(framebuffer_device, &framebuffer_properties);
 
@@ -493,6 +493,6 @@ int apimain(int argc, char **argv)
 
   /* Halt this thread when the drawing is done */
   thread_halt(0);
-  
+
   return 0;
 }

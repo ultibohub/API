@@ -57,9 +57,9 @@ int apimain(int argc, char **argv)
    *
    * For this example the following line has been added to the Free Pascal part
    * of the project which enables console logging prior to calling our main() function
-   * 
+   *
    * CONSOLE_REGISTER_LOGGING:=True;
-   * 
+   *
    * This can also be done using the command line parameter CONSOLE_REGISTER_LOGGING=1
    * in the cmdline.txt file on the SD card.
    */
@@ -74,7 +74,7 @@ int apimain(int argc, char **argv)
    */
   logging_console_device_add(console_device_get_default());
 
-  /* We can set the new console logging device as the default by using the function 
+  /* We can set the new console logging device as the default by using the function
    * logging_device_set_default() and passing to it the first available console logging
    * device obtained by logging_device_find_by_type()
    */
@@ -94,7 +94,7 @@ int apimain(int argc, char **argv)
    *
    * On the Raspberry Pi 2, 3 or 4 the logging message will also include the CPU Id of
    * the CPU that the thread was running on when it sent the message.
-   * 
+   *
    * You might also notice a logging message saying that a logging device was created
    * and enabled. Many parts of Ultibo automatically send logging messages to indicate
    * events and errors.
@@ -121,7 +121,7 @@ int apimain(int argc, char **argv)
    * logging is handled in the background by the logging unit, your code just sends
    * the message and doesn't have to think about where the logs are going after that
    */
-  
+
   /* Halt the thread */
   thread_halt(0);
 

@@ -71,7 +71,7 @@ int apimain(int argc, char **argv)
 
   /* Let's wait for a while for the time to be updated (tm_year is years since 1900) */
   while (info->tm_year < 100) {
-    
+
     /* Sleep for a second */
     sleep(1);
 
@@ -134,7 +134,7 @@ int apimain(int argc, char **argv)
     strftime(value, sizeof(value), "The date and time is now %c", info);
     console_window_write_ln(windowhandle, value);
     console_window_write_ln(windowhandle, "");
-    
+
     /* North America */
     console_window_write_ln(windowhandle, "Setting Timezone to \"Central Standard Time\"");
     SetCurrentTimezone("Central Standard Time");

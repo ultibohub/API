@@ -73,7 +73,7 @@ void * thread2_execute(void * args)
     }
 
     /* Note that when using POSIX threads you can use the pthread_self() function in place
-     * of thread_get_current() as both the THREAD_HANDLE and pthread_t are the same value 
+     * of thread_get_current() as both the THREAD_HANDLE and pthread_t are the same value
      */
 
     return NULL;

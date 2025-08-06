@@ -225,14 +225,14 @@ typedef unsigned short USHORT;
 typedef uint32_t ULONG; // unsigned long // In Windows ULONG remains as 4 bytes (32-bit) regardless of 32-bit or 64-bit compiler
 
 /* Pointer types */
-typedef ssize_t INT_PTR; 
+typedef ssize_t INT_PTR;
 typedef size_t UINT_PTR;
-typedef ssize_t LONG_PTR; 
+typedef ssize_t LONG_PTR;
 typedef size_t ULONG_PTR;
 typedef ULONG_PTR DWORD_PTR;
 
 /* 64bit types */
-typedef int64_t LONGLONG; 
+typedef int64_t LONGLONG;
 typedef uint64_t ULONGLONG;
 typedef ULONGLONG DWORDLONG;
 
@@ -345,7 +345,7 @@ typedef enum _COMPUTER_NAME_FORMAT
    ComputerNamePhysicalDnsHostname,
    ComputerNamePhysicalDnsDomain,
    ComputerNamePhysicalDnsFullyQualified,
-   ComputerNameMax 
+   ComputerNameMax
 } COMPUTER_NAME_FORMAT;
 
 /* System Time types */
@@ -476,10 +476,10 @@ typedef struct _RTL_CRITICAL_SECTION_DEBUG
 struct _RTL_CRITICAL_SECTION
 {
   RTL_CRITICAL_SECTION_DEBUG *DebugInfo;
-  
+
   //   The following three fields control entering and exiting the critical
   //   section for the resource
-  
+
   long LockCount;
   long RecursionCount;
   HANDLE OwningThread; //  from the thread's ClientId->UniqueThread

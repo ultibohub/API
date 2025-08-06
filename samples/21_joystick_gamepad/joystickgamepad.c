@@ -1,15 +1,15 @@
 /*
  *
  * Joystick Gamepad example project for Ultibo API
- * 
+ *
  * An example that shows how to use the Joystick unit to read input from a USB
  * joystick or gamepad device and use it to move a cross around the screen and
  * draw a colored circle wherever a button is pressed.
  *
  * It's more exciting than it sounds, even if you don't want to use a joystick
  * in your application if you have one lying around give it a go just for fun.
- * 
- * 
+ *
+ *
  * This file is part of the Ultibo project, https://ultibo.org/
  *
  * The MIT License (MIT)
@@ -198,7 +198,7 @@ ssize_t STDCALL joystick_thread(void * parameter)
    *
    * For each axis or hat we can find the name and minimum and maximum values,
    * for each button there is just a name that identifies the button.
-   * 
+   *
    * The name isn't a text value, that would be too slow, instead the name is
    * a numeric identifier that can be easily checked by an application. We've
    * defined some values in the Joystick unit but you can also assign your own
@@ -409,7 +409,7 @@ int apimain(int argc, char **argv)
    * to read the input data from the joystick and update the position of the cursor and our
    * button state. This thread only reads the data and doesn't try to draw anything on the
    * screen which means it can process the joystick events very quickly.
-   * 
+   *
    * If we tried to read the data and draw the screen the input buffer from the joystick
    * might overflow and we could lose events coming from the joystick
    */
@@ -435,7 +435,7 @@ int apimain(int argc, char **argv)
       /* Draw a circle on the screen */
       graphics_window_draw_circle(windowhandle, button_x, button_y, BUTTON_COLORS[button_index], 40, 40);
 
-      /* These two lines to put the button index number in the middle of the circle 
+      /* These two lines to put the button index number in the middle of the circle
        * so you can see the relationship between the buttons and the joystick data
        */
       sprintf(value, "%d", (int)button_index);
@@ -450,8 +450,8 @@ int apimain(int argc, char **argv)
     /* Yield the CPU so other threads can run */
     thread_sleep(0);
   }
-  
+
   /* No need to halt, since we never exit the loop */
-  
+
   return 0;
 }

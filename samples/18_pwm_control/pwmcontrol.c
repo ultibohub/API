@@ -1,7 +1,7 @@
 /*
  *
  * PWM Control example project for Ultibo API
- * 
+ *
  * This example demonstrates using the PWM devices in Ultibo to control two
  * LEDs. The PWM outputs are alternated so that the LEDs start off and gradually
  * increase in brightness until they are fully on, the cycle then reverses so
@@ -33,8 +33,8 @@
  *
  * We've also included a diagram that shows the connections, look at the file
  * PWM Example.png in the same folder as this example.
- * 
- * 
+ *
+ *
  * This file is part of the Ultibo project, https://ultibo.org/
  *
  * The MIT License (MIT)
@@ -91,14 +91,14 @@ int apimain(int argc, char **argv)
    *
    * You could use pwm_device_find_by_name() here and simply request PWM0 and PWM1 but
    * that could fail if for any reason one of the devices has been disabled.
-   * 
+   *
    * The better option is to use pwm_device_find_by_description() and pass the result of
-   * the pwm_get_description() which will determine the correct device description for 
+   * the pwm_get_description() which will determine the correct device description for
    * the current board model and always find the correct device regardless of the specific
    * configuration details.
    *
    */
-  
+
   /* Get the PWM device descriptions */
   pwm_get_description(0, 0, pwm0_desc, sizeof(pwm0_desc));
   pwm_get_description(1, 0, pwm1_desc, sizeof(pwm1_desc));
@@ -110,14 +110,14 @@ int apimain(int argc, char **argv)
   {
     /* This example uses the default GPIO pin values which are GPIO_PIN_18 for PWM0
      * and GPIO_PIN_19 for PWM1. If you need to use one of the alternate GPIO pins
-     * then you can call pwm_device_set_gpio() with the required pin number. 
+     * then you can call pwm_device_set_gpio() with the required pin number.
      *
      * You can also use pwm_device_get_gpio() to find out the currently configured pin
      */
 
-    /* On the Raspberry Pi the PWM setup requires 3 values. 
+    /* On the Raspberry Pi the PWM setup requires 3 values.
      *
-     * The first is the Mode which can be PWM_MODE_MARKSPACE, PWM_MODE_BALANCED or 
+     * The first is the Mode which can be PWM_MODE_MARKSPACE, PWM_MODE_BALANCED or
      * PWM_MODE_SERIALIZED. These are described in detail in the BCM2835 ARM Peripherals
      * documentation which can be found via the resources page on the Ultibo wiki.
      *
@@ -156,7 +156,7 @@ int apimain(int argc, char **argv)
      * output something is to write some actual data which will specify how
      * many pulses are output within the time period defined by the range.
      *
-     * A data value of 0 will turn off the output whereas a data value equal 
+     * A data value of 0 will turn off the output whereas a data value equal
      * to the range will mean the output is always on (pulses are continuous).
      * We can use this to make our LED go from fully off to fully on in gradual
      * steps, the time it takes to make this transition is simply controlled by
@@ -193,7 +193,7 @@ int apimain(int argc, char **argv)
       }
 
       /* Stop the PWM devices
-       * 
+       *
        * This will disable the devices and stop the clock, remember that the
        * clock is shared between both devices so the driver will only actually
        * stop the clock when pwm_device_stop() is called for both of them
@@ -213,6 +213,6 @@ int apimain(int argc, char **argv)
 
   /* Halt the thread if we return */
   thread_halt(0);
-  
+
   return 0;
 }

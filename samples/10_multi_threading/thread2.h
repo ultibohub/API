@@ -8,7 +8,7 @@ extern "C" {
 /* This is a POSIX pThread, it needs a thread function to run which
  * is defined here, the implementation of the function can be found
  * in the thread2.c source file
- */ 
+ */
 void * thread2_execute(void * args);
 
 #ifdef __cplusplus

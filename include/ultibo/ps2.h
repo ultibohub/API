@@ -62,7 +62,7 @@ extern "C" {
 #define PS2_KEYBOARD_SCANCODE_SET2	2 // Set scan code set 2
 #define PS2_KEYBOARD_SCANCODE_SET3	3 // Set scan code set 3
 
-#define PS2_KEYBOARD_SET_REPEAT_RATE_MASK	0x0F // Repeat rate (00000b = 30 Hz, ..., 11111b = 2 Hz) 
+#define PS2_KEYBOARD_SET_REPEAT_RATE_MASK	0x0F // Repeat rate (00000b = 30 Hz, ..., 11111b = 2 Hz)
 #define PS2_KEYBOARD_SET_DELAY_MASK	0x70 // Delay before keys repeat (00b = 250 ms, 01b = 500 ms, 10b = 750 ms, 11b = 1000 ms)
 /* Bit 7 Must be zero  */
 
@@ -137,7 +137,7 @@ extern "C" {
 #define PS2_RESPONSE_NONE	0x00 // Key detection error or internal buffer overrun
 #define PS2_RESPONSE_SELF_TEST_PASS	0xAA // Self test passed (sent after "0xFF (reset)" command or keyboard power up)
 #define PS2_RESPONSE_ECHO	0xEE // Response to "0xEE (echo)" command
-#define PS2_RESPONSE_ACK	0xFA // Command acknowledged (ACK) 
+#define PS2_RESPONSE_ACK	0xFA // Command acknowledged (ACK)
 #define PS2_RESPONSE_SELFTEST_FAIL1	0xFC // Self test failed (sent after "0xFF (reset)" command or keyboard power up)
 #define PS2_RESPONSE_SELFTEST_FAIL2	0xFD // Self test failed (sent after "0xFF (reset)" command or keyboard power up)
 #define PS2_RESPONSE_RESEND	0xFE // Resend (keyboard wants controller to repeat last command it sent)

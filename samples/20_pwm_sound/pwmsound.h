@@ -19,7 +19,7 @@ extern "C" {
 #define PWMSOUND_PWM_PLLD_CLOCK 750000000
 
 /* Define the DMA data request ID for the PWM device */
-#define PWMSOUND_DMA_DREQ_ID_PWM DMA_DREQ_ID_PWM1 
+#define PWMSOUND_DMA_DREQ_ID_PWM DMA_DREQ_ID_PWM1
 #else
 /* Define ID and channel for the PWM devices */
 #define PWMSOUND_PWM1_ID 0
@@ -28,11 +28,11 @@ extern "C" {
 #define PWMSOUND_PWM2_CH 0
 
 /* Define clock frequencies for the PWM clock */
-#define PWMSOUND_PWM_OSC_CLOCK 19200000   
-#define PWMSOUND_PWM_PLLD_CLOCK 500000000 
+#define PWMSOUND_PWM_OSC_CLOCK 19200000
+#define PWMSOUND_PWM_PLLD_CLOCK 500000000
 
 /* Define the DMA data request ID for the PWM device */
-#define PWMSOUND_DMA_DREQ_ID_PWM DMA_DREQ_ID_PWM 
+#define PWMSOUND_DMA_DREQ_ID_PWM DMA_DREQ_ID_PWM
 #endif
 
 /* Define sound parameters */
@@ -157,11 +157,11 @@ struct _BCM283X_PWM_REGISTERS
     uint32_t CTL; // PWM Control
     uint32_t STA; // PWM Status
     uint32_t DMAC; // PWM DMA Configuration
-    uint32_t reserved1;   
+    uint32_t reserved1;
     uint32_t RNG1; // PWM Channel 1 Range
     uint32_t DAT1; // PWM Channel 1 Data
     uint32_t FIF1; // PWM FIFO Input
-    uint32_t reserved2;   
+    uint32_t reserved2;
     uint32_t RNG2; // PWM Channel 2 Range
     uint32_t DAT2; // PWM Channel 2 Data
 };
@@ -186,7 +186,7 @@ struct _BCM283X_PWM_REGISTERS
 #define BCM283X_CM_CTL_GATE           (1 << 6) // Unused
 #define BCM283X_CM_CTL_KILL           (1 << 5) // Kill the clock generator (0 = no action / 1 = stop and reset the clock generator) (This is intended for test/debug only)
 #define BCM283X_CM_CTL_ENAB           (1 << 4) // Enable the clock generator
- 
+
 #define BCM283X_CM_CTL_SRC_GND        (0 << 0) // Clock source - 0 Hz GND
 #define BCM283X_CM_CTL_SRC_OSC        (1 << 0) // Clock source - 19.2 MHz Oscillator
 #define BCM283X_CM_CTL_SRC_TESTDEBUG0 (2 << 0) // Clock source - 0 Hz Testdebug0
@@ -195,7 +195,7 @@ struct _BCM283X_PWM_REGISTERS
 #define BCM283X_CM_CTL_SRC_PLLC       (5 << 0) // Clock source - 1000 MHz PLLC per (changes with overclock settings)
 #define BCM283X_CM_CTL_SRC_PLLD       (6 << 0) // Clock source - 500 MHz PLLD per
 #define BCM283X_CM_CTL_SRC_HDMI       (7 << 0) // Clock source - 216 MHz HDMI auxiliary
- 
+
 // Clock Manager CM_*DIV register bits
 #define BCM283X_CM_DIV_INT_MASK  0x00FFF000 // Integer part of divisor (This value has a minimum limit determined by the MASH setting) (To avoid lock-ups and glitches do not change this control while BUSY=1)
 #define BCM283X_CM_DIV_FRAC_MASK 0x00000FFF // Fractional part of divisor (To avoid lock-ups and glitches do not change this control while BUSY=1)
@@ -217,7 +217,7 @@ struct _BCM283X_PWM_REGISTERS
 #define BCM283X_PWM_CTL_RPTL1 (1 << 2)  // Channel 1 Repeat Last Data (0: Transmission interrupts when FIFO is empty / 1: Last data in FIFO is transmitted repetedly until FIFO is not empty)
 #define BCM283X_PWM_CTL_MODE1 (1 << 1)  // Channel 1 Mode (0: PWM mode / 1: Serialiser mode)
 #define BCM283X_PWM_CTL_PWEN1 (1 << 0)  // Channel 1 Enable (0: Channel is disabled / 1: Channel is enabled)
- 
+
 // Pulse Width Modulator (PWM) Status register bits
 #define BCM283X_PWM_STA_STA4  (1 << 12) // Channel 4 State
 #define BCM283X_PWM_STA_STA3  (1 << 11) // Channel 3 State
@@ -232,7 +232,7 @@ struct _BCM283X_PWM_REGISTERS
 #define BCM283X_PWM_STA_WERR1 (1 << 2)  // Fifo Write Error Flag
 #define BCM283X_PWM_STA_EMPT1 (1 << 1)  // Fifo Empty Flag
 #define BCM283X_PWM_STA_FULL1 (1 << 0)  // Fifo Full Flag
- 
+
  // Pulse Width Modulator (PWM) DMA configuration register bits (See 9.6)
 #define BCM283X_PWM_DMAC_ENAB  (1 << 31)  // DMA Enable (0: DMA disabled / 1: DMA enabled)
 #define BCM283X_PWM_DMAC_PANIC (0xFF << 8) // DMA Threshold for PANIC signal (Default: 0x7)

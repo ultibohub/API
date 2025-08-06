@@ -123,7 +123,7 @@ int alphasort (const struct dirent **__a, const struct dirent **__b);
 #else
 long telldir (DIR *);
 void seekdir (DIR *, off_t loc);
-    
+
 #endif /* _POSIX_SOURCE */
 
 #ifdef __cplusplus

@@ -56,13 +56,13 @@ int fcntl (int fd, int cmd, ...)
         case F_SETFL:
         {
             intarg = va_arg(args, int);
-            
+
             break;
         }
     }
 
     /* Call reentrant function with int argument
-     * 
+     *
      * Some commands take a pointer argument
      * but they are not currently supported
      */

@@ -34,7 +34,7 @@
 /* These are only available in stdio.h if __GNU_VISIBLE is defined as 1 (see features.h) */
 int asprintf(char **__restrict, const char *__restrict, ...) _ATTRIBUTE ((__format__ (__printf__, 2, 3)));
 int vasprintf(char **, const char *, __VALIST) _ATTRIBUTE ((__format__ (__printf__, 2, 0)));
-#endif 
+#endif
 
 /* Implementation of console_printf() for Ultibo API
  *
@@ -49,7 +49,7 @@ int STDCALL console_printf(const char *format, ...)
 
     handle = console_window_get_default(console_device_get_default());
     if (handle == INVALID_HANDLE_VALUE)
-        return res;    
+        return res;
 
     va_start(args, format);
 

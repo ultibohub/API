@@ -51,10 +51,10 @@ int apimain(int argc, char **argv)
   /* Output some welcome text on the console window */
   console_window_write_ln(windowhandle, "Welcome to Example 04 Keyboard Input");
   console_window_write_ln(windowhandle, "Make sure you have a USB keyboard connected and start typing some characters");
- 
+
   /* Loop endlessly while checking for Keyboard characters */
   while (1) {
-      
+
       /* Read a character from the global keyboard buffer. If multiple keyboards are
        * connected all characters will end up in a single buffer and be received here
        *
@@ -62,7 +62,7 @@ int apimain(int argc, char **argv)
        *
        * Ultibo has dynamic USB attach and detach so just plug one in and start typing */
       if (console_get_key(&character, NULL)) {
-        
+
         /* Before we print the character to the screen, check what was pressed */
         if ((uint8_t)character == 0) {
 
@@ -81,7 +81,7 @@ int apimain(int argc, char **argv)
 
           /* Something other than enter was pressed, print that character on the screen */
           console_window_write_chr(windowhandle, character);
-          
+
         }
       }
 

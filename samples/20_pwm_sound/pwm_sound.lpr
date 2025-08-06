@@ -104,7 +104,7 @@ begin
  {$ENDIF}
 end;
 
-function bcm27xx_pwm_clock_stop(pwm: PPWM_DEVICE): uint32_t; stdcall; public name 'bcm27xx_pwm_clock_stop'; 
+function bcm27xx_pwm_clock_stop(pwm: PPWM_DEVICE): uint32_t; stdcall; public name 'bcm27xx_pwm_clock_stop';
 begin
  {$IFDEF RPIB}
  Result:=BCM2708PWMClockStop(pwm);

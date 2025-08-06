@@ -1,7 +1,7 @@
 /*
  *
  * Dedicated CPU advanced example project for Ultibo API
- * 
+ *
  * This example shows how to take control of a CPU in Ultibo core and use it as
  * a high speed micro controller doing real time operations.
  *
@@ -21,8 +21,8 @@
  * projects.
  *
  *                     !!! You have been warned !!!
- * 
- * 
+ *
+ *
  * This file is part of the Ultibo project, https://ultibo.org/
  *
  * The MIT License (MIT)

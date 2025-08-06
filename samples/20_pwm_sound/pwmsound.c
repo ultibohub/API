@@ -1,7 +1,7 @@
 /*
  *
  * PWM Sound example project for Ultibo API
- * 
+ *
  * This example demonstrates using the PWM devices in Ultibo to play audio.
  *
  * The audio file is first loaded from the SD, decoded into a continuous stream
@@ -17,8 +17,8 @@
  * Audacity or FFMPEG and modify it to play them instead. You simply need to
  * export the audio as 8 or 16 bit raw PCM in either mono or stereo. The default
  * sample rate is 44100Hz but many other rates will also work.
- * 
- * 
+ *
+ *
  * This file is part of the Ultibo project, https://ultibo.org/
  *
  * The MIT License (MIT)
@@ -106,7 +106,7 @@ static uint32_t pwmsound_clock_start(PWM_DEVICE * pwm, uint32_t frequency)
 
   /* Return Success */
   res = ERROR_SUCCESS;
-  
+
   return res;
 }
 
@@ -123,7 +123,7 @@ static uint32_t pwmsound_start(PWM_DEVICE * pwm)
   /* Check Settings */
   if (pwm->range == 0)
     return res;
-  
+
   if (pwm->frequency == 0)
     return res;
 
@@ -143,7 +143,7 @@ static uint32_t pwmsound_start(PWM_DEVICE * pwm)
         break;
       case 1:
         /* Set GPIO 19 */
-        if (pwm_device_set_gpio(pwm, GPIO_PIN_19) != ERROR_SUCCESS) 
+        if (pwm_device_set_gpio(pwm, GPIO_PIN_19) != ERROR_SUCCESS)
           return res;
 
         break;
@@ -177,7 +177,7 @@ static uint32_t pwmsound_start(PWM_DEVICE * pwm)
       default:
         return res;
   }
-  
+
   /* Clear Status */
   bcm283x_regs->STA = (uint32_t)-1;
 
@@ -186,7 +186,7 @@ static uint32_t pwmsound_start(PWM_DEVICE * pwm)
 
   /* Return Success */
   res = ERROR_SUCCESS;
-  
+
   return res;
 }
 
@@ -245,7 +245,7 @@ static uint32_t pwmsound_set_frequency(PWM_DEVICE * pwm, uint32_t frequency)
 
   /* Return Success */
   res = ERROR_SUCCESS;
-  
+
   return res;
 }
 
@@ -263,10 +263,10 @@ static uint32_t pwmsound_play_sample(PWM_DEVICE * pwm, void *data, uint32_t size
   /* Check Parameters */
   if (size == 0)
     return res;
-  
+
   if ((channel_count != 1) && (channel_count != 2))
     return res;
-  
+
   if ((bit_count != 8) && (bit_count != 16))
     return res;
 
@@ -337,7 +337,7 @@ static uint32_t pwmsound_play_sample(PWM_DEVICE * pwm, void *data, uint32_t size
       /* Get 16 bit sample */
       value1 |= buffer[count] << 8;
       count++;
-      
+
       /* Convert to unsigned */
       value1 = (value1 + 0x8000) & 0xffff;
     }
@@ -400,16 +400,16 @@ static uint32_t pwmsound_play_sample(PWM_DEVICE * pwm, void *data, uint32_t size
 
   /* Perform DMA transfer */
   dma_transfer(dma_data, DMA_DIR_MEM_TO_DEV, PWMSOUND_DMA_DREQ_ID_PWM);
-  
+
   /* Free DMA Data */
   free(dma_data);
-  
+
   /* Free Output */
   dma_release_buffer(output);
 
   /* Return Success */
   res = ERROR_SUCCESS;
- 
+
   return res;
 }
 
@@ -426,14 +426,14 @@ static uint32_t pwmsound_play_file(PWM_DEVICE * pwm, char *filename, uint32_t ch
   /* Check PWM */
   if (!pwm)
     return res;
-  
+
   /* Check Parameters */
   if (strlen(filename) == 0)
     return res;
 
   if ((channel_count != 1) && (channel_count != 2))
     return res;
-  
+
   if ((bit_count != 8) && (bit_count != 16))
     return res;
 
@@ -503,20 +503,20 @@ int apimain(int argc, char **argv)
 
   /* First locate the PWM devices
    *
-   * The Raspberry Pi A/B/2B/3+/3B have two PWM channels which will normally 
+   * The Raspberry Pi A/B/2B/3+/3B have two PWM channels which will normally
    * end up with the names PWM0 and PWM1 when the driver is included in an
    * application.
-   * 
+   *
    * The Raspberry Pi 4B/400 have four PWM channels which normally end up with
    * the names PWM2 and PWM3.
-   * 
+   *
    * For the purpose of this example we'll refer to them just as device 1 and
    * device 2 instead of their actual name.
-   * 
+   *
    * As with the PWM control example we use pwm_device_find_by_description()
    * to locate the devices and use pwm_get_description() to determine the
    * correct value to pass regardless of the board or configuration.
-   * 
+   *
    * We've also defined all the details that differ between models in a header
    * file named pwmsound.h so we can just refer to those definitions instead
    * of including a lot of ifdef statements in the source code.
@@ -533,9 +533,9 @@ int apimain(int argc, char **argv)
   {
     /* Modify PWM device functions.
      *
-     * This allows us to change the behaviour of the PWM driver so we can 
+     * This allows us to change the behaviour of the PWM driver so we can
      * use a different clock source and enable the FIFO for audio output.
-     * 
+     *
      * Notice how we use the same function for both devices, the PWM device
      * instance is passed to the function so it knows which device to use
      */
@@ -560,7 +560,7 @@ int apimain(int argc, char **argv)
     pwm_device_set_range(pwm2_device, (CLOCK_RATE + (SAMPLE_RATE / 2)) / SAMPLE_RATE);
     pwm_device_set_mode(pwm2_device, PWM_MODE_BALANCED);
     pwm_device_set_frequency(pwm2_device, CLOCK_RATE);
-    
+
     sprintf(value, "Range = %u", (unsigned int)pwm1_device->range);
     console_window_write_ln(handle, value);
 
@@ -568,7 +568,7 @@ int apimain(int argc, char **argv)
     if ((pwm_device_start(pwm1_device) == ERROR_SUCCESS) && (pwm_device_start(pwm2_device) == ERROR_SUCCESS))
     {
       /* Play the Sound Sample.
-       * 
+       *
        * If you change the file to play a different sample make sure you adjust
        * the sample rate, channel count and number of bits to match your sample
        */
@@ -594,13 +594,13 @@ int apimain(int argc, char **argv)
   {
     console_window_write_ln(handle, "Error: Failed to locate PWM devices");
   }
-  
+
   /* Turn on the LED to indicate completion */
   activity_led_enable();
   activity_led_on();
 
   /* Halt the thread if we return */
   thread_halt(0);
-  
+
   return 0;
 }

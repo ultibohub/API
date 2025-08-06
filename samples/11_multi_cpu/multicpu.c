@@ -60,21 +60,21 @@ int apimain(int argc, char **argv)
   /* First print some basic information */
   sprintf(value, "CPU Count is %d", (int)cpu_get_count());
   console_window_write_ln(windowhandle, value);
-  
+
   sprintf(value, "Boot CPU is %d", (int)cpu_get_boot());
   console_window_write_ln(windowhandle, value);
-  
+
   sprintf(value, "Current CPU is %d", (int)cpu_get_current());
   console_window_write_ln(windowhandle, value);
-  
+
   cpu_get_description(description, sizeof(description));
   sprintf(value, "CPU Description is %s", description);
   console_window_write_ln(windowhandle, value);
-  
+
   sprintf(value, "Total thread count is %d", (int)thread_get_count());
   console_window_write_ln(windowhandle, value);
   console_window_write_ln(windowhandle, "");
-  
+
   /* Let's do an endless loop and print some information each time */
   loops = 0;
   while (true)
@@ -118,7 +118,7 @@ int apimain(int argc, char **argv)
       sprintf(value, " CPU%d %d   ", count, (int)scheduler_get_thread_count(count));
       console_window_write_ex(windowhandle, value, 1, 15 + count, console_window_get_forecolor(windowhandle), console_window_get_backcolor(windowhandle));
     }
-      
+
     /* Let's do the scheduler thread quantum as well which determines how long each
      * thread gets to run before another thread is scheduled
      */
@@ -152,7 +152,7 @@ int apimain(int argc, char **argv)
     /* Sleep a while so we don't mess with the utilization too much */
     thread_sleep(100);
   }
-  
+
   /* No need to Halt, we never get to here */
 
   return 0;

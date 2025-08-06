@@ -1,7 +1,7 @@
 /*
  *
  * GPIO Handling example project for Ultibo API
- * 
+ *
  * In this example we look at using the GPIO functions to detect a simple switch
  * being opened or closed and turn on or off an LED in response.
  *
@@ -69,8 +69,8 @@ static void gpio_pin_event(void *data, uint32_t pin, uint32_t trigger)
   /* Print a message to show what the event was. You might notice that sometimes
    * multiple events occur when opening or closing the switch. This can be caused
    * by the contacts in the switch bouncing, see below for one way to handle this.
-   * 
-   * Notice that we get the window handle for our console window from the data 
+   *
+   * Notice that we get the window handle for our console window from the data
    * parameter that was passed to gpio_input_event(). You can use this parameter
    * in any way you like in your application to pass values to the event handler
    */
@@ -96,7 +96,7 @@ int apimain(int argc, char **argv)
    * also GPIO functions in the gpio header that allow you to specify some extra
    * parameters if you need them.
    *
-   * We need to do some setup of the GPIO pins to tell the GPIO controller what we 
+   * We need to do some setup of the GPIO pins to tell the GPIO controller what we
    * want to do with them.
    *
    * All of the GPIO_* values used below are available in the globalconst header
@@ -131,7 +131,7 @@ int apimain(int argc, char **argv)
     /* Compare the latest value with the old value */
     if (current_value != last_value)
     {
-      /* Check if the switch is on 
+      /* Check if the switch is on
        *
        * Notice that we check for Low to see if the switch is on, that's because we
        * connected the switch from GPIO pin 18 to Ground so the value will be Low when
@@ -172,7 +172,7 @@ int apimain(int argc, char **argv)
      *
      * We'll do both here just to show what happens
      */
-    
+
     /* First we check the value of the switch and decide what to wait for */
     if (current_value == GPIO_LEVEL_LOW)
     {
@@ -181,11 +181,11 @@ int apimain(int argc, char **argv)
       /* Let's register an event to call when the pin changes to High.
        *
        * The GPIO_TRIGGER_HIGH parameter tells the GPIO driver what change to wait for.
-       * 
+       *
        * You can also pass a data parameter to the event, this can be anything you want
        * and is not used by the GPIO driver. For example you could use the same function
        * for multiple different events and use the data to detect which one occurred.
-       * 
+       *
        * In this example we'll pass our console window handle, to see why have a look at
        * the gpio_pin_event() function above
        */

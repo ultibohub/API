@@ -234,7 +234,7 @@ extern "C" {
 /* Joystick specific types */
 /* Joystick Data */
 typedef struct _JOYSTICK_DATA JOYSTICK_DATA;
-struct _JOYSTICK_DATA 
+struct _JOYSTICK_DATA
 {
 	int32_t axiscount; // The number of Axes reported by this device
 	int16_t axes[JOYSTICK_MAX_AXIS]; // The currently reported value of each Axis
@@ -248,7 +248,7 @@ struct _JOYSTICK_DATA
 
 /* Joystick Buffer */
 typedef struct _JOYSTICK_BUFFER JOYSTICK_BUFFER;
-struct _JOYSTICK_BUFFER 
+struct _JOYSTICK_BUFFER
 {
 	SEMAPHORE_HANDLE wait; // Buffer ready semaphore
 	uint32_t start; // Index of first buffer ready
@@ -289,7 +289,7 @@ struct _JOYSTICK_HAT
 
 
 typedef struct _JOYSTICK_PROPERTIES JOYSTICK_PROPERTIES;
-struct _JOYSTICK_PROPERTIES 
+struct _JOYSTICK_PROPERTIES
 {
 	uint32_t flags; // Device flags (eg JOYSTICK_FLAG_LED)
 	uint32_t axiscount; // The number of Axes reported by this device

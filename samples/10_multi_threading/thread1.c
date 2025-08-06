@@ -46,7 +46,7 @@ ssize_t STDCALL thread1_execute(void * parameter)
      *
      * Most threads will do something in a loop and only exit when they have either
      * completed their task or been signalled by another thread to end
-     * 
+     *
      * For this example we'll use an endless loop but first let's create a console
      * window to print some output */
     windowhandle = console_window_create(console_device_get_default(), CONSOLE_POSITION_TOPRIGHT, FALSE);

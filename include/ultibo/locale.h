@@ -197,7 +197,7 @@ extern "C" {
 //     WORD Sort:    culturally correct sort
 //                   hyphen and apostrophe are special cased
 //                   example: "coop" and "co-op" will sort together in a list
-// 
+//
 //                         co_op     <-------  underscore (symbol)
 //                         coat
 //                         comb
@@ -207,10 +207,10 @@ extern "C" {
 //                         went
 //                         were
 //                         we're     <-------  apostrophe (punctuation)
-// 
-// 
+//
+//
 //     STRING Sort:  hyphen and apostrophe will sort with all other symbols
-// 
+//
 //                         co-op     <-------  hyphen (punctuation)
 //                         co_op     <-------  underscore (symbol)
 //                         coat
@@ -220,7 +220,7 @@ extern "C" {
 //                         we're     <-------  apostrophe (punctuation)
 //                         went
 //                         were
-// 
+//
 #define SORT_STRINGSORT	0x00001000 //  use string sort method
 
 /* Compare String Return Values */

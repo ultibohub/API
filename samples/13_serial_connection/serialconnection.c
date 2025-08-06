@@ -1,7 +1,7 @@
 /*
  *
  * Serial Connection example project for Ultibo API
- * 
+ *
  * This example uses the serial (UART) device in the Raspberry Pi to connect
  * to another computer and echo back any line of text it receives.
  *
@@ -84,11 +84,11 @@ int apimain(int argc, char **argv)
    * We can use the serial_open() function from the platform header to open the default
    * serial device or we can use the serial_device_open() function from the serial header
    * if we need to specify which device to open.
-   * 
+   *
    * We'll use serial_open() and specify 9600 as the speed with 8 data bits, 1 stop bit,
    * no parity and no flow control. The constants used here can be found in the globalconst
    * header.
-   * 
+   *
    * The last 2 parameters allow setting the size of the transmit and receive buffers,
    * passing 0 means use the default size
    */
@@ -142,7 +142,7 @@ int apimain(int argc, char **argv)
 
         /* Add a carriage return and line feed */
         sprintf(value, "%s\r\n", characters);
-        
+
         /* And echo them back to the serial device using serial_write() */
         serial_write(value, strlen(value), &count);
 
@@ -155,18 +155,18 @@ int apimain(int argc, char **argv)
         /* Add the character to what we have already recevied */
         characters[index] = (char)character;
         index++;
-        
+
         /* Check if our character buffer is full */
         if (index == 255)
         {
           /* Write the received characters to the console */
           sprintf(value, "Received so far: %s", characters);
           console_window_write_ln(windowhandle, value);
-          
+
           /* Write the character buffer to the serial device */
           serial_write(characters, strlen(characters), &count);
 
-          /* Clear the characters and wait for more */ 
+          /* Clear the characters and wait for more */
           index = 0;
           memset(characters, 0, sizeof(characters));
         }
@@ -188,6 +188,6 @@ int apimain(int argc, char **argv)
 
   /* Halt the thread if we exit the loop */
   thread_halt(0);
-  
+
   return 0;
 }

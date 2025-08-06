@@ -42,10 +42,10 @@ int apimain(int argc, char **argv)
  /* Before we can turn the LED on or off we need to enable it which sets the GPIO
   * pins to the appropriate function. */
  activity_led_enable();
- 
+
  /* So that we can see what's happening, let's create a console window. */
  window_handle = console_window_create(console_device_get_default(), CONSOLE_POSITION_FULL, TRUE);
- 
+
  /* Let's create a loop so that the blinking happens forever, or until you pull the
   * power plug at least.
   *
@@ -54,30 +54,30 @@ int apimain(int argc, char **argv)
  while (TRUE) {
   /* Write to the console */
   console_window_write_ln(window_handle, "Turning on the Activity LED");
- 
+
   /* Turn on the LED */
   activity_led_on();
- 
+
   /* Wait for a while so that things happen at a speed we can see, 500 milliseconds,
-   * or half a second, should be enough. */ 
+   * or half a second, should be enough. */
   thread_sleep(500);
-  
+
   /* Write to the console */
   console_window_write_ln(window_handle, "Turning off the Activity LED");
-  
-  /* Turn off the LED */ 
+
+  /* Turn off the LED */
   activity_led_off();
-  
+
   /* Wait a while before turning the LED back on again. */
   thread_sleep(500);
-  
+
   /* You might want to experiment with the values of thread_sleep() to make things
    * happen faster or maybe you might try rearranging the code in the loop to do
    * a double blink each time. */
  }
- 
+
  /* We will never get to here, so there is no need for thread_halt() like in other
   * examples even though the blinkerproject wrapper does it for us anyway. */
-  
+
  return 0;
 }

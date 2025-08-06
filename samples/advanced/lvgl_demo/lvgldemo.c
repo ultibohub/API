@@ -7,13 +7,13 @@
  * keyboard and touch devices as well as starting the LVGL event loop to service
  * UI events such as button clicks.
  *
- * A precompiled static library for LVGL is included with the Ultibo RTL and the 
+ * A precompiled static library for LVGL is included with the Ultibo RTL and the
  * header files are provided with the Ultibo API, the library is compiled with
  * the most common options but can easily be recompiled to suit your needs by
  * following the information in the libs/lvgl folder of the API.
  *
  * For the full LVGL documentation visit https://lvgl.io/
- * 
+ *
  *
  * This file is part of the Ultibo project, https://ultibo.org/
  *
@@ -45,7 +45,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
- 
+
 #include "ultibo/platform.h"
 #include "ultibo/threads.h"
 #include "ultibo/serial.h"
@@ -61,11 +61,11 @@
 /* Include the lvgl demo headers to allow starting the LVGL demos */
 #include "lvgl/demos/lv_demos.h"
 
-/* App configuration structure 
+/* App configuration structure
  *
  * Instead of declaring global variables for various pieces of information
  * like the display size and depth, rendering buffers and the mouse or touch
- * device we utilize the capability of LVGL to attach a data parameter to 
+ * device we utilize the capability of LVGL to attach a data parameter to
  * many objects and pass that too us when it calls the various device callback
  * functions. We can use the data parameter to obtain the information we need
  * during the callback and avoid the problems caused by global variables
@@ -132,8 +132,8 @@ int apimain(int argc, char **argv)
     pthread_t tick_thread;
 
     /* Allocate a local copy of our app configuration, this will only
-     * remain valid until our main function exits so if you plan to 
-     * spawn multiple threads and then return from main you should 
+     * remain valid until our main function exits so if you plan to
+     * spawn multiple threads and then return from main you should
      * allocate the app configuration dynamically using malloc()
      */
 	APP_CONFIG config;
@@ -312,8 +312,8 @@ static int touch_init_configuration(APP_CONFIG *config)
 		config->touch_use_mouse = 1;
 		config->touch_show_cursor = 1;
 
-		/* For USB touch screen devices it may be necessary to delay the configuration 
-		 * to allow time for the USB device enumeration, initialization and binding 
+		/* For USB touch screen devices it may be necessary to delay the configuration
+		 * to allow time for the USB device enumeration, initialization and binding
 		 * process which occurs asynchronously with other boot processing */
 		config->touch_config_delay = 1;
 	}

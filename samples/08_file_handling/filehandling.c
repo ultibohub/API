@@ -70,7 +70,7 @@ int apimain(int argc, char **argv)
   closedir(dir);
   console_window_write_ln(windowhandle, "C:\\ drive is ready");
   console_window_write_ln(windowhandle, "");
-  
+
   /* First let's list the contents of the SD card. We can guess that it will be C:\ drive for now */
   console_window_write_ln(windowhandle, "Contents of drive C:\\");
 
@@ -121,7 +121,7 @@ int apimain(int argc, char **argv)
   {
     /* We've created the file, now we need to write some content to it, there are many ways
      * to do that but we'll just pass some text to fputs
-     */ 
+     */
     fputs("Example 08 File Handling\n", handle);
     fputs("This is a test file created by the example\n", handle);
     fputs("Here is a another line of text as well.\n", handle);
@@ -141,7 +141,7 @@ int apimain(int argc, char **argv)
     {
       /* Read the contents of our file */
       console_window_write_ln(windowhandle, "The contents of the file are:");
-      
+
       while (fgets(value, sizeof(value), handle) != NULL)
       {
         console_window_write_ln(windowhandle, value);
