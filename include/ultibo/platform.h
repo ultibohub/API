@@ -549,6 +549,8 @@ int64_t STDCALL clock_milliseconds(void);
 int64_t STDCALL clock_microseconds(void);
 int64_t STDCALL clock_nanoseconds(void);
 
+int64_t STDCALL clock_get_base(void);
+
 int64_t STDCALL clock_get_time(void);
 int64_t STDCALL clock_set_time(int64_t time, BOOL rtc);
 
