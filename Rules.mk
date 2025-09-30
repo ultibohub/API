@@ -40,6 +40,9 @@ FPC_PATH = $(HOME)/ultibo/core/fpc/bin/
 endif
 endif
 
+# Tools path is normally defined in Config.mk
+TOOLS_PATH =
+
 # Include user customizations without error if file doesn't exist
 -include $(API_PATH)/Config.mk
 

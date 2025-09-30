@@ -4,6 +4,11 @@
 # Rename this file to Config.mk and apply any customizations
 #
 
+# Arch type (Configure here or pass on command line)
+# eg make ARCH_TYPE=arm
+#ARCH_TYPE ?= arm
+#ARCH_TYPE ?= aarch64
+
 # Board type (Configure here or pass on command line)
 # eg make BOARD_TYPE=rpi4b
 #BOARD_TYPE ?= rpi4b

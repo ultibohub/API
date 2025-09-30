@@ -1079,6 +1079,7 @@ int sched_getaffinity(pid_t pid, size_t cpusetsize, cpu_set_t *mask);
 /* LIBC Functions (Non Standard) */
 void msleep(unsigned int msecs);
 pid_t gettid(void);
+HANDLE fd_handle(int fd);
 
 #ifdef __cplusplus
 }
