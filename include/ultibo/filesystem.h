@@ -1106,6 +1106,8 @@ uint32_t STDCALL partition_id_to_string(uint8_t id, char *string, uint32_t len);
 uint8_t STDCALL string_to_partition_id(char *partitionid);
 
 uint32_t STDCALL cache_mode_to_string(CACHE_MODE cachemode, char *string, uint32_t len);
+CACHE_MODE STDCALL const_to_cache_mode(uint32_t cachemode);
+CACHE_MODE STDCALL string_to_cache_mode(char *cachemode);
 uint32_t STDCALL cache_state_to_string(CACHE_STATE cachestate, char *string, uint32_t len);
 
 #ifdef __cplusplus
