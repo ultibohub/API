@@ -888,6 +888,10 @@ struct _GENET_STATUS64
 /* Nothing */
 
 /* ============================================================================== */
+/* Initialization Functions */
+void STDCALL genet_init(void);
+
+/* ============================================================================== */
 /* GENET Functions */
 NETWORK_DEVICE * STDCALL genet_network_create(size_t address, uint32_t mdiooffset, uint32_t irq0, uint32_t irq1);
 uint32_t STDCALL genet_network_destroy(NETWORK_DEVICE *network);

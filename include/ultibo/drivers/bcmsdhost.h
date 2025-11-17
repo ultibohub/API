@@ -179,6 +179,10 @@ struct _BCMSDHOST_HOST
 };
 
 /* ============================================================================== */
+/* Initialization Functions */
+void STDCALL bcmsdhost_init(void);
+
+/* ============================================================================== */
 /* BCMSDHOST Functions */
 SDHCI_HOST * STDCALL bcmsdhost_create(size_t address, char *name, uint32_t irq, uint32_t dreq, uint32_t clockminimum, uint32_t clockmaximum, uint32_t gpiofirst, uint32_t gpiolast, uint32_t gpiofunction, BOOL enablefiq);
 uint32_t STDCALL bcmsdhost_destroy(SDHCI_HOST *sdhci);

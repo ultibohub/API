@@ -341,6 +341,9 @@ struct _PL18X_SDHCIHOST
 	pl18xsdhci_get_rxfifo_count_proc getrxfifocount; // Model specific get_rxfifo_count function
 };
 
+/* ============================================================================== */
+/* Initialization Functions */
+void STDCALL pl18x_init(void);
 
 /* ============================================================================== */
 /* PL18X Functions */
