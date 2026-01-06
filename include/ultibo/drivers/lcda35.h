@@ -38,7 +38,7 @@ extern "C" {
 
 /* ============================================================================== */
 /* LCDA35 specific constants */
-#define LCDA35_FRAMEBUFFER_DESCRIPTION	"Waveshare RPi LCD(A) 3.5""
+#define LCDA35_FRAMEBUFFER_DESCRIPTION	"Waveshare RPi LCD(A) 3.5\""
 
 #define LCDA35_SIGNATURE	0xAF000A35
 
