@@ -1,5 +1,5 @@
 #
-# Makefile for LVGL graphics library v9.2.2
+# Makefile for LVGL graphics library v9.4.0
 #
 
 # Default to arm arch
@@ -104,6 +104,7 @@ include $(LVGL_DIR)/$(LVGL_DIR_NAME)/lvgl.mk
 
 INCLUDE	+= -I $(LVGL_DIR)
 INCLUDE	+= -I $(API_PATH)/include
+INCLUDE	+= -I $(API_PATH)/libs/freetype2
 
 CC	= $(TOOLS_PREFIX)gcc
 CPP	= $(TOOLS_PREFIX)g++

@@ -5,7 +5,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+# Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ API_PATH = ../../..
 
 OBJS = lvgldemo.o
 
-LIBS = lvgl.a
+LIBS = lvgl.a freetype.a
 
 PROJECT_NAME = lvgl_demo.lpr
 

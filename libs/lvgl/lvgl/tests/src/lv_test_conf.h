@@ -23,6 +23,7 @@ extern "C" {
 #define LV_USE_OS                   LV_OS_PTHREAD
 #define LV_OBJ_STYLE_CACHE          0
 #define LV_BIN_DECODER_RAM_LOAD     1   /* Run test with bin image loaded to RAM */
+#define LV_DRAW_BUF_STRIDE_ALIGN    64  /* Use a large value to be sure any issues will cause crash */
 #endif
 
 #ifdef LVGL_CI_USING_DEF_HEAP
@@ -70,6 +71,14 @@ typedef void * lv_user_data_t;
 #elif LV_TEST_OPTION == 6
 #define  LV_COLOR_DEPTH     32
 #define  LV_DPI_DEF         160
+
+#define  LV_DRAW_BUF_ALIGN  64
+#ifdef _MSC_VER
+#define  LV_ATTRIBUTE_MEM_ALIGN __declspec(align(LV_DRAW_BUF_ALIGN))
+#else
+#define  LV_ATTRIBUTE_MEM_ALIGN __attribute__((aligned(LV_DRAW_BUF_ALIGN)))
+#endif
+
 #include "lv_test_conf_vg_lite.h"
 #include "lv_test_conf_full.h"
 #elif LV_TEST_OPTION == 7
@@ -99,11 +108,10 @@ typedef void * lv_user_data_t;
 #if defined(LVGL_CI_USING_SYS_HEAP) || defined(LVGL_CI_USING_DEF_HEAP)
 #undef LV_LOG_PRINTF
 
-/*Use a large value be sure any issues will cause crash*/
-#define LV_DRAW_BUF_STRIDE_ALIGN                64
-
+#ifndef LV_DRAW_BUF_ALIGN
 /*Use non power of 2 to avoid the case when `malloc` returns aligned pointer by default, and use a large value be sure any issues will cause crash*/
 #define LV_DRAW_BUF_ALIGN                       852
+#endif
 
 /*For screenshots*/
 #undef LV_DPI_DEF
