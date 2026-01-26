@@ -19,7 +19,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -733,7 +733,7 @@ static int lvgl_create_screen(APP_CONFIG *config)
 	/* Setup active screen background color */
 	lv_obj_set_style_bg_color(current_screen, lv_color_make(142, 167, 196), LV_PART_MAIN);
 
-	/* Create a text area (and a label) (https://docs.lvgl.io/9.2/widgets/textarea.html) */
+	/* Create a text area (and a label) (https://docs.lvgl.io/9.4/widgets/textarea.html) */
 	lv_obj_t * text_area = lv_textarea_create(current_screen);
 	lv_obj_align(text_area, LV_ALIGN_TOP_LEFT, (double_t)config->display_width * 0.05, (double_t)config->display_height * 0.10);
 	lv_textarea_set_one_line(text_area, true);
@@ -743,12 +743,12 @@ static int lvgl_create_screen(APP_CONFIG *config)
 	lv_obj_set_style_text_color(text_label, lv_color_white(), LV_PART_MAIN);
 	lv_obj_align(text_label, LV_ALIGN_TOP_LEFT, (double_t)config->display_width * 0.05, (double_t)config->display_height * 0.05);
 
-	/* Create a checkbox  (https://docs.lvgl.io/9.2/widgets/checkbox.html) */
+	/* Create a checkbox  (https://docs.lvgl.io/9.4/widgets/checkbox.html) */
 	lv_obj_t * checkbox = lv_checkbox_create(current_screen);
 	lv_obj_align(checkbox, LV_ALIGN_TOP_LEFT, (double_t)config->display_width * 0.05, (double_t)config->display_height * 0.20);
 	lv_checkbox_set_text(checkbox, "This is a checkbox");
 
-	/* Create a slide switch (and a label) (https://docs.lvgl.io/9.2/widgets/switch.html) */
+	/* Create a slide switch (and a label) (https://docs.lvgl.io/9.4/widgets/switch.html) */
 	lv_obj_t * slideswitch = lv_switch_create(current_screen);
 	lv_obj_align(slideswitch, LV_ALIGN_TOP_LEFT, (double_t)config->display_width * 0.05, (double_t)config->display_height * 0.35);
 	lv_obj_add_state(slideswitch, LV_STATE_CHECKED);
@@ -758,7 +758,7 @@ static int lvgl_create_screen(APP_CONFIG *config)
 	lv_obj_set_style_text_color(switch_label, lv_color_white(), LV_PART_MAIN);
 	lv_obj_align(switch_label, LV_ALIGN_TOP_LEFT, (double_t)config->display_width * 0.05, (double_t)config->display_height * 0.30);
 
-	/* Create a slider (and a label) (https://docs.lvgl.io/9.2/widgets/slider.html) */
+	/* Create a slider (and a label) (https://docs.lvgl.io/9.4/widgets/slider.html) */
 	lv_obj_t * slider = lv_slider_create(current_screen);
 	lv_obj_align(slider, LV_ALIGN_TOP_LEFT, (double_t)config->display_width * 0.05, (double_t)config->display_height * 0.50);
 
@@ -767,7 +767,7 @@ static int lvgl_create_screen(APP_CONFIG *config)
 	lv_obj_set_style_text_color(slider_label, lv_color_white(), LV_PART_MAIN);
 	lv_obj_align(slider_label, LV_ALIGN_TOP_LEFT, (double_t)config->display_width * 0.05, (double_t)config->display_height * 0.45);
 
-	/* Create a button (and two labels)  (https://docs.lvgl.io/9.2/widgets/button.html) */
+	/* Create a button (and two labels)  (https://docs.lvgl.io/9.4/widgets/button.html) */
 	lv_obj_t * button = lv_btn_create(current_screen);
 	lv_obj_set_size(button, (double_t)config->display_width * 0.20, (double_t)config->display_height * 0.10);
 	lv_obj_align(button, LV_ALIGN_TOP_LEFT, (double_t)config->display_width * 0.05, (double_t)config->display_height * 0.65);
@@ -790,20 +790,20 @@ static int lvgl_create_screen(APP_CONFIG *config)
 	lv_group_add_obj(group, checkbox);
 	lv_group_add_obj(group, slideswitch);
 	lv_group_add_obj(group, slider);
-	
+
 	/* Associate the group with the keyboard */
 	lv_indev_set_group(config->keyboard_driver, group);
 
 	/* Focus the text area */
 	lv_group_focus_obj(text_area);
 
-	/* Register events (https://docs.lvgl.io/9.2/overview/event.html) */
+	/* Register events (https://docs.lvgl.io/9.4/details/common-widget-features/events.html) */
 	lv_obj_add_event_cb(button, button_click, LV_EVENT_CLICKED, config);
 
 	return 0;
 }
 
-/* LVGL tick thread (See: https://docs.lvgl.io/9.2/porting/tick.html) */
+/* LVGL tick thread (https://docs.lvgl.io/9.4/details/integration/overview/connecting_lvgl.html#tick-interface) */
 static void * lvgl_tick_thread(void *args)
 {
     /* Set the thread name */
