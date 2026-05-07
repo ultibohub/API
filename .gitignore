@@ -44,3 +44,9 @@ Config.mk
 # Exclude incomplete headers
 incomplete/
 *.incomplete
+
+# Exclude documentation
+docs/
+
+# Exclude documentation headers
+headers/

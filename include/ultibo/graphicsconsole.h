@@ -34,19 +34,16 @@ extern "C" {
 #include "ultibo/globalconst.h"
 #include "ultibo/console.h"
 
-/* ============================================================================== */
-/* Graphics Console specific constants */
+/** Graphics Console specific constants */
 
-/* ============================================================================== */
-/* Graphics Console specific types */
-/* Graphics Window Enumeration Callback */
+/** Graphics Console specific types */
+/** Graphics Window Enumeration Callback */
 typedef console_window_enumerate_cb graphics_window_enumerate_cb;
 
-/* Graphics Window */
+/** Graphics Window */
 typedef CONSOLE_WINDOW GRAPHICS_WINDOW;
 
-/* ============================================================================== */
-/* Graphics Console Functions */
+/** Graphics Console Functions */
 WINDOW_HANDLE STDCALL graphics_window_create(CONSOLE_DEVICE *console, uint32_t position);
 WINDOW_HANDLE STDCALL graphics_window_create_ex(CONSOLE_DEVICE *console, FONT_HANDLE font, uint32_t size, uint32_t state, uint32_t mode, uint32_t position);
 uint32_t STDCALL graphics_window_destroy(WINDOW_HANDLE handle);
@@ -147,8 +144,7 @@ uint32_t STDCALL graphics_window_move_image(WINDOW_HANDLE handle, CONSOLE_POINT 
 
 uint32_t STDCALL graphics_window_image_size(WINDOW_HANDLE handle, uint32_t width, uint32_t height, uint32_t format, uint32_t stride);
 
-/* ============================================================================== */
-/* Graphics Console Helper Functions */
+/** Graphics Console Helper Functions */
 uint32_t STDCALL graphics_window_get_count(CONSOLE_DEVICE *console);
 WINDOW_HANDLE STDCALL graphics_window_get_active(CONSOLE_DEVICE *console);
 

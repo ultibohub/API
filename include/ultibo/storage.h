@@ -35,13 +35,12 @@ extern "C" {
 #include "ultibo/system.h"
 #include "ultibo/devices.h"
 
-/* ============================================================================== */
-/* Storage specific constants */
-#define STORAGE_NAME_PREFIX	"Storage" // Name prefix for Storage Devices
+/** Storage specific constants */
+#define STORAGE_NAME_PREFIX	"Storage" ///< Name prefix for Storage Devices
 
 #define STORAGE_STATUS_TIMER_INTERVAL	1000
 
-/* Storage Device Types */
+/** Storage Device Types */
 #define STORAGE_TYPE_NONE	0
 #define STORAGE_TYPE_HDD	1
 #define STORAGE_TYPE_FDD	2
@@ -50,13 +49,13 @@ extern "C" {
 #define STORAGE_TYPE_TAPE	5
 #define STORAGE_TYPE_REMOVABLE	6
 
-/* Storage Device States */
+/** Storage Device States */
 #define STORAGE_STATE_EJECTED	0
 #define STORAGE_STATE_EJECTING	1
 #define STORAGE_STATE_INSERTING	2
 #define STORAGE_STATE_INSERTED	3
 
-/* Storage Device Flags */
+/** Storage Device Flags */
 #define STORAGE_FLAG_NONE	0x00000000
 #define STORAGE_FLAG_REMOVABLE	0x00000001
 #define STORAGE_FLAG_LBA48	0x00000002
@@ -70,33 +69,32 @@ extern "C" {
 #define STORAGE_FLAG_EJECTABLE	0x00000200
 #define STORAGE_FLAG_CHANGABLE	0x00000400
 
-/* Storage Device Control Codes */
-#define STORAGE_CONTROL_TEST_READY	1 // Test Unit Ready
-#define STORAGE_CONTROL_RESET	2 // Reset Device
-#define STORAGE_CONTROL_TEST_MEDIA	3 // Test No Media
-#define STORAGE_CONTROL_LOCK	4 // Lock Media
-#define STORAGE_CONTROL_UNLOCK	5 // Unlock Media
-#define STORAGE_CONTROL_EJECT	6 // Eject Media
-#define STORAGE_CONTROL_TEST_LOCKED	7 // Test Media Locked
-#define STORAGE_CONTROL_TEST_CHANGED	8 // Test Media Changed
-#define STORAGE_CONTROL_GET_VENDORID	9 // Get Vendor ID
-#define STORAGE_CONTROL_GET_PRODUCTID	10 // Get Product ID
-#define STORAGE_CONTROL_GET_SERIAL	11 // Get Serial No
-#define STORAGE_CONTROL_GET_REVISION	12 // Get Revision No
-#define STORAGE_CONTROL_GET_PRODUCT	13 // Get Product Name
-#define STORAGE_CONTROL_GET_MANUFACTURER	14 // Get Manufacturer Name
+/** Storage Device Control Codes */
+#define STORAGE_CONTROL_TEST_READY	1 ///< Test Unit Ready
+#define STORAGE_CONTROL_RESET	2 ///< Reset Device
+#define STORAGE_CONTROL_TEST_MEDIA	3 ///< Test No Media
+#define STORAGE_CONTROL_LOCK	4 ///< Lock Media
+#define STORAGE_CONTROL_UNLOCK	5 ///< Unlock Media
+#define STORAGE_CONTROL_EJECT	6 ///< Eject Media
+#define STORAGE_CONTROL_TEST_LOCKED	7 ///< Test Media Locked
+#define STORAGE_CONTROL_TEST_CHANGED	8 ///< Test Media Changed
+#define STORAGE_CONTROL_GET_VENDORID	9 ///< Get Vendor ID
+#define STORAGE_CONTROL_GET_PRODUCTID	10 ///< Get Product ID
+#define STORAGE_CONTROL_GET_SERIAL	11 ///< Get Serial No
+#define STORAGE_CONTROL_GET_REVISION	12 ///< Get Revision No
+#define STORAGE_CONTROL_GET_PRODUCT	13 ///< Get Product Name
+#define STORAGE_CONTROL_GET_MANUFACTURER	14 ///< Get Manufacturer Name
 
-/* ============================================================================== */
-/* Storage specific types */
-/* Storage Device */
+/** Storage specific types */
+/** Storage Device */
 typedef struct _STORAGE_DEVICE STORAGE_DEVICE;
 
-/* Storage Enumeration Callback */
+/** Storage Enumeration Callback */
 typedef uint32_t STDCALL (*storage_enumerate_cb)(STORAGE_DEVICE *storage, void *data);
-/* Storage Notification Callback */
+/** Storage Notification Callback */
 typedef uint32_t STDCALL (*storage_notification_cb)(DEVICE *device, void *data, uint32_t notification);
 
-/* Storage Device Methods */
+/** Storage Device Methods */
 typedef uint32_t STDCALL (*storage_device_read_proc)(STORAGE_DEVICE *storage, int64_t start, int64_t count, void *buffer);
 typedef uint32_t STDCALL (*storage_device_write_proc)(STORAGE_DEVICE *storage, int64_t start, int64_t count, void *buffer);
 typedef uint32_t STDCALL (*storage_device_erase_proc)(STORAGE_DEVICE *storage, int64_t start, int64_t count);
@@ -105,25 +103,25 @@ typedef uint32_t STDCALL (*storage_device_control_proc)(STORAGE_DEVICE *storage,
 struct _STORAGE_DEVICE
 {
 	// Device Properties
-	DEVICE device; // The Device entry for this Storage
+	DEVICE device; ///< The Device entry for this Storage
 	// Storage Properties
-	uint32_t storageid; // Unique Id of this Storage in the Storage table
-	uint32_t storagestate; // Storage state (eg STORAGE_STATE_INSERTED)
-	storage_device_read_proc deviceread; // A Device specific DeviceRead method implementing a standard Storage device interface
-	storage_device_write_proc devicewrite; // A Device specific DeviceWrite method implementing a standard Storage device interface
-	storage_device_erase_proc deviceerase; // A Device specific DeviceErase method implementing a standard Storage device interface
-	storage_device_control_proc devicecontrol; // A Device specific DeviceControl method implementing a standard Storage device interface
+	uint32_t storageid; ///< Unique Id of this Storage in the Storage table
+	uint32_t storagestate; ///< Storage state (eg STORAGE_STATE_INSERTED)
+	storage_device_read_proc deviceread; ///< A Device specific DeviceRead method implementing a standard Storage device interface
+	storage_device_write_proc devicewrite; ///< A Device specific DeviceWrite method implementing a standard Storage device interface
+	storage_device_erase_proc deviceerase; ///< A Device specific DeviceErase method implementing a standard Storage device interface
+	storage_device_control_proc devicecontrol; ///< A Device specific DeviceControl method implementing a standard Storage device interface
 	// Driver Properties
-	MUTEX_HANDLE lock; // Storage lock
-	uint32_t targetid; // SCSI ID
-	uint32_t targetlun; // LUN
-	uint32_t blocksize; // Block Size
-	int64_t blockcount; // Number of Blocks
-	uint32_t blockshift; // Shift Count for Blocks to Bytes conversion (eg 9 for 512 byte blocks)
-	char *vendor; // ATA Model, SCSI Vendor
-	char *product; // ATA Serial No, SCSI Product
-	char *revision; // Firmware Revision
-	TIMER_HANDLE statustimer; // Timer for status change detection
+	MUTEX_HANDLE lock; ///< Storage lock
+	uint32_t targetid; ///< SCSI ID
+	uint32_t targetlun; ///< LUN
+	uint32_t blocksize; ///< Block Size
+	int64_t blockcount; ///< Number of Blocks
+	uint32_t blockshift; ///< Shift Count for Blocks to Bytes conversion (eg 9 for 512 byte blocks)
+	char *vendor; ///< ATA Model, SCSI Vendor
+	char *product; ///< ATA Serial No, SCSI Product
+	char *revision; ///< Firmware Revision
+	TIMER_HANDLE statustimer; ///< Timer for status change detection
 	// Statistics Properties
 	uint64_t readcount;
 	uint64_t readerrors;
@@ -132,12 +130,11 @@ struct _STORAGE_DEVICE
 	uint64_t erasecount;
 	uint64_t eraseerrors;
 	// Internal Properties
-	STORAGE_DEVICE *prev; // Previous entry in Storage table
-	STORAGE_DEVICE *next; // Next entry in Storage table
+	STORAGE_DEVICE *prev; ///< Previous entry in Storage table
+	STORAGE_DEVICE *next; ///< Next entry in Storage table
 };
 
-/* ============================================================================== */
-/* Storage Functions */
+/** Storage Functions */
 uint32_t STDCALL storage_device_read(STORAGE_DEVICE *storage, int64_t start, int64_t count, void *buffer);
 uint32_t STDCALL storage_device_write(STORAGE_DEVICE *storage, int64_t start, int64_t count, void *buffer);
 uint32_t STDCALL storage_device_erase(STORAGE_DEVICE *storage, int64_t start, int64_t count);
@@ -163,8 +160,7 @@ uint32_t STDCALL storage_device_enumerate(storage_enumerate_cb callback, void *d
 
 uint32_t STDCALL storage_device_notification(STORAGE_DEVICE *storage, storage_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
-/* ============================================================================== */
-/* Storage Helper Functions */
+/** Storage Helper Functions */
 uint32_t STDCALL storage_get_count(void);
 
 STORAGE_DEVICE * STDCALL storage_device_check(STORAGE_DEVICE *storage);

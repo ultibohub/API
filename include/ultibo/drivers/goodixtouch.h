@@ -34,9 +34,8 @@ extern "C" {
 #include "ultibo/i2c.h"
 #include "ultibo/touch.h"
 
-/* ============================================================================== */
-/* Goodix specific constants */
-#define GOODIX_TOUCH_DESCRIPTION	"Goodix Touch Controller" // Description of Goodix Touch device
+/** Goodix specific constants */
+#define GOODIX_TOUCH_DESCRIPTION	"Goodix Touch Controller" ///< Description of Goodix Touch device
 
 #define GOODIX_MAX_HEIGHT	4096
 #define GOODIX_MAX_WIDTH	4096
@@ -52,11 +51,11 @@ extern "C" {
 #define GOODIX_CONFIG_GT9X_LENGTH	240
 #define GOODIX_CONFIG_MAX_LENGTH	240
 
-/* Goodix I2C constants */
-#define GOODIX_I2C_RATE	400000 // Default I2C clock rate
-#define GOODIX_CONFIG_TIMEOUT	3000 // Timeout to wait for firmware ready
+/** Goodix I2C constants */
+#define GOODIX_I2C_RATE	400000 ///< Default I2C clock rate
+#define GOODIX_CONFIG_TIMEOUT	3000 ///< Timeout to wait for firmware ready
 
-/* Goodix register constants */
+/** Goodix register constants */
 #define GOODIX_REG_COMMAND	0x8040
 #define GOODIX_CMD_SCREEN_OFF	0x05
 
@@ -77,52 +76,49 @@ extern "C" {
 
 static const uint32_t GOODIX_IRQ_TRIGGERS[4] = {GPIO_TRIGGER_RISING, GPIO_TRIGGER_FALLING, GPIO_TRIGGER_LOW, GPIO_TRIGGER_HIGH};
 
-/* ============================================================================== */
-/* Goodix specific types */
+/** Goodix specific types */
 typedef struct _GOODIX_TOUCH GOODIX_TOUCH;
 struct _GOODIX_TOUCH
 {
 	// Touch Properties
 	TOUCH_DEVICE touch;
 	// I2C Properties
-	I2C_DEVICE *i2c; // The I2C device this device is connected to
-	uint16_t address; // The I2C address of the device
+	I2C_DEVICE *i2c; ///< The I2C device this device is connected to
+	uint16_t address; ///< The I2C address of the device
 	// General Properties
-	GPIO_INFO irq; // The GPIO information for the IRQ line (Optional)
-	GPIO_INFO rst; // The GPIO information for the Reset line (Optional)
-	uint16_t maxx; // Maximum X value from current configuration
-	uint16_t maxy; // Maximum Y value from current configuration
-	uint16_t width; // Screen width value supplied during create
-	uint16_t height; // Screen height value supplied during create
-	uint32_t maxpoints; // Maximum touch points from current configuration
-	uint32_t lastkeys; // Keys reported in last input report
-	uint32_t lastpoints; // Points reported in last input report
+	GPIO_INFO irq; ///< The GPIO information for the IRQ line (Optional)
+	GPIO_INFO rst; ///< The GPIO information for the Reset line (Optional)
+	uint16_t maxx; ///< Maximum X value from current configuration
+	uint16_t maxy; ///< Maximum Y value from current configuration
+	uint16_t width; ///< Screen width value supplied during create
+	uint16_t height; ///< Screen height value supplied during create
+	uint32_t maxpoints; ///< Maximum touch points from current configuration
+	uint32_t lastkeys; ///< Keys reported in last input report
+	uint32_t lastpoints; ///< Points reported in last input report
 	// Goodix Properties
-	char *id; // ID String for this device
-	uint16_t version; // Version number for this device
-	uint16_t configaddress; // Configuration data address
-	uint32_t configlength; // Configuration data length in bytes
-	uint32_t checksumsize; // Configuration checksum size
-	uint32_t contactsize; // Size of each contact point coordinate in touch data
+	char *id; ///< ID String for this device
+	uint16_t version; ///< Version number for this device
+	uint16_t configaddress; ///< Configuration data address
+	uint32_t configlength; ///< Configuration data length in bytes
+	uint32_t checksumsize; ///< Configuration checksum size
+	uint32_t contactsize; ///< Size of each contact point coordinate in touch data
 	uint8_t configuration[GOODIX_CONFIG_MAX_LENGTH];
 	uint16_t keycodes[GOODIX_MAX_KEYS];
 	uint16_t scancodes[GOODIX_MAX_KEYS];
-	BOOL swapconfigxy; // If True swap the max X and Y values in the configuration
-	BOOL swapreportxy; // If True swap the X and Y values in the input report
-	BOOL invertreportx; // If True invert the X value in the input report
-	BOOL invertreporty; // If True invert the Y value in the input report
-	char *configfilename; // The configuration filename to load during initialization
-	BOOL resetcontroller; // If True reset the controller during initialization
+	BOOL swapconfigxy; ///< If True swap the max X and Y values in the configuration
+	BOOL swapreportxy; ///< If True swap the X and Y values in the input report
+	BOOL invertreportx; ///< If True invert the X value in the input report
+	BOOL invertreporty; ///< If True invert the Y value in the input report
+	char *configfilename; ///< The configuration filename to load during initialization
+	BOOL resetcontroller; ///< If True reset the controller during initialization
 };
 
 typedef uint8_t GOODIX_POINT_DATA[2 + GOODIX_MAX_CONTACT_SIZE * GOODIX_MAX_CONTACTS];
 
-/* ============================================================================== */
-/* Initialization Functions */
+/** Initialization Functions */
 void STDCALL goodix_init(void);
 
-/* ============================================================================== */
-/* Goodix Functions */
+/** Goodix Functions */
 TOUCH_DEVICE * STDCALL goodix_touch_create(I2C_DEVICE *i2c, uint16_t address, uint32_t width, uint32_t height, GPIO_INFO *irq, GPIO_INFO *rst);
 uint32_t STDCALL goodix_touch_destroy(TOUCH_DEVICE *touch);
 

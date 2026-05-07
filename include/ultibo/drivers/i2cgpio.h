@@ -33,44 +33,40 @@ extern "C" {
 #include "ultibo/gpio.h"
 #include "ultibo/i2c.h"
 
-/* ============================================================================== */
-/* I2CGPIO specific constants */
-#define I2CGPIO_I2C_DESCRIPTION	"GPIO Software I2C" // Description of I2CGPIO I2C device
+/** I2CGPIO specific constants */
+#define I2CGPIO_I2C_DESCRIPTION	"GPIO Software I2C" ///< Description of I2CGPIO I2C device
 
 #define I2CGPIO_I2C_MAX_SIZE	0xFFFF
-#define I2CGPIO_I2C_MIN_CLOCK	10000 // Arbitrary minimum of 10KHz, actual rate is determined by Delay parameter
-#define I2CGPIO_I2C_MAX_CLOCK	100000 // Arbitrary maximum of 100KHz, actual rate is determined by Delay parameter
+#define I2CGPIO_I2C_MIN_CLOCK	10000 ///< Arbitrary minimum of 10KHz, actual rate is determined by Delay parameter
+#define I2CGPIO_I2C_MAX_CLOCK	100000 ///< Arbitrary maximum of 100KHz, actual rate is determined by Delay parameter
 
 #define I2CGPIO_RETRY_COUNT	3
 
 #define I2CGPIO_DEFAULT_TIMEOUT	100
 
-/* ============================================================================== */
-/* I2CGPIO specific types */
+/** I2CGPIO specific types */
 typedef struct _I2CGPIO_DEVICE I2CGPIO_DEVICE;
 struct _I2CGPIO_DEVICE
 {
 	// I2C Properties
 	I2C_DEVICE i2c;
 	// I2CGPIO Properties
-	GPIO_DEVICE *gpio; // The GPIO device this device is connected to
-	uint32_t sda; // GPIO pin for the SDA line
-	uint32_t scl; // GPIO pin for the SCL line
-	uint32_t delay; // Clock and Data delay in microseconds
-	uint32_t timeout; // Clock timeout in milliseconds
-	LONGBOOL outputonly; // Clock line is output only, no test for SCL high
-	LONGBOOL opendrain; // Clock and Data are open drain, no need to simulate by switching direction
+	GPIO_DEVICE *gpio; ///< The GPIO device this device is connected to
+	uint32_t sda; ///< GPIO pin for the SDA line
+	uint32_t scl; ///< GPIO pin for the SCL line
+	uint32_t delay; ///< Clock and Data delay in microseconds
+	uint32_t timeout; ///< Clock timeout in milliseconds
+	LONGBOOL outputonly; ///< Clock line is output only, no test for SCL high
+	LONGBOOL opendrain; ///< Clock and Data are open drain, no need to simulate by switching direction
     // Transfer Properties
-	LONGBOOL ignorenak; // If True Ignore NAK responses and continue
+	LONGBOOL ignorenak; ///< If True Ignore NAK responses and continue
 };
 
-/* ============================================================================== */
-/* I2CGPIO Functions */
+/** I2CGPIO Functions */
 I2C_DEVICE * STDCALL i2cgpio_create(GPIO_DEVICE *gpio, uint32_t sda, uint32_t scl, uint32_t delay, uint32_t timeout, BOOL outputonly, BOOL opendrain);
 uint32_t STDCALL i2cgpio_destroy(I2C_DEVICE *i2c);
 
-/* ============================================================================== */
-/* I2CGPIO Helper Functions */
+/** I2CGPIO Helper Functions */
 
 #ifdef __cplusplus
 }

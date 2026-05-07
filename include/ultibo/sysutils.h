@@ -33,12 +33,10 @@ extern "C" {
 #include "ultibo/globaltypes.h"
 #include "ultibo/system.h"
 
-/* ============================================================================== */
-/* SysUtils constants */
+/** SysUtils constants */
 #define MAX_PATH	260
 
-/* ============================================================================== */
-/* SysUtils types */
+/** SysUtils types */
 
 typedef struct _SYSTEMTIME
 {

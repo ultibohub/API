@@ -38,8 +38,7 @@ extern "C" {
 #include <sys/types.h>
 #include <sys/time.h>
 
-/* ============================================================================== */
-/* Compiler definitions */
+/** Compiler definitions */
 #ifdef __i386__
 #define STDCALL __stdcall
 #else
@@ -48,16 +47,15 @@ extern "C" {
 
 #define PACKED __attribute__((__packed__))
 
-/* ============================================================================== */
-/* Compatibility definitions */
+/** Compatibility definitions */
 typedef size_t HANDLE;
 
 typedef uint32_t DWORD;
 
-typedef _Bool BOOL; // Built in Boolean type (1 byte) (Redeclared here for flexibility)
-typedef int32_t LONGBOOL; // Compatibility with FPC LongBool type (4 bytes)
+typedef _Bool BOOL; ///< Built in Boolean type (1 byte) (Redeclared here for flexibility)
+typedef int32_t LONGBOOL; ///< Compatibility with FPC LongBool type (4 bytes)
 
-typedef wchar_t WCHAR; // Standard WideChar type (2 bytes) (Redeclared here for flexibility)
+typedef wchar_t WCHAR; ///< Standard WideChar type (2 bytes) (Redeclared here for flexibility)
 
 typedef size_t SOCKET;
 
@@ -68,8 +66,7 @@ typedef void *FARPROC; //To Do //
 #define TRUE -1
 #define FALSE 0
 
-/* ============================================================================== */
-/* Structure types */
+/** Structure types */
 typedef struct _OVERLAPPED OVERLAPPED;
 struct _OVERLAPPED
 {
@@ -87,8 +84,7 @@ struct _OVERLAPPED
   HANDLE hEvent;
 };
 
-/* ============================================================================== */
-/* Display Settings type (Generic) */
+/** Display Settings type (Generic) */
 typedef struct _DISPLAY_SETTINGS DISPLAY_SETTINGS;
 struct _DISPLAY_SETTINGS
 {
@@ -104,8 +100,7 @@ struct _DISPLAY_SETTINGS
 	size_t framebufferaddress;
 };
 
-/* ============================================================================== */
-/* Handle types */
+/** Handle types */
 typedef HANDLE SPIN_HANDLE;
 typedef HANDLE MUTEX_HANDLE;
 typedef HANDLE CRITICAL_SECTION_HANDLE;

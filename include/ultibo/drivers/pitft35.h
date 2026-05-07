@@ -36,38 +36,35 @@ extern "C" {
 #include "ultibo/framebuffer.h"
 #include "ultibo/touch.h"
 
-/* ============================================================================== */
-/* PiTFT35 specific constants */
-#define PITFT35_FRAMEBUFFER_DESCRIPTION	"Adafruit PiTFT 3.5" LCD" // Description of PiTFT35 device
+/** PiTFT35 specific constants */
+#define PITFT35_FRAMEBUFFER_DESCRIPTION	"Adafruit PiTFT 3.5" LCD" ///< Description of PiTFT35 device
 
 #define PITFT35_SIGNATURE	0xAF000035
 
 #define PITFT35_SCREEN_WIDTH	320
 #define PITFT35_SCREEN_HEIGHT	480
 
-/* PiTFT35 GPIO constants */
+/** PiTFT35 GPIO constants */
 #define PITFT35_LCD_DC	GPIO_PIN_25
 #define PITFT35_TOUCH_IRQ	GPIO_PIN_24
 
-#define PITFT35_LCD_BL	GPIO_PIN_2 // STMPE GPIO
+#define PITFT35_LCD_BL	GPIO_PIN_2 ///< STMPE GPIO
 #define PITFT35_LCD_BL_PWM	GPIO_PIN_18
 
-/* ============================================================================== */
-/* PiTFT35 specific types */
+/** PiTFT35 specific types */
 typedef struct _PITFT35LCD PITFT35LCD;
 struct _PITFT35LCD
 {
-	uint32_t signature; // Signature for entry validation
-	uint32_t rotation; // Framebuffer rotation (eg FRAMEBUFFER_ROTATION_180)
-	SPI_DEVICE *spi; // SPI device for this display
-	GPIO_DEVICE *gpio; // GPIO device for this display
-	TOUCH_DEVICE *touch; // Touch (STMPE) device for this display
-	GPIO_DEVICE *backlight; // Backlight GPIO (STMPE) device for this display
-	FRAMEBUFFER_DEVICE *framebuffer; // Framebuffer (HX8357D) device for this display
+	uint32_t signature; ///< Signature for entry validation
+	uint32_t rotation; ///< Framebuffer rotation (eg FRAMEBUFFER_ROTATION_180)
+	SPI_DEVICE *spi; ///< SPI device for this display
+	GPIO_DEVICE *gpio; ///< GPIO device for this display
+	TOUCH_DEVICE *touch; ///< Touch (STMPE) device for this display
+	GPIO_DEVICE *backlight; ///< Backlight GPIO (STMPE) device for this display
+	FRAMEBUFFER_DEVICE *framebuffer; ///< Framebuffer (HX8357D) device for this display
 };
 
-/* ============================================================================== */
-/* PiTFT35 Functions */
+/** PiTFT35 Functions */
 HANDLE STDCALL pitft35_start(uint32_t rotation, char *device, uint16_t displayselect, uint16_t touchselect);
 BOOL STDCALL pitft35_stop(HANDLE handle);
 

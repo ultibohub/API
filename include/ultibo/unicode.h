@@ -34,8 +34,7 @@ extern "C" {
 #include "ultibo/globalconst.h"
 #include "ultibo/locale.h"
 
-/* ============================================================================== */
-/* Unicode Functions */
+/** Unicode Functions */
 int STDCALL MultiByteToWideChar(unsigned int codepage, uint32_t dwflags, char *lpmultibytestr, int cbmultibyte, WCHAR *lpwidecharstr, int cchwidechar);
 int STDCALL WideCharToMultiByte(unsigned int codepage, uint32_t dwflags, WCHAR *lpwidecharstr, int cchwidechar, char *lpmultibytestr, int cbmultibyte, char *lpdefaultchar, BOOL *lpuseddefaultchar);
 

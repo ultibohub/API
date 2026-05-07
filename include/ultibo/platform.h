@@ -33,155 +33,153 @@ extern "C" {
 #include "ultibo/globaltypes.h"
 #include "ultibo/globalconst.h"
 
-/* ============================================================================== */
-/* Platform specific constants */
+/** Platform specific constants */
 
-/* Handle Flags */
+/** Handle Flags */
 #define HANDLE_FLAG_NONE	0x00000000
-#define HANDLE_FLAG_NAMED	0x00000001 // Set if the handle has a name
-#define HANDLE_FLAG_DUPLICATE	0x00000002 // Set if the handle can be duplicated
+#define HANDLE_FLAG_NAMED	0x00000001 ///< Set if the handle has a name
+#define HANDLE_FLAG_DUPLICATE	0x00000002 ///< Set if the handle can be duplicated
 
-#define HANDLE_FLAG_INTERNAL	HANDLE_FLAG_NONE + 0x80000000 // Note: Temporary value to avoid warning
+#define HANDLE_FLAG_INTERNAL	HANDLE_FLAG_NONE + 0x80000000 ///< Note: Temporary value to avoid warning
 
-/* Handle constants */
+/** Handle constants */
 #define HANDLE_SIGNATURE	0xCD15E20A
 
-#define HANDLE_TABLE_MIN	0x100 // Minimum handle number (Skip first 256)
-#define HANDLE_TABLE_MAX	0x7FFFFFFF // Maximum handle number (Avoid MSB as THandle is a signed value)
+#define HANDLE_TABLE_MIN	0x100 ///< Minimum handle number (Skip first 256)
+#define HANDLE_TABLE_MAX	0x7FFFFFFF ///< Maximum handle number (Avoid MSB as THandle is a signed value)
 
-#define HANDLE_TABLE_MASK	0x7FF // 2048 buckets for handle lookups
+#define HANDLE_TABLE_MASK	0x7FF ///< 2048 buckets for handle lookups
 
-#define HANDLE_NAME_LENGTH	256 // Maximum length of handle name
+#define HANDLE_NAME_LENGTH	256 ///< Maximum length of handle name
 
-/* DMA Data Flags */
+/** DMA Data Flags */
 #define DMA_DATA_FLAG_NONE	0x00000000
-#define DMA_DATA_FLAG_STRIDE	0x00000001 // Transfer from the source to the destination using 2D stride (If supported)
-#define DMA_DATA_FLAG_SOURCE_NOINCREMENT	0x00000002 // Don't increment the source address during the DMA request (If supported)
-#define DMA_DATA_FLAG_DEST_NOINCREMENT	0x00000004 // Don't increment the dest address during the DMA request (If supported)
-#define DMA_DATA_FLAG_SOURCE_DREQ	0x00000008 // Use DREQ gating on the source address during the DMA request (If supported)
-#define DMA_DATA_FLAG_DEST_DREQ	0x00000010 // Use DREQ gating on the dest address during the DMA request (If supported)
-#define DMA_DATA_FLAG_SOURCE_WIDE	0x00000020 // Use wide reads on the source address during the DMA request (If supported)
-#define DMA_DATA_FLAG_DEST_WIDE	0x00000040 // Use wide writes on the dest address during the DMA request (If supported)
-#define DMA_DATA_FLAG_NOREAD	0x00000080 // Ignore the source address and zero fill the destination (If supported)
-#define DMA_DATA_FLAG_NOWRITE	0x00000100 // Ignore the dest address and cache fill from the source (If supported)
-#define DMA_DATA_FLAG_NOCLEAN	0x00000200 // Do not perform cache clean on the source address (If applicable)
-#define DMA_DATA_FLAG_NOINVALIDATE	0x00000400 // Do not perform cache invalidate on the dest address (If applicable)
-#define DMA_DATA_FLAG_BULK	0x00000800 // Perform a bulk transfer (Higher transfer throughput)(If applicable)
-#define DMA_DATA_FLAG_LITE	0x00001000 // Perform a "lite" transfer (Lower transfer throughput but less waiting for free channel) (If applicable)
-#define DMA_DATA_FLAG_40BIT	0x00002000 // Perform a 40-bit address transfer (Address to memory above 1GB or 4GB depending on SoC) (If applicable)
+#define DMA_DATA_FLAG_STRIDE	0x00000001 ///< Transfer from the source to the destination using 2D stride (If supported)
+#define DMA_DATA_FLAG_SOURCE_NOINCREMENT	0x00000002 ///< Don't increment the source address during the DMA request (If supported)
+#define DMA_DATA_FLAG_DEST_NOINCREMENT	0x00000004 ///< Don't increment the dest address during the DMA request (If supported)
+#define DMA_DATA_FLAG_SOURCE_DREQ	0x00000008 ///< Use DREQ gating on the source address during the DMA request (If supported)
+#define DMA_DATA_FLAG_DEST_DREQ	0x00000010 ///< Use DREQ gating on the dest address during the DMA request (If supported)
+#define DMA_DATA_FLAG_SOURCE_WIDE	0x00000020 ///< Use wide reads on the source address during the DMA request (If supported)
+#define DMA_DATA_FLAG_DEST_WIDE	0x00000040 ///< Use wide writes on the dest address during the DMA request (If supported)
+#define DMA_DATA_FLAG_NOREAD	0x00000080 ///< Ignore the source address and zero fill the destination (If supported)
+#define DMA_DATA_FLAG_NOWRITE	0x00000100 ///< Ignore the dest address and cache fill from the source (If supported)
+#define DMA_DATA_FLAG_NOCLEAN	0x00000200 ///< Do not perform cache clean on the source address (If applicable)
+#define DMA_DATA_FLAG_NOINVALIDATE	0x00000400 ///< Do not perform cache invalidate on the dest address (If applicable)
+#define DMA_DATA_FLAG_BULK	0x00000800 ///< Perform a bulk transfer (Higher transfer throughput)(If applicable)
+#define DMA_DATA_FLAG_LITE	0x00001000 ///< Perform a "lite" transfer (Lower transfer throughput but less waiting for free channel) (If applicable)
+#define DMA_DATA_FLAG_40BIT	0x00002000 ///< Perform a 40-bit address transfer (Address to memory above 1GB or 4GB depending on SoC) (If applicable)
 
-/* Page Table Flags */
+/** Page Table Flags */
 #define PAGE_TABLE_FLAG_NONE	0x00000000
-/* Reserved 0x00000001 (Previously used incorrectly for PAGE_TABLE_FLAG_NONE) */
-#define PAGE_TABLE_FLAG_NORMAL	0x00000002 // Page Table Entry represents Normal memory
-#define PAGE_TABLE_FLAG_DEVICE	0x00000004 // Page Table Entry represents Device memory
-#define PAGE_TABLE_FLAG_ORDERED	0x00000008 // Page Table Entry represents Ordered memory
-#define PAGE_TABLE_FLAG_SHARED	0x00000010 // Page Table Entry represents Shared memory
-#define PAGE_TABLE_FLAG_CACHEABLE	0x00000020 // Page Table Entry represents Cacheable memory
-#define PAGE_TABLE_FLAG_READONLY	0x00000040 // Page Table Entry represents Read Only memory
-#define PAGE_TABLE_FLAG_READWRITE	0x00000080 // Page Table Entry represents Read Write memory
-#define PAGE_TABLE_FLAG_EXECUTABLE	0x00000100 // Page Table Entry represents Executable memory
-#define PAGE_TABLE_FLAG_WRITEBACK	0x00000200 // Page Table Entry is Writeback Cacheable memory
-#define PAGE_TABLE_FLAG_WRITETHROUGH	0x00000400 // Page Table Entry is Writethrough Cacheable memory
-#define PAGE_TABLE_FLAG_WRITEALLOCATE	0x00000800 // Page Table Entry is Writeallocate Cacheable memory
+/** Reserved 0x00000001 (Previously used incorrectly for PAGE_TABLE_FLAG_NONE) */
+#define PAGE_TABLE_FLAG_NORMAL	0x00000002 ///< Page Table Entry represents Normal memory
+#define PAGE_TABLE_FLAG_DEVICE	0x00000004 ///< Page Table Entry represents Device memory
+#define PAGE_TABLE_FLAG_ORDERED	0x00000008 ///< Page Table Entry represents Ordered memory
+#define PAGE_TABLE_FLAG_SHARED	0x00000010 ///< Page Table Entry represents Shared memory
+#define PAGE_TABLE_FLAG_CACHEABLE	0x00000020 ///< Page Table Entry represents Cacheable memory
+#define PAGE_TABLE_FLAG_READONLY	0x00000040 ///< Page Table Entry represents Read Only memory
+#define PAGE_TABLE_FLAG_READWRITE	0x00000080 ///< Page Table Entry represents Read Write memory
+#define PAGE_TABLE_FLAG_EXECUTABLE	0x00000100 ///< Page Table Entry represents Executable memory
+#define PAGE_TABLE_FLAG_WRITEBACK	0x00000200 ///< Page Table Entry is Writeback Cacheable memory
+#define PAGE_TABLE_FLAG_WRITETHROUGH	0x00000400 ///< Page Table Entry is Writethrough Cacheable memory
+#define PAGE_TABLE_FLAG_WRITEALLOCATE	0x00000800 ///< Page Table Entry is Writeallocate Cacheable memory
 #if defined (__i386__) || defined (__arm__)
-#define PAGE_TABLE_FLAG_LARGEADDRESS	0x00001000 // Page Table Entry is mapped to Large Physical Address range
+#define PAGE_TABLE_FLAG_LARGEADDRESS	0x00001000 ///< Page Table Entry is mapped to Large Physical Address range
 #endif
 
-/* Interrupt Entry Flags */
+/** Interrupt Entry Flags */
 #define INTERRUPT_FLAG_NONE	0x00000000
-#define INTERRUPT_FLAG_SHARED	0x00000001 // A shared interrupt, multiple devices can register for the same interrupt and each will be called until one returns INTERRUPT_RETURN_HANDLED
-#define INTERRUPT_FLAG_LOCAL	0x00000002 // A local interrupt, generated only on the CPU it is associated with
-#define INTERRUPT_FLAG_IPI	0x00000004 // A software interrupt or inter processor interrupt, generated by a software request instead of hardware
-#define INTERRUPT_FLAG_FIQ	0x00000008 // A fast interrupt, takes precedence over all other interrupts (where applicable)
-#define INTERRUPT_FLAG_CHAINED	0x00000010 // A chained interrupt, multiple devices can register for the same interrupt and all will be called when it occurs
+#define INTERRUPT_FLAG_SHARED	0x00000001 ///< A shared interrupt, multiple devices can register for the same interrupt and each will be called until one returns INTERRUPT_RETURN_HANDLED
+#define INTERRUPT_FLAG_LOCAL	0x00000002 ///< A local interrupt, generated only on the CPU it is associated with
+#define INTERRUPT_FLAG_IPI	0x00000004 ///< A software interrupt or inter processor interrupt, generated by a software request instead of hardware
+#define INTERRUPT_FLAG_FIQ	0x00000008 ///< A fast interrupt, takes precedence over all other interrupts (where applicable)
+#define INTERRUPT_FLAG_CHAINED	0x00000010 ///< A chained interrupt, multiple devices can register for the same interrupt and all will be called when it occurs
 
-/* Interrupt Priority Values */
+/** Interrupt Priority Values */
 #define INTERRUPT_PRIORITY_MAXIMUM	0x00
 #define INTERRUPT_PRIORITY_FIQ	0x40
 #define INTERRUPT_PRIORITY_DEFAULT	0xA0
 #define INTERRUPT_PRIORITY_MINIMUM	0xF0
 
-/* Interrupt Return Values */
-#define INTERRUPT_RETURN_NONE	0 // Shared interrupt not handled or not for this device
-#define INTERRUPT_RETURN_HANDLED	1 // Shared interrupt handled, no further processing
+/** Interrupt Return Values */
+#define INTERRUPT_RETURN_NONE	0 ///< Shared interrupt not handled or not for this device
+#define INTERRUPT_RETURN_HANDLED	1 ///< Shared interrupt handled, no further processing
 
-/* Vector Table Entries */
-/* ARM */
-#define VECTOR_TABLE_ENTRY_ARM_RESET	0 // ARM Reset Vector
-#define VECTOR_TABLE_ENTRY_ARM_UNDEFINED	1 // ARM Undefined Vector
-#define VECTOR_TABLE_ENTRY_ARM_SWI	2 // ARM Software Interrupt (SWI) Vector
-#define VECTOR_TABLE_ENTRY_ARM_PREFETCH	3 // ARM Prefetch Abort Vector
-#define VECTOR_TABLE_ENTRY_ARM_ABORT	4 // ARM Data Abort Vector
-#define VECTOR_TABLE_ENTRY_ARM_RESERVED	5 // ARM Reserved Vector
-#define VECTOR_TABLE_ENTRY_ARM_IRQ	6 // ARM IRQ Vector
-#define VECTOR_TABLE_ENTRY_ARM_FIQ	7 // ARM FIQ Vector
-/* AARCH64 */
+/** Vector Table Entries */
+/** ARM */
+#define VECTOR_TABLE_ENTRY_ARM_RESET	0 ///< ARM Reset Vector
+#define VECTOR_TABLE_ENTRY_ARM_UNDEFINED	1 ///< ARM Undefined Vector
+#define VECTOR_TABLE_ENTRY_ARM_SWI	2 ///< ARM Software Interrupt (SWI) Vector
+#define VECTOR_TABLE_ENTRY_ARM_PREFETCH	3 ///< ARM Prefetch Abort Vector
+#define VECTOR_TABLE_ENTRY_ARM_ABORT	4 ///< ARM Data Abort Vector
+#define VECTOR_TABLE_ENTRY_ARM_RESERVED	5 ///< ARM Reserved Vector
+#define VECTOR_TABLE_ENTRY_ARM_IRQ	6 ///< ARM IRQ Vector
+#define VECTOR_TABLE_ENTRY_ARM_FIQ	7 ///< ARM FIQ Vector
+/** AARCH64 */
 
-/* Shutdown Flags */
+/** Shutdown Flags */
 #define SHUTDOWN_FLAG_NONE	0x00000000
-#define SHUTDOWN_FLAG_RESTART	0x00000001 // The system is shutting down and restarting
-#define SHUTDOWN_FLAG_FORCE	0x00000002 // Forced shutdown or restart requested, registered callbacks will be bypassed
+#define SHUTDOWN_FLAG_RESTART	0x00000001 ///< The system is shutting down and restarting
+#define SHUTDOWN_FLAG_FORCE	0x00000002 ///< Forced shutdown or restart requested, registered callbacks will be bypassed
 
-/* Shutdown constants */
+/** Shutdown constants */
 #define SHUTDOWN_SIGNATURE	0xA73D8B0C
 
-#define SHUTDOWN_DEFAULT_DELAY	1000 // Default delay before starting a shutdown or restart (Milliseconds)
-#define SHUTDOWN_MINIMUM_DELAY	10 // Minimum delay before starting a shutdown or restart (Milliseconds)
+#define SHUTDOWN_DEFAULT_DELAY	1000 ///< Default delay before starting a shutdown or restart (Milliseconds)
+#define SHUTDOWN_MINIMUM_DELAY	10 ///< Minimum delay before starting a shutdown or restart (Milliseconds)
 
-#define SHUTDOWN_DEFAULT_TIMEOUT	5000 // Default time to wait for a shutdown callback to complete before continuing (Milliseconds)
+#define SHUTDOWN_DEFAULT_TIMEOUT	5000 ///< Default time to wait for a shutdown callback to complete before continuing (Milliseconds)
 
-/* Exception Types */
+/** Exception Types */
 #define EXCEPTION_TYPE_DATA_ABORT	1
 #define EXCEPTION_TYPE_PREFETCH_ABORT	2
 #define EXCEPTION_TYPE_UNDEFINED_INSTRUCTION	3
 
-/* Firmware Throttling Flags */
+/** Firmware Throttling Flags */
 #define FIRMWARE_THROTTLE_NONE	(0 << 0)
-#define FIRMWARE_THROTTLE_UNDER_VOLTAGE	(1 << 0) // Under voltage is occurring
-#define FIRMWARE_THROTTLE_FREQUENCY_LIMIT	(1 << 1) // Frequency limiting is occurring
-#define FIRMWARE_THROTTLE_THROTTLED	(1 << 2) // Throttling is occurring
-#define FIRMWARE_THROTTLE_SOFT_TEMP_LIMIT	(1 << 3) // Soft temperature limit is active
-#define FIRMWARE_THROTTLE_WAS_UNDER_VOLTAGE	(1 << 16) // Under voltage has occurred
-#define FIRMWARE_THROTTLE_WAS_FREQUENCY_LIMIT	(1 << 17) // Frequency limiting has occurred
-#define FIRMWARE_THROTTLE_WAS_THROTTLED	(1 << 18) // Throttling has occurred
-#define FIRMWARE_THROTTLE_WAS_SOFT_TEMP_LIMIT	(1 << 19) // Soft temperature limit has occurred
+#define FIRMWARE_THROTTLE_UNDER_VOLTAGE	(1 << 0) ///< Under voltage is occurring
+#define FIRMWARE_THROTTLE_FREQUENCY_LIMIT	(1 << 1) ///< Frequency limiting is occurring
+#define FIRMWARE_THROTTLE_THROTTLED	(1 << 2) ///< Throttling is occurring
+#define FIRMWARE_THROTTLE_SOFT_TEMP_LIMIT	(1 << 3) ///< Soft temperature limit is active
+#define FIRMWARE_THROTTLE_WAS_UNDER_VOLTAGE	(1 << 16) ///< Under voltage has occurred
+#define FIRMWARE_THROTTLE_WAS_FREQUENCY_LIMIT	(1 << 17) ///< Frequency limiting has occurred
+#define FIRMWARE_THROTTLE_WAS_THROTTLED	(1 << 18) ///< Throttling has occurred
+#define FIRMWARE_THROTTLE_WAS_SOFT_TEMP_LIMIT	(1 << 19) ///< Soft temperature limit has occurred
 
-/* ============================================================================== */
-/* Platform specific types */
+/** Platform specific types */
 
-/* IRQ/FIQ Masks */
+/** IRQ/FIQ Masks */
 typedef uint32_t IRQ_MASK;
 typedef uint32_t FIQ_MASK;
 typedef uint32_t IRQ_FIQ_MASK;
 
-/* Abort Masks */
+/** Abort Masks */
 typedef uint32_t ABORT_MASK;
 
-/* DMA Data */
+/** DMA Data */
 typedef struct _DMA_DATA DMA_DATA;
 struct _DMA_DATA
 {
 	// Data Properties
-	void *source; // Source address for DMA (May need to be allocated in accordance with DMA host configuration)
+	void *source; ///< Source address for DMA (May need to be allocated in accordance with DMA host configuration)
 	#if defined (__i386__) || defined (__arm__)
-	uint32_t sourcerange; // Source address range for DMA (Only applicable when performing a 40-bit transfer)
+	uint32_t sourcerange; ///< Source address range for DMA (Only applicable when performing a 40-bit transfer)
 	#endif
-	void *dest; // Dest address for DMA (May need to be allocated in accordance with DMA host configuration)
+	void *dest; ///< Dest address for DMA (May need to be allocated in accordance with DMA host configuration)
 	#if defined (__i386__) || defined (__arm__)
-	uint32_t destrange; // Dest address range for DMA (Only applicable when performing a 40-bit transfer)
+	uint32_t destrange; ///< Dest address range for DMA (Only applicable when performing a 40-bit transfer)
 	#endif
-	uint32_t size; // Size for DMA transfer (For 2D stride the length of a row multiplied by the count of rows)
-	uint32_t flags; // Flags for DMA transfer (See DMA_DATA_FLAG_* above)
+	uint32_t size; ///< Size for DMA transfer (For 2D stride the length of a row multiplied by the count of rows)
+	uint32_t flags; ///< Flags for DMA transfer (See DMA_DATA_FLAG_* above)
 	// Stride Properties
-	uint32_t stridelength; // Length of each row during 2D stride (If supported)
-	int32_t sourcestride; // Increment between rows for source address during 2D stride (If supported)
-	int32_t deststride; // Increment between rows for destination address during 2D stride (If supported)
+	uint32_t stridelength; ///< Length of each row during 2D stride (If supported)
+	int32_t sourcestride; ///< Increment between rows for source address during 2D stride (If supported)
+	int32_t deststride; ///< Increment between rows for destination address during 2D stride (If supported)
 	// Next Block
-	DMA_DATA *next; // Link to next DMA data block (or nil for the last block)
+	DMA_DATA *next; ///< Link to next DMA data block (or nil for the last block)
 };
 
-/* System Call Request (SWI) */
+/** System Call Request (SWI) */
 typedef struct _SYSTEM_CALL_REQUEST SYSTEM_CALL_REQUEST;
 struct _SYSTEM_CALL_REQUEST
 {
@@ -191,46 +189,46 @@ struct _SYSTEM_CALL_REQUEST
 	size_t param3;
 };
 
-/* Prototypes for Handle methods */
+/** Prototypes for Handle methods */
 typedef void STDCALL (*handle_close_proc)(HANDLE data);
 typedef uint32_t STDCALL (*handle_close_ex_proc)(HANDLE data);
 typedef HANDLE STDCALL (*handle_duplicate_proc)(HANDLE data);
 
-/* Handle Entry */
+/** Handle Entry */
 typedef struct _HANDLE_ENTRY HANDLE_ENTRY;
 
-/* Handle Enumeration Callback */
+/** Handle Enumeration Callback */
 typedef uint32_t STDCALL (*handle_enumerate_cb)(HANDLE_ENTRY *handle, void *data);
 
 struct _HANDLE_ENTRY
 {
 	// Handle Properties
-	uint32_t signature; // Signature for entry validation
-	HANDLE handle; // Handle (Number) of this Handle
-	uint32_t handletype; // Type of this Handle (eg HANDLE_TYPE_FILE)
-	uint32_t count; // Reference Count of the Handle
-	uint32_t flags; // Flags for the Handle (eg HANDLE_FLAG_NAMED)
-	char *name; // The name of the Handle (Optional)
-	uint32_t hash; // Hash of the Handle name (Only if named)
-	HANDLE data; // Purpose specific data for the Handle (eg a file handle or a socket handle)
-	handle_close_proc close; // Procedure to call on final close (Optional)
-	handle_close_ex_proc closeex; // Function to call on final close (Optional)
-	handle_duplicate_proc duplicate; // Function to call when duplicating handle (Optional)
+	uint32_t signature; ///< Signature for entry validation
+	HANDLE handle; ///< Handle (Number) of this Handle
+	uint32_t handletype; ///< Type of this Handle (eg HANDLE_TYPE_FILE)
+	uint32_t count; ///< Reference Count of the Handle
+	uint32_t flags; ///< Flags for the Handle (eg HANDLE_FLAG_NAMED)
+	char *name; ///< The name of the Handle (Optional)
+	uint32_t hash; ///< Hash of the Handle name (Only if named)
+	HANDLE data; ///< Purpose specific data for the Handle (eg a file handle or a socket handle)
+	handle_close_proc close; ///< Procedure to call on final close (Optional)
+	handle_close_ex_proc closeex; ///< Function to call on final close (Optional)
+	handle_duplicate_proc duplicate; ///< Function to call when duplicating handle (Optional)
 	// Internal Properties
-	HANDLE_ENTRY *prev; // Previous entry in Handle table
-	HANDLE_ENTRY *next; // Next entry in Handle table
+	HANDLE_ENTRY *prev; ///< Previous entry in Handle table
+	HANDLE_ENTRY *next; ///< Next entry in Handle table
 	// Statistics Properties
 };
 
-/* Prototype for Shutdown Callback */
+/** Prototype for Shutdown Callback */
 typedef uint32_t STDCALL (*shutdown_cb)(uint32_t flags, void *parameter);
 
-/* Prototypes for Interrupt (IRQ/FIQ) Handlers */
+/** Prototypes for Interrupt (IRQ/FIQ) Handlers */
 typedef void STDCALL (*interrupt_handler)(void *parameter);
 typedef THREAD_HANDLE STDCALL (*interrupt_ex_handler)(uint32_t cpuid, THREAD_HANDLE thread, void *parameter);
 typedef uint32_t STDCALL (*shared_interrupt_handler)(uint32_t number, uint32_t cpuid, uint32_t flags, void *parameter);
 
-/* Interrupt Entry (IRQ/FIQ */
+/** Interrupt Entry (IRQ/FIQ */
 typedef struct _INTERRUPT_ENTRY INTERRUPT_ENTRY;
 struct _INTERRUPT_ENTRY
 {
@@ -248,7 +246,7 @@ struct _INTERRUPT_ENTRY
 	INTERRUPT_ENTRY *next;
 };
 
-/* System Call Entry (SWI) */
+/** System Call Entry (SWI) */
 typedef struct _SYSTEM_CALL_ENTRY SYSTEM_CALL_ENTRY;
 struct _SYSTEM_CALL_ENTRY
 {
@@ -258,49 +256,48 @@ struct _SYSTEM_CALL_ENTRY
     THREAD_HANDLE STDCALL (*handlerex)(uint32_t cpuid, THREAD_HANDLE thread, SYSTEM_CALL_REQUEST *request);
 };
 
-/* Page Table Entry */
+/** Page Table Entry */
 typedef struct _PAGE_TABLE_ENTRY PAGE_TABLE_ENTRY;
 struct _PAGE_TABLE_ENTRY
 {
 	size_t virtualaddress;
 #if defined (__i386__) || defined (__arm__)
-	uint32_t physicalrange; // Physical Address Range referenced by entry when using Large Physical Address Extensions (LPAE)
+	uint32_t physicalrange; ///< Physical Address Range referenced by entry when using Large Physical Address Extensions (LPAE)
 #endif
 	size_t physicaladdress;
 	uint32_t size;
 	uint32_t flags;
 };
 
-/* Prototype for Inter Processor Interrupt (IPI) Handlers */
-/* Note: When used for IPI the CPUID parameter will be the sending CPU */
+/** Prototype for Inter Processor Interrupt (IPI) Handlers */
+/** Note: When used for IPI the CPUID parameter will be the sending CPU */
 typedef shared_interrupt_handler ipi_handler;
 
-/* Prototype for System Call (SWI) Handlers */
+/** Prototype for System Call (SWI) Handlers */
 typedef void STDCALL (*system_call_handler)(SYSTEM_CALL_REQUEST *request);
 typedef THREAD_HANDLE STDCALL (*system_call_ex_handler)(uint32_t cpuid, THREAD_HANDLE thread, SYSTEM_CALL_REQUEST *request);
 
-/* Prototypes for Thread Yield/Wait/Release/Abandon Handlers */
+/** Prototypes for Thread Yield/Wait/Release/Abandon Handlers */
 typedef uint32_t STDCALL (*thread_yield_proc)(void);
 typedef uint32_t STDCALL (*thread_wait_proc)(LIST_HANDLE list, SPIN_HANDLE lock, uint32_t flags);
 typedef uint32_t STDCALL (*thread_wait_ex_proc)(LIST_HANDLE list, SPIN_HANDLE lock, uint32_t flags, uint32_t timeout);
 typedef uint32_t STDCALL (*thread_release_proc)(LIST_HANDLE list);
 typedef uint32_t STDCALL (*thread_abandon_proc)(LIST_HANDLE list);
 
-/* Prototype for Timer Event Handler */
+/** Prototype for Timer Event Handler */
 typedef void STDCALL (*timer_event_proc)(void *data);
 
-/* Prototype for Worker Task/Callback Handlers */
+/** Prototype for Worker Task/Callback Handlers */
 typedef void STDCALL (*worker_task_proc)(void *data);
 typedef void STDCALL (*worker_cb)(void *data);
 
-/* Prototype for Counter Callback Handlers */
+/** Prototype for Counter Callback Handlers */
 typedef void STDCALL (*counter_event_cb)(void *data);
 
-/* Prototype for GPIO Callback Handlers */
+/** Prototype for GPIO Callback Handlers */
 typedef void STDCALL (*gpio_event_cb)(void *data, uint32_t pin, uint32_t trigger);
 
-/* ============================================================================== */
-/* Device Tree Functions */
+/** Device Tree Functions */
 BOOL STDCALL device_tree_valid(void);
 size_t STDCALL device_tree_get_base(void);
 uint32_t STDCALL device_tree_get_size(void);
@@ -310,8 +307,7 @@ uint32_t STDCALL device_tree_read32(const char *path, const char *name, uint32_t
 uint32_t STDCALL device_tree_read64(const char *path, const char *name, uint64_t *value);
 uint32_t STDCALL device_tree_read_string(const char *path, const char *name, char *value, uint32_t len);
 
-/* ============================================================================== */
-/* Boot Functions */
+/** Boot Functions */
 void STDCALL boot_blink(void);
 void STDCALL boot_output(uint32_t value);
 void STDCALL boot_console_start(void);
@@ -320,8 +316,7 @@ void STDCALL boot_console_write_ex(const char *value, uint32_t x, uint32_t y);
 uint32_t STDCALL boot_console_get_x(void);
 uint32_t STDCALL boot_console_get_y(void);
 
-/* ============================================================================== */
-/* LED Functions */
+/** LED Functions */
 void STDCALL power_led_enable(void);
 void STDCALL power_led_on(void);
 void STDCALL power_led_off(void);
@@ -330,8 +325,7 @@ void STDCALL activity_led_enable(void);
 void STDCALL activity_led_on(void);
 void STDCALL activity_led_off(void);
 
-/* ============================================================================== */
-/* Counter Functions (Timer device) */
+/** Counter Functions (Timer device) */
 BOOL STDCALL counter_available(void);
 
 uint32_t STDCALL counter_read(void);
@@ -346,8 +340,7 @@ uint32_t STDCALL counter_set_rate(uint32_t rate);
 uint32_t STDCALL counter_get_interval(void);
 uint32_t STDCALL counter_set_interval(uint32_t interval);
 
-/* ============================================================================== */
-/* Mailbox Functions */
+/** Mailbox Functions */
 uint32_t STDCALL mailbox_receive(uint32_t mailbox, uint32_t channel);
 void STDCALL mailbox_send(uint32_t mailbox, uint32_t channel, uint32_t data);
 
@@ -358,8 +351,7 @@ uint32_t STDCALL mailbox_property_call_ex(uint32_t mailbox, uint32_t channel, vo
 
 uint32_t STDCALL mailbox_property_tag(uint32_t tag, void *data, uint32_t size);
 
-/* ============================================================================== */
-/* Random Number Functions */
+/** Random Number Functions */
 BOOL STDCALL random_available(void);
 
 void STDCALL random_seed(uint32_t seed);
@@ -369,40 +361,34 @@ int64_t STDCALL random_read_int64(int64_t limit);
 double_t STDCALL random_read_double(void);
 double_t STDCALL random_read_extended(void);
 
-/* ============================================================================== */
-/* Watchdog Functions */
+/** Watchdog Functions */
 BOOL STDCALL watchdog_available(void);
 
 uint32_t STDCALL watchdog_start(uint32_t milliseconds);
 uint32_t STDCALL watchdog_stop(void);
 uint32_t STDCALL watchdog_refresh(uint32_t milliseconds);
 
-/* ============================================================================== */
-/* Interrupt Request (IRQ) Functions */
+/** Interrupt Request (IRQ) Functions */
 uint32_t STDCALL request_irq(uint32_t cpuid, uint32_t number, interrupt_handler handler, void *parameter);
 uint32_t STDCALL release_irq(uint32_t cpuid, uint32_t number, interrupt_handler handler, void *parameter);
 uint32_t STDCALL request_ex_irq(uint32_t cpuid, uint32_t number, interrupt_handler handler, interrupt_ex_handler handlerex, void *parameter);
 uint32_t STDCALL release_ex_irq(uint32_t cpuid, uint32_t number, interrupt_handler handler, interrupt_ex_handler handlerex, void *parameter);
 
-/* ============================================================================== */
-/* Fast Interrupt Request (FIQ) Functions */
+/** Fast Interrupt Request (FIQ) Functions */
 uint32_t STDCALL request_fiq(uint32_t cpuid, uint32_t number, interrupt_handler handler, void *parameter);
 uint32_t STDCALL release_fiq(uint32_t cpuid, uint32_t number, interrupt_handler handler, void *parameter);
 uint32_t STDCALL request_ex_fiq(uint32_t cpuid, uint32_t number, interrupt_handler handler, interrupt_ex_handler handlerex, void *parameter);
 uint32_t STDCALL release_ex_fiq(uint32_t cpuid, uint32_t number, interrupt_handler handler, interrupt_ex_handler handlerex, void *parameter);
 
-/* ============================================================================== */
-/* Inter Processor Interrupt (IPI) Functions */
+/** Inter Processor Interrupt (IPI) Functions */
 uint32_t STDCALL request_ipi(uint32_t cpuid, uint32_t number, ipi_handler handler, void *parameter);
 uint32_t STDCALL release_ipi(uint32_t cpuid, uint32_t number, ipi_handler handler, void *parameter);
 
-/* ============================================================================== */
-/* Interrupt Register/Deregister Functions */
+/** Interrupt Register/Deregister Functions */
 uint32_t STDCALL register_interrupt(uint32_t number, uint32_t mask, uint32_t priority, uint32_t flags, shared_interrupt_handler handler, void *parameter);
 uint32_t STDCALL deregister_interrupt(uint32_t number, uint32_t mask, uint32_t priority, uint32_t flags, shared_interrupt_handler handler, void *parameter);
 
-/* ============================================================================== */
-/* System Call (SWI) Functions */
+/** System Call (SWI) Functions */
 void STDCALL system_call(uint32_t number, size_t param1, size_t param2, size_t param3);
 
 uint32_t STDCALL register_system_call(uint32_t number, system_call_handler handler);
@@ -410,31 +396,26 @@ uint32_t STDCALL deregister_system_call(uint32_t number, system_call_handler han
 uint32_t STDCALL register_system_call_ex(uint32_t cpuid, uint32_t number, system_call_handler handler, system_call_ex_handler handlerex);
 uint32_t STDCALL deregister_system_call_ex(uint32_t cpuid, uint32_t number, system_call_handler handler, system_call_ex_handler handlerex);
 
-/* ============================================================================== */
-/* Interrupt Entry Functions */
+/** Interrupt Entry Functions */
 uint32_t STDCALL get_interrupt_count(void);
 uint32_t STDCALL get_interrupt_start(void);
 uint32_t STDCALL get_interrupt_entry(uint32_t number, uint32_t instance, INTERRUPT_ENTRY *interrupt);
 
-/* ============================================================================== */
-/* Local Interrupt Entry Functions */
+/** Local Interrupt Entry Functions */
 uint32_t STDCALL get_local_interrupt_count(void);
 uint32_t STDCALL get_local_interrupt_start(void);
 uint32_t STDCALL get_local_interrupt_entry(uint32_t cpuid, uint32_t number, uint32_t instance, INTERRUPT_ENTRY *interrupt);
 
-/* ============================================================================== */
-/* Software Interrupt Entry (IPI) Functions */
+/** Software Interrupt Entry (IPI) Functions */
 uint32_t STDCALL get_software_interrupt_count(void);
 uint32_t STDCALL get_software_interrupt_start(void);
 uint32_t STDCALL get_software_interrupt_entry(uint32_t cpuid, uint32_t number, uint32_t instance, INTERRUPT_ENTRY *interrupt);
 
-/* ============================================================================== */
-/* System Call Entry Functions */
+/** System Call Entry Functions */
 uint32_t STDCALL get_system_call_count(void);
 SYSTEM_CALL_ENTRY STDCALL get_system_call_entry(uint32_t number);
 
-/* ============================================================================== */
-/* System Functions */
+/** System Functions */
 uint32_t STDCALL system_restart(uint32_t delay);
 uint32_t STDCALL system_shutdown(uint32_t delay);
 
@@ -450,8 +431,7 @@ uint32_t STDCALL system_time_to_string(double_t time, char *value, uint32_t len)
 uint32_t STDCALL system_date_time_to_string(double_t datetime, char *value, uint32_t len);
 uint32_t STDCALL system_interval_to_string(double_t interval, char *value, uint32_t len);
 
-/* ============================================================================== */
-/* CPU Functions */
+/** CPU Functions */
 uint32_t STDCALL cpu_get_arch(void);
 uint32_t STDCALL cpu_get_type(void);
 uint32_t STDCALL cpu_get_boot(void);
@@ -469,19 +449,16 @@ uint32_t STDCALL cpu_get_model(void);
 uint32_t STDCALL cpu_get_revision(void);
 uint32_t STDCALL cpu_get_description(char *description, uint32_t len);
 
-/* ============================================================================== */
-/* FPU Functions */
+/** FPU Functions */
 uint32_t STDCALL fpu_get_type(void);
 uint32_t STDCALL fpu_get_state(void);
 
-/* ============================================================================== */
-/* GPU Functions */
+/** GPU Functions */
 uint32_t STDCALL gpu_get_type(void);
 uint32_t STDCALL gpu_get_state(void);
 uint32_t STDCALL gpu_get_memory(size_t *address, uint64_t *length);
 
-/* ============================================================================== */
-/* Cache Functions */
+/** Cache Functions */
 uint32_t STDCALL l1_cache_get_type(void);
 uint32_t STDCALL l1_data_cache_get_size(void);
 uint32_t STDCALL l1_data_cache_get_line_size(void);
@@ -492,36 +469,30 @@ uint32_t STDCALL l2_cache_get_type(void);
 uint32_t STDCALL l2_cache_get_size(void);
 uint32_t STDCALL l2_cache_get_line_size(void);
 
-/* ============================================================================== */
-/* Version Functions */
+/** Version Functions */
 void STDCALL version_get_info(uint32_t *major, uint32_t *minor, uint32_t *revision);
 uint32_t STDCALL version_get_date(char *date, uint32_t len);
 uint32_t STDCALL version_get_name(char *name, uint32_t len);
 uint32_t STDCALL version_get_version(char *version, uint32_t len);
 
-/* ============================================================================== */
-/* Board Functions */
+/** Board Functions */
 uint32_t STDCALL board_get_type(void);
 uint32_t STDCALL board_get_model(void);
 int64_t STDCALL board_get_serial(void);
 uint32_t STDCALL board_get_revision(void);
 uint32_t STDCALL board_get_mac_address(char *address, uint32_t len);
 
-/* ============================================================================== */
-/* Chip Functions */
+/** Chip Functions */
 uint32_t STDCALL chip_get_revision(void);
 
-/* ============================================================================== */
-/* Firmware Functions */
+/** Firmware Functions */
 uint32_t STDCALL firmware_get_revision(void);
 uint32_t STDCALL firmware_get_throttled(void);
 
-/* ============================================================================== */
-/* Machine Functions */
+/** Machine Functions */
 uint32_t STDCALL machine_get_type(void);
 
-/* ============================================================================== */
-/* Memory Functions */
+/** Memory Functions */
 size_t STDCALL memory_get_base(void);
 uint64_t STDCALL memory_get_size(void);
 
@@ -531,8 +502,7 @@ uint32_t STDCALL memory_get_large_page_size(void);
 uint32_t STDCALL memory_get_section_size(void);
 uint32_t STDCALL memory_get_large_section_size(void);
 
-/* ============================================================================== */
-/* Power Functions */
+/** Power Functions */
 uint32_t STDCALL power_on(uint32_t powerid);
 uint32_t STDCALL power_off(uint32_t powerid);
 
@@ -540,8 +510,7 @@ uint32_t STDCALL power_get_wait(uint32_t powerid);
 uint32_t STDCALL power_get_state(uint32_t powerid);
 uint32_t STDCALL power_set_state(uint32_t powerid, uint32_t state, BOOL wait);
 
-/* ============================================================================== */
-/* Clock Functions */
+/** Clock Functions */
 uint32_t STDCALL clock_ticks(void);
 uint32_t STDCALL clock_seconds(void);
 
@@ -571,40 +540,34 @@ uint32_t STDCALL clock_get_max_rate(uint32_t clockid);
 
 uint32_t STDCALL clock_get_measured_rate(uint32_t clockid);
 
-/* ============================================================================== */
-/* Turbo Functions */
+/** Turbo Functions */
 uint32_t STDCALL turbo_get_state(uint32_t turboid);
 uint32_t STDCALL turbo_set_state(uint32_t turboid, uint32_t state);
 
-/* ============================================================================== */
-/* Voltage Functions */
+/** Voltage Functions */
 uint32_t STDCALL voltage_get_value(uint32_t voltageid);
 uint32_t STDCALL voltage_set_value(uint32_t voltageid, uint32_t value);
 
 uint32_t STDCALL voltage_get_min_value(uint32_t voltageid);
 uint32_t STDCALL voltage_get_max_value(uint32_t voltageid);
 
-/* ============================================================================== */
-/* Temperature Functions */
+/** Temperature Functions */
 uint32_t STDCALL temperature_get_current(uint32_t temperatureid);
 uint32_t STDCALL temperature_get_maximum(uint32_t temperatureid);
 
-/* ============================================================================== */
-/* GPU Memory Functions */
+/** GPU Memory Functions */
 HANDLE STDCALL gpu_memory_allocate(uint32_t length, uint32_t alignment, uint32_t flags);
 uint32_t STDCALL gpu_memory_release(HANDLE handle);
 uint32_t STDCALL gpu_memory_lock(HANDLE handle);
 uint32_t STDCALL gpu_memory_unlock(HANDLE handle);
 
-/* ============================================================================== */
-/* GPU Misc Functions */
+/** GPU Misc Functions */
 uint32_t STDCALL gpu_execute_code(void *address, uint32_t r0, uint32_t r1, uint32_t r2, uint32_t r3, uint32_t r4, uint32_t r5);
 
 HANDLE STDCALL dispmanx_handle_get(HANDLE resource);
 uint32_t STDCALL edid_block_get(uint32_t block, void *buffer, uint32_t length);
 
-/* ============================================================================== */
-/* Framebuffer Functions */
+/** Framebuffer Functions */
 BOOL STDCALL framebuffer_available(void);
 
 uint32_t STDCALL framebuffer_allocate(uint32_t alignment, uint32_t *address, uint32_t *length);
@@ -662,19 +625,16 @@ uint32_t STDCALL framebuffer_set_display_num(uint32_t displaynum);
 uint32_t STDCALL framebuffer_get_display_settings(uint32_t displaynum, DISPLAY_SETTINGS *displaysettings);
 uint32_t STDCALL framebuffer_display_id_to_name(uint32_t displayid, char *name, uint32_t len);
 
-/* ============================================================================== */
-/* Touch Functions */
+/** Touch Functions */
 uint32_t STDCALL touch_get_buffer(size_t *address);
 uint32_t STDCALL touch_set_buffer(size_t address);
 
-/* ============================================================================== */
-/* Cursor Functions */
+/** Cursor Functions */
 uint32_t STDCALL cursor_set_default(void);
 uint32_t STDCALL cursor_set_info(uint32_t width, uint32_t height, uint32_t hotspotx, uint32_t hotspoty, void *pixels, uint32_t length);
 uint32_t STDCALL cursor_set_state(BOOL enabled, uint32_t x, uint32_t y, BOOL relative);
 
-/* ============================================================================== */
-/* DMA Functions */
+/** DMA Functions */
 BOOL STDCALL dma_available(void);
 
 uint32_t STDCALL dma_transfer(DMA_DATA *data, uint32_t direction, uint32_t peripheral);
@@ -691,8 +651,7 @@ uint32_t STDCALL dma_release_buffer(void *buffer);
 
 uint32_t STDCALL dma_get_channels(void);
 
-/* ============================================================================== */
-/* Handle Functions */
+/** Handle Functions */
 HANDLE STDCALL handle_create(HANDLE data, uint32_t _type);
 HANDLE_ENTRY * STDCALL handle_create_ex(const char *name, uint32_t flags, HANDLE data, uint32_t _type);
 uint32_t STDCALL handle_destroy(HANDLE handle);
@@ -705,8 +664,7 @@ HANDLE STDCALL handle_open(const char *name);
 uint32_t STDCALL handle_close(HANDLE handle);
 HANDLE STDCALL handle_duplicate(HANDLE handle);
 
-/* ============================================================================== */
-/* GPIO Functions */
+/** GPIO Functions */
 BOOL STDCALL gpio_available(void);
 
 uint32_t STDCALL gpio_read(uint32_t reg);
@@ -727,8 +685,7 @@ uint32_t STDCALL gpio_pull_select(uint32_t pin, uint32_t mode);
 uint32_t STDCALL gpio_function_get(uint32_t pin);
 uint32_t STDCALL gpio_function_select(uint32_t pin, uint32_t mode);
 
-/* ============================================================================== */
-/* Virtual GPIO Functions */
+/** Virtual GPIO Functions */
 uint32_t STDCALL virtual_gpio_input_get(uint32_t pin);
 uint32_t STDCALL virtual_gpio_output_set(uint32_t pin, uint32_t level);
 
@@ -738,8 +695,7 @@ uint32_t STDCALL virtual_gpio_level_set(uint32_t pin, uint32_t level);
 uint32_t STDCALL virtual_gpio_function_get(uint32_t pin);
 uint32_t STDCALL virtual_gpio_function_select(uint32_t pin, uint32_t mode);
 
-/* ============================================================================== */
-/* SPI Functions */
+/** SPI Functions */
 BOOL STDCALL spi_available(void);
 
 uint32_t STDCALL spi_start(uint32_t mode, uint32_t clockrate, uint32_t clockphase, uint32_t clockpolarity);
@@ -766,8 +722,7 @@ uint32_t STDCALL spi_set_select_polarity(uint16_t chipselect, uint32_t selectpol
 
 uint32_t STDCALL spi_get_description(uint32_t id, char *description, uint32_t len);
 
-/* ============================================================================== */
-/* I2C Functions */
+/** I2C Functions */
 BOOL STDCALL i2c_available(void);
 
 uint32_t STDCALL i2c_start(uint32_t rate);
@@ -787,8 +742,7 @@ uint32_t STDCALL i2c_set_address(uint16_t address);
 uint32_t STDCALL i2c_get_description(uint32_t id, char *description, uint32_t len);
 uint32_t STDCALL i2c_slave_get_description(uint32_t id, char *description, uint32_t len);
 
-/* ============================================================================== */
-/* PWM Functions */
+/** PWM Functions */
 BOOL STDCALL pwm_available(void);
 
 uint32_t STDCALL pwm_start(void);
@@ -804,19 +758,16 @@ uint32_t STDCALL pwm_configure(uint32_t dutyns, uint32_t periodns);
 
 uint32_t STDCALL pwm_get_description(uint32_t id, uint32_t channel, char *description, uint32_t len);
 
-/* ============================================================================== */
-/* RTC Functions */
+/** RTC Functions */
 BOOL STDCALL rtc_available(void);
 
 int64_t STDCALL rtc_get_time(void);
 int64_t STDCALL rtc_set_time(int64_t time);
 
-/* ============================================================================== */
-/* UART Functions */
+/** UART Functions */
 uint32_t STDCALL uart_get_description(uint32_t id, char *description, uint32_t len);
 
-/* ============================================================================== */
-/* Serial Functions */
+/** Serial Functions */
 BOOL STDCALL serial_available(void);
 
 uint32_t STDCALL serial_open(uint32_t baudrate, uint32_t databits, uint32_t stopbits, uint32_t parity, uint32_t flowcontrol, uint32_t receivedepth, uint32_t transmitdepth);
@@ -827,8 +778,7 @@ uint32_t STDCALL serial_write(void *buffer, uint32_t size, uint32_t *count);
 
 int STDCALL serial_printf(const char *format, ...) _ATTRIBUTE ((__format__ (__printf__, 1, 2)));
 
-/* ============================================================================== */
-/* Peripheral Functions */
+/** Peripheral Functions */
 size_t STDCALL peripheral_get_base(void);
 uint32_t STDCALL peripheral_get_size(void);
 
@@ -838,8 +788,7 @@ void STDCALL peripheral_write(uint32_t base, uint32_t reg, uint32_t value);
 size_t STDCALL local_peripheral_get_base(void);
 uint32_t STDCALL local_peripheral_get_size(void);
 
-/* ============================================================================== */
-/* System Functions */
+/** System Functions */
 size_t STDCALL get_sp(void);
 size_t STDCALL get_pc(void);
 
@@ -949,8 +898,7 @@ uint32_t STDCALL vector_table_get_count(void);
 size_t STDCALL vector_table_get_entry(uint32_t number);
 uint32_t STDCALL vector_table_set_entry(uint32_t number, size_t address);
 
-/* ============================================================================== */
-/* Console Functions */
+/** Console Functions */
 BOOL STDCALL console_get_key(char *ch, void *userdata);
 BOOL STDCALL console_peek_key(char *ch, void *userdata);
 
@@ -962,54 +910,46 @@ BOOL STDCALL console_hide_mouse(void *userdata);
 BOOL STDCALL console_show_mouse(uint32_t x, uint32_t y, void *userdata);
 BOOL STDCALL console_read_mouse(uint32_t *x, uint32_t *y, uint32_t *buttons, void *userdata);
 
-/* ============================================================================== */
-/* CodePage Functions */
+/** CodePage Functions */
 WCHAR STDCALL code_page_to_wide_char(char ch);
 char STDCALL wide_char_to_code_page(WCHAR ch);
 
-/* ============================================================================== */
-/* Name Functions */
+/** Name Functions */
 uint32_t STDCALL host_get_name(char *name, uint32_t len);
 BOOL STDCALL host_set_name(const char *name);
 uint32_t STDCALL host_get_domain(char *domain, uint32_t len);
 BOOL STDCALL host_set_domain(const char *domain);
 
-/* ============================================================================== */
-/* Module Functions */
+/** Module Functions */
 HANDLE STDCALL module_load(const char *name);
 HANDLE STDCALL module_load_ex(const char *name, uint32_t flags);
 BOOL STDCALL module_unload(HANDLE handle);
 uint32_t STDCALL module_get_name(HANDLE handle, char *name, uint32_t len);
 HANDLE STDCALL module_get_handle(char *name);
 
-/* ============================================================================== */
-/* Symbol Functions */
+/** Symbol Functions */
 BOOL STDCALL symbol_add(HANDLE handle, const char *name, size_t address);
 BOOL STDCALL symbol_remove(HANDLE handle, const char *name);
 size_t STDCALL symbol_get_address(HANDLE handle, const char *name);
 
-/* ============================================================================== */
-/* Logging Functions */
+/** Logging Functions */
 void STDCALL logging_output(const char *text);
 void STDCALL logging_output_ex(uint32_t facility, uint32_t severity, const char *tag, const char *content);
 
 int STDCALL logging_outputf(const char *format, ...) _ATTRIBUTE ((__format__ (__printf__, 1, 2)));
 
-/* ============================================================================== */
-/* Environment Functions */
+/** Environment Functions */
 uint32_t STDCALL environment_get(const char *name, char *value, uint32_t len);
 uint32_t STDCALL environment_set(const char *name, const char *value);
 uint32_t STDCALL environment_count(BOOL reset);
 uint32_t STDCALL environment_index(const char *name);
 uint32_t STDCALL environment_string(uint32_t index, char *string, uint32_t len);
 
-/* ============================================================================== */
-/* Environment Functions (From stdlib.h) */
+/** Environment Functions (From stdlib.h) */
 int setenv(const char *name, const char *value, int overwrite);
 int unsetenv(const char *name);
 
-/* ============================================================================== */
-/* Utility Functions */
+/** Utility Functions */
 uint32_t STDCALL first_bit_set(uint32_t value);
 uint32_t STDCALL last_bit_set(uint32_t value);
 uint32_t STDCALL count_leading_zeros(uint32_t value);
@@ -1029,19 +969,16 @@ void STDCALL nanosecond_delay_ex(uint32_t nanoseconds, BOOL wait);
 void STDCALL microsecond_delay_ex(uint32_t microseconds, BOOL wait);
 void STDCALL millisecond_delay_ex(uint32_t milliseconds, BOOL wait);
 
-/* ============================================================================== */
-/* RTL Functions */
+/** RTL Functions */
 uint32_t get_tick_count(void);
 uint64_t get_tick_count64(void);
 
-/* ============================================================================== */
-/* LIBC Functions (From stdlib.h) */
+/** LIBC Functions (From stdlib.h) */
 int posix_memalign(void **memptr, size_t alignment, size_t size);
 char *realpath(const char *__restrict path, char *__restrict resolved_path);
 int getpagesize(void);
 
-/* ============================================================================== */
-/* LIBC Functions (From unistd.h) */
+/** LIBC Functions (From unistd.h) */
 int dup3(int oldfd, int newfd, int flags);
 int getentropy(void *buffer, size_t length);
 int usleep(useconds_t useconds);
@@ -1054,29 +991,25 @@ int fdatasync(int fd);
 
 int sethostname (const char *name, size_t size);
 #if !(defined (_WINSOCK_H) || defined (_WINSOCKAPI_) || defined (__USE_W32_SOCKETS))
-/* winsock[2].h defines as __stdcall, and with int as 2nd arg */
+/** winsock[2].h defines as __stdcall, and with int as 2nd arg */
  int gethostname (char *name, size_t size);
 #endif
 
-/* ============================================================================== */
-/* LIBC Functions (From sys/mman.h) */
+/** LIBC Functions (From sys/mman.h) */
 void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
 int munmap(void *addr, size_t length);
 
-/* ============================================================================== */
-/* LIBC Functions (From sys/time.h) */
+/** LIBC Functions (From sys/time.h) */
 int settimeofday(const struct timeval *tv, const struct timezone *tz);
 
-/* ============================================================================== */
-/* LIBC Functions (From sched.h) */
+/** LIBC Functions (From sched.h) */
 int sched_getcpu(void);
 #ifdef _SYS_CPUSET_H_
 int sched_setaffinity(pid_t pid, size_t cpusetsize, cpu_set_t *mask);
 int sched_getaffinity(pid_t pid, size_t cpusetsize, cpu_set_t *mask);
 #endif /* _SYS_CPUSET_H_ */
 
-/* ============================================================================== */
-/* LIBC Functions (Non Standard) */
+/** LIBC Functions (Non Standard) */
 void msleep(unsigned int msecs);
 pid_t gettid(void);
 HANDLE fd_handle(int fd);

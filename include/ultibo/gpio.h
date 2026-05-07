@@ -34,47 +34,45 @@ extern "C" {
 #include "ultibo/globalconst.h"
 #include "ultibo/devices.h"
 
-/* ============================================================================== */
-/* GPIO specific constants */
-#define GPIO_NAME_PREFIX	"GPIO" // Name prefix for GPIO Devices
+/** GPIO specific constants */
+#define GPIO_NAME_PREFIX	"GPIO" ///< Name prefix for GPIO Devices
 
-/* GPIO Device Types */
+/** GPIO Device Types */
 #define GPIO_TYPE_NONE	0
 
 #define GPIO_TYPE_MAX	0
 
-/* GPIO Device States */
+/** GPIO Device States */
 #define GPIO_STATE_DISABLED	0
 #define GPIO_STATE_ENABLED	1
 
 #define GPIO_STATE_MAX	1
 
-/* GPIO Device Flags */
+/** GPIO Device Flags */
 #define GPIO_FLAG_NONE	0x00000000
-#define GPIO_FLAG_PULL_UP	0x00000001 // Device supports Pull Up on a pin
-#define GPIO_FLAG_PULL_DOWN	0x00000002 // Device supports Pull Down on a pin
-#define GPIO_FLAG_TRIGGER_LOW	0x00000004 // Device supports Trigger on Low level on a pin
-#define GPIO_FLAG_TRIGGER_HIGH	0x00000008 // Device supports Trigger on High level on a pin
-#define GPIO_FLAG_TRIGGER_RISING	0x00000010 // Device supports Trigger on Rising edge on a pin
-#define GPIO_FLAG_TRIGGER_FALLING	0x00000020 // Device supports Trigger on Falling edge on a pin
-#define GPIO_FLAG_TRIGGER_EDGE	0x00000040 // Device supports Trigger on any edge (Rising or Falling) on a pin
-#define GPIO_FLAG_TRIGGER_ASYNC	0x00000080 // Device supports Trigger on Asynchronous Rising/Falling edge on a pin
+#define GPIO_FLAG_PULL_UP	0x00000001 ///< Device supports Pull Up on a pin
+#define GPIO_FLAG_PULL_DOWN	0x00000002 ///< Device supports Pull Down on a pin
+#define GPIO_FLAG_TRIGGER_LOW	0x00000004 ///< Device supports Trigger on Low level on a pin
+#define GPIO_FLAG_TRIGGER_HIGH	0x00000008 ///< Device supports Trigger on High level on a pin
+#define GPIO_FLAG_TRIGGER_RISING	0x00000010 ///< Device supports Trigger on Rising edge on a pin
+#define GPIO_FLAG_TRIGGER_FALLING	0x00000020 ///< Device supports Trigger on Falling edge on a pin
+#define GPIO_FLAG_TRIGGER_EDGE	0x00000040 ///< Device supports Trigger on any edge (Rising or Falling) on a pin
+#define GPIO_FLAG_TRIGGER_ASYNC	0x00000080 ///< Device supports Trigger on Asynchronous Rising/Falling edge on a pin
 
-/* GPIO Event Flags */
+/** GPIO Event Flags */
 #define GPIO_EVENT_FLAG_NONE	0x00000000
-#define GPIO_EVENT_FLAG_REPEAT	0x00000001 // Event will be repeated until cancelled
-#define GPIO_EVENT_FLAG_INTERRUPT	0x00000002 // Event will be dispatched by interrupt handler (If applicable)
+#define GPIO_EVENT_FLAG_REPEAT	0x00000001 ///< Event will be repeated until cancelled
+#define GPIO_EVENT_FLAG_INTERRUPT	0x00000002 ///< Event will be dispatched by interrupt handler (If applicable)
                                                // Caution: Events called by the interrupt handler must obey interrupt
                                                //          rules with regard to locks, memory allocation and latency
 
-/* ============================================================================== */
-/* GPIO specific types */
+/** GPIO specific types */
 
-/* GPIO Properties */
+/** GPIO Properties */
 typedef struct _GPIO_PROPERTIES GPIO_PROPERTIES;
 struct _GPIO_PROPERTIES
 {
-	uint32_t flags; // Device flags (eg GPIO_FLAG_TRIGGER_HIGH)
+	uint32_t flags; ///< Device flags (eg GPIO_FLAG_TRIGGER_HIGH)
 	uint32_t pinmin;
 	uint32_t pinmax;
 	uint32_t pincount;
@@ -83,40 +81,40 @@ struct _GPIO_PROPERTIES
 	uint32_t functioncount;
 };
 
-/* GPIO Device */
-typedef struct _GPIO_DEVICE GPIO_DEVICE; // Forward declared for GPIOPin
-typedef struct _GPIO_PIN GPIO_PIN; // Forward declared for GPIOEvent
+/** GPIO Device */
+typedef struct _GPIO_DEVICE GPIO_DEVICE; ///< Forward declared for GPIOPin
+typedef struct _GPIO_PIN GPIO_PIN; ///< Forward declared for GPIOEvent
 
-/* GPIO Event */
+/** GPIO Event */
 typedef struct _GPIO_EVENT GPIO_EVENT;
 struct _GPIO_EVENT
 {
-	GPIO_PIN *pin; // GPIO Pin this event belongs to
-	gpio_event_cb callback; // Callback function to call when trigger occurs
-	void *data; // Pointer to pass to the callback function when trigger occurs
-	uint32_t timeout; // Timeout in milliseconds for this callback (or INFINITE for no timeout)
-	GPIO_EVENT *prev; // Previous event in the list
-	GPIO_EVENT *next; // Next event in the list
+	GPIO_PIN *pin; ///< GPIO Pin this event belongs to
+	gpio_event_cb callback; ///< Callback function to call when trigger occurs
+	void *data; ///< Pointer to pass to the callback function when trigger occurs
+	uint32_t timeout; ///< Timeout in milliseconds for this callback (or INFINITE for no timeout)
+	GPIO_EVENT *prev; ///< Previous event in the list
+	GPIO_EVENT *next; ///< Next event in the list
 };
 
-/* GPIO Pin */
+/** GPIO Pin */
 struct _GPIO_PIN
 {
-	GPIO_DEVICE *gpio; // GPIO device this pin belongs to
-	uint32_t pin; // Pin number of this pin on the device (May be used by drivers for internal numbering)
-	uint32_t flags; // Current flags for this pin (eg GPIO_EVENT_FLAG_REPEAT)
-	uint32_t trigger; // Current trigger value for this pin (or GPIO_TRIGGER_NONE if no triggers current)
-	uint32_t count; // Count of threads and events waiting for the trigger
-	EVENT_HANDLE event; // Event for threads waiting for the trigger
-	GPIO_EVENT *events; // List of events waiting for the trigger
+	GPIO_DEVICE *gpio; ///< GPIO device this pin belongs to
+	uint32_t pin; ///< Pin number of this pin on the device (May be used by drivers for internal numbering)
+	uint32_t flags; ///< Current flags for this pin (eg GPIO_EVENT_FLAG_REPEAT)
+	uint32_t trigger; ///< Current trigger value for this pin (or GPIO_TRIGGER_NONE if no triggers current)
+	uint32_t count; ///< Count of threads and events waiting for the trigger
+	EVENT_HANDLE event; ///< Event for threads waiting for the trigger
+	GPIO_EVENT *events; ///< List of events waiting for the trigger
 };
 
-/* GPIO Enumeration Callback */
+/** GPIO Enumeration Callback */
 typedef uint32_t STDCALL (*gpio_enumerate_cb)(GPIO_DEVICE *gpio, void *data);
-/* GPIO Notification Callback */
+/** GPIO Notification Callback */
 typedef uint32_t STDCALL (*gpio_notification_cb)(DEVICE *device, void *data, uint32_t notification);
 
-/* GPIO Device Methods */
+/** GPIO Device Methods */
 typedef uint32_t STDCALL (*gpio_device_start_proc)(GPIO_DEVICE *gpio);
 typedef uint32_t STDCALL (*gpio_device_stop_proc)(GPIO_DEVICE *gpio);
 
@@ -141,51 +139,51 @@ typedef uint32_t STDCALL (*gpio_device_get_properties_proc)(GPIO_DEVICE *gpio, G
 struct _GPIO_DEVICE
 {
 	// Device Properties
-	DEVICE device; // The Device entry for this GPIO
+	DEVICE device; ///< The Device entry for this GPIO
 	// GPIO Properties
-	uint32_t gpioid; // Unique Id of this GPIO in the GPIO table
-	uint32_t gpiostate; // GPIO state (eg GPIO_STATE_ENABLED)
-	gpio_device_start_proc devicestart; // A Device specific DeviceStart method implementing the standard GPIO device interface (Mandatory)
-	gpio_device_stop_proc devicestop; // A Device specific DeviceStop method implementing the standard GPIO device interface (Mandatory)
-	gpio_device_read_proc deviceread; // A Device specific DeviceRead method implementing the standard GPIO device interface (Or nil if the default method is suitable)
-	gpio_device_write_proc devicewrite; // A Device specific DeviceWrite method implementing the standard GPIO device interface (Or nil if the default method is suitable)
-	gpio_device_input_get_proc deviceinputget; // A Device specific DeviceInputGet method implementing the standard GPIO device interface (Mandatory)
-	gpio_device_input_wait_proc deviceinputwait; // A Device specific DeviceInputWait method implementing the standard GPIO device interface (Or nil if the operation is not supported)
-	gpio_device_input_event_proc deviceinputevent; // A Device specific DeviceInputEvent method implementing the standard GPIO device interface (Or nil if the operation is not supported)
-	gpio_device_input_cancel_proc deviceinputcancel; // A Device specific DeviceInputCancel method implementing the standard GPIO device interface (Or nil if the operation is not supported)
-	gpio_device_output_set_proc deviceoutputset; // A Device specific DeviceOutputSet method implementing the standard GPIO device interface (Mandatory)
-	gpio_device_pull_get_proc devicepullget; // A Device specific DevicePullGet method implementing the standard GPIO device interface (Or nil if the operation is not supported)
-	gpio_device_pull_select_proc devicepullselect; // A Device specific DevicePullSelect method implementing the standard GPIO device interface (Or nil if the operation is not supported)
-	gpio_device_function_get_proc devicefunctionget; // A Device specific DeviceFunctionGet method implementing the standard GPIO device interface (Or nil if the operation is not supported)
-	gpio_device_function_select_proc devicefunctionselect; // A Device specific DeviceFunctionSelect method implementing the standard GPIO device interface (Or nil if the operation is not supported)
-	gpio_device_get_properties_proc devicegetproperties; // A Device specific DeviceGetProperties method implementing the standard GPIO device interface (Or nil if the default method is suitable)
+	uint32_t gpioid; ///< Unique Id of this GPIO in the GPIO table
+	uint32_t gpiostate; ///< GPIO state (eg GPIO_STATE_ENABLED)
+	gpio_device_start_proc devicestart; ///< A Device specific DeviceStart method implementing the standard GPIO device interface (Mandatory)
+	gpio_device_stop_proc devicestop; ///< A Device specific DeviceStop method implementing the standard GPIO device interface (Mandatory)
+	gpio_device_read_proc deviceread; ///< A Device specific DeviceRead method implementing the standard GPIO device interface (Or nil if the default method is suitable)
+	gpio_device_write_proc devicewrite; ///< A Device specific DeviceWrite method implementing the standard GPIO device interface (Or nil if the default method is suitable)
+	gpio_device_input_get_proc deviceinputget; ///< A Device specific DeviceInputGet method implementing the standard GPIO device interface (Mandatory)
+	gpio_device_input_wait_proc deviceinputwait; ///< A Device specific DeviceInputWait method implementing the standard GPIO device interface (Or nil if the operation is not supported)
+	gpio_device_input_event_proc deviceinputevent; ///< A Device specific DeviceInputEvent method implementing the standard GPIO device interface (Or nil if the operation is not supported)
+	gpio_device_input_cancel_proc deviceinputcancel; ///< A Device specific DeviceInputCancel method implementing the standard GPIO device interface (Or nil if the operation is not supported)
+	gpio_device_output_set_proc deviceoutputset; ///< A Device specific DeviceOutputSet method implementing the standard GPIO device interface (Mandatory)
+	gpio_device_pull_get_proc devicepullget; ///< A Device specific DevicePullGet method implementing the standard GPIO device interface (Or nil if the operation is not supported)
+	gpio_device_pull_select_proc devicepullselect; ///< A Device specific DevicePullSelect method implementing the standard GPIO device interface (Or nil if the operation is not supported)
+	gpio_device_function_get_proc devicefunctionget; ///< A Device specific DeviceFunctionGet method implementing the standard GPIO device interface (Or nil if the operation is not supported)
+	gpio_device_function_select_proc devicefunctionselect; ///< A Device specific DeviceFunctionSelect method implementing the standard GPIO device interface (Or nil if the operation is not supported)
+	gpio_device_get_properties_proc devicegetproperties; ///< A Device specific DeviceGetProperties method implementing the standard GPIO device interface (Or nil if the default method is suitable)
 	// Driver Properties
-	MUTEX_HANDLE lock; // Device lock
-	void *address; // Device register base address
-	GPIO_PIN *pins; // Device pins
-	GPIO_PROPERTIES properties; // Device properties
+	MUTEX_HANDLE lock; ///< Device lock
+	void *address; ///< Device register base address
+	GPIO_PIN *pins; ///< Device pins
+	GPIO_PROPERTIES properties; ///< Device properties
 	// Statistics Properties
 	uint32_t getcount;
 	uint32_t setcount;
 	uint32_t waitcount;
 	uint32_t eventcount;
 	// Internal Properties
-	GPIO_DEVICE *prev; // Previous entry in GPIO table
-	GPIO_DEVICE *next; // Next entry in GPIO table
+	GPIO_DEVICE *prev; ///< Previous entry in GPIO table
+	GPIO_DEVICE *next; ///< Next entry in GPIO table
 };
 
-/* GPIO Info (Pin Information) */
+/** GPIO Info (Pin Information) */
 typedef struct _GPIO_INFO GPIO_INFO;
 struct _GPIO_INFO
 {
-	GPIO_DEVICE *gpio; // Device for this GPIO pin
-	uint32_t pin; // Pin number (eg GPIO_PIN_59)
-	uint32_t func; // Function value (or GPIO_FUNCTION_UNKNOWN)
-	uint32_t pull; // Pull Up/Down value (or GPIO_PULL_UNKNOWN)
-	uint32_t trigger; // Trigger value (or GPIO_TRIGGER_UNKNOWN)
+	GPIO_DEVICE *gpio; ///< Device for this GPIO pin
+	uint32_t pin; ///< Pin number (eg GPIO_PIN_59)
+	uint32_t func; ///< Function value (or GPIO_FUNCTION_UNKNOWN)
+	uint32_t pull; ///< Pull Up/Down value (or GPIO_PULL_UNKNOWN)
+	uint32_t trigger; ///< Trigger value (or GPIO_TRIGGER_UNKNOWN)
 };
 
-/* GPIO Info Unknown */
+/** GPIO Info Unknown */
 static const GPIO_INFO GPIO_INFO_UNKNOWN = {
   NULL,
   GPIO_PIN_UNKNOWN,
@@ -193,8 +191,7 @@ static const GPIO_INFO GPIO_INFO_UNKNOWN = {
   GPIO_PULL_UNKNOWN,
   GPIO_TRIGGER_UNKNOWN};
 
-/* ============================================================================== */
-/* GPIO Functions */
+/** GPIO Functions */
 uint32_t STDCALL gpio_device_start(GPIO_DEVICE *gpio);
 uint32_t STDCALL gpio_device_stop(GPIO_DEVICE *gpio);
 
@@ -234,8 +231,7 @@ uint32_t STDCALL gpio_device_enumerate(gpio_enumerate_cb callback, void *data);
 
 uint32_t STDCALL gpio_device_notification(GPIO_DEVICE *gpio, gpio_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
-/* ============================================================================== */
-/* GPIO Helper Functions */
+/** GPIO Helper Functions */
 uint32_t STDCALL gpio_get_count(void);
 GPIO_DEVICE * STDCALL gpio_device_get_default(void);
 uint32_t STDCALL gpio_device_set_default(GPIO_DEVICE *gpio);

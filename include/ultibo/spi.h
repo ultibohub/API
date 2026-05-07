@@ -34,87 +34,85 @@ extern "C" {
 #include "ultibo/globalconst.h"
 #include "ultibo/devices.h"
 
-/* ============================================================================== */
-/* SPI specific constants */
-#define SPI_NAME_PREFIX	"SPI" // Name prefix for SPI Devices
-#define SPISLAVE_NAME_PREFIX	"SPISlave" // Name prefix for SPI Slave Devices
+/** SPI specific constants */
+#define SPI_NAME_PREFIX	"SPI" ///< Name prefix for SPI Devices
+#define SPISLAVE_NAME_PREFIX	"SPISlave" ///< Name prefix for SPI Slave Devices
 
-/* SPI Device Types */
+/** SPI Device Types */
 #define SPI_TYPE_NONE	0
 #define SPI_TYPE_MASTER	1
 #define SPI_TYPE_SLAVE	2
 
 #define SPI_TYPE_MAX	2
 
-/* SPI Device States */
+/** SPI Device States */
 #define SPI_STATE_DISABLED	0
 #define SPI_STATE_ENABLED	1
 
 #define SPI_STATE_MAX	1
 
-/* SPI Device Flags */
+/** SPI Device Flags */
 #define SPI_FLAG_NONE	0x00000000
-#define SPI_FLAG_SLAVE	0x00000001 // Device is a slave not a master
-#define SPI_FLAG_4WIRE	0x00000002 // Device supports 4 wire operation (CS/MISO/MOSI/SCLK)
-#define SPI_FLAG_3WIRE	0x00000004 // Device supports 3 wire operation (CS/MIMO/SCLK)
-#define SPI_FLAG_LOSSI	0x00000008 // Device supports LoSSI (Low Speed Serial) mode (CS/SCL/SDA)
-#define SPI_FLAG_CPOL	0x00000010 // Device supports Clock Polarity setting
-#define SPI_FLAG_CPHA	0x00000020 // Device supports Clock Phase setting
-#define SPI_FLAG_CSPOL	0x00000040 // Device supports Chip Select Polarity setting
-#define SPI_FLAG_NO_CS	0x00000080 // Device supports Chip Select None (CS handled externally)
-#define SPI_FLAG_DMA	0x00000100 // Device supports DMA transfers
+#define SPI_FLAG_SLAVE	0x00000001 ///< Device is a slave not a master
+#define SPI_FLAG_4WIRE	0x00000002 ///< Device supports 4 wire operation (CS/MISO/MOSI/SCLK)
+#define SPI_FLAG_3WIRE	0x00000004 ///< Device supports 3 wire operation (CS/MIMO/SCLK)
+#define SPI_FLAG_LOSSI	0x00000008 ///< Device supports LoSSI (Low Speed Serial) mode (CS/SCL/SDA)
+#define SPI_FLAG_CPOL	0x00000010 ///< Device supports Clock Polarity setting
+#define SPI_FLAG_CPHA	0x00000020 ///< Device supports Clock Phase setting
+#define SPI_FLAG_CSPOL	0x00000040 ///< Device supports Chip Select Polarity setting
+#define SPI_FLAG_NO_CS	0x00000080 ///< Device supports Chip Select None (CS handled externally)
+#define SPI_FLAG_DMA	0x00000100 ///< Device supports DMA transfers
 
-/* SPI Transfer Flags */
+/** SPI Transfer Flags */
 #define SPI_TRANSFER_NONE	0x00000000
-#define SPI_TRANSFER_DMA	0x00000001 // Use DMA for transfer (Write/Read) (If supported) (Note: Buffers must be DMA compatible)
-#define SPI_TRANSFER_PIO	0x00000002 // Use PIO (Polling) for transfer (Write/Read)
-#define SPI_TRANSFER_DELAY	0x00000004 // Add a delay after each byte written (Write/Read) (Note: Only available with PIO transfer unless provided directly by hardware)
+#define SPI_TRANSFER_DMA	0x00000001 ///< Use DMA for transfer (Write/Read) (If supported) (Note: Buffers must be DMA compatible)
+#define SPI_TRANSFER_PIO	0x00000002 ///< Use PIO (Polling) for transfer (Write/Read)
+#define SPI_TRANSFER_DELAY	0x00000004 ///< Add a delay after each byte written (Write/Read) (Note: Only available with PIO transfer unless provided directly by hardware)
 
-/* ============================================================================== */
-/* SPI specific types */
+/** SPI specific types */
 
-/* SPI Properties */
+/** SPI Properties */
 typedef struct _SPI_PROPERTIES SPI_PROPERTIES;
 struct _SPI_PROPERTIES
 {
-	uint32_t flags; // Device flags (eg SPI_FLAG_SLAVE)
-	uint32_t maxsize; // Maximum supported data transfer size
-	uint32_t minclock; // Minimum supported clock rate
-	uint32_t maxclock; // Maximum supported clock rate
-	uint32_t selectcount; // Number of chip selects supported
-	uint32_t mode; // Current mode (eg SPI_MODE_4WIRE)
-	uint32_t clockrate; // Current clock rate
-	uint32_t clockphase; // Current clock phase (CPHA) (eg SPI_CLOCK_PHASE_LOW)
-	uint32_t clockpolarity; // Current clock polarity (CPOL) (eg SPI_CLOCK_POLARITY_LOW)
-	uint32_t selectpolarity; // Default chip select polarity (eg SPI_CS_POLARITY_LOW)
-	uint32_t bytedelay; // Delay between bytes written (Microseconds)
+	uint32_t flags; ///< Device flags (eg SPI_FLAG_SLAVE)
+	uint32_t maxsize; ///< Maximum supported data transfer size
+	uint32_t minclock; ///< Minimum supported clock rate
+	uint32_t maxclock; ///< Maximum supported clock rate
+	uint32_t selectcount; ///< Number of chip selects supported
+	uint32_t mode; ///< Current mode (eg SPI_MODE_4WIRE)
+	uint32_t clockrate; ///< Current clock rate
+	uint32_t clockphase; ///< Current clock phase (CPHA) (eg SPI_CLOCK_PHASE_LOW)
+	uint32_t clockpolarity; ///< Current clock polarity (CPOL) (eg SPI_CLOCK_POLARITY_LOW)
+	uint32_t selectpolarity; ///< Default chip select polarity (eg SPI_CS_POLARITY_LOW)
+	uint32_t bytedelay; ///< Delay between bytes written (Microseconds)
 };
 
 
-/* SPI Chip Select */
+/** SPI Chip Select */
 typedef struct _SPI_CHIP_SELECT SPI_CHIP_SELECT;
 struct _SPI_CHIP_SELECT
 {
-	uint32_t pin; // The GPIO pin for this chip select (eg GPIO_PIN_46)(GPIO_PIN_UNKNOWN for internal)
-	uint32_t mode; // The mode for this chip select (eg SPI_MODE_0)
-	uint32_t divider; // The clock divider for this chip select (Used internally by drivers)
-	uint32_t clockrate; // The clock rate for this chip select
-	uint32_t clockphase; // The clock phase (CPHA) for this chip select (eg SPI_CLOCK_PHASE_LOW)
-	uint32_t clockpolarity; // The clock polarity (CPOL) for this chip select (eg SPI_CLOCK_POLARITY_LOW)
-	uint32_t selectpolarity; // The chip select polarity for this chip select (eg SPI_CS_POLARITY_LOW)
-	uint32_t bytedelay; // Delay between bytes written for this chip select (Microseconds)
+	uint32_t pin; ///< The GPIO pin for this chip select (eg GPIO_PIN_46)(GPIO_PIN_UNKNOWN for internal)
+	uint32_t mode; ///< The mode for this chip select (eg SPI_MODE_0)
+	uint32_t divider; ///< The clock divider for this chip select (Used internally by drivers)
+	uint32_t clockrate; ///< The clock rate for this chip select
+	uint32_t clockphase; ///< The clock phase (CPHA) for this chip select (eg SPI_CLOCK_PHASE_LOW)
+	uint32_t clockpolarity; ///< The clock polarity (CPOL) for this chip select (eg SPI_CLOCK_POLARITY_LOW)
+	uint32_t selectpolarity; ///< The chip select polarity for this chip select (eg SPI_CS_POLARITY_LOW)
+	uint32_t bytedelay; ///< Delay between bytes written for this chip select (Microseconds)
 };
 
 
-/* SPI Device */
+/** SPI Device */
 typedef struct _SPI_DEVICE SPI_DEVICE;
 
-/* SPI Enumeration Callback */
+/** SPI Enumeration Callback */
 typedef uint32_t STDCALL (*spi_enumerate_cb)(SPI_DEVICE *spi, void *data);
-/* SPI Notification Callback */
+/** SPI Notification Callback */
 typedef uint32_t STDCALL (*spi_notification_cb)(DEVICE *device, void *data, uint32_t notification);
 
-/* SPI Device Methods */
+/** SPI Device Methods */
 typedef uint32_t STDCALL (*spi_device_start_proc)(SPI_DEVICE *spi, uint32_t mode, uint32_t clockrate, uint32_t clockphase, uint32_t clockpolarity);
 typedef uint32_t STDCALL (*spi_device_stop_proc)(SPI_DEVICE *spi);
 
@@ -145,50 +143,49 @@ typedef uint32_t STDCALL (*spi_device_get_properties_proc)(SPI_DEVICE *spi, SPI_
 struct _SPI_DEVICE
 {
 	// Device Properties
-	DEVICE device; // The Device entry for this SPI
+	DEVICE device; ///< The Device entry for this SPI
 	// SPI Properties
-	uint32_t spiid; // Unique Id of this SPI in the SPI table
-	uint32_t spistate; // SPI state (eg SPI_STATE_ENABLED)
-	uint32_t spimode; // SPI mode (eg SPI_MODE_4WIRE)
-	spi_device_start_proc devicestart; // A Device specific DeviceStart method implementing the standard SPI device interface (Mandatory)
-	spi_device_stop_proc devicestop; // A Device specific DeviceStop method implementing the standard SPI device interface (Mandatory)
-	spi_device_read_proc deviceread; // A Device specific DeviceRead method implementing the standard SPI device interface (Or nil if the default method is suitable)
-	spi_device_write_proc devicewrite; // A Device specific DeviceWrite method implementing the standard SPI device interface (Or nil if the default method is suitable)
-	spi_device_write_read_proc devicewriteread; // A Device specific DeviceWriteRead method implementing the standard SPI device interface (Mandatory)
-	spi_device_get_mode_proc devicegetmode; // A Device specific DeviceGetMode method implementing the standard SPI device interface (Or nil if the default method is suitable)
-	spi_device_set_mode_proc devicesetmode; // A Device specific DeviceSetMode method implementing the standard SPI device interface (Or nil if the default method is suitable)
-	spi_device_get_clock_rate_proc devicegetclockrate; // A Device specific DeviceGetClockRate method implementing the standard SPI device interface (Or nil if the default method is suitable)
-	spi_device_set_clock_rate_proc devicesetclockrate; // A Device specific DeviceSetClockRate method implementing the standard SPI device interface (Or nil if the default method is suitable)
-	spi_device_get_clock_phase_proc devicegetclockphase; // A Device specific DeviceGetClockPhase method implementing the standard SPI device interface (Or nil if the default method is suitable)
-	spi_device_set_clock_phase_proc devicesetclockphase; // A Device specific DeviceSetClockPhase method implementing the standard SPI device interface (Or nil if the default method is suitable)
-	spi_device_get_clock_polarity_proc devicegetclockpolarity; // A Device specific DeviceGetClockPolarity method implementing the standard SPI device interface (Or nil if the default method is suitable)
-	spi_device_set_clock_polarity_proc devicesetclockpolarity; // A Device specific DeviceSetClockPolarity method implementing the standard SPI device interface (Or nil if the default method is suitable)
-	spi_device_get_select_polarity_proc devicegetselectpolarity; // A Device specific DeviceGetSelectPolarity method implementing the standard SPI device interface (Or nil if the default method is suitable)
-	spi_device_set_select_polarity_proc devicesetselectpolarity; // A Device specific DeviceSetSelectPolarity method implementing the standard SPI device interface (Or nil if the default method is suitable)
-	spi_device_get_byte_delay_proc devicegetbytedelay; // A Device specific DeviceGetByteDelay method implementing the standard SPI device interface (Or nil if the default method is suitable)
-	spi_device_set_byte_delay_proc devicesetbytedelay; // A Device specific DeviceSetByteDelay method implementing the standard SPI device interface (Or nil if the default method is suitable)
-	spi_device_get_properties_proc devicegetproperties; // A Device specific DeviceGetProperties method implementing the standard SPI device interface (Or nil if the default method is suitable)
+	uint32_t spiid; ///< Unique Id of this SPI in the SPI table
+	uint32_t spistate; ///< SPI state (eg SPI_STATE_ENABLED)
+	uint32_t spimode; ///< SPI mode (eg SPI_MODE_4WIRE)
+	spi_device_start_proc devicestart; ///< A Device specific DeviceStart method implementing the standard SPI device interface (Mandatory)
+	spi_device_stop_proc devicestop; ///< A Device specific DeviceStop method implementing the standard SPI device interface (Mandatory)
+	spi_device_read_proc deviceread; ///< A Device specific DeviceRead method implementing the standard SPI device interface (Or nil if the default method is suitable)
+	spi_device_write_proc devicewrite; ///< A Device specific DeviceWrite method implementing the standard SPI device interface (Or nil if the default method is suitable)
+	spi_device_write_read_proc devicewriteread; ///< A Device specific DeviceWriteRead method implementing the standard SPI device interface (Mandatory)
+	spi_device_get_mode_proc devicegetmode; ///< A Device specific DeviceGetMode method implementing the standard SPI device interface (Or nil if the default method is suitable)
+	spi_device_set_mode_proc devicesetmode; ///< A Device specific DeviceSetMode method implementing the standard SPI device interface (Or nil if the default method is suitable)
+	spi_device_get_clock_rate_proc devicegetclockrate; ///< A Device specific DeviceGetClockRate method implementing the standard SPI device interface (Or nil if the default method is suitable)
+	spi_device_set_clock_rate_proc devicesetclockrate; ///< A Device specific DeviceSetClockRate method implementing the standard SPI device interface (Or nil if the default method is suitable)
+	spi_device_get_clock_phase_proc devicegetclockphase; ///< A Device specific DeviceGetClockPhase method implementing the standard SPI device interface (Or nil if the default method is suitable)
+	spi_device_set_clock_phase_proc devicesetclockphase; ///< A Device specific DeviceSetClockPhase method implementing the standard SPI device interface (Or nil if the default method is suitable)
+	spi_device_get_clock_polarity_proc devicegetclockpolarity; ///< A Device specific DeviceGetClockPolarity method implementing the standard SPI device interface (Or nil if the default method is suitable)
+	spi_device_set_clock_polarity_proc devicesetclockpolarity; ///< A Device specific DeviceSetClockPolarity method implementing the standard SPI device interface (Or nil if the default method is suitable)
+	spi_device_get_select_polarity_proc devicegetselectpolarity; ///< A Device specific DeviceGetSelectPolarity method implementing the standard SPI device interface (Or nil if the default method is suitable)
+	spi_device_set_select_polarity_proc devicesetselectpolarity; ///< A Device specific DeviceSetSelectPolarity method implementing the standard SPI device interface (Or nil if the default method is suitable)
+	spi_device_get_byte_delay_proc devicegetbytedelay; ///< A Device specific DeviceGetByteDelay method implementing the standard SPI device interface (Or nil if the default method is suitable)
+	spi_device_set_byte_delay_proc devicesetbytedelay; ///< A Device specific DeviceSetByteDelay method implementing the standard SPI device interface (Or nil if the default method is suitable)
+	spi_device_get_properties_proc devicegetproperties; ///< A Device specific DeviceGetProperties method implementing the standard SPI device interface (Or nil if the default method is suitable)
 	// Statistics Properties
 	uint32_t transfercount;
 	uint32_t transfererrors;
 	// Driver Properties
-	MUTEX_HANDLE lock; // Device lock
-	SEMAPHORE_HANDLE wait; // Write/Read wait event
-	uint32_t divider; // Clock divider (Used internally by drivers)
-	uint32_t clockrate; // Clock rate (Hz)
-	uint32_t clockphase; // Clock Phase (eg SPI_CLOCK_PHASE_LOW)
-	uint32_t clockpolarity; // Clock Polarity (eg SPI_CLOCK_POLARITY_LOW)
-	uint32_t selectpolarity; // Default Chip Select Polarity (eg SPI_CS_POLARITY_LOW)
-	uint32_t bytedelay; // Delay between bytes written (Microseconds)
-	SPI_PROPERTIES properties; // Device properties
-	SPI_CHIP_SELECT chipselects[SPI_CS_MAX + 1]; // Chip selects
+	MUTEX_HANDLE lock; ///< Device lock
+	SEMAPHORE_HANDLE wait; ///< Write/Read wait event
+	uint32_t divider; ///< Clock divider (Used internally by drivers)
+	uint32_t clockrate; ///< Clock rate (Hz)
+	uint32_t clockphase; ///< Clock Phase (eg SPI_CLOCK_PHASE_LOW)
+	uint32_t clockpolarity; ///< Clock Polarity (eg SPI_CLOCK_POLARITY_LOW)
+	uint32_t selectpolarity; ///< Default Chip Select Polarity (eg SPI_CS_POLARITY_LOW)
+	uint32_t bytedelay; ///< Delay between bytes written (Microseconds)
+	SPI_PROPERTIES properties; ///< Device properties
+	SPI_CHIP_SELECT chipselects[SPI_CS_MAX + 1]; ///< Chip selects
 	// Internal Properties
-	SPI_DEVICE *prev; // Previous entry in SPI table
-	SPI_DEVICE *next; // Next entry in SPI table
+	SPI_DEVICE *prev; ///< Previous entry in SPI table
+	SPI_DEVICE *next; ///< Next entry in SPI table
 };
 
-/* ============================================================================== */
-/* SPI Functions */
+/** SPI Functions */
 uint32_t STDCALL spi_device_start(SPI_DEVICE *spi, uint32_t mode, uint32_t clockrate, uint32_t clockphase, uint32_t clockpolarity);
 uint32_t STDCALL spi_device_stop(SPI_DEVICE *spi);
 
@@ -231,8 +228,7 @@ uint32_t STDCALL spi_device_enumerate(spi_enumerate_cb callback, void *data);
 
 uint32_t STDCALL spi_device_notification(SPI_DEVICE *spi, spi_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
-/* ============================================================================== */
-/* SPI Helper Functions */
+/** SPI Helper Functions */
 uint32_t STDCALL spi_get_count(void);
 SPI_DEVICE * STDCALL spi_device_get_default(void);
 uint32_t STDCALL spi_device_set_default(SPI_DEVICE *spi);

@@ -35,46 +35,45 @@ extern "C" {
 #include "ultibo/storage.h"
 #include "ultibo/ultibo.h"
 
-/* ============================================================================== */
-/* FileSystem specific constants */
+/** FileSystem specific constants */
 #define FILESYS_LOGGING_DESCRIPTION	"Filesystem Logging"
 
-#define FILESYS_STORAGE_TIMER_INTERVAL	100 // Timer interval for device additions or insertions
+#define FILESYS_STORAGE_TIMER_INTERVAL	100 ///< Timer interval for device additions or insertions
 
-/* FileSystem Lock States */
+/** FileSystem Lock States */
 #define FILESYS_LOCK_NONE	0
 #define FILESYS_LOCK_READ	1
 #define FILESYS_LOCK_WRITE	2
-#define FILESYS_LOCK_AUTO	3 // Not intended for use in all situations, use with extreme caution
+#define FILESYS_LOCK_AUTO	3 ///< Not intended for use in all situations, use with extreme caution
 
-/* FileSystem Cache */
-#define FILESYS_CACHE_THREAD_NAME	"Filesystem Cache" // Thread name for Filesystem cache threads
-#define FILESYS_CACHE_THREAD_PRIORITY	THREAD_PRIORITY_HIGHER // Thread priority for Filesystem cache threads
+/** FileSystem Cache */
+#define FILESYS_CACHE_THREAD_NAME	"Filesystem Cache" ///< Thread name for Filesystem cache threads
+#define FILESYS_CACHE_THREAD_PRIORITY	THREAD_PRIORITY_HIGHER ///< Thread priority for Filesystem cache threads
 
-#define FILESYS_CACHE_TIMER_INTERVAL	50 // 50ms timer interval for Filesystem cache
-#define FILESYS_CACHE_FLUSH_TIMEOUT	3000 // Filesystem cache flush timeout 3 seconds
-#define FILESYS_CACHE_DISCARD_TIMEOUT	180000 // Filesystem cache discard timeout 3 minutes
+#define FILESYS_CACHE_TIMER_INTERVAL	50 ///< 50ms timer interval for Filesystem cache
+#define FILESYS_CACHE_FLUSH_TIMEOUT	3000 ///< Filesystem cache flush timeout 3 seconds
+#define FILESYS_CACHE_DISCARD_TIMEOUT	180000 ///< Filesystem cache discard timeout 3 minutes
 
-/* Entry Timer */
-#define FILESYS_ENTRY_TIMER_INTERVAL	1000 // 1000ms timer interval for Filesystem entries
-#define FILESYS_ENTRY_DELETE_TIMEOUT	30000 // Filesystem entry delete timeout 30 seconds
+/** Entry Timer */
+#define FILESYS_ENTRY_TIMER_INTERVAL	1000 ///< 1000ms timer interval for Filesystem entries
+#define FILESYS_ENTRY_DELETE_TIMEOUT	30000 ///< Filesystem entry delete timeout 30 seconds
 
-/* Cache Timer */
+/** Cache Timer */
 #define CACHE_TIMER_KEY_NONE	TIMER_KEY_NONE
 #define CACHE_TIMER_KEY_MAX	TIMER_KEY_MAX
 #define CACHE_TIMER_KEY_MIN	TIMER_KEY_MIN
 
-/* Entry Timer */
+/** Entry Timer */
 #define ENTRY_TIMER_KEY_NONE	TIMER_KEY_NONE
 #define ENTRY_TIMER_KEY_MAX	TIMER_KEY_MAX
 #define ENTRY_TIMER_KEY_MIN	TIMER_KEY_MIN
 
-/* Partition, Device, Volume constants */
+/** Partition, Device, Volume constants */
 #define MIN_FLOPPY_DEVICE	0x00
 #define MAX_FLOPPY_DEVICE	0x7F
 
 #define MIN_FIXED_DEVICE	0x80
-#define MAX_FIXED_DEVICE	0xFF // Extends over CDROM/Other
+#define MAX_FIXED_DEVICE	0xFF ///< Extends over CDROM/Other
 
 #define MIN_CDROM_DEVICE	0xE0
 #define MAX_CDROM_DEVICE	0xEF
@@ -88,7 +87,7 @@ extern "C" {
 
 #define MIN_PARTITION	0
 #define MAX_PARTITION	3
-#define MAX_EXTENDED	1 // Only 2 partitions in second level
+#define MAX_EXTENDED	1 ///< Only 2 partitions in second level
 #define MAX_PARTITION_COUNT 4
 
 #define MIN_FLOPPY_DRIVE	MIN_DRIVE
@@ -101,38 +100,38 @@ extern "C" {
 #define MAX_SECTOR_SIZE	4096
 #define ISO_SECTOR_SIZE	2048
 
-#define VOLUME_PREFIX	"\\Volume" // eg \Volume1
-#define EXTENDED_PREFIX	"\\Extended" // eg \Extended1
-#define PARTITION_PREFIX	"\\Partition" // eg \Partition1
-#define CONTROLLER_PREFIX	"\\Controller" // eg \Controller0
-#define CDROM_DEVICE_PREFIX	"\\Cdrom" // eg \Cdrom0
-#define OTHER_DEVICE_PREFIX	"\\Other" // eg \Other0
-#define FIXED_DEVICE_PREFIX	"\\Harddisk" // eg \Harddisk0
-#define FLOPPY_DEVICE_PREFIX	"\\Floppy" // eg \Floppy0
-#define UNKNOWN_DEVICE_PREFIX	"\\Unknown" // eg \Unknown0
+#define VOLUME_PREFIX	"\\Volume" ///< eg \Volume1
+#define EXTENDED_PREFIX	"\\Extended" ///< eg \Extended1
+#define PARTITION_PREFIX	"\\Partition" ///< eg \Partition1
+#define CONTROLLER_PREFIX	"\\Controller" ///< eg \Controller0
+#define CDROM_DEVICE_PREFIX	"\\Cdrom" ///< eg \Cdrom0
+#define OTHER_DEVICE_PREFIX	"\\Other" ///< eg \Other0
+#define FIXED_DEVICE_PREFIX	"\\Harddisk" ///< eg \Harddisk0
+#define FLOPPY_DEVICE_PREFIX	"\\Floppy" ///< eg \Floppy0
+#define UNKNOWN_DEVICE_PREFIX	"\\Unknown" ///< eg \Unknown0
 
-#define VOLUME_PATH_PREFIX	"\\\\?" // eg \\?\Volume1\Home
-#define DEVICE_PATH_PREFIX	"\\\." // eg \\.\Harddisk0\Partition1\Home
+#define VOLUME_PATH_PREFIX	"\\\\?" ///< eg \\?\Volume1\Home
+#define DEVICE_PATH_PREFIX	"\\\." ///< eg \\.\Harddisk0\Partition1\Home
 #define REPARSE_PATH_PREFIX	"\\??\\"
 
 #define BOOT_RECORD_SIGNATURE	0xAA55
 #define PARTITION_RECORD_SIGNATURE	0xAA55
 #define BOOT_SECTOR_SIGNATURE	0xAA55
 
-/* Find Flags */
+/** Find Flags */
 #define FIND_FLAG_NONE	0x00000000
 #define FIND_FLAG_FILE_NAMES	0x00000001
 
-/* Find Wildcards */
+/** Find Wildcards */
 #define FIND_WILDCARD_NAME	"*.*"
 #define FIND_WILDCARD_STREAM	"*"
 
-/* File Seek origins */
+/** File Seek origins */
 #define fsFromBeginning	0
 #define fsFromCurrent	1
 #define fsFromEnd	2
 
-/* File Mode constants */
+/** File Mode constants */
 #define fmOpenRead	0x0000
 #define fmOpenWrite	0x0001
 #define fmOpenReadWrite	0x0002
@@ -145,7 +144,7 @@ extern "C" {
 #define fmOpenMask	0x000F
 #define fmShareMask	0x00F0
 
-/* File Attribute constants */
+/** File Attribute constants */
 #define faReadOnly	0x00000001
 #define faHidden	0x00000002
 #define faSysFile	0x00000004
@@ -160,39 +159,39 @@ extern "C" {
 #define faDotDot	0x02000000
 #define faFile	0x04000000
 #define faStream	0x08000000
-#define faFlagName	0x00100000 // Used for FAT case flags
-#define faFlagExt	0x00200000 // Used for FAT case flags
+#define faFlagName	0x00100000 ///< Used for FAT case flags
+#define faFlagExt	0x00200000 ///< Used for FAT case flags
 #define faFlagBoth	(faFlagName | faFlagExt)
-#define faFlagLong	0x00400000 // Not currently used
-#define faFlagMetafile	0x00800000 // Used for NTFS Metafiles
+#define faFlagLong	0x00400000 ///< Not currently used
+#define faFlagMetafile	0x00800000 ///< Used for NTFS Metafiles
 
-#define faFlagMask	0x0FFF0000 // Used to preserve internal attributes
-#define faFindMask	0x0000FFFF // Used to mask internal attributes
+#define faFlagMask	0x0FFF0000 ///< Used to preserve internal attributes
+#define faFindMask	0x0000FFFF ///< Used to mask internal attributes
 #define faMatchMask	(faFile | faStream | faVolumeID | faDirectory)
 
-/* Additional File Attribute Flags for NTFS/EXTFS/NSS */
+/** Additional File Attribute Flags for NTFS/EXTFS/NSS */
 #define faDevice	0x00000040
 #define faNormal	0x00000080
 #define faTemporary	0x00000100
 #define faSparse	0x00000200
-#define faReparse	0x00000400 // See also faSymLink
+#define faReparse	0x00000400 ///< See also faSymLink
 #define faCompressed	0x00000800
 #define faOffline	0x00001000
 #define faNotIndexed	0x00002000
 #define faEncrypted	0x00004000
 
-#define faMftDirectory	0x10000000 // Used only by FileName Attribute
-#define faMftIndexView	0x20000000 // Used by both the StandardInformation and FileName attributes
+#define faMftDirectory	0x10000000 ///< Used only by FileName Attribute
+#define faMftIndexView	0x20000000 ///< Used by both the StandardInformation and FileName attributes
 
-/* Note: NTFS does not store the faVolumeID or faDirectory attributes */
+/** Note: NTFS does not store the faVolumeID or faDirectory attributes */
 
-/* Additional File Attribute constants */
+/** Additional File Attribute constants */
 #define faNone	0x00000000
 #define faStandard	(faReadOnly | faHidden | faSysFile | faArchive)
 #define faLongName	(faReadOnly | faHidden | faSysFile | faVolumeID)
 #define faLongMask	(faReadOnly | faHidden | faSysFile | faVolumeID | faDirectory | faArchive)
 
-/* Volume Attribute constants */
+/** Volume Attribute constants */
 #define vaNone	0x00000000
 #define vaCaseSensitive	0x00000001
 #define vaCasePreserved	0x00000002
@@ -210,59 +209,59 @@ extern "C" {
 #define vaNamedStreams	0x00040000
 #define vaReadOnly	0x00080000
 
-/* Additional Volume Attribute constants */
-#define vaBootCatalog	0x01000000 // Used to indicate support for ISO Boot Catalogs
-#define vaVirtualVolume	0x02000000 // Used to indicate Volume is Virtual or on a Virtual Device
-#define vaFolderEncryption	0x04000000 // Used to indicate support for Folder Encryption (New files in folder are automatically encrypted)
-#define vaFolderCompression	0x08000000 // Used to indicate support for Folder Compression (New files in folder are automatically compressed)
+/** Additional Volume Attribute constants */
+#define vaBootCatalog	0x01000000 ///< Used to indicate support for ISO Boot Catalogs
+#define vaVirtualVolume	0x02000000 ///< Used to indicate Volume is Virtual or on a Virtual Device
+#define vaFolderEncryption	0x04000000 ///< Used to indicate support for Folder Encryption (New files in folder are automatically encrypted)
+#define vaFolderCompression	0x08000000 ///< Used to indicate support for Folder Compression (New files in folder are automatically compressed)
 
-/* Device Attribute constants */
+/** Device Attribute constants */
 #define daNone	0x00000000
 #define daWriteable	0x00000001
 #define daVirtual	0x00000002
 
-/* Image Attribute constants */
+/** Image Attribute constants */
 #define iaNone	0x00000000
-#define iaDisk	0x00000001 // Memory/File/Device
-#define iaPartition	0x00000002 // Memory/File/Device
-#define iaVolume	0x00000004 // Memory/File/Device
-#define iaDrive	0x00000008 // Memory/File/Device
-#define iaCDROM	0x00000010 // Memory/File/Device/Iso
-#define iaDVD	0x00000020 // Memory/File/Device/Iso
-#define iaFlat	0x00000040 // Bochs
-#define iaSparse	0x00000080 // Bochs
-#define iaGrowing	0x00000100 // Bochs
-#define iaFixed	0x00000200 // Vpc/Vbox/Vmware
-#define iaDynamic	0x00000400 // Vpc/Vbox/Vmware
-#define iaSplit	0x00000800 // Vpc/Vmware/WIM/Ghost/Portlock/Powerquest
-#define iaUndoable	0x00001000 // Vpc/Vbox/Vmware
+#define iaDisk	0x00000001 ///< Memory/File/Device
+#define iaPartition	0x00000002 ///< Memory/File/Device
+#define iaVolume	0x00000004 ///< Memory/File/Device
+#define iaDrive	0x00000008 ///< Memory/File/Device
+#define iaCDROM	0x00000010 ///< Memory/File/Device/Iso
+#define iaDVD	0x00000020 ///< Memory/File/Device/Iso
+#define iaFlat	0x00000040 ///< Bochs
+#define iaSparse	0x00000080 ///< Bochs
+#define iaGrowing	0x00000100 ///< Bochs
+#define iaFixed	0x00000200 ///< Vpc/Vbox/Vmware
+#define iaDynamic	0x00000400 ///< Vpc/Vbox/Vmware
+#define iaSplit	0x00000800 ///< Vpc/Vmware/WIM/Ghost/Portlock/Powerquest
+#define iaUndoable	0x00001000 ///< Vpc/Vbox/Vmware
 
-#define iaReadable	0x00010000 // All
-#define iaWriteable	0x00020000 // All
-#define iaEraseable	0x00040000 // All
+#define iaReadable	0x00010000 ///< All
+#define iaWriteable	0x00020000 ///< All
+#define iaEraseable	0x00040000 ///< All
 
-/* Catalog Attribute constants */
+/** Catalog Attribute constants */
 #define caNone	0x00000000
-#define caDefault	0x00000001 // Initial/Default Entry
-#define caBootable	0x00000002 // Boot Indicator
-#define caNoEmulation	0x00000004 // No Emulation
-#define caFloppy12M	0x00000008 // 1.2M
-#define caFloppy144M	0x00000010 // 1.44M
-#define caFloppy288M	0x00000020 // 2.88M
-#define caHardDisk	0x00000040 // Hard Disk
+#define caDefault	0x00000001 ///< Initial/Default Entry
+#define caBootable	0x00000002 ///< Boot Indicator
+#define caNoEmulation	0x00000004 ///< No Emulation
+#define caFloppy12M	0x00000008 ///< 1.2M
+#define caFloppy144M	0x00000010 ///< 1.44M
+#define caFloppy288M	0x00000020 ///< 2.88M
+#define caHardDisk	0x00000040 ///< Hard Disk
 
-/* Misc constants */
-#define NAME_HASH_SIZE	8 // Used for Internal Name Hash Generation only
+/** Misc constants */
+#define NAME_HASH_SIZE	8 ///< Used for Internal Name Hash Generation only
 
-/* Partition Ids */
+/** Partition Ids */
 #define MAX_PARTITION_ID	255
-#define pidUnused	0 // Empty
+#define pidUnused	0 ///< Empty
 #define pidFAT12	1
 #define pidXENIXROOT	2
 #define pidXENIXUSR	3
-#define pidFAT16	4 // under 32M
+#define pidFAT16	4 ///< under 32M
 #define pidExtended	5
-#define pidFAT16HUGE	6 // over 32M
+#define pidFAT16HUGE	6 ///< over 32M
 #define pidHPFSNTFS	7
 #define pidAIXOS2	8
 #define pidAIX	9
@@ -278,7 +277,7 @@ extern "C" {
 #define pidUnknown019	19
 #define pidHIDDEN16	20
 #define pidUnknown021	21
-#define pidHIDDEN16HUGE	22 // ??????
+#define pidHIDDEN16HUGE	22 ///< ??????
 #define pidHIDDENHPFS	23
 #define pidASTSWAP	24
 #define pidWillowtech	25
@@ -357,11 +356,11 @@ extern "C" {
 #define pidUnknown098	98
 #define pidSysV	99
 #define pidNetware286	100
-#define pidNWFS	101 // Traditional / Netware 6 Master
+#define pidNWFS	101 ///< Traditional / Netware 6 Master
 #define pidUnknown102	102
 #define pidNovell103	103
 #define pidNovell104	104
-#define pidNSS	105 // NSS / Netware 6
+#define pidNSS	105 ///< NSS / Netware 6
 #define pidUnknown106	106
 #define pidUnknown107	107
 #define pidUnknown108	108
@@ -513,22 +512,21 @@ extern "C" {
 #define pidLANstep	254
 #define pidXenixBBT	255
 
-/* Device descriptions */
+/** Device descriptions */
 #define FILESYS_ATA_DEVICE_DESCRIPTION	"ATA Storage Device"
 #define FILESYS_ATAPI_DEVICE_DESCRIPTION	"ATAPI Storage Device"
 #define FILESYS_SCSI_DEVICE_DESCRIPTION	"SCSI Storage Device"
 #define FILESYS_USB_DEVICE_DESCRIPTION	"USB Storage Device"
 #define FILESYS_MMC_DEVICE_DESCRIPTION	"MMC/SD Storage Device"
 
-/* Controller descriptions */
+/** Controller descriptions */
 #define FILESYS_ATA_CONTROLLER_DESCRIPTION	"ATA Storage Controller"
 #define FILESYS_ATAPI_CONTROLLER_DESCRIPTION	"ATAPI Storage Controller"
 #define FILESYS_SCSI_CONTROLLER_DESCRIPTION	"SCSI Storage Controller"
 #define FILESYS_USB_CONTROLLER_DESCRIPTION	"USB Storage Controller"
 #define FILESYS_MMC_CONTROLLER_DESCRIPTION	"MMC/SD Storage Controller"
 
-/* ============================================================================== */
-/* FileSystem specific types */
+/** FileSystem specific types */
 typedef struct _STORAGE_DEVICE_EVENT STORAGE_DEVICE_EVENT;
 struct _STORAGE_DEVICE_EVENT
 {
@@ -574,7 +572,7 @@ typedef enum _IMAGE_TYPE
  itVBOX
 } IMAGE_TYPE;
 
-/* Cache types */
+/** Cache types */
 typedef enum _CACHE_STATE
 {
  csCLEAN,
@@ -611,7 +609,7 @@ typedef enum _CACHE_PAGE_CONTENT
  pcSYSTEM
 } CACHE_PAGE_CONTENT;
 
-/* Cache Statistics */
+/** Cache Statistics */
 typedef struct _CACHE_STATISTICS CACHE_STATISTICS;
 struct _CACHE_STATISTICS
 {
@@ -646,7 +644,7 @@ struct _CACHE_STATISTICS
 	int64_t newestdirty;
 };
 
-/* Search types */
+/** Search types */
 typedef struct _FILE_SEARCH_REC
 {
 	HANDLE findhandle;
@@ -761,94 +759,94 @@ typedef struct _LINK_SEARCH_REC
 	void *context;
 } LINK_SEARCH_REC;
 
-/* FAT12/FAT16 BIOS Parameter Block */
+/** FAT12/FAT16 BIOS Parameter Block */
 typedef struct _BIOS_PB
 {
-	uint16_t bytespersector; // 512,1024,2048,4096 - Usually 512
-	uint8_t sectorspercluster; // 1,2,4,8,16,32,64,128
-	uint16_t reservedsectors; // FAT12/16 - Usually 1, FAT32 - Usually 32
-	uint8_t numberoffats; // Usually 2
-	uint16_t rootentrycount; // FAT32 always 0, FAT16 usually 512
+	uint16_t bytespersector; ///< 512,1024,2048,4096 - Usually 512
+	uint8_t sectorspercluster; ///< 1,2,4,8,16,32,64,128
+	uint16_t reservedsectors; ///< FAT12/16 - Usually 1, FAT32 - Usually 32
+	uint8_t numberoffats; ///< Usually 2
+	uint16_t rootentrycount; ///< FAT32 always 0, FAT16 usually 512
 	// RootEntryCount * 32 must be even multiple of BytesPerSector
-	uint16_t totalsectors16; // Total Sectors on the drive or 0 if TotalSectors32 used
-	uint8_t mediaid; // F8 for Fixed media, F0 usually for Removable media
-	uint16_t sectorsperfat16; // FAT32 always 0, Number of Sectors per FAT
-	uint16_t sectorspertrack; // Sectors Per Track for Int13
-	uint16_t numberofheads; // Number of Header for Int13 eg 1.44MB = 2
-	uint32_t hiddensectors; // Number of Hidden Sectors preceeding Partition
+	uint16_t totalsectors16; ///< Total Sectors on the drive or 0 if TotalSectors32 used
+	uint8_t mediaid; ///< F8 for Fixed media, F0 usually for Removable media
+	uint16_t sectorsperfat16; ///< FAT32 always 0, Number of Sectors per FAT
+	uint16_t sectorspertrack; ///< Sectors Per Track for Int13
+	uint16_t numberofheads; ///< Number of Header for Int13 eg 1.44MB = 2
+	uint32_t hiddensectors; ///< Number of Hidden Sectors preceeding Partition
 	// Only valid on Partitioned media
-	uint32_t totalsectors32; // Total Sectors on the drive or 0 if TotalSectors16 used
+	uint32_t totalsectors32; ///< Total Sectors on the drive or 0 if TotalSectors16 used
 } PACKED BIOS_PB;
 
-/* FAT32 BIOS Parameter Block */
+/** FAT32 BIOS Parameter Block */
 typedef struct _EXT_BIOS_PB
 {
-	uint16_t bytespersector; // 512,1024,2048,4096 - Usually 512
-	uint8_t sectorspercluster; // 1,2,4,8,16,32,64,128
-	uint16_t reservedsectors; // FAT12/16 - Usually 1, FAT32 - Usually 32
-	uint8_t numberoffats; // Usually 2
-	uint16_t rootentrycount; // FAT32 always 0, FAT16 usually 512
+	uint16_t bytespersector; ///< 512,1024,2048,4096 - Usually 512
+	uint8_t sectorspercluster; ///< 1,2,4,8,16,32,64,128
+	uint16_t reservedsectors; ///< FAT12/16 - Usually 1, FAT32 - Usually 32
+	uint8_t numberoffats; ///< Usually 2
+	uint16_t rootentrycount; ///< FAT32 always 0, FAT16 usually 512
 	// RootEntryCount * 32 must be even multiple of BytesPerSector
-	uint16_t totalsectors16; // Total Sectors on the drive or 0 if TotalSectors32 used
-	uint8_t mediaid; // F8 for Fixed media, F0 usually for Removable media
-	uint16_t sectorsperfat16; // FAT32 always 0, Number of Sectors per FAT
-	uint16_t sectorspertrack; // Sectors Per Track for Int13
-	uint16_t numberofheads; // Number of Header for Int13 eg 1.44MB = 2
-	uint32_t hiddensectors; // Number of Hidden Sectors preceeding Partition
+	uint16_t totalsectors16; ///< Total Sectors on the drive or 0 if TotalSectors32 used
+	uint8_t mediaid; ///< F8 for Fixed media, F0 usually for Removable media
+	uint16_t sectorsperfat16; ///< FAT32 always 0, Number of Sectors per FAT
+	uint16_t sectorspertrack; ///< Sectors Per Track for Int13
+	uint16_t numberofheads; ///< Number of Header for Int13 eg 1.44MB = 2
+	uint32_t hiddensectors; ///< Number of Hidden Sectors preceeding Partition
 	// Only valid on Partitioned media
-	uint32_t totalsectors32; // Total Sectors on the drive or 0 if TotalSectors16 used
-	uint32_t sectorsperfat32; // Number of Sectors per FAT
-	uint16_t extendedflags; // Bits 0-3  -- Zero-based number of active FAT. Only valid if mirroring
+	uint32_t totalsectors32; ///< Total Sectors on the drive or 0 if TotalSectors16 used
+	uint32_t sectorsperfat32; ///< Number of Sectors per FAT
+	uint16_t extendedflags; ///< Bits 0-3  -- Zero-based number of active FAT. Only valid if mirroring
 	//              is disabled.
 	// Bits 4-6  -- Reserved.
 	// Bit 7     -- 0 means the FAT is mirrored at runtime into all FATs.
 	// it is the one referenced}
 	//              in bits 0-3.
 	// Bits 8-15 -- Reserved.
-	uint16_t filesysversion; // FAT32 Version (Current 0:0)
-	uint32_t rootcluster; // Usually Cluster 2
-	uint16_t filesysinfosector; // Usually 1
-	uint16_t backupbootsector; // Usually 6
-	uint8_t reserved[12]; // Always 0
+	uint16_t filesysversion; ///< FAT32 Version (Current 0:0)
+	uint32_t rootcluster; ///< Usually Cluster 2
+	uint16_t filesysinfosector; ///< Usually 1
+	uint16_t backupbootsector; ///< Usually 6
+	uint8_t reserved[12]; ///< Always 0
 } PACKED EXT_BIOS_PB;
 
-/* NTFS BIOS Parameter Block */
+/** NTFS BIOS Parameter Block */
 typedef struct _NTFS_BIOS_PB
 {
-	uint16_t bytespersector; // 512,1024,2048,4096 - Usually 512
-	uint8_t sectorspercluster; // 1,2,4,8,16,32,64,128 - Usually 8
-	uint16_t reservedsectors; // Must always be 0 on NTFS
-	uint8_t reserved1[3]; // Must always be 0 on NTFS
-	uint16_t reserved2; // Must always be 0 on NTFS
-	uint8_t mediaid; // F8 for Fixed media, F0 usually for Removable media
-	uint16_t reserved3; // Must always be 0 on NTFS
-	uint16_t sectorspertrack; // Sectors Per Track for Int13
-	uint16_t numberofheads; // Number of Header for Int13 eg 1.44MB = 2
-	uint32_t hiddensectors; // Number of Hidden Sectors preceeding Partition
-	uint32_t reserved4; // Must always be 0 on NTFS
-	uint32_t reserved5; // Not used by NTFS - Usually 80008000
-	int64_t totalsectors; // Total Sectors on the drive
-	int64_t mftcluster; // Start Cluster of $MFT
-	int64_t mftmirror; // Start Cluster of $MFTMirr
-	int32_t clustersperfile; // Clusters Per File Record (Can be negative) (F6 = 1024 - See Notes)
-	int32_t clustersperindex; // Clusters Per Index Record (Can be negative) (F6 = 1024 - See Notes)
-	int64_t volumeserial; // Volume Serial Number
-	uint32_t checksum; // Checksum
+	uint16_t bytespersector; ///< 512,1024,2048,4096 - Usually 512
+	uint8_t sectorspercluster; ///< 1,2,4,8,16,32,64,128 - Usually 8
+	uint16_t reservedsectors; ///< Must always be 0 on NTFS
+	uint8_t reserved1[3]; ///< Must always be 0 on NTFS
+	uint16_t reserved2; ///< Must always be 0 on NTFS
+	uint8_t mediaid; ///< F8 for Fixed media, F0 usually for Removable media
+	uint16_t reserved3; ///< Must always be 0 on NTFS
+	uint16_t sectorspertrack; ///< Sectors Per Track for Int13
+	uint16_t numberofheads; ///< Number of Header for Int13 eg 1.44MB = 2
+	uint32_t hiddensectors; ///< Number of Hidden Sectors preceeding Partition
+	uint32_t reserved4; ///< Must always be 0 on NTFS
+	uint32_t reserved5; ///< Not used by NTFS - Usually 80008000
+	int64_t totalsectors; ///< Total Sectors on the drive
+	int64_t mftcluster; ///< Start Cluster of $MFT
+	int64_t mftmirror; ///< Start Cluster of $MFTMirr
+	int32_t clustersperfile; ///< Clusters Per File Record (Can be negative) (F6 = 1024 - See Notes)
+	int32_t clustersperindex; ///< Clusters Per Index Record (Can be negative) (F6 = 1024 - See Notes)
+	int64_t volumeserial; ///< Volume Serial Number
+	uint32_t checksum; ///< Checksum
 } PACKED NTFS_BIOS_PB;
 
-/* Partition types */
+/** Partition types */
 typedef struct _PARTITION_ENTRY
 {
-	uint8_t bootindicator; // 80 for active partition
-	uint8_t starthead; // Either Bits 0-3 only or Bits 0-7 depending on BIOS
-	uint8_t startsector; // Bits 0-5 = Sector, Bits 6-7 = Bits 8-9 of Cylinder
-	uint8_t startcylinder; // Bits 0-7 Only, Bits 8-9 in Sector
-	uint8_t typeindicator; // See Table in Interrupt List and Below
-	uint8_t endhead; // Either Bits 0-3 only or Bits 0-7 depending on BIOS
-	uint8_t endsector; // Bits 0-5 = Sector, Bits 6-7 = Bits 8-9 of Cylinder
-	uint8_t endcylinder; // Bits 0-7 Only, Bits 8-9 in Sector
-	uint32_t sectoroffset; // Offset in sectors from current position to Start of Partition
-	uint32_t sectorcount; // Size in Sectors of the Partition
+	uint8_t bootindicator; ///< 80 for active partition
+	uint8_t starthead; ///< Either Bits 0-3 only or Bits 0-7 depending on BIOS
+	uint8_t startsector; ///< Bits 0-5 = Sector, Bits 6-7 = Bits 8-9 of Cylinder
+	uint8_t startcylinder; ///< Bits 0-7 Only, Bits 8-9 in Sector
+	uint8_t typeindicator; ///< See Table in Interrupt List and Below
+	uint8_t endhead; ///< Either Bits 0-3 only or Bits 0-7 depending on BIOS
+	uint8_t endsector; ///< Bits 0-5 = Sector, Bits 6-7 = Bits 8-9 of Cylinder
+	uint8_t endcylinder; ///< Bits 0-7 Only, Bits 8-9 in Sector
+	uint32_t sectoroffset; ///< Offset in sectors from current position to Start of Partition
+	uint32_t sectorcount; ///< Size in Sectors of the Partition
 } PACKED PARTITION_ENTRY;
 
 typedef struct _PARTITION_TABLE
@@ -862,7 +860,7 @@ typedef struct _MASTER_BOOT_RECORD
 {
 	MASTER_BOOT_CODE bootcode;
 	PARTITION_TABLE partitiontable;
-	uint16_t signature; // Magic Number 0xAA55
+	uint16_t signature; ///< Magic Number 0xAA55
 } PACKED MASTER_BOOT_RECORD;
 
 typedef uint8_t EXT_MASTER_BOOT_CODE[440];
@@ -873,17 +871,17 @@ typedef struct _EXT_MASTER_BOOT_RECORD
 	uint32_t disksignature;
 	uint16_t reserved1;
 	PARTITION_TABLE partitiontable;
-	uint16_t signature; // Magic Number 0xAA55
+	uint16_t signature; ///< Magic Number 0xAA55
 } PACKED EXT_MASTER_BOOT_RECORD;
 
 typedef struct _PARTITION_RECORD
 {
 	uint8_t dummy[446];
-	PARTITION_TABLE partitiontable; // Only first 2 ever used
-	uint16_t signature; // Magic Number 0xAA55
+	PARTITION_TABLE partitiontable; ///< Only first 2 ever used
+	uint16_t signature; ///< Magic Number 0xAA55
 } PACKED PARTITION_RECORD;
 
-/* Sector types */
+/** Sector types */
 typedef uint8_t DISK_SECTOR[512];
 
 typedef uint8_t BOOT_SECTOR_JUMP[3];
@@ -891,17 +889,17 @@ typedef uint8_t BOOT_SECTOR_CODE[448];
 
 typedef struct _BOOT_SECTOR
 {
-	BOOT_SECTOR_JUMP bootjump; // JMP - EBh,??h,90h or E9h,??h,??h
-	char oemname[8]; // MSWIN4.0/MSWIN4.1/MSDOS5.0
-	BIOS_PB bpb; // See Above
-	uint8_t drivenumber; // BIOS Int13 Drive No 00h, 80h, FFh etc
-	uint8_t reserved1; // Always 00h
-	uint8_t bootsignature; // Always 29h
-	uint32_t volumeserial; // Serial No (Date/Time when Formatted)
-	char volumename[11]; // Volume Label or "NO NAME"
-	char systemname[8]; // System Type FAT12, FAT16, FAT32 etc
-	BOOT_SECTOR_CODE bootcode; // Executable Code
-	uint16_t signature; // Magic Number 0xAA55
+	BOOT_SECTOR_JUMP bootjump; ///< JMP - EBh,??h,90h or E9h,??h,??h
+	char oemname[8]; ///< MSWIN4.0/MSWIN4.1/MSDOS5.0
+	BIOS_PB bpb; ///< See Above
+	uint8_t drivenumber; ///< BIOS Int13 Drive No 00h, 80h, FFh etc
+	uint8_t reserved1; ///< Always 00h
+	uint8_t bootsignature; ///< Always 29h
+	uint32_t volumeserial; ///< Serial No (Date/Time when Formatted)
+	char volumename[11]; ///< Volume Label or "NO NAME"
+	char systemname[8]; ///< System Type FAT12, FAT16, FAT32 etc
+	BOOT_SECTOR_CODE bootcode; ///< Executable Code
+	uint16_t signature; ///< Magic Number 0xAA55
 } PACKED BOOT_SECTOR;
 
 typedef uint8_t EXT_BOOT_SECTOR_JUMP[3];
@@ -909,17 +907,17 @@ typedef uint8_t EXT_BOOT_SECTOR_CODE[420];
 
 typedef struct _EXT_BOOT_SECTOR
 {
-	EXT_BOOT_SECTOR_JUMP bootjump; // JMP - EBh,??h,90h or E9h,??h,??h
-	char oemname[8]; // MSWIN4.1
-	EXT_BIOS_PB bpb; // See Above
-	uint8_t drivenumber; // BIOS Int13 Drive No 00h, 80h, FFh etc
-	uint8_t reserved1; // Always 00h
-	uint8_t bootsignature; // Always 29h
-	uint32_t volumeserial; // Serial No (Date/Time when Formatted)
-	char volumename[11]; // Volume Label or "NO NAME"
-	char systemname[8]; // System Type FAT12, FAT16, FAT32 etc
-	EXT_BOOT_SECTOR_CODE bootcode; // Executable Code
-	uint16_t signature; // Magic Number 0xAA55
+	EXT_BOOT_SECTOR_JUMP bootjump; ///< JMP - EBh,??h,90h or E9h,??h,??h
+	char oemname[8]; ///< MSWIN4.1
+	EXT_BIOS_PB bpb; ///< See Above
+	uint8_t drivenumber; ///< BIOS Int13 Drive No 00h, 80h, FFh etc
+	uint8_t reserved1; ///< Always 00h
+	uint8_t bootsignature; ///< Always 29h
+	uint32_t volumeserial; ///< Serial No (Date/Time when Formatted)
+	char volumename[11]; ///< Volume Label or "NO NAME"
+	char systemname[8]; ///< System Type FAT12, FAT16, FAT32 etc
+	EXT_BOOT_SECTOR_CODE bootcode; ///< Executable Code
+	uint16_t signature; ///< Magic Number 0xAA55
 } PACKED EXT_BOOT_SECTOR;
 
 typedef uint8_t NTFS_BOOT_SECTOR_JUMP[3];
@@ -927,11 +925,11 @@ typedef uint8_t NTFS_BOOT_SECTOR_CODE[426];
 
 typedef struct _NTFS_BOOT_SECTOR
 {
-	NTFS_BOOT_SECTOR_JUMP bootjump; // JMP - EBh,??h,90h
-	char oemname[8]; // Always NTFS
-	NTFS_BIOS_PB bpb; // See Above (73 Bytes BPB and ExtBPB)
-	NTFS_BOOT_SECTOR_CODE bootcode; // Executable Code
-	uint16_t signature; // Magic Number 0xAA55
+	NTFS_BOOT_SECTOR_JUMP bootjump; ///< JMP - EBh,??h,90h
+	char oemname[8]; ///< Always NTFS
+	NTFS_BIOS_PB bpb; ///< See Above (73 Bytes BPB and ExtBPB)
+	NTFS_BOOT_SECTOR_CODE bootcode; ///< Executable Code
+	uint16_t signature; ///< Magic Number 0xAA55
 } PACKED NTFS_BOOT_SECTOR;
 
 typedef struct _EXTFS_BOOT_SECTOR
@@ -939,8 +937,7 @@ typedef struct _EXTFS_BOOT_SECTOR
 	// To Do
 } PACKED EXTFS_BOOT_SECTOR;
 
-/* ============================================================================== */
-/* Initialization Functions */
+/** Initialization Functions */
 uint32_t STDCALL file_sys_start(void);
 uint32_t STDCALL file_sys_stop(void);
 
@@ -948,9 +945,8 @@ BOOL STDCALL file_sys_start_completed(void);
 
 void STDCALL file_sys_async_start(void *data);
 
-/* ============================================================================== */
-/* FileSystem Functions (Ultibo) */
-/* Drive Functions */
+/** FileSystem Functions (Ultibo) */
+/** Drive Functions */
 uint8_t STDCALL GetPathDrive(const char *path);
 DRIVE_TYPE STDCALL GetDriveType(uint8_t drive);
 void STDCALL GetDriveData(uint8_t drive, DRIVE_DATA *data);
@@ -972,7 +968,7 @@ BOOL STDCALL GetDriveInformation(const char *path, uint32_t *clustersize, int64_
 uint8_t STDCALL GetCurrentDrive(void);
 BOOL STDCALL SetCurrentDrive(const char *drive);
 
-/* File Functions */
+/** File Functions */
 HANDLE STDCALL FileOpen(const char *filename, int mode);
 HANDLE STDCALL FileCreate(const char *filename);
 BOOL STDCALL DeleteFile(const char *filename);
@@ -997,7 +993,7 @@ int STDCALL FileSetDate(HANDLE handle, int age);
 int32_t STDCALL FileRead(HANDLE handle, void *buffer, int32_t count);
 int32_t STDCALL FileWrite(HANDLE handle, void *buffer, int32_t count);
 
-/* Directory Functions */
+/** Directory Functions */
 BOOL STDCALL CreateDir(const char *dirname);
 BOOL STDCALL RemoveDir(const char *dirname);
 BOOL STDCALL RenameDir(const char *oldname, const char *newname);
@@ -1007,9 +1003,9 @@ BOOL STDCALL DirectoryExists(const char *dirname);
 void STDCALL ForceDirectories(char *dirname);
 void STDCALL DeleteTree(const char *dirname);
 
-/* Search Functions */
+/** Search Functions */
 
-/* Additional Functions */
+/** Additional Functions */
 BOOL STDCALL FileCopy(const char *sourcefile, const char *destfile, BOOL failifexists);
 BOOL STDCALL FileCopyEx(const char *sourcefile, const char *destfile, BOOL failifexists, BOOL usesourcedate, int destdate, BOOL usesourceattr, int destattr);
 
@@ -1017,7 +1013,7 @@ uint32_t STDCALL GetShortName(const char *filename, char *shortname, uint32_t le
 uint32_t STDCALL GetLongName(const char *filename, char *longname, uint32_t len);
 uint32_t STDCALL GetTrueName(const char *filename, char *truename, uint32_t len);
 
-/* Extended Functions */
+/** Extended Functions */
 int64_t STDCALL FileSeekEx(HANDLE handle, int64_t offset, int32_t origin);
 
 BOOL STDCALL EndOfFileEx(HANDLE handle);
@@ -1038,11 +1034,10 @@ int STDCALL FindFirstEx(const char *path, FILE_SEARCH_REC *searchrec);
 int STDCALL FindNextEx(FILE_SEARCH_REC *searchrec);
 void STDCALL FindCloseEx(FILE_SEARCH_REC *searchrec);
 
-/* ============================================================================== */
-/* FileSystem Functions (Win32 Compatibility) */
-/* Drive Functions */
+/** FileSystem Functions (Win32 Compatibility) */
+/** Drive Functions */
 BOOL STDCALL DefineDosDevice(uint32_t dwflags, const char *lpdevicename, const char *lptargetpath);
-UINT STDCALL GetDiskType(const char *lprootpathname); // GetDriveType - Already defined above
+UINT STDCALL GetDiskType(const char *lprootpathname); ///< GetDriveType - Already defined above
 BOOL STDCALL GetDiskFreeSpace(const char *lprootpathname, uint32_t *lpsectorspercluster, uint32_t *lpbytespersector, uint32_t *lpnumberoffreeclusters, uint32_t *lptotalnumberofclusters);
 BOOL STDCALL GetDiskFreeSpaceEx(const char *lpdirectoryname, ULARGE_INTEGER *lpfreebytesavailabletocaller, ULARGE_INTEGER *lptotalnumberofbytes, ULARGE_INTEGER *lptotalnumberoffreebytes);
 uint32_t STDCALL GetLogicalDrives(void);
@@ -1051,7 +1046,7 @@ BOOL STDCALL GetVolumeInformation(const char *lprootpathname, char *lpvolumename
 uint32_t STDCALL QueryDosDevice(const char *lpdevicename, char *lptargetpath, uint32_t ucchmax);
 BOOL STDCALL SetVolumeLabel(const char *lprootpathname, const char *lpvolumename);
 
-/* File Functions */
+/** File Functions */
 BOOL STDCALL AreFileApisANSI(void);
 BOOL STDCALL CloseHandle(HANDLE hobject);
 BOOL STDCALL CopyFile(const char *lpexistingfilename, const char *lpnewfilename, BOOL bfailifexists);
@@ -1080,14 +1075,13 @@ BOOL STDCALL SetFileShortName(HANDLE hfile, const char *lpshortname);
 BOOL STDCALL CreateHardLink(const char *lpfilename, const char *lpexistingfilename, SECURITY_ATTRIBUTES *lpsecurityattributes);
 BOOL STDCALL CreateSymbolicLink(const char *lpsymlinkfilename, const char *lptargetfilename, uint32_t dwflags);
 
-/* Directory Functions */
+/** Directory Functions */
 BOOL STDCALL CreateDirectory(const char *lppathname, SECURITY_ATTRIBUTES *lpsecurityattributes);
 uint32_t STDCALL GetCurrentDirectory(uint32_t nbufferlength, char *lpbuffer);
 BOOL STDCALL RemoveDirectory(const char *lppathname);
 BOOL STDCALL SetCurrentDirectory(const char *lppathname);
 
-/* ============================================================================== */
-/* FileSystem Helper Functions */
+/** FileSystem Helper Functions */
 BOOL STDCALL file_sys_redirect_input(HANDLE handle);
 BOOL STDCALL file_sys_redirect_output(HANDLE handle);
 

@@ -36,8 +36,7 @@ extern "C" {
 #include "ultibo/framebuffer.h"
 #include "ultibo/touch.h"
 
-/* ============================================================================== */
-/* LCDA35 specific constants */
+/** LCDA35 specific constants */
 #define LCDA35_FRAMEBUFFER_DESCRIPTION	"Waveshare RPi LCD(A) 3.5\""
 
 #define LCDA35_SIGNATURE	0xAF000A35
@@ -45,30 +44,28 @@ extern "C" {
 #define LCDA35_SCREEN_WIDTH	320
 #define LCDA35_SCREEN_HEIGHT	480
 
-/* LCDA35 GPIO constants */
+/** LCDA35 GPIO constants */
 #define LCDA35_LCD_DC	GPIO_PIN_24
 #define LCDA35_LCD_RST	GPIO_PIN_25
-#define LCDA35_LCD_BL	GPIO_PIN_UNKNOWN // Not supported on this screen
+#define LCDA35_LCD_BL	GPIO_PIN_UNKNOWN ///< Not supported on this screen
 
 #define LCDA35_TOUCH_IRQ	GPIO_PIN_17
 
-/* ============================================================================== */
-/* LCDA35 specific types */
+/** LCDA35 specific types */
 typedef struct _LCDA35LCD LCDA35LCD;
 struct _LCDA35LCD
 {
-	uint32_t signature; // Signature for entry validation
-	uint32_t rotation; // Framebuffer rotation (eg FRAMEBUFFER_ROTATION_180)
-	uint32_t direction; // Framebuffer direction (eg FRAMEBUFFER_DIRECTION_REVERSE)
-	SPI_DEVICE *spi; // SPI device for this display
-	GPIO_DEVICE *gpio; // GPIO device for this display
-	TOUCH_DEVICE *touch; // Touch device for this display
-	GPIO_DEVICE *backlight; // Backlight GPIO device for this display
-	FRAMEBUFFER_DEVICE *framebuffer; // Framebuffer (ILI9486) device for this display
+	uint32_t signature; ///< Signature for entry validation
+	uint32_t rotation; ///< Framebuffer rotation (eg FRAMEBUFFER_ROTATION_180)
+	uint32_t direction; ///< Framebuffer direction (eg FRAMEBUFFER_DIRECTION_REVERSE)
+	SPI_DEVICE *spi; ///< SPI device for this display
+	GPIO_DEVICE *gpio; ///< GPIO device for this display
+	TOUCH_DEVICE *touch; ///< Touch device for this display
+	GPIO_DEVICE *backlight; ///< Backlight GPIO device for this display
+	FRAMEBUFFER_DEVICE *framebuffer; ///< Framebuffer (ILI9486) device for this display
 };
 
-/* ============================================================================== */
-/* LCDA35 Functions */
+/** LCDA35 Functions */
 HANDLE STDCALL lcda35_start(uint32_t rotation, char *device, uint16_t displayselect, uint16_t touchselect);
 BOOL STDCALL lcda35_stop(HANDLE handle);
 

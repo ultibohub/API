@@ -26,7 +26,7 @@
 #ifndef _ULTIBO_HEAPMANAGER_H
 #define _ULTIBO_HEAPMANAGER_H
 
-/* Note: Memory allocated using these functions must not be freed
+/** Note: Memory allocated using these functions must not be freed
  * using free() or heap corruption may occur. Allocations obtained
  * from these functions must be freed with free_mem(), free_irq_mem()
  * or free_fiq_mem() only
@@ -40,59 +40,57 @@ extern "C" {
 #include "ultibo/globalconst.h"
 #include "ultibo/system.h"
 
-/* ============================================================================== */
-/* Heap specific constants */
+/** Heap specific constants */
 #if defined (__x86_64__) || defined (__arch64__)
-#define HEAP_MIN_BLOCK	57 // SizeOf(THeapBlock) + 1
+#define HEAP_MIN_BLOCK	57 ///< SizeOf(THeapBlock) + 1
 #else
-#define HEAP_MIN_BLOCK	33 // SizeOf(THeapBlock) + 1
+#define HEAP_MIN_BLOCK	33 ///< SizeOf(THeapBlock) + 1
 #endif
-#define HEAP_MIN_ALIGN	64 // SizeOf(THeapBlock) * 2
+#define HEAP_MIN_ALIGN	64 ///< SizeOf(THeapBlock) * 2
 
-/* Heap Signature */
+/** Heap Signature */
 #define HEAP_SIGNATURE	0xE84DF600
 #define HEAP_SIGNATURE_MASK	0xFFFFFF00
 
-/* Heap Block States */
+/** Heap Block States */
 #define HEAP_STATE_FREE	0
 #define HEAP_STATE_USED	1
 
 #define HEAP_STATE_MASK	0x000000FF
-#define HEAP_STATE_ALL	2 // Only for use by GetHeapBlockCount/GetHeapBlockMin/GetHeapBlockMax
+#define HEAP_STATE_ALL	2 ///< Only for use by GetHeapBlockCount/GetHeapBlockMin/GetHeapBlockMax
 
-/* Heap Block Flags */
-#define HEAP_FLAG_NORMAL	0x00000000 // A normal memory block
-#define HEAP_FLAG_SHARED	0x00000001 // A sharable memory block, usually marked as sharable in the page tables of the memory management unit
-#define HEAP_FLAG_LOCAL	0x00000002 // A local memory block with an affinity to a specific processor, usually marked as non global in the page tables of the memory management unit
-#define HEAP_FLAG_CODE	0x00000004 // A code memory block (with an optional affinity to a specific processor), usually marked as executable in the page tables of the memory management unit
-#define HEAP_FLAG_DEVICE	0x00000008 // A device memory block, usually marked as device memory in the page tables of the memory management unit
-#define HEAP_FLAG_NOCACHE	0x00000010 // A non cached memory block, usually marked as not cacheable in the page tables of the memory management unit
-#define HEAP_FLAG_NONSHARED	0x00000020 // A non shared memory block, usually marked as not shareable in the page tables of the memory management unit
-#define HEAP_FLAG_LOCKED	0x00000040 // A locked memory block (Not currently implemented in Ultibo)
-#define HEAP_FLAG_IRQ	0x00000080 // An IRQ allocatable memory block
-#define HEAP_FLAG_FIQ	0x00000100 // An FIQ allocatable memory block
-#define HEAP_FLAG_RECLAIM	0x00000200 // A reclaimable memory block (eg Disk Cache)(with a registered callback to reclaim as required for normal memory)
+/** Heap Block Flags */
+#define HEAP_FLAG_NORMAL	0x00000000 ///< A normal memory block
+#define HEAP_FLAG_SHARED	0x00000001 ///< A sharable memory block, usually marked as sharable in the page tables of the memory management unit
+#define HEAP_FLAG_LOCAL	0x00000002 ///< A local memory block with an affinity to a specific processor, usually marked as non global in the page tables of the memory management unit
+#define HEAP_FLAG_CODE	0x00000004 ///< A code memory block (with an optional affinity to a specific processor), usually marked as executable in the page tables of the memory management unit
+#define HEAP_FLAG_DEVICE	0x00000008 ///< A device memory block, usually marked as device memory in the page tables of the memory management unit
+#define HEAP_FLAG_NOCACHE	0x00000010 ///< A non cached memory block, usually marked as not cacheable in the page tables of the memory management unit
+#define HEAP_FLAG_NONSHARED	0x00000020 ///< A non shared memory block, usually marked as not shareable in the page tables of the memory management unit
+#define HEAP_FLAG_LOCKED	0x00000040 ///< A locked memory block (Not currently implemented in Ultibo)
+#define HEAP_FLAG_IRQ	0x00000080 ///< An IRQ allocatable memory block
+#define HEAP_FLAG_FIQ	0x00000100 ///< An FIQ allocatable memory block
+#define HEAP_FLAG_RECLAIM	0x00000200 ///< A reclaimable memory block (eg Disk Cache)(with a registered callback to reclaim as required for normal memory)
 
-#define HEAP_FLAG_CUSTOM	0x08000000 // A custom flag reserved for non standard uses
+#define HEAP_FLAG_CUSTOM	0x08000000 ///< A custom flag reserved for non standard uses
 
-#define HEAP_FLAG_ALL	0xFFFFFFFF // Only for use by GetHeapBlockCount/GetHeapBlockMin/GetHeapBlockMax
-#define HEAP_FLAG_INVALID	0xFFFFFFFF // Return value from MemFlags/IRQ/FIQ on invalid
+#define HEAP_FLAG_ALL	0xFFFFFFFF ///< Only for use by GetHeapBlockCount/GetHeapBlockMin/GetHeapBlockMax
+#define HEAP_FLAG_INVALID	0xFFFFFFFF ///< Return value from MemFlags/IRQ/FIQ on invalid
 
-/* Heap Small Blocks */
+/** Heap Small Blocks */
 #if defined (__x86_64__) || defined (__arch64__)
-#define HEAP_SMALL_MIN	56 // SizeOf(THeapBlock)
+#define HEAP_SMALL_MIN	56 ///< SizeOf(THeapBlock)
 #else
-#define HEAP_SMALL_MIN	32 // SizeOf(THeapBlock)
+#define HEAP_SMALL_MIN	32 ///< SizeOf(THeapBlock)
 #endif
-#define HEAP_SMALL_MAX	SIZE_4K // Maximum size of a small heap block
-#define HEAP_SMALL_ALIGN	4 // SizeOf(LongWord);
-#define HEAP_SMALL_SHIFT	2 // Size to Index conversion (Divide by 4)
+#define HEAP_SMALL_MAX	SIZE_4K ///< Maximum size of a small heap block
+#define HEAP_SMALL_ALIGN	4 ///< SizeOf(LongWord);
+#define HEAP_SMALL_SHIFT	2 ///< Size to Index conversion (Divide by 4)
 
-#define HEAP_SMALL_LOW	(HEAP_SMALL_MIN / HEAP_SMALL_ALIGN) // 8 (32-bit) / 14 (64-bit)
-#define HEAP_SMALL_HIGH	(HEAP_SMALL_MAX / HEAP_SMALL_ALIGN) // 1024
+#define HEAP_SMALL_LOW	(HEAP_SMALL_MIN / HEAP_SMALL_ALIGN) ///< 8 (32-bit) / 14 (64-bit)
+#define HEAP_SMALL_HIGH	(HEAP_SMALL_MAX / HEAP_SMALL_ALIGN) ///< 1024
 
-/* ============================================================================== */
-/* Heap specific types */
+/** Heap specific types */
 #ifdef HEAP_STATISTICS_ENABLED
 typedef struct _HEAP_STATISTICS HEAP_STATISTICS;
 struct _HEAP_STATISTICS
@@ -228,17 +226,16 @@ typedef struct _HEAP_SNAPSHOT HEAP_SNAPSHOT;
 struct _HEAP_SNAPSHOT
 {
 	// Snapshot Properties
-	size_t address; // Address of the Heap Block
-	size_t size; // Size of the Heap Block (including the size of the THeapBlock structure)
-	uint32_t state; // State of the Heap Block (eg HEAP_STATE_FREE)
-	uint32_t flags; // Flags of the Heap Block (eg HEAP_FLAG_SHARED)
-	uint32_t affinity; // CPU Affinity of the Heap Block (eg CPU_AFFINITY_0)
+	size_t address; ///< Address of the Heap Block
+	size_t size; ///< Size of the Heap Block (including the size of the THeapBlock structure)
+	uint32_t state; ///< State of the Heap Block (eg HEAP_STATE_FREE)
+	uint32_t flags; ///< Flags of the Heap Block (eg HEAP_FLAG_SHARED)
+	uint32_t affinity; ///< CPU Affinity of the Heap Block (eg CPU_AFFINITY_0)
 	// Internal Properties
-	HEAP_SNAPSHOT *next; // Next entry in Heap snapshot
+	HEAP_SNAPSHOT *next; ///< Next entry in Heap snapshot
 };
 
-/* ============================================================================== */
-/* Heap Functions */
+/** Heap Functions */
 void * STDCALL get_mem(size_t size);
 void * STDCALL get_mem_ex(size_t size, uint32_t flags, uint32_t affinity);
 

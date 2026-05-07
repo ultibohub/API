@@ -34,24 +34,22 @@ extern "C" {
 #include "ultibo/globalconst.h"
 #include "ultibo/sysutils.h"
 
-/* ============================================================================== */
-/* Timezone specific constants */
+/** Timezone specific constants */
 #define TIME_ZONE_ID_UNKNOWN	0
 #define TIME_ZONE_ID_STANDARD	1
 #define TIME_ZONE_ID_DAYLIGHT	2
 #define TIME_ZONE_ID_INVALID	(DWORD)0xFFFFFFFF
 
-/* Timezone Signature */
+/** Timezone Signature */
 #define TIMEZONE_SIGNATURE	0xED9A1BC3
 
-/* Timezone name constants */
-#define TIMEZONE_NAME_LENGTH	SIZE_64 // Length of timezone name
-#define TIMEZONE_DESC_LENGTH	SIZE_128 // Length of timezone description
+/** Timezone name constants */
+#define TIMEZONE_NAME_LENGTH	SIZE_64 ///< Length of timezone name
+#define TIMEZONE_DESC_LENGTH	SIZE_128 ///< Length of timezone description
 
-/* ============================================================================== */
-/* Timezone specific types */
+/** Timezone specific types */
 
-/* Timezone types */
+/** Timezone types */
 typedef struct _TIME_ZONE_INFORMATION TIME_ZONE_INFORMATION;
 struct _TIME_ZONE_INFORMATION
 {
@@ -64,7 +62,7 @@ struct _TIME_ZONE_INFORMATION
 	long daylightbias;
 };
 
-/* Timezone Data */
+/** Timezone Data */
 typedef struct _TIMEZONE_DATA TIMEZONE_DATA;
 struct _TIMEZONE_DATA
 {
@@ -81,30 +79,29 @@ struct _TIMEZONE_DATA
 
 typedef struct _TIMEZONE_ENTRY TIMEZONE_ENTRY;
 
-/* Timezone Enumeration Callback */
+/** Timezone Enumeration Callback */
 typedef uint32_t STDCALL (*timezone_enumerate_cb)(TIMEZONE_ENTRY *timezone, void *data);
 
-/* Timezone Entry */
+/** Timezone Entry */
 struct _TIMEZONE_ENTRY
 {
 	// Timezone Properties
-	uint32_t signature; // Signature for entry validation
-	char name[TIMEZONE_NAME_LENGTH]; // Timezone name
-	char description[TIMEZONE_DESC_LENGTH]; // Timezone description
+	uint32_t signature; ///< Signature for entry validation
+	char name[TIMEZONE_NAME_LENGTH]; ///< Timezone name
+	char description[TIMEZONE_DESC_LENGTH]; ///< Timezone description
 	int32_t bias;
-	char standardname[TIMEZONE_NAME_LENGTH]; // Standard name
+	char standardname[TIMEZONE_NAME_LENGTH]; ///< Standard name
 	int32_t standardbias;
 	SYSTEMTIME standardstart;
-	char daylightname[TIMEZONE_NAME_LENGTH]; // Daylight name
+	char daylightname[TIMEZONE_NAME_LENGTH]; ///< Daylight name
 	int32_t daylightbias;
 	SYSTEMTIME daylightstart;
 	// Internal Properties
-	TIMEZONE_ENTRY *prev; // Previous entry in Timezone table
-	TIMEZONE_ENTRY *next; // Next entry in Timezone table
+	TIMEZONE_ENTRY *prev; ///< Previous entry in Timezone table
+	TIMEZONE_ENTRY *next; ///< Next entry in Timezone table
 };
 
-/* ============================================================================== */
-/* Timezone Functions */
+/** Timezone Functions */
 uint32_t STDCALL timezone_add(TIMEZONE_DATA *data, BOOL _default);
 uint32_t STDCALL timezone_delete(TIMEZONE_ENTRY *timezone);
 
@@ -133,8 +130,7 @@ TIMEZONE_ENTRY * STDCALL timezone_find_by_daylight(const char *daylightname);
 
 uint32_t STDCALL timezone_enumerate(timezone_enumerate_cb callback, void *data);
 
-/* ============================================================================== */
-/* Timezone Helper Functions */
+/** Timezone Helper Functions */
 uint32_t STDCALL timezone_get_count(void);
 TIMEZONE_ENTRY * STDCALL timezone_get_default(void);
 uint32_t STDCALL timezone_set_default(TIMEZONE_ENTRY *timezone);

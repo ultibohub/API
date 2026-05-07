@@ -34,14 +34,13 @@ extern "C" {
 #include "ultibo/i2c.h"
 #include "ultibo/touch.h"
 
-/* ============================================================================== */
-/* FT5x06 specific constants */
-#define FT5X06_TOUCH_DESCRIPTION	"EDT FocalTech FT5x06 Touch Controller" // Description of FT5x06 Touch device
+/** FT5x06 specific constants */
+#define FT5X06_TOUCH_DESCRIPTION	"EDT FocalTech FT5x06 Touch Controller" ///< Description of FT5x06 Touch device
 
-/* FT5x06 I2C constants */
-#define FT5X06_I2C_RATE	400000 // Default I2C clock rate
+/** FT5x06 I2C constants */
+#define FT5X06_I2C_RATE	400000 ///< Default I2C clock rate
 
-/* FT5x06 register constants */
+/** FT5x06 register constants */
 #define FT5X06_WORK_REGISTER_THRESHOLD	0x00
 #define FT5X06_WORK_REGISTER_REPORT_RATE	0x08
 #define FT5X06_WORK_REGISTER_GAIN	0x30
@@ -76,21 +75,20 @@ extern "C" {
 
 #define FT5X06_EDT_NAME_LEN	23
 #define FT5X06_EDT_SWITCH_MODE_RETRIES	10
-#define FT5X06_EDT_SWITCH_MODE_DELAY	5 // msec
+#define FT5X06_EDT_SWITCH_MODE_DELAY	5 ///< msec
 #define FT5X06_EDT_RAW_DATA_RETRIES	100
-#define FT5X06_EDT_RAW_DATA_DELAY	1000 // usec
+#define FT5X06_EDT_RAW_DATA_DELAY	1000 ///< usec
 
-#define FT5X06_POLL_INTERVAL_MS	17 // 17ms = 60fps
+#define FT5X06_POLL_INTERVAL_MS	17 ///< 17ms = 60fps
 
-/* FT5x06 version constants */
+/** FT5x06 version constants */
 #define FT5X06_EDT_M06	0
 #define FT5X06_EDT_M09	1
 #define FT5X06_EDT_M12	2
 #define FT5X06_EV_FT	3
 #define FT5X06_GENERIC_FT	4
 
-/* ============================================================================== */
-/* FT5x06 specific types */
+/** FT5x06 specific types */
 typedef struct _FT5X06_REGISTERS FT5X06_REGISTERS;
 struct _FT5X06_REGISTERS
 {
@@ -125,35 +123,33 @@ struct _FT5X06_TOUCH
 	// Touch Properties
 	TOUCH_DEVICE touch;
 	// I2C Properties
-	I2C_DEVICE *i2c; // The I2C device this device is connected to
-	uint16_t address; // The I2C address of the device
+	I2C_DEVICE *i2c; ///< The I2C device this device is connected to
+	uint16_t address; ///< The I2C address of the device
 	// General Properties
-	GPIO_INFO irq; // The GPIO information for the IRQ line (Optional)
-	GPIO_INFO rst; // The GPIO information for the Reset line (Optional)
-	TIMER_HANDLE timer; // Handle for touch polling timer
-	uint16_t maxx; // Maximum X value from current configuration
-	uint16_t maxy; // Maximum Y value from current configuration
-	uint16_t width; // Screen width value supplied during create
-	uint16_t height; // Screen height value supplied during create
-	uint32_t maxpoints; // Maximum touch points for this device
-	uint32_t lastpoints; // Points reported in last input report
+	GPIO_INFO irq; ///< The GPIO information for the IRQ line (Optional)
+	GPIO_INFO rst; ///< The GPIO information for the Reset line (Optional)
+	TIMER_HANDLE timer; ///< Handle for touch polling timer
+	uint16_t maxx; ///< Maximum X value from current configuration
+	uint16_t maxy; ///< Maximum Y value from current configuration
+	uint16_t width; ///< Screen width value supplied during create
+	uint16_t height; ///< Screen height value supplied during create
+	uint32_t maxpoints; ///< Maximum touch points for this device
+	uint32_t lastpoints; ///< Points reported in last input report
 	// FT5x06 Properties
-	uint32_t version; // Version constant for this device (eg FT5X06_EDT_M06)
-	char *modelname; // Model name string for this device
-	char *firmwareversion; // Firmware version string for this device
-	FT5X06_REGISTERS registers; // Register addresses for this device
-	FT5X06_PARAMETERS parameters; // Configuration parameters for this device
-	BOOL swapreportxy; // If True swap the X and Y values in the input report
-	BOOL invertreportx; // If True invert the X value in the input report
-	BOOL invertreporty; // If True invert the Y value in the input report
+	uint32_t version; ///< Version constant for this device (eg FT5X06_EDT_M06)
+	char *modelname; ///< Model name string for this device
+	char *firmwareversion; ///< Firmware version string for this device
+	FT5X06_REGISTERS registers; ///< Register addresses for this device
+	FT5X06_PARAMETERS parameters; ///< Configuration parameters for this device
+	BOOL swapreportxy; ///< If True swap the X and Y values in the input report
+	BOOL invertreportx; ///< If True invert the X value in the input report
+	BOOL invertreporty; ///< If True invert the Y value in the input report
 };
 
-/* ============================================================================== */
-/* Initialization Functions */
+/** Initialization Functions */
 void STDCALL ft5x06_init(void);
 
-/* ============================================================================== */
-/* FT5x06 Functions */
+/** FT5x06 Functions */
 TOUCH_DEVICE * STDCALL ft5x06_touch_create(I2C_DEVICE *i2c, uint16_t address, uint32_t width, uint32_t height, GPIO_INFO *irq, GPIO_INFO *rst);
 uint32_t STDCALL ft5x06_touch_destroy(TOUCH_DEVICE *touch);
 

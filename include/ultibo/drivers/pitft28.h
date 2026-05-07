@@ -36,38 +36,35 @@ extern "C" {
 #include "ultibo/framebuffer.h"
 #include "ultibo/touch.h"
 
-/* ============================================================================== */
-/* PiTFT28 specific constants */
-#define PITFT28_FRAMEBUFFER_DESCRIPTION	"Adafruit PiTFT 2.8" LCD" // Description of PiTFT28 device
+/** PiTFT28 specific constants */
+#define PITFT28_FRAMEBUFFER_DESCRIPTION	"Adafruit PiTFT 2.8" LCD" ///< Description of PiTFT28 device
 
 #define PITFT28_SIGNATURE	0xAF000028
 
 #define PITFT28_SCREEN_WIDTH	240
 #define PITFT28_SCREEN_HEIGHT	320
 
-/* PiTFT28 GPIO constants */
+/** PiTFT28 GPIO constants */
 #define PITFT28_LCD_DC	GPIO_PIN_25
 #define PITFT28_TOUCH_IRQ	GPIO_PIN_24
 
-#define PITFT28_LCD_BL	GPIO_PIN_2 // STMPE GPIO
+#define PITFT28_LCD_BL	GPIO_PIN_2 ///< STMPE GPIO
 
-/* ============================================================================== */
-/* PiTFT28 specific types */
+/** PiTFT28 specific types */
 typedef struct _PITFT28LCD PITFT28LCD;
 struct _PITFT28LCD
 {
-	uint32_t signature; // Signature for entry validation
-	uint32_t rotation; // Framebuffer rotation (eg FRAMEBUFFER_ROTATION_180)
-	SPI_DEVICE *spi; // SPI device for this display
-	I2C_DEVICE *i2c; // I2C device for this display
-	GPIO_DEVICE *gpio; // GPIO device for this display
-	TOUCH_DEVICE *touch; // Touch (STMPE or FT6236) device for this display
-	GPIO_DEVICE *backlight; // Backlight GPIO (STMPE) device for this display
-	FRAMEBUFFER_DEVICE *framebuffer; // Framebuffer (ILI9340) device for this display
+	uint32_t signature; ///< Signature for entry validation
+	uint32_t rotation; ///< Framebuffer rotation (eg FRAMEBUFFER_ROTATION_180)
+	SPI_DEVICE *spi; ///< SPI device for this display
+	I2C_DEVICE *i2c; ///< I2C device for this display
+	GPIO_DEVICE *gpio; ///< GPIO device for this display
+	TOUCH_DEVICE *touch; ///< Touch (STMPE or FT6236) device for this display
+	GPIO_DEVICE *backlight; ///< Backlight GPIO (STMPE) device for this display
+	FRAMEBUFFER_DEVICE *framebuffer; ///< Framebuffer (ILI9340) device for this display
 };
 
-/* ============================================================================== */
-/* PiTFT28 Functions */
+/** PiTFT28 Functions */
 HANDLE STDCALL pitft28_start(uint32_t rotation, char *device, uint16_t displayselect, uint16_t touchselect);
 HANDLE STDCALL pitft28_resistive_start(uint32_t rotation, char *device, uint16_t displayselect, uint16_t touchselect);
 HANDLE STDCALL pitft28_capacitive_start(uint32_t rotation, char *spidevice, char *i2cdevice, uint16_t displayselect, uint16_t touchaddress);

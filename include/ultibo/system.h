@@ -32,10 +32,9 @@ extern "C" {
 
 #include "ultibo/globaltypes.h"
 
-/* ============================================================================== */
-/* System types */
+/** System types */
 
-/* RTL Heap Manager Types */
+/** RTL Heap Manager Types */
 typedef struct _FPC_HEAP_STATUS
 {
 	size_t maxheapsize;
@@ -59,7 +58,7 @@ typedef struct _HEAP_STATUS
 	uint32_t heaperrorcode;
 } HEAP_STATUS;
 
-/* RTL Thread Manager Types */
+/** RTL Thread Manager Types */
 typedef ssize_t STDCALL (*thread_func)(void * parameter);
 typedef HANDLE THREAD_ID;
 

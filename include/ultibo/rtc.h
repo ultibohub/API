@@ -35,48 +35,46 @@ extern "C" {
 #include "ultibo/devices.h"
 #include "ultibo/sysutils.h"
 
-/* ============================================================================== */
-/* RTC specific constants */
-#define RTC_NAME_PREFIX	"RTC" // Name prefix for RTC Devices
+/** RTC specific constants */
+#define RTC_NAME_PREFIX	"RTC" ///< Name prefix for RTC Devices
 
-/* RTC Device Types */
+/** RTC Device Types */
 #define RTC_TYPE_NONE	0
 
 #define RTC_TYPE_MAX	0
 
-/* RTC Device States */
+/** RTC Device States */
 #define RTC_STATE_DISABLED	0
 #define RTC_STATE_ENABLED	1
 
 #define RTC_STATE_MAX	1
 
-/* RTC Device Flags */
+/** RTC Device Flags */
 #define RTC_FLAG_NONE	0x00000000
-#define RTC_FLAG_ALARM	0x00000001 // Device supports one or more alarms
-#define RTC_FLAG_WATCHDOG	0x00000002 // Device has a watchdog timer function
+#define RTC_FLAG_ALARM	0x00000001 ///< Device supports one or more alarms
+#define RTC_FLAG_WATCHDOG	0x00000002 ///< Device has a watchdog timer function
 
-/* ============================================================================== */
-/* RTC specific types */
+/** RTC specific types */
 
-/* RTC Properties */
+/** RTC Properties */
 typedef struct _RTC_PROPERTIES RTC_PROPERTIES;
 struct _RTC_PROPERTIES
 {
-	uint32_t flags; // Device flags (eg RTC_FLAG_ALARM)
-	int64_t mintime; // Minimum time value represented by the device (Normally the power on reset value)
-	int64_t maxtime; // Maximum time value represented by the device (Time when a rollover will occur)
-	uint32_t alarmcount; // Number of alarms supported by the device (0 if not supported)
+	uint32_t flags; ///< Device flags (eg RTC_FLAG_ALARM)
+	int64_t mintime; ///< Minimum time value represented by the device (Normally the power on reset value)
+	int64_t maxtime; ///< Maximum time value represented by the device (Time when a rollover will occur)
+	uint32_t alarmcount; ///< Number of alarms supported by the device (0 if not supported)
 };
 
-/* RTC Device */
+/** RTC Device */
 typedef struct _RTC_DEVICE RTC_DEVICE;
 
-/* RTC Enumeration Callback */
+/** RTC Enumeration Callback */
 typedef uint32_t STDCALL (*rtc_enumerate_cb)(RTC_DEVICE *rtc, void *data);
-/* RTC Notification Callback */
+/** RTC Notification Callback */
 typedef uint32_t STDCALL (*rtc_notification_cb)(DEVICE *device, void *data, uint32_t notification);
 
-/* RTC Device Methods */
+/** RTC Device Methods */
 typedef uint32_t STDCALL (*rtc_device_start_proc)(RTC_DEVICE *rtc);
 typedef uint32_t STDCALL (*rtc_device_stop_proc)(RTC_DEVICE *rtc);
 typedef int64_t STDCALL (*rtc_device_get_time_proc)(RTC_DEVICE *rtc);
@@ -86,28 +84,27 @@ typedef uint32_t STDCALL (*rtc_device_get_properties_proc)(RTC_DEVICE *rtc, RTC_
 struct _RTC_DEVICE
 {
 	// Device Properties
-	DEVICE device; // The Device entry for this RTC
+	DEVICE device; ///< The Device entry for this RTC
 	// RTC Properties
-	uint32_t rtcid; // Unique Id of this RTC in the RTC table
-	uint32_t rtcstate; // RTC state (eg RTC_STATE_ENABLED)
-	rtc_device_start_proc devicestart; // A Device specific DeviceStart method implementing the standard RTC device interface
-	rtc_device_stop_proc devicestop; // A Device specific DeviceStop method implementing the standard RTC device interface
-	rtc_device_get_time_proc devicegettime; // A Device specific DeviceGetTime method implementing the standard RTC device interface
-	rtc_device_set_time_proc devicesettime; // A Device specific DeviceSetTime method implementing the standard RTC device interface
-	rtc_device_get_properties_proc devicegetproperties; // A Device specific DeviceGetProperties method implementing the standard RTC device interface
+	uint32_t rtcid; ///< Unique Id of this RTC in the RTC table
+	uint32_t rtcstate; ///< RTC state (eg RTC_STATE_ENABLED)
+	rtc_device_start_proc devicestart; ///< A Device specific DeviceStart method implementing the standard RTC device interface
+	rtc_device_stop_proc devicestop; ///< A Device specific DeviceStop method implementing the standard RTC device interface
+	rtc_device_get_time_proc devicegettime; ///< A Device specific DeviceGetTime method implementing the standard RTC device interface
+	rtc_device_set_time_proc devicesettime; ///< A Device specific DeviceSetTime method implementing the standard RTC device interface
+	rtc_device_get_properties_proc devicegetproperties; ///< A Device specific DeviceGetProperties method implementing the standard RTC device interface
 	// Statistics Properties
 	uint32_t getcount;
 	uint32_t setcount;
 	// Driver Properties
-	MUTEX_HANDLE lock; // Device lock
-	RTC_PROPERTIES properties; // Device properties
+	MUTEX_HANDLE lock; ///< Device lock
+	RTC_PROPERTIES properties; ///< Device properties
 	// Internal Properties
-	RTC_DEVICE *prev; // Previous entry in RTC table
-	RTC_DEVICE *next; // Next entry in RTC table
+	RTC_DEVICE *prev; ///< Previous entry in RTC table
+	RTC_DEVICE *next; ///< Next entry in RTC table
 };
 
-/* ============================================================================== */
-/* RTC Functions */
+/** RTC Functions */
 uint32_t STDCALL rtc_device_start(RTC_DEVICE *rtc);
 uint32_t STDCALL rtc_device_stop(RTC_DEVICE *rtc);
 
@@ -131,8 +128,7 @@ uint32_t STDCALL rtc_device_enumerate(rtc_enumerate_cb callback, void *data);
 
 uint32_t STDCALL rtc_device_notification(RTC_DEVICE *rtc, rtc_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
-/* ============================================================================== */
-/* RTC Helper Functions */
+/** RTC Helper Functions */
 uint32_t STDCALL rtc_get_count(void);
 RTC_DEVICE * STDCALL rtc_device_get_default(void);
 uint32_t STDCALL rtc_device_set_default(RTC_DEVICE *rtc);

@@ -36,23 +36,22 @@ extern "C" {
 #include "ultibo/locale.h"
 #include "ultibo/sysutils.h"
 
-/* ============================================================================== */
-/* Compatibility constants */
-/* 64bit Constants */
+/** Compatibility constants */
+/** 64bit Constants */
 #define MAXLONGLONG	0x7fffffffffffffff
 
-/* Thread Constants */
+/** Thread Constants */
 #define CREATE_SUSPENDED	0x00000004
 
-/* Message Constants */
+/** Message Constants */
 #define PM_NOREMOVE	0x0000
 #define PM_REMOVE	0x0001
 #define PM_NOYIELD	0x0002
 
-/* Timezone Constants */
-/* (See timezone.h)   */
+/** Timezone Constants */
+/** (See timezone.h)   */
 
-/* Shutdown/Restart Constants */
+/** Shutdown/Restart Constants */
 #define EWX_LOGOFF	0x00000000
 #define EWX_SHUTDOWN	0x00000001
 #define EWX_REBOOT	0x00000002
@@ -60,7 +59,7 @@ extern "C" {
 #define EWX_POWEROFF	0x00000008
 #define EWX_FORCEIFHUNG	0x00000010
 
-/* Drive Type Constants */
+/** Drive Type Constants */
 #define DRIVE_UNKNOWN	0
 #define DRIVE_NO_ROOT_DIR	1
 #define DRIVE_REMOVABLE	2
@@ -69,11 +68,11 @@ extern "C" {
 #define DRIVE_CDROM	5
 #define DRIVE_RAMDISK	6
 
-/* Symbolic Link Constants */
-#define SYMBOLIC_LINK_FLAG_FILE	0x00000000 // The link target is a file
-#define SYMBOLIC_LINK_FLAG_DIRECTORY	0x00000001 // The link target is a directory
+/** Symbolic Link Constants */
+#define SYMBOLIC_LINK_FLAG_FILE	0x00000000 ///< The link target is a file
+#define SYMBOLIC_LINK_FLAG_DIRECTORY	0x00000001 ///< The link target is a directory
 
-/* Local Memory Constants */
+/** Local Memory Constants */
 #define LMEM_FIXED	0x0000
 #define LMEM_MOVEABLE	0x0002
 #define LMEM_NOCOMPACT	0x0010
@@ -90,7 +89,7 @@ extern "C" {
 #define NONZEROLHND	(LMEM_MOVEABLE)
 #define NONZEROLPTR	(LMEM_FIXED)
 
-/* Global Memory Constants */
+/** Global Memory Constants */
 #define GMEM_FIXED	0x0000
 #define GMEM_MOVEABLE	0x0002
 #define GMEM_NOCOMPACT	0x0010
@@ -109,7 +108,7 @@ extern "C" {
 #define GHND	(GMEM_MOVEABLE | GMEM_ZEROINIT)
 #define GPTR	(GMEM_FIXED | GMEM_ZEROINIT)
 
-/* Virtual Page Constants */
+/** Virtual Page Constants */
 #define PAGE_NOACCESS	0x01
 #define PAGE_READONLY	0x02
 #define PAGE_READWRITE	0x04
@@ -122,7 +121,7 @@ extern "C" {
 #define PAGE_NOCACHE	0x200
 #define PAGE_WRITECOMBINE	0x400
 
-/* Virtual Memory Constants */
+/** Virtual Memory Constants */
 #define MEM_COMMIT	0x1000
 #define MEM_RESERVE	0x2000
 #define MEM_DECOMMIT	0x4000
@@ -144,7 +143,7 @@ extern "C" {
 #define WRITE_WATCH_FLAG_RESET	0x01
 #define MEM_LARGE_PAGES	0x20000000
 
-/* Processor Architechture Constants */
+/** Processor Architechture Constants */
 #define PROCESSOR_ARCHITECTURE_INTEL	0
 #define PROCESSOR_ARCHITECTURE_MIPS	1
 #define PROCESSOR_ARCHITECTURE_ALPHA	2
@@ -158,7 +157,7 @@ extern "C" {
 
 #define PROCESSOR_ARCHITECTURE_UNKNOWN	0xFFFF
 
-/* Processor Type Constants */
+/** Processor Type Constants */
 #define PROCESSOR_INTEL_386	386
 #define PROCESSOR_INTEL_486	486
 #define PROCESSOR_INTEL_PENTIUM	586
@@ -167,10 +166,10 @@ extern "C" {
 #define PROCESSOR_ARM_7	70999
 #define PROCESSOR_ARM_8	80999
 
-/* Version Info Constants */
+/** Version Info Constants */
 #define VER_PLATFORM_ULTIBO	10011
 
-/* File Attribute Constants */
+/** File Attribute Constants */
 #define FILE_ATTRIBUTE_READONLY	0x00000001
 #define FILE_ATTRIBUTE_HIDDEN	0x00000002
 #define FILE_ATTRIBUTE_SYSTEM	0x00000004
@@ -186,7 +185,7 @@ extern "C" {
 #define FILE_ATTRIBUTE_NOT_CONTENT_INDEXED	0x00002000
 #define FILE_ATTRIBUTE_ENCRYPTED	0x00004000
 
-/* Volume Info Constants */
+/** Volume Info Constants */
 #define FILE_CASE_SENSITIVE_SEARCH	0x00000001
 #define FILE_CASE_PRESERVED_NAMES	0x00000002
 #define FILE_UNICODE_ON_DISK	0x00000004
@@ -202,50 +201,49 @@ extern "C" {
 #define FILE_NAMED_STREAMS	0x00040000
 #define FILE_READ_ONLY_VOLUME	0x00080000
 
-/* Dos Device Constants */
+/** Dos Device Constants */
 #define DDD_RAW_TARGET_PATH	0x00000001
 #define DDD_REMOVE_DEFINITION	0x00000002
 #define DDD_EXACT_MATCH_ON_REMOVE	0x00000004
 #define DDD_NO_BROADCAST_SYSTEM	0x00000008
 #define DDD_LUID_BROADCAST_DRIVE	0x00000010
 
-/* ============================================================================== */
-/* Compatibility types */
-/* Signed types */
+/** Compatibility types */
+/** Signed types */
 typedef int INT;
-typedef int32_t LONG; // long // In Windows LONG remains as 4 bytes (32-bit) regardless of 32-bit or 64-bit compiler
+typedef int32_t LONG; ///< long // In Windows LONG remains as 4 bytes (32-bit) regardless of 32-bit or 64-bit compiler
 
-/* Unsigned types */
+/** Unsigned types */
 typedef unsigned char BYTE;
 typedef unsigned short WORD;
 
 typedef unsigned int UINT;
 typedef unsigned char UCHAR;
 typedef unsigned short USHORT;
-typedef uint32_t ULONG; // unsigned long // In Windows ULONG remains as 4 bytes (32-bit) regardless of 32-bit or 64-bit compiler
+typedef uint32_t ULONG; ///< unsigned long // In Windows ULONG remains as 4 bytes (32-bit) regardless of 32-bit or 64-bit compiler
 
-/* Pointer types */
+/** Pointer types */
 typedef ssize_t INT_PTR;
 typedef size_t UINT_PTR;
 typedef ssize_t LONG_PTR;
 typedef size_t ULONG_PTR;
 typedef ULONG_PTR DWORD_PTR;
 
-/* 64bit types */
+/** 64bit types */
 typedef int64_t LONGLONG;
 typedef uint64_t ULONGLONG;
 typedef ULONGLONG DWORDLONG;
 
-/* Size types */
+/** Size types */
 typedef size_t SIZE_T;
 typedef ssize_t SSIZE_T;
 
-/* Handle types */
+/** Handle types */
 typedef HANDLE HLOCAL;
 typedef HANDLE HGLOBAL;
 typedef HANDLE HWND;
 
-/* Parameter types */
+/** Parameter types */
 typedef UINT_PTR WPARAM;
 typedef LONG_PTR LPARAM;
 typedef LONG_PTR LRESULT;
@@ -266,10 +264,10 @@ typedef struct _GUID
   BYTE  Data4[8];
 } GUID;
 
-/* Locale and Language Ids */
-/* (See locale.h)   */
+/** Locale and Language Ids */
+/** (See locale.h)   */
 
-/* Large Integer types */
+/** Large Integer types */
 typedef union _LARGE_INTEGER
 {
   struct {
@@ -296,7 +294,7 @@ typedef union _ULARGE_INTEGER
   ULONGLONG QuadPart;
 } ULARGE_INTEGER;
 
-/* Version Info types */
+/** Version Info types */
 typedef struct _OSVERSIONINFOA
 {
   DWORD dwOSVersionInfoSize;
@@ -334,7 +332,7 @@ typedef struct _SYSTEM_INFO
   WORD      wProcessorRevision;
 } SYSTEM_INFO;
 
-/* Computer Name types */
+/** Computer Name types */
 typedef enum _COMPUTER_NAME_FORMAT
 {
    ComputerNameNetBIOS,
@@ -348,14 +346,14 @@ typedef enum _COMPUTER_NAME_FORMAT
    ComputerNameMax
 } COMPUTER_NAME_FORMAT;
 
-/* System Time types */
-/* (See sysutils.h)   */
+/** System Time types */
+/** (See sysutils.h)   */
 
-/* File Time types */
-/* (See sysutils.h)   */
+/** File Time types */
+/** (See sysutils.h)   */
 
-/* File Search types */
-/* (See also sysutils.h)   */
+/** File Search types */
+/** (See also sysutils.h)   */
 
 typedef struct _WIN32_FIND_DATAW
 {
@@ -373,7 +371,7 @@ typedef struct _WIN32_FIND_DATAW
 
 typedef WIN32_FIND_DATAA WIN32_FIND_DATA;
 
-/* Stream Search types */
+/** Stream Search types */
 typedef enum _STREAM_INFO_LEVELS
 {
  FindStreamInfoStandard,
@@ -386,10 +384,10 @@ typedef struct _WIN32_FIND_STREAM_DATA
   WCHAR         cStreamName[MAX_PATH + 36];
 } WIN32_FIND_STREAM_DATA;
 
-/* Timezone types */
-/* (See timezone.h)   */
+/** Timezone types */
+/** (See timezone.h)   */
 
-/* Memory Status types */
+/** Memory Status types */
 typedef struct _MEMORYSTATUS
 {
   DWORD  dwLength;
@@ -415,7 +413,7 @@ typedef struct _MEMORYSTATUSEX
   DWORDLONG ullAvailExtendedVirtual;
 } MEMORYSTATUSEX;
 
-/* Security Attributes types */
+/** Security Attributes types */
 typedef struct _SECURITY_ATTRIBUTES
 {
   DWORD  nLength;
@@ -423,10 +421,10 @@ typedef struct _SECURITY_ATTRIBUTES
   BOOL   bInheritHandle;
 } SECURITY_ATTRIBUTES;
 
-/* Thread Start types */
+/** Thread Start types */
 typedef uint32_t STDCALL (*THREAD_START_ROUTINE)(void *lpthreadparameter);
 
-/* Point and Rect types */
+/** Point and Rect types */
 typedef struct _RECT
 {
   LONG left;
@@ -441,7 +439,7 @@ typedef struct _POINT
   LONG y;
 } POINT;
 
-/* Message types */
+/** Message types */
 typedef struct _MSG
 {
   HANDLE hThread;
@@ -452,14 +450,14 @@ typedef struct _MSG
   POINT  pt;
 } MSG;
 
-/* List types */
+/** List types */
 typedef struct _LOCKS_LIST_ENTRY
 {
   struct _LOCKS_LIST_ENTRY  *Flink;
   struct _LOCKS_LIST_ENTRY  *Blink;
 } LOCKS_LIST_ENTRY;
 
-/* Critical Section types */
+/** Critical Section types */
 typedef struct _RTL_CRITICAL_SECTION RTL_CRITICAL_SECTION;
 
 typedef struct _RTL_CRITICAL_SECTION_DEBUG
@@ -482,14 +480,14 @@ struct _RTL_CRITICAL_SECTION
 
   long LockCount;
   long RecursionCount;
-  HANDLE OwningThread; //  from the thread's ClientId->UniqueThread
+  HANDLE OwningThread; ///<  from the thread's ClientId->UniqueThread
   HANDLE LockSemaphore;
-  ULONG_PTR SpinCount; //  force size on 64-bit systems when packed
+  ULONG_PTR SpinCount; ///<  force size on 64-bit systems when packed
 };
 
 typedef RTL_CRITICAL_SECTION CRITICAL_SECTION;
 
-/* Condition Variable types */
+/** Condition Variable types */
 typedef struct _RTL_CONDITION_VARIABLE
 {
   void *ptr;
@@ -497,7 +495,7 @@ typedef struct _RTL_CONDITION_VARIABLE
 
 typedef RTL_CONDITION_VARIABLE CONDITION_VARIABLE;
 
-/* Counter types */
+/** Counter types */
 typedef struct _IO_COUNTERS
 {
   ULONGLONG ReadOperationCount;
@@ -508,10 +506,10 @@ typedef struct _IO_COUNTERS
   ULONGLONG OtherTransferCount;
 } IO_COUNTERS;
 
-/* Code Page types */
-/* (See locale.h)   */
+/** Code Page types */
+/** (See locale.h)   */
 
-/* Memory Information Types */
+/** Memory Information Types */
 typedef struct _MEMORY_BASIC_INFORMATION
 {
   void  *BaseAddress;
@@ -523,7 +521,7 @@ typedef struct _MEMORY_BASIC_INFORMATION
   DWORD  Type;
 } MEMORY_BASIC_INFORMATION;
 
-/* RGB Color Types */
+/** RGB Color Types */
 typedef int32_t FXPT16DOT16;
 typedef int32_t FXPT2DOT30;
 
@@ -542,7 +540,7 @@ typedef struct _CIEXYZTRIPLE
   CIEXYZ ciexyzBlue;
 } CIEXYZTRIPLE;
 
-/* Bitmap Types */
+/** Bitmap Types */
 typedef struct _BITMAP
 {
   LONG   bmType;
@@ -569,7 +567,7 @@ typedef struct _RGBQUAD
   BYTE rgbReserved;
 } RGBQUAD;
 
-/* Bitmap Header Types */
+/** Bitmap Header Types */
 typedef struct _BITMAPCOREHEADER
 {
   DWORD bcSize;
@@ -645,7 +643,7 @@ typedef struct
   DWORD        bV5Reserved;
 } BITMAPV5HEADER;
 
-/* Bitmap Info Types */
+/** Bitmap Info Types */
 typedef struct _BITMAPINFO
 {
   BITMAPINFOHEADER bmiHeader;
@@ -667,7 +665,7 @@ typedef struct _BITMAPFILEHEADER
   DWORD bfOffBits;
 } BITMAPFILEHEADER;
 
-/* File Information Types */
+/** File Information Types */
 typedef struct _BY_HANDLE_FILE_INFORMATION
 {
   DWORD    dwFileAttributes;
@@ -682,45 +680,43 @@ typedef struct _BY_HANDLE_FILE_INFORMATION
   DWORD    nFileIndexLow;
 } BY_HANDLE_FILE_INFORMATION;
 
-/* Compatibility variables */
+/** Compatibility variables */
 static const CONDITION_VARIABLE CONDITION_VARIABLE_INIT = {NULL};
 
-/* ============================================================================== */
-/* Ultibo constants */
+/** Ultibo constants */
 static const FILETIME TIME_NULL_TIME = {0x00000000, 0x00000000};
 
-/* Drive constants */
-#define DEFAULT_DRIVE	0 // 0 is Current Drive
-#define INVALID_DRIVE	0 // Where Current is not appropriate
-#define MIN_DRIVE	1 // 1 = A:, 2 = B:, 3 = C:, 26 = Z: etc
+/** Drive constants */
+#define DEFAULT_DRIVE	0 ///< 0 is Current Drive
+#define INVALID_DRIVE	0 ///< Where Current is not appropriate
+#define MIN_DRIVE	1 ///< 1 = A:, 2 = B:, 3 = C:, 26 = Z: etc
 #define MAX_DRIVE	26
-#define NON_DRIVE	27 // 27 for Non Drive (UNC) Path
+#define NON_DRIVE	27 ///< 27 for Non Drive (UNC) Path
 
 #define DRIVE_A	1
 #define DRIVE_B	2
 #define DRIVE_C	3
 
-/* Path and File constants */
+/** Path and File constants */
 #define MAX_FAT_PATH	64
 #define MAX_FAT_FILE	12
 #define MAX_VFAT_PATH	260
 #define MAX_VFAT_FILE	255
 
-#define FAT_PATH_CHAR	"\\" // Path separator
-#define FAT_NAME_CHAR	":" // Stream separator
-#define FAT_FILE_CHAR	"." // Extension separator
-#define FAT_DRIVE_CHAR	":" // Drive separator
+#define FAT_PATH_CHAR	"\\" ///< Path separator
+#define FAT_NAME_CHAR	":" ///< Stream separator
+#define FAT_FILE_CHAR	"." ///< Extension separator
+#define FAT_DRIVE_CHAR	":" ///< Drive separator
 
-#define UNIX_PATH_CHAR	"/" // Path separator
-#define UNIX_NAME_CHAR	":" // Stream separator
-#define UNIX_FILE_CHAR	"." // Extension separator
+#define UNIX_PATH_CHAR	"/" ///< Path separator
+#define UNIX_NAME_CHAR	":" ///< Stream separator
+#define UNIX_FILE_CHAR	"." ///< Extension separator
 
-/* Wildcard Filename Chars */
+/** Wildcard Filename Chars */
 #define MACRO_FILENAME_CHAR	"%"
 #define WILDCARD_FILENAME_CHAR "*"
 
-/* ============================================================================== */
-/* Ultibo types */
+/** Ultibo types */
 typedef enum _DRIVE_TYPE
 {
  dtUNKNOWN,
@@ -753,7 +749,7 @@ typedef enum _FILE_SYS_TYPE
  fsEXT4
 } FILE_SYS_TYPE;
 
-/* Drive types */
+/** Drive types */
 typedef struct _DRIVE_DATA
 {
 	uint8_t drive;
@@ -767,8 +763,7 @@ typedef struct _DRIVE_DATA
 	uint32_t volumeserial;
 } DRIVE_DATA;
 
-/* ============================================================================== */
-/* General Functions (Compatibility) */
+/** General Functions (Compatibility) */
 uint32_t STDCALL GetVersion(void);
 
 BOOL STDCALL GetVersionEx(OSVERSIONINFOA *lpversioninformation);
@@ -798,15 +793,13 @@ BOOL STDCALL SetComputerNameExW(COMPUTER_NAME_FORMAT nametype, const WCHAR *lpbu
 BOOL STDCALL ExitUltibo(uint32_t dwreserved, UINT ureserved);
 BOOL STDCALL ExitUltiboEx(UINT uflags, uint32_t dwreserved);
 
-/* ============================================================================== */
-/* General Functions (Ultibo) */
+/** General Functions (Ultibo) */
 BOOL STDCALL RestartComputer(uint32_t delay);
 BOOL STDCALL ShutdownComputer(uint32_t delay);
 
 FILETIME STDCALL Uptime(void);
 
-/* ============================================================================== */
-/* Time Functions (Compatibility) */
+/** Time Functions (Compatibility) */
 uint32_t STDCALL GetTickCount(void);
 ULONGLONG STDCALL GetTickCount64(void);
 
@@ -837,8 +830,7 @@ BOOL STDCALL DosDateTimeToFileTime(uint16_t wfatdate, uint16_t wfattime, FILETIM
 BOOL STDCALL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount);
 BOOL STDCALL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency);
 
-/* ============================================================================== */
-/* Time Functions (Ultibo) */
+/** Time Functions (Ultibo) */
 FILETIME STDCALL GetCurrentTime(void);
 void STDCALL SetCurrentTime(FILETIME *time);
 
@@ -886,9 +878,8 @@ FILETIME STDCALL RoundFileTime(FILETIME *filetime);
 FILETIME STDCALL ConvertFileTime(FILETIME *filetime, int offset, BOOL local);
 double_t STDCALL ConvertDateTime(double_t datetime, int offset, BOOL local);
 
-/* ============================================================================== */
-/* Drive Functions (Compatibility) */
-UINT STDCALL GetDiskType(const char *lprootpathname); // GetDriveType - Already defined below
+/** Drive Functions (Compatibility) */
+UINT STDCALL GetDiskType(const char *lprootpathname); ///< GetDriveType - Already defined below
 UINT STDCALL GetDriveTypeA(const char *lprootpathname);
 UINT STDCALL GetDriveTypeW(const WCHAR *lprootpathname);
 
@@ -922,8 +913,7 @@ BOOL STDCALL GetDiskFreeSpaceEx(const char *lpdirectoryname, ULARGE_INTEGER *lpf
 BOOL STDCALL GetDiskFreeSpaceExA(const char *lpdirectoryname, ULARGE_INTEGER *lpfreebytesavailabletocaller, ULARGE_INTEGER *lptotalnumberofbytes, ULARGE_INTEGER *lptotalnumberoffreebytes);
 BOOL STDCALL GetDiskFreeSpaceExW(const WCHAR *lpdirectoryname, ULARGE_INTEGER *lpfreebytesavailabletocaller, ULARGE_INTEGER *lptotalnumberofbytes, ULARGE_INTEGER *lptotalnumberoffreebytes);
 
-/* ============================================================================== */
-/* Drive Functions (Ultibo) */
+/** Drive Functions (Ultibo) */
 uint8_t STDCALL GetPathDrive(const char *path);
 DRIVE_TYPE STDCALL GetDriveType(uint8_t drive);
 void STDCALL GetDriveData(uint8_t drive, DRIVE_DATA *data);
@@ -945,8 +935,7 @@ BOOL STDCALL GetDriveInformation(const char *path, uint32_t *clustersize, int64_
 uint8_t STDCALL GetCurrentDrive(void);
 BOOL STDCALL SetCurrentDrive(const char *drive);
 
-/* ============================================================================== */
-/* File Functions (Compatibility) */
+/** File Functions (Compatibility) */
 BOOL STDCALL AreFileApisANSI(void);
 void STDCALL SetFileApisToOEM(void);
 void STDCALL SetFileApisToANSI(void);
@@ -1019,11 +1008,9 @@ uint32_t STDCALL GetFinalPathNameByHandle(HANDLE hfile, char *lpszFilePath, uint
 uint32_t STDCALL GetFinalPathNameByHandleA(HANDLE hfile, char *lpszFilePath, uint32_t cchFilePath, uint32_t dwFlags);
 uint32_t STDCALL GetFinalPathNameByHandleW(HANDLE hfile, WCHAR *lpszFilePath, uint32_t cchFilePath, uint32_t dwFlags);
 
-/* ============================================================================== */
-/* File Functions (Ultibo) */
+/** File Functions (Ultibo) */
 
-/* ============================================================================== */
-/* Directory Functions (Compatibility) */
+/** Directory Functions (Compatibility) */
 BOOL STDCALL CreateDirectory(const char *lppathname, SECURITY_ATTRIBUTES *lpsecurityattributes);
 BOOL STDCALL CreateDirectoryA(const char *lppathname, SECURITY_ATTRIBUTES *lpsecurityattributes);
 BOOL STDCALL CreateDirectoryW(const WCHAR *lppathname, SECURITY_ATTRIBUTES *lpsecurityattributes);
@@ -1052,23 +1039,19 @@ uint32_t STDCALL GetFullPathName(const char *lpfilename, uint32_t nbufferlength,
 uint32_t STDCALL GetFullPathNameA(const char *lpfilename, uint32_t nbufferlength, char *lpbuffer, char *lpfilepart);
 uint32_t STDCALL GetFullPathNameW(const WCHAR *lpfilename, uint32_t nbufferlength, WCHAR *lpbuffer, WCHAR *lpfilepart);
 
-/* ============================================================================== */
-/* Directory Functions (Ultibo) */
+/** Directory Functions (Ultibo) */
 
-/* ============================================================================== */
-/* Command Line Functions (Compatibility) */
+/** Command Line Functions (Compatibility) */
 char * STDCALL GetCommandLine(void);
 char * STDCALL GetCommandLineA(void);
 WCHAR * STDCALL GetCommandLineW(void);
 
-/* ============================================================================== */
-/* Command Line Functions (Ultibo) */
+/** Command Line Functions (Ultibo) */
 BOOL STDCALL IsParamPresent(const char *param);
 int STDCALL GetParamIndex(const char *param);
 uint32_t STDCALL GetParamValue(const char *param, char *value, uint32_t len);
 
-/* ============================================================================== */
-/* Environment Functions (Compatibility) */
+/** Environment Functions (Compatibility) */
 char * STDCALL GetEnvironmentStrings(void);
 char * STDCALL GetEnvironmentStringsA(void);
 WCHAR * STDCALL GetEnvironmentStringsW(void);
@@ -1089,32 +1072,26 @@ uint32_t STDCALL ExpandEnvironmentStrings(const char *lpsrc, char *lpdst, uint32
 uint32_t STDCALL ExpandEnvironmentStringsA(const char *lpsrc, char *lpdst, uint32_t nsize);
 uint32_t STDCALL ExpandEnvironmentStringsW(const WCHAR *lpsrc, WCHAR *lpdst, uint32_t nsize);
 
-/* ============================================================================== */
-/* Error Functions (Compatibility) */
+/** Error Functions (Compatibility) */
 uint32_t STDCALL GetLastError(void);
 void STDCALL SetLastError(uint32_t dwerrcode);
 
-/* ============================================================================== */
-/* String Functions (Ultibo) */
+/** String Functions (Ultibo) */
 
-/* ============================================================================== */
-/* GUID Functions (Ultibo) */
+/** GUID Functions (Ultibo) */
 GUID STDCALL CreateGUID(void);
 uint32_t STDCALL GUIDToString(GUID *value, char *string, uint32_t len);
 GUID STDCALL StringToGUID(const char *value);
 BOOL STDCALL NullGUID(GUID *guid);
 BOOL STDCALL CompareGUID(GUID *guid1, GUID *guid2);
 
-/* ============================================================================== */
-/* SID Functions (Ultibo) */
+/** SID Functions (Ultibo) */
 //uint32_t STDCALL SIDToString(SID *sid, char *string, uint32_t len); //To Do //security.h
 //SID * STDCALL StringToSID(char *value); //To Do //security.h
 
-/* ============================================================================== */
-/* Date Functions (Ultibo) */
+/** Date Functions (Ultibo) */
 
-/* ============================================================================== */
-/* Numeric Functions (Ultibo) */
+/** Numeric Functions (Ultibo) */
 int STDCALL Min(int a, int b);
 int STDCALL Max(int a, int b);
 
@@ -1137,13 +1114,11 @@ uint32_t STDCALL LongSwap(uint32_t value);
 int64_t STDCALL Int64Swap(int64_t *value);
 BOOL STDCALL BufferSwap(void *buffer, uint32_t size);
 
-/* ============================================================================== */
-/* Hash Functions (Ultibo) */
+/** Hash Functions (Ultibo) */
 uint32_t STDCALL GenerateNameHash(const char *name, int size);
 uint32_t STDCALL GenerateStringHash(const char *value, BOOL casesensitive);
 
-/* ============================================================================== */
-/* Locale Functions (Compatibility) */
+/** Locale Functions (Compatibility) */
 BOOL STDCALL IsValidLocale(LCID localeid, uint32_t dwflags);
 
 LCID STDCALL GetSystemDefaultLCID(void);
@@ -1152,16 +1127,14 @@ LCID STDCALL GetUserDefaultLCID(void);
 LCID STDCALL GetThreadLocale(void);
 BOOL STDCALL SetThreadLocale(LCID localeid);
 
-/* ============================================================================== */
-/* Locale Functions (Ultibo) */
+/** Locale Functions (Ultibo) */
 BOOL STDCALL SetSystemDefaultLCID(LCID localeid);
 
 uint32_t STDCALL WideCharToString(const WCHAR *buffer, char *string, uint32_t len);
 uint32_t STDCALL WideCharLenToString(const WCHAR *buffer, int length, char *string, uint32_t len);
 BOOL STDCALL StringToWideChar(const char *string, WCHAR *buffer, int size);
 
-/* ============================================================================== */
-/* Code Page Functions (Compatibility) */
+/** Code Page Functions (Compatibility) */
 BOOL STDCALL IsValidCodePage(UINT codepage);
 
 UINT STDCALL GetACP(void);
@@ -1179,13 +1152,11 @@ BOOL STDCALL GetCPInfoEx(UINT codepage, uint32_t dwflags, CPINFOEXA *lpcpinfoex)
 BOOL STDCALL GetCPInfoExA(UINT codepage, uint32_t dwflags, CPINFOEXA *lpcpinfoex);
 BOOL STDCALL GetCPInfoExW(UINT codepage, uint32_t dwflags, CPINFOEXW *lpcpinfoex);
 
-/* ============================================================================== */
-/* Code Page Functions (Ultibo) */
+/** Code Page Functions (Ultibo) */
 BOOL STDCALL SetACP(UINT codepage);
 BOOL STDCALL SetOEMCP(UINT codepage);
 
-/* ============================================================================== */
-/* Translation Functions (Compatibility) */
+/** Translation Functions (Compatibility) */
 int STDCALL MultiByteToWideChar(UINT codepage, uint32_t dwflags, char *lpmultibytestr, int cbmultibyte, WCHAR *lpwidecharstr, int cchwidechar);
 int STDCALL WideCharToMultiByte(UINT codepage, uint32_t dwflags, WCHAR *lpwidecharstr, int cchwidechar, char *lpmultibytestr, int cbmultibyte, char *lpdefaultchar, BOOL *lpuseddefaultchar);
 
@@ -1230,16 +1201,14 @@ BOOL STDCALL OemToCharBuff(char *lpszsrc, char *lpszdst, uint32_t cchdstlength);
 BOOL STDCALL OemToCharBuffA(char *lpszsrc, char *lpszdst, uint32_t cchdstlength);
 BOOL STDCALL OemToCharBuffW(char *lpszsrc, WCHAR *lpszdst, uint32_t cchdstlength);
 
-/* ============================================================================== */
-/* Handle Functions (Compatibility) */
+/** Handle Functions (Compatibility) */
 BOOL STDCALL CloseHandle(HANDLE hobject);
 BOOL STDCALL DuplicateHandle(HANDLE hsourceprocesshandle, HANDLE hsourcehandle, HANDLE htargetprocesshandle, HANDLE *lptargethandle, uint32_t dwdesiredaccess, BOOL binherithandle, uint32_t dwoptions);
 
 BOOL STDCALL GetHandleInformation(HANDLE hobject, uint32_t *lpdwflags);
 BOOL STDCALL SetHandleInformation(HANDLE hobject, uint32_t dwmask, uint32_t dwflags);
 
-/* ============================================================================== */
-/* Memory Functions (Compatibility) */
+/** Memory Functions (Compatibility) */
 void STDCALL MoveMemory(void *destination, void *source, SIZE_T length);
 void STDCALL CopyMemory(void *destination, void *source, SIZE_T length);
 void STDCALL FillMemory(void *destination, SIZE_T length, uint8_t fill);
@@ -1285,16 +1254,14 @@ BOOL STDCALL FlushInstructionCache(HANDLE hprocess, void *lpbaseaddress, uint32_
 BOOL STDCALL GetNumaHighestNodeNumber(ULONG *highestnodenumber);
 BOOL STDCALL GetNumaProcessorNode(uint8_t *processor, uint8_t *nodenumber);
 
-/* ============================================================================== */
-/* Tls Functions (Compatibility) */
+/** Tls Functions (Compatibility) */
 uint32_t STDCALL TlsAlloc(void);
 uint32_t STDCALL TlsAllocEx(BOOL bfree);
 void * STDCALL TlsGetValue(uint32_t dwtlsindex);
 BOOL STDCALL TlsSetValue(uint32_t dwtlsindex, void *lptlsvalue);
 BOOL STDCALL TlsFree(uint32_t dwtlsindex);
 
-/* ============================================================================== */
-/* Thread Functions (Compatibility) */
+/** Thread Functions (Compatibility) */
 BOOL STDCALL SwitchToThread(void);
 
 void STDCALL Sleep(uint32_t dwmilliseconds);
@@ -1329,12 +1296,10 @@ uint32_t STDCALL WaitForMultipleObjects(uint32_t ncount, HANDLE *lphandles, BOOL
 uint32_t STDCALL WaitForSingleObjectEx(HANDLE hhandle, uint32_t dwmilliseconds, BOOL balertable);
 uint32_t STDCALL WaitForMultipleObjectsEx(uint32_t ncount, HANDLE *lphandles, BOOL bwaitall, uint32_t dwmilliseconds, BOOL balertable);
 
-/* ============================================================================== */
-/* Thread Functions (Ultibo) */
+/** Thread Functions (Ultibo) */
 THREAD_ID STDCALL BeginThreadEx(thread_func threadfunction, void *parameter, THREAD_ID *threadid, size_t *stacksize, uint32_t priority, uint32_t affinity, uint32_t cpu, const char *name);
 
-/* ============================================================================== */
-/* Message Functions (Compatibility) */
+/** Message Functions (Compatibility) */
 BOOL STDCALL WaitMessage(void);
 
 BOOL STDCALL GetMessage(MSG *lpmsg, HANDLE hthread, UINT wmsgfiltermin, UINT wmsgfiltermax);
@@ -1344,11 +1309,9 @@ BOOL STDCALL PostMessage(HANDLE hthread, UINT msg, WPARAM wparam, LPARAM lparam)
 LRESULT STDCALL SendMessage(HANDLE hthread, UINT msg, WPARAM wparam, LPARAM lparam);
 LRESULT STDCALL SendMessageTimeout(HANDLE hthread, UINT msg, WPARAM wparam, LPARAM lparam, UINT fuflags, UINT utimeout, DWORD_PTR *lpdwresult);
 
-/* ============================================================================== */
-/* Notification Functions (Compatibility) */
+/** Notification Functions (Compatibility) */
 
-/* ============================================================================== */
-/* Interlocked Functions (Compatibility) */
+/** Interlocked Functions (Compatibility) */
 long STDCALL InterlockedIncrement(long *lpaddend);
 long STDCALL InterlockedDecrement(long *lpaddend);
 
@@ -1359,8 +1322,7 @@ long STDCALL InterlockedExchangeAdd(long *addend, long value);
 long STDCALL InterlockedCompareExchange(long *destination, long exchange, long comperand);
 void * STDCALL InterlockedCompareExchangePointer(void *destination, void *exchange, void *comperand);
 
-/* ============================================================================== */
-/* Mutex Functions (Compatibility) */
+/** Mutex Functions (Compatibility) */
 HANDLE STDCALL CreateMutex(SECURITY_ATTRIBUTES *lpmutexattributes, BOOL binitialowner, const char *lpname);
 HANDLE STDCALL CreateMutexA(SECURITY_ATTRIBUTES *lpmutexattributes, BOOL binitialowner, const char *lpname);
 HANDLE STDCALL CreateMutexW(SECURITY_ATTRIBUTES *lpmutexattributes, BOOL binitialowner, const WCHAR *lpname);
@@ -1371,8 +1333,7 @@ HANDLE STDCALL OpenMutexW(uint32_t dwdesiredaccess, BOOL binherithandle, const W
 
 BOOL STDCALL ReleaseMutex(HANDLE hmutex);
 
-/* ============================================================================== */
-/* Semaphore Functions (Compatibility) */
+/** Semaphore Functions (Compatibility) */
 HANDLE STDCALL CreateSemaphore(SECURITY_ATTRIBUTES *lpsemaphoreattributes, long linitialcount, long lmaximumcount, const char *lpname);
 HANDLE STDCALL CreateSemaphoreA(SECURITY_ATTRIBUTES *lpsemaphoreattributes, long linitialcount, long lmaximumcount, const char *lpname);
 HANDLE STDCALL CreateSemaphoreW(SECURITY_ATTRIBUTES *lpsemaphoreattributes, long linitialcount, long lmaximumcount, const WCHAR *lpname);
@@ -1383,8 +1344,7 @@ HANDLE STDCALL OpenSemaphoreW(uint32_t dwdesiredaccess, BOOL binherithandle, con
 
 BOOL STDCALL ReleaseSemaphore(HANDLE hsemaphore, long lreleasecount, long *lppreviouscount);
 
-/* ============================================================================== */
-/* Critical Section Functions (Compatibility) */
+/** Critical Section Functions (Compatibility) */
 void STDCALL InitializeCriticalSection(CRITICAL_SECTION *lpcriticalsection);
 void STDCALL EnterCriticalSection(CRITICAL_SECTION *lpcriticalsection);
 void STDCALL LeaveCriticalSection(CRITICAL_SECTION *lpcriticalsection);
@@ -1395,8 +1355,7 @@ uint32_t STDCALL SetCriticalSectionSpinCount(CRITICAL_SECTION *lpcriticalsection
 
 void STDCALL DeleteCriticalSection(CRITICAL_SECTION *lpcriticalsection);
 
-/* ============================================================================== */
-/* Condition Variable Functions (Compatibility) */
+/** Condition Variable Functions (Compatibility) */
 void STDCALL InitializeConditionVariable(CONDITION_VARIABLE *conditionvariable);
 
 void STDCALL WakeConditionVariable(CONDITION_VARIABLE *conditionvariable);
@@ -1406,8 +1365,7 @@ BOOL STDCALL SleepConditionVariableCS(CONDITION_VARIABLE *conditionvariable, CRI
 
 void STDCALL DeleteConditionVariable(CONDITION_VARIABLE *conditionvariable);
 
-/* ============================================================================== */
-/* Event Functions (Compatibility) */
+/** Event Functions (Compatibility) */
 HANDLE STDCALL CreateEvent(SECURITY_ATTRIBUTES *lpeventattributes, BOOL bmanualreset, BOOL binitialstate, const char *lpname);
 HANDLE STDCALL CreateEventA(SECURITY_ATTRIBUTES *lpeventattributes, BOOL bmanualreset, BOOL binitialstate, const char *lpname);
 HANDLE STDCALL CreateEventW(SECURITY_ATTRIBUTES *lpeventattributes, BOOL bmanualreset, BOOL binitialstate, const WCHAR *lpname);
@@ -1420,8 +1378,7 @@ BOOL STDCALL SetEvent(HANDLE hevent);
 BOOL STDCALL ResetEvent(HANDLE hevent);
 BOOL STDCALL PulseEvent(HANDLE hevent);
 
-/* ============================================================================== */
-/* Process Functions (Compatibility) */
+/** Process Functions (Compatibility) */
 BOOL STDCALL GetProcessAffinityMask(HANDLE hprocess, DWORD_PTR *lpprocessaffinitymask, DWORD_PTR *lpsystemaffinitymask);
 BOOL STDCALL SetProcessAffinityMask(HANDLE hprocess, DWORD_PTR dwprocessaffinitymask);
 
@@ -1436,14 +1393,12 @@ void STDCALL FatalExit(int exitcode);
 
 BOOL STDCALL TerminateProcess(HANDLE hprocess, UINT uexitcode);
 
-/* ============================================================================== */
-/* Debug Functions (Compatibility) */
+/** Debug Functions (Compatibility) */
 void STDCALL OutputDebugString(const char *lpoutputstring);
 void STDCALL OutputDebugStringA(const char *lpoutputstring);
 void STDCALL OutputDebugStringW(const WCHAR *lpoutputstring);
 
-/* ============================================================================== */
-/* Library Functions (Compatibility) */
+/** Library Functions (Compatibility) */
 int STDCALL lstrcmp(char *lpstring1, char *lpstring2);
 int STDCALL lstrcmpA(char *lpstring1, char *lpstring2);
 int STDCALL lstrcmpW(WCHAR *lpstring1, WCHAR *lpstring2);

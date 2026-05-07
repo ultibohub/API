@@ -34,8 +34,7 @@ extern "C" {
 #include "ultibo/globalconst.h"
 #include "ultibo/ultibo.h"
 
-/* ============================================================================== */
-/* IP Helper specific constants */
+/** IP Helper specific constants */
 #define MAX_INTERFACE_NAME_LEN	256
 #define IPRTRMGR_PID	10000
 #define ANY_SIZE	1
@@ -141,11 +140,10 @@ extern "C" {
 #define MIB_IPNET_TYPE_DYNAMIC	3
 #define MIB_IPNET_TYPE_STATIC	4
 
-/* ============================================================================== */
-/* IP Helper specific types */
-typedef uint32_t IP_ADDR; // An IP address
-typedef uint32_t IP_MASK; // An IP netmask
-typedef uint32_t IP_STATUS; // Status code returned from IP APIs
+/** IP Helper specific types */
+typedef uint32_t IP_ADDR; ///< An IP address
+typedef uint32_t IP_MASK; ///< An IP netmask
+typedef uint32_t IP_STATUS; ///< Status code returned from IP APIs
 
 typedef struct _MIB_IFNUMBER
 {
@@ -433,8 +431,7 @@ typedef struct _FIXED_INFO
 	UINT enabledns;
 } FIXED_INFO;
 
-/* ============================================================================== */
-/* IP Helper Functions */
+/** IP Helper Functions */
 uint32_t STDCALL GetNumberOfInterfaces(uint32_t *pdwnumif);
 uint32_t STDCALL GetIfEntry(MIB_IFROW *pifrow);
 uint32_t STDCALL GetIfTable(MIB_IFTABLE *piftable, uint32_t *pdwsize, BOOL border);
@@ -487,8 +484,7 @@ uint32_t STDCALL GetFriendlyIfIndex(uint32_t ifindex);
 uint32_t STDCALL EnableRouter(HANDLE *phandle, OVERLAPPED *poverlapped);
 uint32_t STDCALL UnenableRouter(OVERLAPPED *poverlapped, DWORD *lpdwenablecount);
 
-/* ============================================================================== */
-/* IP Helper Helper Functions */
+/** IP Helper Helper Functions */
 uint32_t STDCALL MIBIFOperStatusToString(uint32_t value, char *string, uint32_t len);
 uint32_t STDCALL MIBIFTypeToString(uint32_t value, char *string, uint32_t len);
 uint32_t STDCALL MIBIFAdminStatusToString(uint32_t value, char *string, uint32_t len);
