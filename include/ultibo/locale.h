@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -500,45 +500,142 @@ struct _CODE_PAGE
 };
 
 /** Locale Functions */
+
+/**
+ * @brief Determine if a specified code page is valid
+ */
 BOOL STDCALL IsValidCodePage(unsigned int codepage);
 
+/**
+ * @brief Retrieve the current ANSI code page identifier for the system
+ */
 unsigned int STDCALL GetACP(void);
+
+/**
+ * @brief Return the current original equipment manufacturer (OEM) code page identifier for the system
+ */
 unsigned int STDCALL GetOEMCP(void);
 
+/**
+ * @brief Set the current ANSI code page identifier for the system
+ */
 BOOL STDCALL SetACP(unsigned int codepage);
+
+/**
+ * @brief Set the current original equipment manufacturer (OEM) code page identifier for the system
+ */
 BOOL STDCALL SetOEMCP(unsigned int codepage);
 
+/**
+ * @brief Retrieve the input code page used by the console for the system
+ */
 unsigned int STDCALL GetConsoleCP(void);
+
+/**
+ * @brief Set the input code page used by the console for the system
+ */
 BOOL STDCALL SetConsoleCP(unsigned int wcodepageid);
 
+/**
+ * @brief Retrieve the output code page used by the console for the system
+ */
 unsigned int STDCALL GetConsoleOutputCP(void);
+
+/**
+ * @brief Set the output code page used by the console for the system
+ */
 BOOL STDCALL SetConsoleOutputCP(unsigned int wcodepageid);
 
+/**
+ * @brief Retrieve information about any valid installed or available code page
+ */
 BOOL STDCALL GetCPInfo(unsigned int codepage, CPINFO *lpcpinfo);
 
+/**
+ * @brief Retrieve information about any valid installed or available code page
+ */
 BOOL STDCALL GetCPInfoEx(unsigned int codepage, uint32_t dwflags, CPINFOEXA *lpcpinfoex);
+
+/**
+ * @brief Retrieve information about any valid installed or available code page
+ */
 BOOL STDCALL GetCPInfoExA(unsigned int codepage, uint32_t dwflags, CPINFOEXA *lpcpinfoex);
+
+/**
+ * @brief Retrieve information about any valid installed or available code page
+ */
 BOOL STDCALL GetCPInfoExW(unsigned int codepage, uint32_t dwflags, CPINFOEXW *lpcpinfoex);
 
+/**
+ * @brief Determine if the specified locale is installed or supported on the system
+ */
 BOOL STDCALL IsValidLocale(LCID locale, uint32_t dwflags);
 
+/**
+ * @brief Return the locale identifier for the system locale
+ * @note System and User values are the same for Ultibo
+ */
 LCID STDCALL GetSystemDefaultLCID(void);
+
+/**
+ * @brief Return the locale identifier for the user default locale
+ * @note System and User values are the same for Ultibo
+ */
 LCID STDCALL GetUserDefaultLCID(void);
 
+/**
+ * @brief Set the locale identifier for the system locale
+ * @note System and User values are the same for Ultibo
+ */
 BOOL STDCALL SetSystemDefaultLCID(LCID locale);
 
+/**
+ * @brief Get the System Default Language Identifier (Combined Primary and Sub language Identifiers)
+ * @note System and User values are the same for Ultibo
+ */
 LANGID STDCALL GetSystemDefaultLangID(void);
+
+/**
+ * @brief Get the System Default Language Identifier (Combined Primary and Sub language Identifiers)
+ * @note System and User values are the same for Ultibo
+ */
 LANGID STDCALL GetUserDefaultLangID(void);
 
 /** Locale Helper Functions */
+
+/**
+ * @brief Map a default code page to the actual current page
+ */
 uint16_t STDCALL map_page(unsigned int codepage);
+
+/**
+ * @brief Find the requested page in the linked list
+ */
 CODE_PAGE * STDCALL get_page(uint16_t pageid);
+
+/**
+ * @brief Check that the Page supplied is part of the Linked list
+ */
 BOOL STDCALL check_page(CODE_PAGE *page);
 
+/**
+ * @brief Link Page to Prev,Next Siblings and Adjust First/Last
+ */
 BOOL STDCALL link_page(CODE_PAGE *page);
+
+/**
+ * @brief Unlink Page from Prev,Next Siblings and Adjust First/Last
+ */
 BOOL STDCALL unlink_page(CODE_PAGE *page);
 
+/**
+ * @brief Load a code table and allocate memory to create a code page
+ */
 BOOL STDCALL load_page(uint16_t pageid, CODE_TABLE *table, LOWER_TABLE *lower, UPPER_TABLE *upper);
+
+/**
+ * @brief Unload a code page and release allocated memory
+ */
 BOOL STDCALL unload_page(uint16_t pageid, CODE_PAGE *page);
 
 BOOL STDCALL default_trans(uint16_t pageid, uint16_t transid);

@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1155,6 +1155,12 @@ struct _USB_HUB
 typedef void STDCALL (*usb_log_output_proc)(const char *text, void *data);
 
 /** Initialization Functions */
+
+/**
+ * @brief Starts all registered USB hosts, starts the USB hub thread and begins the USB
+ *  enumeration process. USB enumeration will continue after this function returns
+ *  as devices are discovered by changes in hub status.
+ */
 uint32_t STDCALL usb_start(void);
 uint32_t STDCALL usb_stop(void);
 
@@ -1162,73 +1168,419 @@ void STDCALL usb_async_start(USB_HOST *host);
 
 /** USB Device, Driver and Host Functions */
 /// Device Methods
+
+/**
+ * @brief Get the bus address for the specified device
+ * @param Device The USB device to get the address for
+ * @return Device address or 0 on failure
+ */
 uint8_t STDCALL usb_device_get_address(USB_DEVICE *device);
+
+/**
+ * @brief Set the bus address for the specified device
+ * @param Device The USB device to set the address for
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_set_address(USB_DEVICE *device, uint8_t address);
 
+/**
+ * @brief Read any descriptor from the specified device using USBControlRequest
+ * @param Device The USB device to read the descriptor from
+ * @param bRequest See USBControlRequest
+ * @param bmRequestType See USBControlRequest
+ * @param wValue See USBControlRequest
+ * @param wIndex See USBControlRequest
+ * @param Data See USBControlRequest
+ * @param Length See USBControlRequest
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_get_descriptor(USB_DEVICE *device, uint8_t brequest, uint8_t bmrequesttype, uint16_t wvalue, uint16_t windex, void *data, uint16_t length);
 
+/**
+ * @brief Read all or part of the device descriptor from the specified device using USBControlRequest
+ * @param Device The USB device to read the device descriptor from
+ * @param Data See USBControlRequest
+ * @param Length See USBControlRequest
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_get_device_descriptor(USB_DEVICE *device, void *data, uint16_t length);
 
+/**
+ * @brief Allocate a device descriptor for the specified device
+ * @param Device The USB device to create the device descriptor for
+ * @param Length The length of the descriptor to create
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_create_device_descriptor(USB_DEVICE *device, uint16_t length);
+
+/**
+ * @brief Read all or part of the device descriptor from the specified device using USBControlRequest
+ * @param Device The USB device to read the device descriptor from
+ * @param Length The amount of the descriptor to read which may be less than the full size
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_read_device_descriptor(USB_DEVICE *device, uint16_t length);
+
+/**
+ * @brief Read all or part of the device descriptor from the specified device using USBControlRequest
+ * @param Device The USB device to read the device descriptor from
+ * @param Length The amount of the descriptor to read which may be less than the full size
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_read_device_descriptor_ex(USB_DEVICE *device, uint16_t length, BOOL allowshort);
 
+/**
+ * @brief Allocate the available configurations for this device
+ * @param Device The USB device to create the configurations for
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_create_configurations(USB_DEVICE *device);
+
+/**
+ * @brief Read and parse the available configurations for this device
+ * @param Device The USB device to read the configurations for
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_read_configurations(USB_DEVICE *device);
 
+/**
+ * @brief Allocate the specified configuration for this device
+ * @param Device The USB device to create the configuration for
+ * @param Index The index of the configuration to create
+ * @param Size The size of the configuration descriptor to create
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_create_configuration(USB_DEVICE *device, uint8_t index, uint16_t size);
+
+/**
+ * @brief Read and parse the specified configuration for this device
+ * @param Device The USB device to read the configuration for
+ * @param Index The index of the configuration to read
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_read_configuration(USB_DEVICE *device, uint8_t index);
 
+/**
+ * @brief Read all or part of the specified string descriptor from the specified device using USBControlRequest
+ * @param Device The USB device to read the string descriptor from
+ * @param Index The index of the string descriptor to read
+ * @param Data See USBControlRequest
+ * @param Length See USBControlRequest
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_get_string_descriptor(USB_DEVICE *device, uint8_t index, void *data, uint16_t length);
+
+/**
+ * @brief Read all or part of the specified string descriptor from the specified device using USBControlRequest
+ * @param Device The USB device to read the string descriptor from
+ * @param Index The index of the string descriptor to read
+ * @param LanguageId The language identifier of the string descriptor to read (eg USB_LANGID_US_ENGLISH)
+ * @param Data See USBControlRequest
+ * @param Length See USBControlRequest
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_get_string_descriptor_ex(USB_DEVICE *device, uint8_t index, uint16_t languageid, void *data, uint16_t length);
 
+/**
+ * @brief Get the list of supported string language identifiers from the specified device
+ * @param Device The USB device to read the language identifiers from
+ * @return An array of supported language identifiers (Unused values are returned as zero)
+ */
 void STDCALL usb_device_read_string_language_ids(USB_DEVICE *device, USB_STRING_DESCRIPTOR_LANGIDS *languageids);
 
+/**
+ * @brief Get the content of the specified string descriptor from the specified device
+ * @param Device The USB device to read the string descriptor from
+ * @param Index The index of the string descriptor to read
+ * @return The ANSI string content of the string descriptor or an empty string on failure
+ */
 uint32_t STDCALL usb_device_read_string_descriptor(USB_DEVICE *device, uint8_t index, char *value, uint32_t len);
+
+/**
+ * @brief Get the content of the specified string descriptor from the specified device
+ * @param Device The USB device to read the string descriptor from
+ * @param Index The index of the string descriptor to read
+ * @param LanguageId The language identifier of the string descriptor to read (eg USB_LANGID_US_ENGLISH)
+ * @return The ANSI string content of the string descriptor or an empty string on failure
+ */
 uint32_t STDCALL usb_device_read_string_descriptor_ex(USB_DEVICE *device, uint8_t index, uint16_t languageid, char *value, uint32_t len);
+
+/**
+ * @brief Get the content of the specified string descriptor from the specified device
+ * @param Device The USB device to read the string descriptor from
+ * @param Index The index of the string descriptor to read
+ * @return The Unicode string content of the string descriptor or an empty string on failure
+ */
 uint32_t STDCALL usb_device_read_string_descriptor_w(USB_DEVICE *device, uint8_t index, WCHAR *value, uint32_t len);
+
+/**
+ * @brief Get the content of the specified string descriptor from the specified device
+ * @param Device The USB device to read the string descriptor from
+ * @param Index The index of the string descriptor to read
+ * @param LanguageId The language identifier of the string descriptor to read (eg USB_LANGID_US_ENGLISH)
+ * @return The Unicode string content of the string descriptor or an empty string on failure
+ */
 uint32_t STDCALL usb_device_read_string_descriptor_ex_w(USB_DEVICE *device, uint8_t index, uint16_t languageid, WCHAR *value, uint32_t len);
 
+/**
+ * @brief Read all or part of the specified configuration descriptor from the specified device using USBControlRequest
+ * @param Device The USB device to read the configuration descriptor from
+ * @param Index The index of the configuration descriptor to read
+ * @param Data See USBControlRequest
+ * @param Length See USBControlRequest
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_get_configuration_descriptor(USB_DEVICE *device, uint8_t index, void *data, uint16_t length);
 
+/**
+ * @brief Get the current configuration for the specified device
+ * @param Device The USB device to get the current configuration for
+ * @param ConfigurationValue The current configuration (As per bConfigurationValue in the configuration descriptor)
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_get_configuration(USB_DEVICE *device, uint8_t *configurationvalue);
+
+/**
+ * @brief Set the configuration for the specified device
+ * @param Device The USB device to set the configuration for
+ * @param ConfigurationValue The configuration to set (As per bConfigurationValue in the configuration descriptor)
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_set_configuration(USB_DEVICE *device, uint8_t configurationvalue);
+
+/**
+ * @brief Find the configuration represented by configuration value for the specified device
+ * @param Device The USB device to find the configuration for
+ * @param ConfigurationValue The configuration value to find (As per bConfigurationValue in the configuration descriptor)
+ * @return USB Configuration if completed or nil on failure
+ */
 USB_CONFIGURATION * STDCALL usb_device_find_configuration_by_value(USB_DEVICE *device, uint8_t configurationvalue);
 
+/**
+ * @brief Get the USB Hub that the specified device is connected to
+ * @param Device The USB device to get the hub for
+ * @return USB Hub if successful or nil on failure
+ */
 USB_HUB * STDCALL usb_device_get_hub(USB_DEVICE *device);
+
+/**
+ * @brief Get the USB Port that the specified device is connected to
+ * @param Device The USB device to get the port for
+ * @return USB Port if successful or nil on failure
+ */
 USB_PORT * STDCALL usb_device_get_port(USB_DEVICE *device);
 
+/**
+ * @brief Get the interface alternate setting for the specified device
+ * @param Device The USB device to get the interface alternate setting for
+ * @param Index The index of the interface to get (As per bInterfaceNumber in the interface descriptor)
+ * @param AlternateSetting The current alternate setting of the specified interface (As per bAlternateSetting in the interface descriptor)
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_get_interface(USB_DEVICE *device, uint8_t index, uint8_t *alternatesetting);
+
+/**
+ * @brief Set the interface alternate setting for the specified device
+ * @param Device The USB device to set the interface alternate setting for
+ * @param Index The index of the interface to set (As per bInterfaceNumber in the interface descriptor)
+ * @param AlternateSetting The alternate setting to set on the specified interface (As per bAlternateSetting in the interface descriptor)
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_set_interface(USB_DEVICE *device, uint8_t index, uint8_t alternatesetting);
+
+/**
+ * @brief Find the interface with the specified index on the specified device
+ * @param Device The USB device to find the interface from
+ * @param Index The index of the interface to find  (As per bInterfaceNumber in the interface descriptor)
+ * @return The interface for the matching interface of nil if no interface matched
+ */
 USB_INTERFACE * STDCALL usb_device_find_interface_by_index(USB_DEVICE *device, uint8_t index);
+
+/**
+ * @brief Find an interface of the specified class on the specified device
+ * @param Device The USB device to find the interface from
+ * @param InterfaceClass The interface class to match
+ * @return The matching interface or nil if no interface matched
+ * Find an interface of the specified class, subclass and protocol on the specified device
+ * @param Device The USB device to find the interface from
+ * @param InterfaceClass The interface class to match
+ * @param InterfaceSubClass The interface subclass to match
+ * @param InterfaceProtocol The interface protocol to match
+ * @return The matching interface or nil if no interface matched
+ */
 USB_INTERFACE * STDCALL usb_device_find_interface_by_class_only(USB_DEVICE *device, uint8_t interfaceclass);
+
+/**
+ * @brief Find an interface of the specified class on the specified device
+ * @param Device The USB device to find the interface from
+ * @param InterfaceClass The interface class to match
+ * @return The matching interface or nil if no interface matched
+ * Find an interface of the specified class, subclass and protocol on the specified device
+ * @param Device The USB device to find the interface from
+ * @param InterfaceClass The interface class to match
+ * @param InterfaceSubClass The interface subclass to match
+ * @param InterfaceProtocol The interface protocol to match
+ * @return The matching interface or nil if no interface matched
+ */
 USB_INTERFACE * STDCALL usb_device_find_interface_by_class(USB_DEVICE *device, uint8_t interfaceclass, uint8_t interfacesubclass, uint8_t interfaceprotocol);
 
+/**
+ * @brief Find the endpoint with the specified index on the specified interface of the specified device
+ * @param Device The USB device to find the endpoint from
+ * @param Interrface The interface to find the endpoint from
+ * @param Index The index of the endpoint to find (First endpoint is zero)
+ * @return The endpoint for the matching endpoint of nil if no endpoint matched
+ */
 USB_ENDPOINT_DESCRIPTOR * STDCALL usb_device_find_endpoint_by_index(USB_DEVICE *device, USB_INTERFACE *interrface, uint8_t index);
+
+/**
+ * @brief Find an endpoint of the specified type and direction on the specified interface of the specified device
+ * @param Device The USB device to find the endpoint from
+ * @param Interrface The interface to find the endpoint from
+ * @param Direction The direction of the endpoint to find (eg USB_DIRECTION_OUT)
+ * @param TransferType The transfer type of the endpoint to find (eg USB_TRANSFER_TYPE_BULK)
+ * @return The endpoint for the matching endpoint of nil if no endpoint matched
+ */
 USB_ENDPOINT_DESCRIPTOR * STDCALL usb_device_find_endpoint_by_type(USB_DEVICE *device, USB_INTERFACE *interrface, uint8_t direction, uint8_t transfertype);
+
+/**
+ * @brief Find the next endpoint of the specified type and direction on the specified interface of the specified device
+ * @param Device The USB device to find the endpoint from
+ * @param Interrface The interface to find the endpoint from
+ * @param Direction The direction of the endpoint to find (eg USB_DIRECTION_OUT)
+ * @param TransferType The transfer type of the endpoint to find (eg USB_TRANSFER_TYPE_BULK)
+ * @param Index The index returned from the last call, pass 0 on the first call]
+ * @param {Return The endpoint for the matching endpoint of nil if no endpoint matched
+ */
 USB_ENDPOINT_DESCRIPTOR * STDCALL usb_device_find_endpoint_by_type_ex(USB_DEVICE *device, USB_INTERFACE *interrface, uint8_t direction, uint8_t transfertype, uint8_t *index);
 
+/**
+ * @brief Count the number of endpoints of the specified type and direction on the specified interface of the specified device
+ * @param Device The USB device to find the endpoint from
+ * @param Interrface The interface to find the endpoint from
+ * @param Direction The direction of the endpoint to find (eg USB_DIRECTION_OUT)
+ * @param TransferType The transfer type of the endpoint to find (eg USB_TRANSFER_TYPE_BULK)
+ * @return The number of matching endpoints on the specified interface
+ */
 uint8_t STDCALL usb_device_count_endpoints_by_type(USB_DEVICE *device, USB_INTERFACE *interrface, uint8_t direction, uint8_t transfertype);
 
+/**
+ * @brief Find the alternate setting with the specified index on the specified interface of the specified device
+ * @param Device The USB device to find the alternate setting from
+ * @param Interrface The interface to find the alternate setting from
+ * @param Index The index of the alternate setting to find (First alternate setting is zero)
+ * @return The alternate setting for the matching alternate setting of nil if no alternate setting matched
+ */
 USB_ALTERNATE * STDCALL usb_device_find_alternate_by_index(USB_DEVICE *device, USB_INTERFACE *interrface, uint8_t index);
+
+/**
+ * @brief Find the alternate setting with the specified value on the specified interface of the specified device
+ * @param Device The USB device to find the alternate setting from
+ * @param Interrface The interface to find the alternate setting from
+ * @param AlternateSetting The value of the alternate setting to find
+ * @return The alternate setting for the matching alternate setting of nil if no alternate setting matched
+ */
 USB_ALTERNATE * STDCALL usb_device_find_alternate_by_setting(USB_DEVICE *device, USB_INTERFACE *interrface, uint8_t alternatesetting);
 
+/**
+ * @brief Find the endpoint with the specified index on the specified alternate setting interface of the specified device
+ * @param Device The USB device to find the endpoint from
+ * @param Interrface The interface to find the endpoint from
+ * @param Alternate The alternate setting to find the endpoint from
+ * @param Index The index of the endpoint to find (First endpoint is zero)
+ * @return The endpoint for the matching endpoint of nil if no endpoint matched
+ */
 USB_ENDPOINT_DESCRIPTOR * STDCALL usb_device_find_alternate_endpoint_by_index(USB_DEVICE *device, USB_INTERFACE *interrface, USB_ALTERNATE *alternate, uint8_t index);
+
+/**
+ * @brief Find an endpoint of the specified type and direction on the specified alternate setting interface of the specified device
+ * @param Device The USB device to find the endpoint from
+ * @param Interrface The interface to find the endpoint from
+ * @param Alternate The alternate setting to find the endpoint from
+ * @param Direction The direction of the endpoint to find (eg USB_DIRECTION_OUT)
+ * @param TransferType The transfer type of the endpoint to find (eg USB_TRANSFER_TYPE_BULK)
+ * @return The endpoint for the matching endpoint of nil if no endpoint matched
+ */
 USB_ENDPOINT_DESCRIPTOR * STDCALL usb_device_find_alternate_endpoint_by_type(USB_DEVICE *device, USB_INTERFACE *interrface, USB_ALTERNATE *alternate, uint8_t direction, uint8_t transfertype);
 
+/**
+ * @brief Enable a feature on the specified endpoint on the specified device
+ * @param Device The USB device to enable the feature for
+ * @param Endpoint The endpoint to enable the feature on
+ * @param Feature The feature to enable
+ * @param Index ??????
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_set_feature(USB_DEVICE *device, USB_ENDPOINT_DESCRIPTOR *endpoint, uint16_t feature, uint16_t index);
+
+/**
+ * @brief Disable a feature on the specified endpoint on the specified device
+ * @param Device The USB device to disable the feature for
+ * @param Endpoint The endpoint to disable the feature on
+ * @param Feature The feature to disable
+ * @param Index ??????
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_clear_feature(USB_DEVICE *device, USB_ENDPOINT_DESCRIPTOR *endpoint, uint16_t feature);
 
+/**
+ * @brief Set the state of the specified device and send a notification
+ * @param Device The USB device to set the state for
+ * @param State The new state to set and notify (eg USB_STATE_ATTACHED)
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_set_state(USB_DEVICE *device, uint32_t state);
+
+/**
+ * @brief Set the status of the specified device and send a notification
+ * @param Device The USB device to set the status for
+ * @param Status The new status to set and notify (eg USB_STATUS_BOUND)
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_set_status(USB_DEVICE *device, uint32_t status);
 
+/**
+ * @brief Attempt to bind a device to one of the registered drivers
+ * @param Device The device to attempt to bind a driver to
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_bind(USB_DEVICE *device);
+
+/**
+ * @brief Unbind a device from a driver
+ * @param Device The device to unbind a driver from
+ * @param Driver The driver to unbind the device from (nil to unbind from current driver)
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_unbind(USB_DEVICE *device, USB_DRIVER *driver);
 
+/**
+ * @brief Configure and initialize a newly attached USB device
+ * @param Device New USB device to configure and initialize
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_attach(USB_DEVICE *device);
+
+/**
+ * @brief Shutdown and detach a USB device
+ * @param Device The USB device to shutdown and detach
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_detach(USB_DEVICE *device);
 
+/**
+ * @brief Create and Register a new Device entry in the Device table
+ * @param Host The Host this device is attached to
+ * @param Parent The Parent device (Hub) this device is attached to (nil if this device is a root hub)
+ * @return Pointer to new Device entry or nil if device could not be created
+ */
 USB_DEVICE * STDCALL usb_device_allocate(USB_HOST *host, USB_DEVICE *parent);
+
+/**
+ * @brief Deregister and Destroy a Device from the Device table
+ * @param Device The device to deregister and destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_device_release(USB_DEVICE *device);
 
 USB_DEVICE * STDCALL usb_device_find(uint32_t usbid);
@@ -1240,25 +1592,86 @@ uint32_t STDCALL usb_device_enumerate(usb_device_enumerate_cb callback, void *da
 uint32_t STDCALL usb_device_notification(USB_DEVICE *device, usb_device_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
 /// Driver Methods
+
+/**
+ * @brief Create a new USB Driver entry
+ * @return Pointer to new Driver entry or nil if driver could not be created
+ */
 USB_DRIVER * STDCALL usb_driver_create(void);
+
+/**
+ * @brief Create a new USB Driver entry
+ * @param Size Size in bytes to allocate for new driver (Including the driver entry)
+ * @return Pointer to new Driver entry or nil if driver could not be created
+ */
 USB_DRIVER * STDCALL usb_driver_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing USB Driver entry
+ */
 uint32_t STDCALL usb_driver_destroy(USB_DRIVER *driver);
 
+/**
+ * @brief Register a new Driver in the USB Driver table
+ */
 uint32_t STDCALL usb_driver_register(USB_DRIVER *driver);
+
+/**
+ * @brief Deregister a Driver from the USB Driver table
+ */
 uint32_t STDCALL usb_driver_deregister(USB_DRIVER *driver);
 
+/**
+ * @brief Find a driver by Id in the USB Driver table
+ */
 USB_DRIVER * STDCALL usb_driver_find(uint32_t driverid);
+
+/**
+ * @brief Find a driver by name in the Driver table
+ */
 USB_DRIVER * STDCALL usb_driver_find_by_name(const char *name);
+
+/**
+ * @brief Enumerate all drivers in the USB Driver table
+ */
 uint32_t STDCALL usb_driver_enumerate(usb_driver_enumerate_cb callback, void *data);
 
 /// Host Methods
+
+/**
+ * @brief Set the state of the specified host and send a notification
+ * @param Host The USB host to set the state for
+ * @param State The new state to set and notify (eg USBHOST_STATE_ENABLED)
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_host_set_state(USB_HOST *host, uint32_t state);
 
+/**
+ * @brief Create a new Host entry
+ * @return Pointer to new Host entry or nil if host could not be created
+ */
 USB_HOST * STDCALL usb_host_create(void);
+
+/**
+ * @brief Create a new Host entry
+ * @param Size Size in bytes to allocate for new host (Including the host entry)
+ * @return Pointer to new Host entry or nil if host could not be created
+ */
 USB_HOST * STDCALL usb_host_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing Host entry
+ */
 uint32_t STDCALL usb_host_destroy(USB_HOST *host);
 
+/**
+ * @brief Register a new Host in the Host table
+ */
 uint32_t STDCALL usb_host_register(USB_HOST *host);
+
+/**
+ * @brief Deregister a Host from the Host table
+ */
 uint32_t STDCALL usb_host_deregister(USB_HOST *host);
 
 USB_HOST * STDCALL usb_host_find(uint32_t hostid);
@@ -1269,43 +1682,244 @@ uint32_t STDCALL usb_host_enumerate(usb_host_enumerate_cb callback, void *data);
 uint32_t STDCALL usb_host_notification(USB_HOST *host, usb_host_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
 /// Buffer Methods
+
+/**
+ * @brief Allocate a data buffer for a USB request
+ * @param Device The device that the request will be sent to
+ * @param Size The size of the data buffer to allocate
+ * @return The newly allocated buffer or nil on failure
+ */
 void * STDCALL usb_buffer_allocate(USB_DEVICE *device, uint32_t size);
+
+/**
+ * @brief Allocate a data buffer for a USB request
+ * @param Device The device that the request will be sent to
+ * @param Size The size of the data buffer to allocate
+ * @param Flags The returned flags for the allocated buffer (eg USB_REQUEST_FLAG_SHARED)
+ * @return The newly allocated buffer or nil on failure
+ */
 void * STDCALL usb_buffer_allocate_ex(USB_DEVICE *device, uint32_t size, uint32_t *flags);
+
+/**
+ * @brief Validate a data buffer for a USB request against the USB host requirements
+ * @param Device The device that the request will be sent to
+ * @param Buffer The data buffer to validate
+ * @param Size The size of the data buffer
+ * @param Flags The returned flags for the validated buffer (eg USB_REQUEST_FLAG_SHARED)
+ * @return USB_STATUS_SUCCESS on success or another error code on failure
+ */
 uint32_t STDCALL usb_buffer_validate(USB_DEVICE *device, void *buffer, uint32_t size, uint32_t *flags);
+
+/**
+ * @brief Release a data buffer from a USB request
+ * @param Data The buffer to be released
+ * @return USB_STATUS_SUCCESS on success or another error code on failure
+ */
 uint32_t STDCALL usb_buffer_release(void *buffer);
 
 /// Request Methods
+
+/**
+ * @brief Allocate a new USB request
+ * @param Device The USB device this request will be sent to
+ * @param Endpoint The Endpoint descriptor this request will be sent to (Or nil for the default control endpoint)
+ * @param Callback The callback function to be called on completion of the request
+ * @param Size The size of the data buffer for the request
+ * @param DriverData Device driver private data for the callback (Optional)
+ * @return The newly allocated request or nil on failure
+ */
 USB_REQUEST * STDCALL usb_request_allocate(USB_DEVICE *device, USB_ENDPOINT_DESCRIPTOR *endpoint, usb_request_completed_cb callback, uint32_t size, void *driverdata);
+
+/**
+ * @brief Allocate a new USB request
+ * @param Device The USB device this request will be sent to
+ * @param Endpoint The Endpoint descriptor this request will be sent to (Or nil for the default control endpoint)
+ * @param Callback The callback function to be called on completion of the request
+ * @param Data The returned data buffer allocated for the request (Or nil if size is zero)(Pass an existing buffer to prevent allocation)
+ * @param Size The size of the data buffer for the request
+ * @param DriverData Device driver private data for the callback (Optional)
+ * @return The newly allocated request or nil on failure
+ */
 USB_REQUEST * STDCALL usb_request_allocate_ex(USB_DEVICE *device, USB_ENDPOINT_DESCRIPTOR *endpoint, usb_request_completed_cb callback, void *data, uint32_t size, void *driverdata);
+
+/**
+ * @brief Release and destroy a USB request
+ * @param Request The request to be released
+ * @return USB_STATUS_SUCCESS on success or another error code on failure
+ */
 uint32_t STDCALL usb_request_release(USB_REQUEST *request);
+
+/**
+ * @brief Initialize or Reinitialize an existing USB request
+ * @param Request The request to be initialized
+ * @param Callback The callback function to be called on completion of the request
+ * @param Data The returned data buffer allocated for the request (Or nil if size is zero)
+ * @param Size The size of the data buffer for the request
+ * @param DriverData Device driver private data for the callback (Optional)
+ * @return USB_STATUS_SUCCESS on success or another error code on failure
+ */
 uint32_t STDCALL usb_request_initialize(USB_REQUEST *request, usb_request_completed_cb callback, void *data, uint32_t size, void *driverdata);
 
+/**
+ * @brief Submit a USB request to a host controller for execution
+ * @param Request The request to be submitted
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ * @note The request will be completed asynchronously by the host controller and the
+ *  completion callback will be called when the request has either succeeded or failed
+ */
 uint32_t STDCALL usb_request_submit(USB_REQUEST *request);
+
+/**
+ * @brief Cancel a USB request previously submitted to a host controller
+ * @param Request The request to be cancelled
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_request_cancel(USB_REQUEST *request);
 
 /// Control Methods
+
+/**
+ * @brief Send a USB control request to the specified device and wait for the request to complete
+ * @param Device The USB device to send the control request to
+ * @param Endpoint The Endpoint to use for the control request (or nil for the default control endpoint)
+ * @param bRequest The request to send (See Section 9.4 of the USB 2.0 specification for Standard requests)
+ * @param bmRequestType Type of request to send (See Section 9.3.1 of the USB 2.0 specification for Standard request types)
+ * @param wValue Request specific data
+ * @param wIndex Request specific data
+ * @param Data Buffer for the data to be sent or received from the request (Ignored if wLength is 0)
+ * @param wLength Length of the Data buffer in bytes
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_control_request(USB_DEVICE *device, USB_ENDPOINT_DESCRIPTOR *endpoint, uint8_t brequest, uint8_t bmrequesttype, uint16_t wvalue, uint16_t windex, void *data, uint16_t wlength);
+
+/**
+ * @brief Send a USB control request to the specified device and wait for the request to complete
+ * @param Device The USB device to send the control request to
+ * @param Endpoint The Endpoint to use for the control request (or nil for the default control endpoint)
+ * @param bRequest The request to send (See Section 9.4 of the USB 2.0 specification for Standard requests)
+ * @param bmRequestType Type of request to send (See Section 9.3.1 of the USB 2.0 specification for Standard request types)
+ * @param wValue Request specific data
+ * @param wIndex Request specific data
+ * @param Data Buffer for the data to be sent or received from the request (Ignored if wLength is 0)
+ * @param wLength Length of the Data buffer in bytes
+ * @param Timeout Milliseconds to wait for request to complete (INFINITE to wait forever)
+ * @param AllowShort Allow the return size to be less than the requested size
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_control_request_ex(USB_DEVICE *device, USB_ENDPOINT_DESCRIPTOR *endpoint, uint8_t brequest, uint8_t bmrequesttype, uint16_t wvalue, uint16_t windex, void *data, uint16_t wlength, uint32_t timeout, BOOL allowshort);
 
 /// Synchronous Transfer Methods
+
+/**
+ * @brief Perform a synchronous control transfer to a USB device and endpoint
+ * @param Device The USB device to send the control request to
+ * @param Endpoint The Endpoint to use for the control request (or nil for the default control endpoint)
+ * @param bRequest The request to send (See Section 9.4 of the USB 2.0 specification for Standard requests)
+ * @param bmRequestType Type of request to send (See Section 9.3.1 of the USB 2.0 specification for Standard request types)
+ * @param wValue Request specific data
+ * @param wIndex Request specific data
+ * @param Data Buffer for the data to be sent or received from the request (Ignored if wLength is 0)
+ * @param wLength Length of the Data buffer in bytes
+ * @param Count The actual number of bytes transferred on completion (May apply even on failure or timeout)
+ * @param Timeout Milliseconds to wait for request to complete (INFINITE to wait forever)
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ * @note This function is very similar to USBControlRequest(Ex) but also returns the actual number of bytes transferred
+ */
 uint32_t STDCALL usb_control_transfer(USB_DEVICE *device, USB_ENDPOINT_DESCRIPTOR *endpoint, uint8_t brequest, uint8_t bmrequesttype, uint16_t wvalue, uint16_t windex, void *data, uint16_t wlength, uint32_t *count, uint32_t timeout);
+
+/**
+ * @brief Perform a synchronous bulk transfer to a USB device and endpoint
+ * @param Device The USB device to send the bulk request to
+ * @param Endpoint The Endpoint to use for the bulk request
+ * @param Data Buffer for the data to be sent or received from the request (Ignored if Size is 0)
+ * @param Size Size of the Data buffer in bytes
+ * @param Count The actual number of bytes transferred on completion (May apply even on failure or timeout)
+ * @param Timeout Milliseconds to wait for request to complete (INFINITE to wait forever)
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ * @note The type and direction of the transfer is determined from the type and direction of the endpoint
+ */
 uint32_t STDCALL usb_bulk_transfer(USB_DEVICE *device, USB_ENDPOINT_DESCRIPTOR *endpoint, void *data, uint32_t size, uint32_t *count, uint32_t timeout);
+
+/**
+ * @brief Perform a synchronous interrupt transfer to a USB device and endpoint
+ * @param Device The USB device to send the interrupt request to
+ * @param Endpoint The Endpoint to use for the interrupt request
+ * @param Data Buffer for the data to be sent or received from the request (Ignored if Size is 0)
+ * @param Size Size of the Data buffer in bytes
+ * @param Count The actual number of bytes transferred on completion (May apply even on failure or timeout)
+ * @param Timeout Milliseconds to wait for request to complete (INFINITE to wait forever)
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ * @note The type and direction of the transfer is determined from the type and direction of the endpoint
+ */
 uint32_t STDCALL usb_interrupt_transfer(USB_DEVICE *device, USB_ENDPOINT_DESCRIPTOR *endpoint, void *data, uint32_t size, uint32_t *count, uint32_t timeout);
 
 /** USB Hub Functions */
 /// Hub Methods
+
+/**
+ * @brief Create and initialize the ports for a Hub
+ * @param Hub The hub to initialize ports for
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_hub_create_ports(USB_HUB *hub);
+
+/**
+ * @brief Power on all ports on a Hub
+ * @param Hub The hub to power on ports for
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_hub_power_on_ports(USB_HUB *hub);
 
+/**
+ * @brief Allocate the hub descriptor for the specified hub
+ * @param Hub The hub to create the descriptor for
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ * @note The class specific hub descriptor is not the same as the device descriptor
+ */
 uint32_t STDCALL usb_hub_create_hub_descriptor(USB_HUB *hub);
+
+/**
+ * @brief Read the hub descriptor for the specified hub
+ * @param Hub The hub to read the descriptor for
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ * @note The class specific hub descriptor is not the same as the device descriptor
+ */
 uint32_t STDCALL usb_hub_read_hub_descriptor(USB_HUB *hub);
 
+/**
+ * @brief Lock the specified Hub to prevent changes
+ * @param Hub The hub to lock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_hub_lock(USB_HUB *hub);
+
+/**
+ * @brief Unlock the specified Hub to allow changes
+ * @param Hub The hub to unlock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_hub_unlock(USB_HUB *hub);
 
+/**
+ * @brief Set the state of the specified hub and send a notification
+ * @param Hub The hub to set the state for
+ * @param State The new state to set and notify
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_hub_set_state(USB_HUB *hub, uint32_t state);
 
+/**
+ * @brief Create and Register a new Hub device
+ * @param Device The USB device that represents this hub
+ * @return Pointer to new Hub entry or nil if hub could not be created
+ */
 USB_HUB * STDCALL usb_hub_allocate(USB_DEVICE *device);
+
+/**
+ * @brief Deregister and Destroy a Hub device
+ * @param Hub The hub to deregister and destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_hub_release(USB_HUB *hub);
 
 USB_HUB * STDCALL usb_hub_find(uint32_t hubid);
@@ -1315,69 +1929,240 @@ uint32_t STDCALL usb_hub_enumerate(usb_hub_enumerate_cb callback, void *data);
 
 uint32_t STDCALL usb_hub_notification(USB_HUB *hub, usb_hub_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
+/**
+ * @brief Enumerate each device in the USB tree and call a bind callback for each one
+ * @param Device USB device at which to start the enumeration (Must be a hub device)
+ * @param Callback Bind callback function to execute for each device
+ */
 void STDCALL usb_hub_bind_devices(USB_DEVICE *device, usb_device_bind_proc callback);
+
+/**
+ * @brief Enumerate each device in the USB tree and call an unbind callback for each one
+ * @param Device USB device at which to start the enumeration
+ * @param Driver The driver to unbind the device from (nil to unbind from current driver)
+ * @param Callback Unbind callback function to execute for each device
+ */
 void STDCALL usb_hub_unbind_devices(USB_DEVICE *device, USB_DRIVER *driver, usb_device_unbind_proc callback);
+
+/**
+ * @brief Enumerate each device in the USB tree and call an enumerate callback for each one
+ * @param Device USB device at which to start the enumeration
+ * @param Callback Enumerate callback function to execute for each device
+ */
 void STDCALL usb_hub_enumerate_devices(USB_DEVICE *device, usb_device_enumerate_cb callback, void *data);
 
 /// Hub Port Methods
+
+/**
+ * @brief Reset the specified USB port
+ * @param Port USB port to reset
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ * @note Caller must hold the hub lock
+ */
 uint32_t STDCALL usb_hub_port_reset(USB_PORT *port, uint32_t delay);
 
+/**
+ * @brief Disable the specified USB port
+ * @param Port USB port to disable
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ * @note Caller must hold the hub lock
+ * @note A port cannot be enabled in software, only disabled
+ */
 uint32_t STDCALL usb_hub_port_disable(USB_PORT *port);
 
+/**
+ * @brief Power on the specified USB port
+ * @param Port USB port to power on
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ * @note Caller must hold the hub lock
+ * @note Not all hubs support powering on and off individual ports, you must check
+ *        if the hub includes the USB_HUB_CHARACTERISTIC_LPSM_PORT in its descriptor
+ */
 uint32_t STDCALL usb_hub_port_power_on(USB_PORT *port);
+
+/**
+ * @brief Power off the specified USB port
+ * @param Port USB port to power off
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ * @note Caller must hold the hub lock
+ * @note Not all hubs support powering on and off individual ports, you must check
+ *        if the hub includes the USB_HUB_CHARACTERISTIC_LPSM_PORT in its descriptor
+ */
 uint32_t STDCALL usb_hub_port_power_off(USB_PORT *port);
 
+/**
+ * @brief Read the status of the specified USB port
+ * @param Port USB port to read status for
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ * @note Caller must hold the hub lock
+ */
 uint32_t STDCALL usb_hub_port_get_status(USB_PORT *port);
 
+/**
+ * @brief Enable a feature on the specified USB port
+ * @param Port USB port to enable the feature on
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ * @note Caller must hold the hub lock
+ */
 uint32_t STDCALL usb_hub_port_set_feature(USB_PORT *port, uint16_t feature);
+
+/**
+ * @brief Disable a feature on the specified USB port
+ * @param Port USB port to disable the feature on
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ * @note Caller must hold the hub lock
+ */
 uint32_t STDCALL usb_hub_port_clear_feature(USB_PORT *port, uint16_t feature);
+
+/**
+ * @brief Enable or disable a feature on the specified USB port
+ * @param Port USB port to enable or disable the feature on
+ * @param Feature The feature to enable or disable
+ * @param Enable True to enable the feature or False to disable the feature
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ * @note Caller must hold the hub lock
+ */
 uint32_t STDCALL usb_hub_port_change_feature(USB_PORT *port, uint16_t feature, BOOL enable);
 
+/**
+ * @brief Attach a newly connected USB device to the specified USB port
+ * @param Port USB port to attach the new device to
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ * @note Caller must hold the hub lock
+ * @note Only called in response to a status change on the hub
+ */
 uint32_t STDCALL usb_hub_port_attach_device(USB_PORT *port);
+
+/**
+ * @brief Detach a disconnected USB device from the specified USB port
+ * @param Port USB port to detach the device from
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ * @note Caller must hold the hub lock
+ * @note Only called in response to a status change on the hub
+ */
 uint32_t STDCALL usb_hub_port_detach_device(USB_PORT *port);
 
+/**
+ * @brief Process a status change for the specified USB port
+ * @param Port USB port to process the status change for
+ * @return USB_STATUS_SUCCESS if completed or another error code on failure
+ * @note Caller must hold the hub lock
+ * @note Only called in response to a status change on the hub
+ */
 uint32_t STDCALL usb_hub_port_status_changed(USB_PORT *port);
 
 /** USB Device, Driver and Host Helper Functions */
+
+/**
+ * @brief Get the current device count
+ */
 uint32_t STDCALL usb_device_get_count(void);
 
+/**
+ * @brief Check if the supplied Device is in the device table
+ */
 USB_DEVICE * STDCALL usb_device_check(USB_DEVICE *device);
 
+/**
+ * @brief Get the current USB driver count
+ */
 uint32_t STDCALL usb_driver_get_count(void);
 
+/**
+ * @brief Check if the supplied USB Driver is in the driver table
+ */
 USB_DRIVER * STDCALL usb_driver_check(USB_DRIVER *driver);
 
+/**
+ * @brief Get the current host count
+ */
 uint32_t STDCALL usb_host_get_count(void);
 
+/**
+ * @brief Check if the supplied Host is in the host table
+ */
 USB_HOST * STDCALL usb_host_check(USB_HOST *host);
 
+/**
+ * @brief Returns True if Device is a Hub or False if not
+ */
 BOOL STDCALL usb_is_hub(USB_DEVICE *device);
+
+/**
+ * @brief Returns True if Device is a Root Hub or False if not
+ */
 BOOL STDCALL usb_is_root_hub(USB_DEVICE *device);
 
+/**
+ * @brief Returns True if Request is a control request or False if not
+ */
 BOOL STDCALL usb_is_control_request(USB_REQUEST *request);
+
+/**
+ * @brief Returns True if Request is a bulk request or False if not
+ */
 BOOL STDCALL usb_is_bulk_request(USB_REQUEST *request);
+
+/**
+ * @brief Returns True if Request is an interrupt request or False if not
+ */
 BOOL STDCALL usb_is_interrupt_request(USB_REQUEST *request);
+
+/**
+ * @brief Returns True if Request is an isochronous request or False if not
+ */
 BOOL STDCALL usb_is_isochronous_request(USB_REQUEST *request);
 
+/**
+ * @brief Returns True is Endpoint is an IN endpoint or False if not
+ */
 BOOL STDCALL usb_is_in_endpoint(USB_ENDPOINT_DESCRIPTOR *endpoint);
+
+/**
+ * @brief Returns True is Endpoint is an OUT endpoint or False if not
+ */
 BOOL STDCALL usb_is_out_endpoint(USB_ENDPOINT_DESCRIPTOR *endpoint);
 
+/**
+ * @brief Returns True is Endpoint is a BULK endpoint or False if not
+ */
 BOOL STDCALL usb_is_bulk_endpoint(USB_ENDPOINT_DESCRIPTOR *endpoint);
+
+/**
+ * @brief Returns True is Endpoint is a INTERRUPT endpoint or False if not
+ */
 BOOL STDCALL usb_is_interrupt_endpoint(USB_ENDPOINT_DESCRIPTOR *endpoint);
+
+/**
+ * @brief Returns True is Endpoint is a ISOCHRONOUS endpoint or False if not
+ */
 BOOL STDCALL usb_is_isochronous_endpoint(USB_ENDPOINT_DESCRIPTOR *endpoint);
 
+/**
+ * @brief Translates a USB status code into a string
+ */
 uint32_t STDCALL usb_status_to_string(uint32_t status, char *string, uint32_t len);
 
 uint32_t STDCALL usb_device_type_to_string(uint32_t usbtype, char *string, uint32_t len);
 uint32_t STDCALL usb_device_state_to_string(uint32_t usbstate, char *string, uint32_t len);
 uint32_t STDCALL usb_device_status_to_string(uint32_t usbstatus, char *string, uint32_t len);
 
+/**
+ * @brief Convert a Device state value into the notification code for device notifications
+ */
 uint32_t STDCALL usb_device_state_to_notification(uint32_t state);
+
+/**
+ * @brief Convert a Device status value into the notification code for device notifications
+ */
 uint32_t STDCALL usb_device_status_to_notification(uint32_t status);
 
 uint32_t STDCALL usb_host_type_to_string(uint32_t hosttype, char *string, uint32_t len);
 uint32_t STDCALL usb_host_state_to_string(uint32_t hoststate, char *string, uint32_t len);
 
+/**
+ * @brief Convert a Host state value into the notification code for device notifications
+ */
 uint32_t STDCALL usb_host_state_to_notification(uint32_t state);
 
 void STDCALL usb_log_device_configuration(USB_DEVICE *device, usb_log_output_proc output, void *data);
@@ -1386,29 +2171,81 @@ void STDCALL usb_log_configuration_descriptor(USB_DEVICE *device, USB_CONFIGURAT
 void STDCALL usb_log_interface_descriptor(USB_DEVICE *device, USB_INTERFACE_DESCRIPTOR *descriptor, usb_log_output_proc output, void *data);
 void STDCALL usb_log_endpoint_descriptor(USB_DEVICE *device, USB_ENDPOINT_DESCRIPTOR *descriptor, usb_log_output_proc output, void *data);
 
+/**
+ * @brief Print information about all devices attached to the USB
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_log_devices(void);
+
+/**
+ * @brief Print information about one or all devices attached to the USB with custom output and callbacks
+ * @param Device The device to print information about (nil for all devices)
+ * @param Output The log output callback to print information to (nil to use the default output)
+ * @param Device Callback The callback to print device information (nil if no device information should be printed)
+ * @param Tree Callback The callback to print tree information (nil if no tree information should be printed)
+ * @param Data A pointer to caller specific data which should be passed to the callbacks (Optional)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL usb_log_devices_ex(USB_DEVICE *device, usb_log_output_proc output, usb_device_enumerate_cb devicecallback, usb_device_enumerate_cb treecallback, void *data);
 
 uint32_t STDCALL usb_log_device_callback(USB_DEVICE *device, void *data);
 uint32_t STDCALL usb_log_tree_callback(USB_DEVICE *device, void *data);
 
 /** USB Hub Helper Functions */
+
+/**
+ * @brief Get the current hub count
+ */
 uint32_t STDCALL usb_hub_get_count(void);
 
+/**
+ * @brief Check if the supplied Hub is in the hub table
+ */
 USB_HUB * STDCALL usb_hub_check(USB_HUB *hub);
 
+/**
+ * @brief Returns True if Hub has multiple Transaction Translators or False if not
+ */
 BOOL STDCALL usb_hub_is_multi_tt(USB_HUB *hub);
+
+/**
+ * @brief Returns True if Hub is part of a Compound Device or False if not
+ */
 BOOL STDCALL usb_hub_is_compound(USB_HUB *hub);
 
+/**
+ * @brief Returns True if Hub supports Port Indicators or False if not
+ */
 BOOL STDCALL usb_hub_has_port_indicator(USB_HUB *hub);
+
+/**
+ * @brief Returns True if Hub supports per port Power Switching or False if not
+ */
 BOOL STDCALL usb_hub_has_port_power_switching(USB_HUB *hub);
+
+/**
+ * @brief Returns True if Hub supports per port Over Current Power Protection or False if not
+ */
 BOOL STDCALL usb_hub_has_port_current_protection(USB_HUB *hub);
 
+/**
+ * @brief Get the TT Think Time from a Hub
+ */
 uint8_t STDCALL usb_hub_get_tt_think_time(USB_HUB *hub);
 
+/**
+ * @brief Return a string describing the supplied Hub type value
+ */
 uint32_t STDCALL usb_hub_type_to_string(uint32_t hubtype, char *string, uint32_t len);
+
+/**
+ * @brief Return a string describing the supplied Hub state value
+ */
 uint32_t STDCALL usb_hub_state_to_string(uint32_t hubstate, char *string, uint32_t len);
 
+/**
+ * @brief Convert a Hub state value into the notification code for device notifications
+ */
 uint32_t STDCALL usb_hub_state_to_notification(uint32_t state);
 
 #ifdef __cplusplus

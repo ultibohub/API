@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -111,14 +111,49 @@ uint32_t STDCALL rtc_device_stop(RTC_DEVICE *rtc);
 int64_t STDCALL rtc_device_get_time(RTC_DEVICE *rtc);
 int64_t STDCALL rtc_device_set_time(RTC_DEVICE *rtc, int64_t time);
 
+/**
+ * @brief Get the properties for the specified RTC device
+ * @param RTC The RTC device to get properties from
+ * @param Properties Pointer to a PRTCProperties structure to fill in
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Replaced by RTCDeviceGetProperties for consistency
+ */
 uint32_t STDCALL rtc_device_properties(RTC_DEVICE *rtc, RTC_PROPERTIES *properties);
+
+/**
+ * @brief Get the properties for the specified RTC device
+ * @param RTC The RTC device to get properties from
+ * @param Properties Pointer to a PRTCProperties structure to fill in
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL rtc_device_get_properties(RTC_DEVICE *rtc, RTC_PROPERTIES *properties);
 
+/**
+ * @brief Create a new RTC entry
+ * @return Pointer to new RTC entry or nil if RTC could not be created
+ */
 RTC_DEVICE * STDCALL rtc_device_create(void);
+
+/**
+ * @brief Create a new RTC entry
+ * @param Size Size in bytes to allocate for new RTC (Including the RTC entry)
+ * @return Pointer to new RTC entry or nil if RTC could not be created
+ */
 RTC_DEVICE * STDCALL rtc_device_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing RTC entry
+ */
 uint32_t STDCALL rtc_device_destroy(RTC_DEVICE *rtc);
 
+/**
+ * @brief Register a new RTC in the RTC table
+ */
 uint32_t STDCALL rtc_device_register(RTC_DEVICE *rtc);
+
+/**
+ * @brief Deregister a RTC from the RTC table
+ */
 uint32_t STDCALL rtc_device_deregister(RTC_DEVICE *rtc);
 
 RTC_DEVICE * STDCALL rtc_device_find(uint32_t rtcid);
@@ -129,10 +164,25 @@ uint32_t STDCALL rtc_device_enumerate(rtc_enumerate_cb callback, void *data);
 uint32_t STDCALL rtc_device_notification(RTC_DEVICE *rtc, rtc_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
 /** RTC Helper Functions */
+
+/**
+ * @brief Get the current RTC count
+ */
 uint32_t STDCALL rtc_get_count(void);
+
+/**
+ * @brief Get the current default RTC device
+ */
 RTC_DEVICE * STDCALL rtc_device_get_default(void);
+
+/**
+ * @brief Set the current default RTC device
+ */
 uint32_t STDCALL rtc_device_set_default(RTC_DEVICE *rtc);
 
+/**
+ * @brief Check if the supplied RTC is in the RTC table
+ */
 RTC_DEVICE * STDCALL rtc_device_check(RTC_DEVICE *rtc);
 
 uint32_t STDCALL rtc_device_type_to_string(uint32_t rtctype, char *string, uint32_t len);
@@ -140,7 +190,14 @@ uint32_t STDCALL rtc_device_state_to_string(uint32_t rtcstate, char *string, uin
 
 BOOL STDCALL rtc_time_is_valid(SYSTEMTIME *time);
 
+/**
+ * @note System time is assumed to be UTC and returned file time is UTC
+ */
 BOOL STDCALL rtc_systemtime_to_filetime(SYSTEMTIME *systemtime, int64_t *filetime);
+
+/**
+ * @note File time is assumed to be UTC and returned system time is UTC
+ */
 BOOL STDCALL rtc_filetime_to_systemtime(int64_t filetime, SYSTEMTIME *systemtime);
 
 #endif // _ULTIBO_RTC_H

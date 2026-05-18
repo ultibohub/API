@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -184,16 +184,66 @@ struct _PS2_MOUSE_PACKET
 };
 
 /** PS2 Helper Functions */
+
+/**
+ * @brief Map the Keyboard LED values to the PS/2 Keyboard LED values
+ * @param LEDs The Keyboard LED values to map (eg KEYBOARD_LED_NUMLOCK)
+ * @param PS2LEDs The returned PS/2 Keyboard LED values (eg PS2_KEYBOARD_SET_LEDS_NUMLOCK)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL keyboard_leds_to_ps2_leds(uint32_t leds, uint8_t *ps2leds);
+
+/**
+ * @brief Translate the Keyboard Repeat Rate and Delay values to the PS/2 Keyboard Typematic value
+ * @param Rate The Keyboard Repeat Rate to translate (Milliseconds between repeats)
+ * @param Delay The Keyboard Repeat Delay to translate (Number of Repeat Rate intervals before first repeat)
+ * @param PS2Typematic The translated PS/2 Typematic value returned
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL keyboard_rate_and_delay_to_ps2_typematic(uint32_t rate, uint32_t delay, uint8_t *ps2typematic);
 
+/**
+ * @brief Check a set of scancode bytes against the specified PS/2 Scancode set for a match
+ * @param KeyboardScancode Pointer to the scancode bytes and scancode set information
+ * @param Index The index of the matching scancode on success or the nearest match on not found
+ *         (Pass -1 to start search from first entry, on subsequent calls pass the previous value to continue)
+ * @return ERROR_SUCCESS if matched, ERROR_NOT_FOUND if not matched or another error code on failure
+ */
 uint32_t STDCALL ps2_keyboard_scancode_match(PS2_KEYBOARD_SCANCODE *keyboardscancode, int32_t *index);
 
+/**
+ * @brief Return the Keyboard Scan Code value for a PS/2 scancode value
+ * @param KeyboardScancode Pointer to the scancode bytes and scancode set information
+ * @param Index The index value returned by PS2KeyboardScancodeMatch (-1 to search for match)
+ * @param ScanCode The returned keyboard scan code value (eg SCAN_CODE_A)
+ * @return ERROR_SUCCESS if completed or another error code on failure (ERROR_NOT_FOUND if not matched)
+ */
 uint32_t STDCALL ps2_keyboard_scancode_to_scan_code(PS2_KEYBOARD_SCANCODE *keyboardscancode, int32_t index, uint16_t *scancode);
+
+/**
+ * @brief Return the Keyboard Modifiers flags for a PS/2 scancode value
+ * @param Index The index value returned by PS2KeyboardScancodeMatch (-1 to search for match)
+ * @param Modifiers The returned keyboard modifiers flags (eg KEYBOARD_LEFT_CTRL)
+ * @return ERROR_SUCCESS if completed or another error code on failure (ERROR_NOT_FOUND if not matched)
+ */
 uint32_t STDCALL ps2_keyboard_scancode_to_modifiers(PS2_KEYBOARD_SCANCODE *keyboardscancode, int32_t index, uint32_t *modifiers);
 
+/**
+ * @brief Translate a Mouse Sample Rate value to the PS/2 Mouse Sample Rate value
+ * @param Rate The Mouse Sample Rate to translate (Samples per second)
+ * @param PS2Rate The translated PS/2 Sample Rate value returned
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL mouse_sample_rate_to_ps2_sample_rate(uint32_t rate, uint8_t *ps2rate);
 
+/**
+ * @brief Translate a PS/2 Mouse Packet into a Mouse Data structure
+ * @param MousePacket Pointer to the PS/2 Mouse Packet received from the mouse
+ * @param MouseData Pointer to the Mouse Data structure to return
+ * @param Flags The Mouse device flags (eg MOUSE_FLAG_SWAP_BUTTONS)
+ * @param Rotation The Mouse device rotation setting (eg MOUSE_ROTATION_180)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL ps2_mouse_packet_to_mouse_data(PS2_MOUSE_PACKET *mousepacket, MOUSE_DATA *mousedata, uint32_t flags, uint32_t rotation);
 
 #ifdef __cplusplus

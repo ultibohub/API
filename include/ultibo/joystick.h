@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -356,64 +356,290 @@ struct _JOYSTICK_DEVICE
 
 
 /** Joystick Functions */
+
+/**
+ * @brief Start the specified Joystick device ready for receiving events
+ * @param Joystick The Joystick device to start
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL joystick_device_start(JOYSTICK_DEVICE *joystick);
+
+/**
+ * @brief Stop the specified Joystick device and terminate receiving events
+ * @param Joystick The Joystick device to stop
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL joystick_device_stop(JOYSTICK_DEVICE *joystick);
 
+/**
+ * @brief Peek at the buffer of the specified joystick device to see if any data packets are ready
+ * @param Joystick The Joystick device to peek at
+ * @return ERROR_SUCCESS if packets are ready, ERROR_NO_MORE_ITEMS if not or another error code on failure
+ */
 uint32_t STDCALL joystick_device_peek(JOYSTICK_DEVICE *joystick);
 
+/**
+ * @brief Read joystick data packets from the buffer of the specified joystick device
+ * @param Joystick The Joystick device to read from
+ * @param Buffer Pointer to a buffer to copy the joystick data packets to
+ * @param Size The size of the buffer in bytes (Must be at least TJoystickData or greater)
+ * @param Flags The flags for the behaviour of the read (eg JOYSTICK_FLAG_NON_BLOCK)
+ * @param Count The number of joystick data packets copied to the buffer
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL joystick_device_read(JOYSTICK_DEVICE *joystick, void *buffer, uint32_t size, uint32_t flags, uint32_t *count);
+
+/**
+ * @brief Write joystick data packets to the buffer of the specified joystick device
+ * @param Joystick The Joystick device to write to
+ * @param Buffer Pointer to a buffer to copy the joystick data packets from
+ * @param Size The size of the buffer in bytes (Must be at least TJoystickData or greater)
+ * @param Count The number of joystick data packets to copy from the buffer
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL joystick_device_write(JOYSTICK_DEVICE *joystick, void *buffer, uint32_t size, uint32_t count);
 
+/**
+ * @brief Flush the contents of the buffer of the specified joystick device
+ * @param Joystick The Joystick device to flush
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL joystick_device_flush(JOYSTICK_DEVICE *joystick);
+
+/**
+ * @brief Request the specified Joystick device to update the current configuration
+ * @param Joystick The Joystick device to update
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Items updated can include rotation, maximum X and Y and flags (If supported)
+ */
 uint32_t STDCALL joystick_device_update(JOYSTICK_DEVICE *joystick);
 
+/**
+ * @brief Perform a control request on the specified Joystick device
+ * @param Joystick The Joystick device to control
+ * @param Request The request code for the operation (eg JOYSTICK_CONTROL_GET_FLAG)
+ * @param Argument1 The first argument for the operation (Dependent on request code)
+ * @param Argument2 The second argument for the operation (Dependent on request code)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL joystick_device_control(JOYSTICK_DEVICE *joystick, int request, size_t argument1, size_t *argument2);
 
+/**
+ * @brief Get the properties for the specified Joystick device
+ * @param Joystick The Joystick device to get properties from
+ * @param Properties Pointer to a TJoystickProperties structure to fill in
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL joystick_device_get_properties(JOYSTICK_DEVICE *joystick, JOYSTICK_PROPERTIES *properties);
 
+/**
+ * @brief Set the state of the specified joystick and send a notification
+ * @param Joystick The joystick to set the state for
+ * @param State The new state to set and notify
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL joystick_device_set_state(JOYSTICK_DEVICE *joystick, uint32_t state);
 
+/**
+ * @brief Create a new Joystick device entry
+ * @return Pointer to new Joystick device entry or nil if Joystick device could not be created
+ */
 JOYSTICK_DEVICE * STDCALL joystick_device_create(void);
+
+/**
+ * @brief Create a new Joystick device entry
+ * @param Size Size in bytes to allocate for new Joystick device (Including the Joystick device entry)
+ * @return Pointer to new Joystick device entry or nil if Joystick device could not be created
+ */
 JOYSTICK_DEVICE * STDCALL joystick_device_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing Joystick device entry
+ * @param Joystick The Joystick device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL joystick_device_destroy(JOYSTICK_DEVICE *joystick);
 
+/**
+ * @brief Register a new Joystick device in the Joystick device table
+ * @param Joystick The Joystick device to register
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL joystick_device_register(JOYSTICK_DEVICE *joystick);
+
+/**
+ * @brief Deregister a Joystick device from the Joystick device table
+ * @param Joystick The Joystick device to deregister
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL joystick_device_deregister(JOYSTICK_DEVICE *joystick);
 
+/**
+ * @brief Find a Joystick device by ID in the Joystick device table
+ * @param JoystickId The ID number of the Joystick device to find
+ * @return Pointer to Joystick device entry or nil if not found
+ */
 JOYSTICK_DEVICE * STDCALL joystick_device_find(uint32_t joystickid);
+
+/**
+ * @brief Find a Joystick device by name in the device table
+ * @param Name The name of the Joystick device to find (eg Joystick0)
+ * @return Pointer to Joystick device entry or nil if not found
+ */
 JOYSTICK_DEVICE * STDCALL joystick_device_find_by_name(const char *name);
+
+/**
+ * @brief Find a Joystick device by description in the device table
+ * @param Description The description of the Joystick to find (eg USB Gamepad)
+ * @return Pointer to Joystick device entry or nil if not found
+ */
 JOYSTICK_DEVICE * STDCALL joystick_device_find_by_description(const char *description);
+
+/**
+ * @brief Enumerate all Joystick devices in the Joystick device table
+ * @param Callback The callback function to call for each Joystick device in the table
+ * @param Data A private data pointer to pass to callback for each Joystick device in the table
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL joystick_device_enumerate(joystick_enumerate_cb callback, void *data);
 
+/**
+ * @brief Register a notification for Joystick device changes
+ * @param Joystick The Joystick device to notify changes for (Optional, pass nil for all Joystick devices)
+ * @param Callback The function to call when a notification event occurs
+ * @param Data A private data pointer to pass to callback when a notification event occurs
+ * @param Notification The events to register for notification of (eg DEVICE_NOTIFICATION_REGISTER)
+ * @param Flags The flags to control the notification (eg NOTIFIER_FLAG_WORKER)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL joystick_device_notification(JOYSTICK_DEVICE *joystick, joystick_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
 /** Joystick Helper Functions */
+
+/**
+ * @brief Get the current Joystick device count
+ * @return The number of Joystick devices
+ */
 uint32_t STDCALL joystick_get_count(void);
+
+/**
+ * @brief Get the current default Joystick device
+ * @return Pointer to default Joystick device entry
+ */
 JOYSTICK_DEVICE * STDCALL joystick_device_get_default(void);
+
+/**
+ * @brief Set the current default Joystick device
+ * @param Joystick The Joystick device to set as default
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL joystick_device_set_default(JOYSTICK_DEVICE *joystick);
 
+/**
+ * @brief Check if the supplied Joystick device is in the Joystick device table
+ * @param Joystick The Joystick device to check
+ * @return Pointer to Joystick device entry or nil if not found
+ */
 JOYSTICK_DEVICE * STDCALL joystick_device_check(JOYSTICK_DEVICE *joystick);
 
+/**
+ * @brief Return a string describing a Joystick or Gamepad Axis (eg JOYSTICK_AXIS_X)
+ */
 uint32_t STDCALL joystick_device_axis_to_string(uint32_t name, char *string, uint32_t len);
+
+/**
+ * @brief Return a string describing a Joystick or Gamepad Hat (eg JOYSTICK_HAT_POV)
+ */
 uint32_t STDCALL joystick_device_hat_to_string(uint32_t name, char *string, uint32_t len);
+
+/**
+ * @brief Return a string describing a Joystick or Gamepad Button (eg GAMEPAD_BUTTON_UP)
+ */
 uint32_t STDCALL joystick_device_button_to_string(uint32_t name, char *string, uint32_t len);
 
+/**
+ * @brief Return a string describing the Joystick device type (eg JOYSTICK_TYPE_JOYSTICK)
+ */
 uint32_t STDCALL joystick_device_type_to_string(uint32_t joysticktype, char *string, uint32_t len);
+
+/**
+ * @brief Return a string describing the Joystick device state (eg JOYSTICK_STATE_ENABLED)
+ */
 uint32_t STDCALL joystick_device_state_to_string(uint32_t joystickstate, char *string, uint32_t len);
 
+/**
+ * @brief Convert a Joystick state value into the notification code for device notifications
+ */
 uint32_t STDCALL joystick_device_state_to_notification(uint32_t state);
 
+/**
+ * @brief Get the name (identifier) of an Axis on the specified Joystick
+ * @param Joystick The Joystick device to get the name from
+ * @param Index The index of the Axis in the Joystick properties (First Axis is 0)
+ * @return The current name of the Axis (eg GAMEPAD_AXIS_LEFT_X)
+ */
 uint32_t STDCALL joystick_device_get_axis(JOYSTICK_DEVICE *joystick, uint32_t index);
+
+/**
+ * @brief Set the name (identifier) of an Axis on the specified Joystick
+ * @param Joystick The Joystick device to set the name for
+ * @param Index The index of the Axis in the Joystick properties (First Axis is 0)
+ * @param Name The name (identifier) to set for the Axis (eg JOYSTICK_AXIS_X
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL joystick_device_set_axis(JOYSTICK_DEVICE *joystick, uint32_t index, uint32_t name);
 
+/**
+ * @brief Get the name (identifier) of a Hat on the specified Joystick
+ * @param Joystick The Joystick device to get the name from
+ * @param Index The index of the Hat in the Joystick properties (First Hat is 0)
+ * @return The current name of the Hat (eg GAMEPAD_HAT_POV)
+ */
 uint32_t STDCALL joystick_device_get_hat(JOYSTICK_DEVICE *joystick, uint32_t index);
+
+/**
+ * @brief Set the name (identifier) of a Hat on the specified Joystick
+ * @param Joystick The Joystick device to set the name for
+ * @param Index The index of the Hat in the Joystick properties (First Hat is 0)
+ * @param Name The name (identifier) to set for the Hat (eg JOYSTICK_HAT_POV)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL joystick_device_set_hat(JOYSTICK_DEVICE *joystick, uint32_t index, uint32_t name);
 
+/**
+ * @brief Get the name (identifier) of a Button on the specified Joystick
+ * @param Joystick The Joystick device to get the name from
+ * @param Index The index of the Button in the Joystick properties (First Button is 0)
+ * @return The current name of the Button (eg GAMEPAD_BUTTON_B)
+ */
 uint32_t STDCALL joystick_device_get_button(JOYSTICK_DEVICE *joystick, uint32_t index);
+
+/**
+ * @brief Set the name (identifier) of a Button on the specified Joystick
+ * @param Joystick The Joystick device to set the name for
+ * @param Index The index of the Button in the Joystick properties (First Button is 0)
+ * @param Name The name (identifier) to set for the Button (eg GAMEPAD_BUTTON_LT)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL joystick_device_set_button(JOYSTICK_DEVICE *joystick, uint32_t index, uint32_t name);
 
+/**
+ * @brief Set the event callback function for the specified Joystick
+ * @param Joystick The Joystick device to set the event callback for
+ * @param Event The event callback function to be called when Joystick data is received
+ * @param Parameter A pointer to private data to be passed to the callback with each event
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL joystick_device_set_callback(JOYSTICK_DEVICE *joystick, joystick_event_cb event, void *parameter);
 
+/**
+ * @brief Insert a TJoystickData entry into the joystick device buffer
+ * @param Joystick The joystick device to insert data for
+ * @param Data The TJoystickData entry to insert
+ * @param Signal If True then signal that new data is available in the buffer
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Caller must hold the joystick device lock
+ */
 uint32_t STDCALL joystick_insert_data(JOYSTICK_DEVICE *joystick, JOYSTICK_DATA *data, BOOL signal);
 
 #ifdef __cplusplus

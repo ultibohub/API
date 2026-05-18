@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -128,11 +128,34 @@ uint32_t STDCALL logging_device_output_ex(LOGGING_DEVICE *logging, uint32_t faci
 uint32_t STDCALL logging_device_get_target(LOGGING_DEVICE *logging, char *target, uint32_t len);
 uint32_t STDCALL logging_device_set_target(LOGGING_DEVICE *logging, const char *target);
 
+/**
+ * @brief Create a new Logging device entry
+ * @param Default If true make the new device the default logging device if there is no current default
+ * @return Pointer to new Logging device entry or nil if Logging device could not be created
+ */
 LOGGING_DEVICE * STDCALL logging_device_create(BOOL _default);
+
+/**
+ * @brief Create a new Logging device entry
+ * @param Size Size in bytes to allocate for new Logging (Including the Logging entry)
+ * @param Default If true make the new device the default logging device if there is no current default
+ * @return Pointer to new Logging device entry or nil if Logging device could not be created
+ */
 LOGGING_DEVICE * STDCALL logging_device_create_ex(uint32_t size, BOOL _default);
+
+/**
+ * @brief Destroy an existing Logging device entry
+ */
 uint32_t STDCALL logging_device_destroy(LOGGING_DEVICE *logging);
 
+/**
+ * @brief Register a new Logging device in the Logging table
+ */
 uint32_t STDCALL logging_device_register(LOGGING_DEVICE *logging);
+
+/**
+ * @brief Deregister a Logging device from the Logging table
+ */
 uint32_t STDCALL logging_device_deregister(LOGGING_DEVICE *logging);
 
 LOGGING_DEVICE * STDCALL logging_device_find(uint32_t loggingid);
@@ -145,21 +168,58 @@ uint32_t STDCALL logging_device_enumerate(logging_enumerate_cb callback, void *d
 
 uint32_t STDCALL logging_device_notification(LOGGING_DEVICE *logging, logging_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
+/**
+ * @brief Output formatted text to a Logging device
+ * @param Logging The logging device to output text to
+ * @param Format The formatted text to output (As per printf in standard C library)
+ * @return On success the total number of characters output to the logging device, on error a negative value is returned and errno is set to the error code
+ */
 int STDCALL logging_device_outputf(LOGGING_DEVICE *logging, const char *format, ...) _ATTRIBUTE ((__format__ (__printf__, 2, 3)));
 
 /** Logging Helper Functions */
+
+/**
+ * @brief Get the current logging device count
+ */
 uint32_t STDCALL logging_device_get_count(void);
 
+/**
+ * @brief Get the current default logging device
+ */
 LOGGING_DEVICE * STDCALL logging_device_get_default(void);
+
+/**
+ * @brief Set the current default logging device
+ */
 uint32_t STDCALL logging_device_set_default(LOGGING_DEVICE *logging);
 
+/**
+ * @brief Check if the supplied Logging device is in the Logging table
+ */
 LOGGING_DEVICE * STDCALL logging_device_check(LOGGING_DEVICE *logging);
 
+/**
+ * @brief Convert a Logging type value to a string
+ */
 uint32_t STDCALL logging_type_to_string(uint32_t loggingtype, char *string, uint32_t len);
+
+/**
+ * @brief Convert a Logging state value to a string
+ */
 uint32_t STDCALL logging_state_to_string(uint32_t loggingstate, char *string, uint32_t len);
 
+/**
+ * @brief Redirect standard output to the logging device specified by Logging
+ * @param Logging The logging device to redirect output to (or nil to stop redirection)
+ * @return True if completed successfully or False if an error occurred
+ * @note Redirects the output of the text files Output, ErrOutput, StdOut and StdErr
+ *        which also redirects the output of Write, WriteLn and the standard C library
+ */
 BOOL STDCALL logging_device_redirect_output(LOGGING_DEVICE *logging);
 
+/**
+ * @brief Get the lock flags for the logging messageslot
+ */
 uint32_t STDCALL logging_get_messageslot_flags(void);
 
 uint32_t STDCALL logging_console_device_add(CONSOLE_DEVICE *console);

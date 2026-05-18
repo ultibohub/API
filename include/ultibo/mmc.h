@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -2398,10 +2398,37 @@ uint32_t STDCALL mmc_device_stop_transmission(MMC_DEVICE *mmc);
 uint32_t STDCALL mmc_device_select_card(MMC_DEVICE *mmc);
 uint32_t STDCALL mmc_device_deselect_card(MMC_DEVICE *mmc);
 
+/**
+ * @brief Modifies an Extended CSD register for the specificed MMC device
+ * @param MMC The MMC Device to modify
+ * @param Setting The Extended CSD command set (eg EXT_CSD_CMD_SET_NORMAL)
+ * @param Index The index of the Extended CSD register to be set
+ * @param Value The value to be set in the Extended CSD register
+ * @param Timeout Command timeout in milliseconds
+ */
 uint32_t STDCALL mmc_device_switch(MMC_DEVICE *mmc, uint8_t setting, uint8_t index, uint8_t value, uint32_t timeout);
+
+/**
+ * @brief Modifies an Extended CSD register for the specificed MMC device
+ * @param MMC The MMC Device to modify
+ * @param Setting The Extended CSD command set (eg EXT_CSD_CMD_SET_NORMAL)
+ * @param Index The index of the Extended CSD register to be set
+ * @param Value The value to be set in the Extended CSD register
+ * @param Timeout Command timeout in milliseconds
+ * @param Timing New timing to enable after change (eg MMC_TIMING_MMC_HS)
+ * @param SendStatus Use the MMC_CMD_SEND_STATUS command to poll for busy
+ * @param RetryCRCError Retry if CRC error occurs when polling for busy
+ */
 uint32_t STDCALL mmc_device_switch_ex(MMC_DEVICE *mmc, uint8_t setting, uint8_t index, uint8_t value, uint32_t timeout, uint32_t timing, BOOL sendstatus, BOOL retrycrcerror);
 
+/**
+ * @brief Poll the specified MMC device for command completion using busy status
+ */
 uint32_t STDCALL mmc_device_poll_for_busy(MMC_DEVICE *mmc, uint32_t timeout, uint32_t command);
+
+/**
+ * @brief Poll the specified MMC device for command completion using busy status
+ */
 uint32_t STDCALL mmc_device_poll_for_busy_ex(MMC_DEVICE *mmc, uint32_t timeout, uint32_t command, BOOL sendstatus, BOOL retrycrcerror);
 
 uint32_t STDCALL mmc_device_send_card_status(MMC_DEVICE *mmc);
@@ -2409,10 +2436,18 @@ uint32_t STDCALL mmc_device_send_card_status(MMC_DEVICE *mmc);
 uint32_t STDCALL mmc_device_send_operation_condition(MMC_DEVICE *mmc, BOOL probe);
 
 uint32_t STDCALL mmc_device_send_card_specific(MMC_DEVICE *mmc);
+
+/**
+ * @brief Given a 128-bit response, decode to our card CSD structure
+ */
 uint32_t STDCALL mmc_device_decode_card_specific(MMC_DEVICE *mmc);
 
 uint32_t STDCALL mmc_device_send_card_identification(MMC_DEVICE *mmc);
 uint32_t STDCALL mmc_device_send_all_card_identification(MMC_DEVICE *mmc);
+
+/**
+ * @brief Given a 128-bit response, decode to our card CID structure
+ */
 uint32_t STDCALL mmc_device_decode_card_identification(MMC_DEVICE *mmc);
 
 uint32_t STDCALL mmc_device_get_extended_card_specific(MMC_DEVICE *mmc);
@@ -2435,14 +2470,41 @@ uint32_t STDCALL mmc_device_get_write_protect(MMC_DEVICE *mmc);
 uint32_t STDCALL mmc_device_send_command(MMC_DEVICE *mmc, MMC_COMMAND *command);
 uint32_t STDCALL mmc_device_set_ios(MMC_DEVICE *mmc);
 
+/**
+ * @brief Create a new MMC entry
+ * @return Pointer to new MMC entry or nil if MMC could not be created
+ */
 MMC_DEVICE * STDCALL mmc_device_create(void);
+
+/**
+ * @brief Create a new MMC entry
+ * @param Size Size in bytes to allocate for new MMC (Including the MMC entry)
+ * @return Pointer to new MMC entry or nil if MMC could not be created
+ */
 MMC_DEVICE * STDCALL mmc_device_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing MMC entry
+ */
 uint32_t STDCALL mmc_device_destroy(MMC_DEVICE *mmc);
 
+/**
+ * @brief Register a new MMC in the MMC table
+ */
 uint32_t STDCALL mmc_device_register(MMC_DEVICE *mmc);
+
+/**
+ * @brief Deregister a MMC from the MMC table
+ */
 uint32_t STDCALL mmc_device_deregister(MMC_DEVICE *mmc);
 
 MMC_DEVICE * STDCALL mmc_device_find(uint32_t mmcid);
+
+/**
+ * @brief Find an MMC/SD device by the matching DeviceData property
+ * @param Device The device entry to match with the DeviceData value
+ * @return The MMC/SD device matched or nil if none found
+ */
 MMC_DEVICE * STDCALL mmc_device_find_by_device(DEVICE *device);
 MMC_DEVICE * STDCALL mmc_device_find_by_name(const char *name);
 MMC_DEVICE * STDCALL mmc_device_find_by_description(const char *description);
@@ -2462,9 +2524,17 @@ uint32_t STDCALL sd_device_send_interface_condition(MMC_DEVICE *mmc);
 uint32_t STDCALL sd_device_send_operation_condition(MMC_DEVICE *mmc, BOOL probe);
 
 uint32_t STDCALL sd_device_get_card_specific(MMC_DEVICE *mmc);
+
+/**
+ * @brief Given a 128-bit response, decode to our card CSD structure
+ */
 uint32_t STDCALL sd_device_decode_card_specific(MMC_DEVICE *mmc);
 
 uint32_t STDCALL sd_device_get_card_identification(MMC_DEVICE *mmc);
+
+/**
+ * @brief Given a 128-bit response, decode to our card CID structure
+ */
 uint32_t STDCALL sd_device_decode_card_identification(MMC_DEVICE *mmc);
 
 uint32_t STDCALL sd_device_send_sd_status(MMC_DEVICE *mmc);
@@ -2474,6 +2544,10 @@ uint32_t STDCALL sd_device_send_sd_switch(MMC_DEVICE *mmc);
 uint32_t STDCALL sd_device_decode_sd_switch(MMC_DEVICE *mmc);
 
 uint32_t STDCALL sd_device_send_sd_configuration(MMC_DEVICE *mmc);
+
+/**
+ * @brief Given a 64-bit response, decode to our card SCR structure
+ */
 uint32_t STDCALL sd_device_decode_sd_configuration(MMC_DEVICE *mmc);
 
 uint32_t STDCALL sd_device_send_relative_address(MMC_DEVICE *mmc);
@@ -2495,7 +2569,14 @@ uint32_t STDCALL sdio_device_send_operation_condition(MMC_DEVICE *mmc, BOOL prob
 uint32_t STDCALL sdio_device_read_write_direct(MMC_DEVICE *mmc, BOOL write, uint32_t operation, uint32_t address, uint8_t input, uint8_t *output);
 uint32_t STDCALL sdio_device_read_write_extended(MMC_DEVICE *mmc, BOOL write, uint32_t operation, uint32_t address, BOOL increment, void *buffer, uint32_t blockcount, uint32_t blocksize);
 
+/**
+ * @brief Wrapper for reading a single byte from Function 0
+ */
 uint32_t STDCALL sdio_device_read_byte(MMC_DEVICE *mmc, uint32_t address, uint8_t *output);
+
+/**
+ * @brief Wrapper for writing a single byte to Function 0
+ */
 uint32_t STDCALL sdio_device_write_byte(MMC_DEVICE *mmc, uint32_t address, uint8_t input);
 
 uint32_t STDCALL sdio_device_read_cccr(MMC_DEVICE *mmc);
@@ -2511,7 +2592,19 @@ uint32_t STDCALL sdio_device_process_interrupts(MMC_DEVICE *mmc);
 uint32_t STDCALL sdio_device_register_interrupt(MMC_DEVICE *mmc, SDIO_FUNCTION *func, sdio_interrupt_handler handler);
 uint32_t STDCALL sdio_device_deregister_interrupt(MMC_DEVICE *mmc, SDIO_FUNCTION *func);
 
+/**
+ * @brief Attempt to bind SDIO functions on an MMC device to one of the registered drivers
+ * @param MMC The MMC device to attempt to bind a driver to
+ * @return MMC_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL sdio_device_bind_functions(MMC_DEVICE *mmc);
+
+/**
+ * @brief Unbind SDIO functions on an MMC device from a driver
+ * @param MMC The MMC device to unbind a driver from
+ * @param Driver The driver to unbind the MMC device from (nil to unbind from current driver)
+ * @return MMC_STATUS_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL sdio_device_unbind_functions(MMC_DEVICE *mmc, SDIO_DRIVER *driver);
 
 /// Function Methods
@@ -2530,19 +2623,55 @@ uint32_t STDCALL sdio_function_disable(SDIO_FUNCTION *func);
 
 uint32_t STDCALL sdio_function_set_block_size(SDIO_FUNCTION *func, uint32_t blocksize);
 
+/**
+ * @brief Perform an SDIO read or write to the specified function at the specified address
+ * Handles splitting any size read or write into multiple IO_RW_EXTENDED requests, accounting for maximum block sizes
+ */
 uint32_t STDCALL sdio_function_read_write_extended(SDIO_FUNCTION *func, BOOL write, uint32_t address, BOOL increment, void *buffer, uint32_t size);
 
+/**
+ * @brief Wrapper for reading multiple bytes from an SDIO function
+ */
 uint32_t STDCALL sdio_function_read(SDIO_FUNCTION *func, uint32_t address, void *buffer, uint32_t size);
+
+/**
+ * @brief Wrapper for writing multiple bytes to an SDIO function
+ */
 uint32_t STDCALL sdio_function_write(SDIO_FUNCTION *func, uint32_t address, void *buffer, uint32_t size);
 
+/**
+ * @brief Wrapper for reading a single byte from an SDIO function
+ */
 uint32_t STDCALL sdio_function_read_byte(SDIO_FUNCTION *func, uint32_t address, uint8_t *output);
+
+/**
+ * @brief Wrapper for writing a single byte to an SDIO function
+ */
 uint32_t STDCALL sdio_function_write_byte(SDIO_FUNCTION *func, uint32_t address, uint8_t input);
+
+/**
+ * @brief Wrapper for performing a read after write (RAW) operation on an SDIO function
+ */
 uint32_t STDCALL sdio_function_write_read_byte(SDIO_FUNCTION *func, uint32_t address, uint8_t input, uint8_t *output);
 
+/**
+ * @brief Wrapper for reading a single word from an SDIO function
+ */
 uint32_t STDCALL sdio_function_read_word(SDIO_FUNCTION *func, uint32_t address, uint16_t *output);
+
+/**
+ * @brief Wrapper for writing a single word to an SDIO function
+ */
 uint32_t STDCALL sdio_function_write_word(SDIO_FUNCTION *func, uint32_t address, uint16_t input);
 
+/**
+ * @brief Wrapper for reading a single longword from an SDIO function
+ */
 uint32_t STDCALL sdio_function_read_long(SDIO_FUNCTION *func, uint32_t address, uint32_t *output);
+
+/**
+ * @brief Wrapper for writing a single longword to an SDIO function
+ */
 uint32_t STDCALL sdio_function_write_long(SDIO_FUNCTION *func, uint32_t address, uint32_t input);
 
 uint32_t STDCALL sdio_function_register_interrupt(SDIO_FUNCTION *func, sdio_interrupt_handler handler);
@@ -2552,73 +2681,302 @@ uint32_t STDCALL sdio_function_deregister_interrupt(SDIO_FUNCTION *func);
 uint32_t STDCALL sdio_host_dispatch_interrupt(SDHCI_HOST *sdhci, BOOL irq, BOOL fiq);
 
 /// Driver Methods
+
+/**
+ * @brief Create a new SDIO Driver entry
+ * @return Pointer to new Driver entry or nil if driver could not be created
+ */
 SDIO_DRIVER * STDCALL sdio_driver_create(void);
+
+/**
+ * @brief Create a new SDIO Driver entry
+ * @param Size Size in bytes to allocate for new driver (Including the driver entry)
+ * @return Pointer to new Driver entry or nil if driver could not be created
+ */
 SDIO_DRIVER * STDCALL sdio_driver_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing SDIO Driver entry
+ */
 uint32_t STDCALL sdio_driver_destroy(SDIO_DRIVER *driver);
 
+/**
+ * @brief Register a new Driver in the SDIO Driver table
+ */
 uint32_t STDCALL sdio_driver_register(SDIO_DRIVER *driver);
+
+/**
+ * @brief Deregister a Driver from the SDIO Driver table
+ */
 uint32_t STDCALL sdio_driver_deregister(SDIO_DRIVER *driver);
 
+/**
+ * @brief Find a driver by Id in the SDIO Driver table
+ */
 SDIO_DRIVER * STDCALL sdio_driver_find(uint32_t driverid);
+
+/**
+ * @brief Find a driver by name in the Driver table
+ */
 SDIO_DRIVER * STDCALL sdio_driver_find_by_name(const char *name);
 uint32_t STDCALL sdio_driver_enumerate(sdio_driver_enumerate_cb callback, void *data);
 
 /** SDHCI Functions */
+
+/**
+ * @brief Default software reset function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ * @see Section 3.3 of SD Host Controller Simplified Specification V3.0 partA2_300.pdf
+ */
 uint32_t STDCALL sdhci_host_reset(SDHCI_HOST *sdhci, uint8_t mask);
+
+/**
+ * @brief Default hardware reset function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_hardware_reset(SDHCI_HOST *sdhci);
 
+/**
+ * @brief Default set power function for SDHCI host controllers
+ * @param Power A shift value to indicate the first available value in the Voltages mask
+ *        Caller can use FirstBitSet(SDHCI.Voltages) to obtain the value of Power
+ *        If there are no values set then Power will be -1 ($FFFF) to indicate nothing or unknown
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ * @see Section 3.3 of SD Host Controller Simplified Specification V3.0 partA2_300.pdf
+ */
 uint32_t STDCALL sdhci_host_set_power(SDHCI_HOST *sdhci, uint16_t power);
+
+/**
+ * @brief Default set clock function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ * @see Section 3.2 of SD Host Controller Simplified Specification V3.0 partA2_300.pdf
+ */
 uint32_t STDCALL sdhci_host_set_clock(SDHCI_HOST *sdhci, uint32_t clock);
+
+/**
+ * @brief Default set timing function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_set_timing(SDHCI_HOST *sdhci, uint32_t timing);
+
+/**
+ * @brief Default set bus width function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_set_bus_width(SDHCI_HOST *sdhci, uint32_t buswidth);
 
+/**
+ * @brief Default DMA transfer prepare function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_prepare_dma(SDHCI_HOST *sdhci, MMC_COMMAND *command);
+
+/**
+ * @brief Default DMA transfer start function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_start_dma(SDHCI_HOST *sdhci, MMC_COMMAND *command);
+
+/**
+ * @brief Default DMA transfer stop function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_stop_dma(SDHCI_HOST *sdhci, MMC_COMMAND *command);
+
+/**
+ * @brief Default DMA request completion callback for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 void STDCALL sdhci_host_complete_dma(DMA_REQUEST *request);
 
+/**
+ * @brief Default Card IRQ setup function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_setup_card_irq(SDHCI_HOST *sdhci, LONGBOOL enable);
+
+/**
+ * @brief Default Card IRQ completion function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_complete_card_irq(SDHCI_HOST *sdhci);
 
+/**
+ * @brief Default PIO transfer function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_transfer_pio(SDHCI_HOST *sdhci);
+
+/**
+ * @brief Default DMA transfer function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_transfer_dma(SDHCI_HOST *sdhci);
 
+/**
+ * @brief Default finish command function for SDHCI host controllers
+ * Called by Interrupt Command handler when an SDHCI_INT_RESPONSE is received
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_finish_command(SDHCI_HOST *sdhci);
+
+/**
+ * @brief Default finish data function for SDHCI host controllers
+ * Called by Interrupt Data handler when data is received
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_finish_data(SDHCI_HOST *sdhci);
 
+/**
+ * @brief Default command interrupt processing function for SDHCI host controllers
+ * Called by SDHCI controller interrupt handler when a command interrupt is received
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_command_interrupt(SDHCI_HOST *sdhci, uint32_t interruptmask, uint32_t *returnmask);
+
+/**
+ * @brief Default data interrupt processing function for SDHCI host controllers
+ * Called by SDHCI controller interrupt handler when a data interrupt is received
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_data_interrupt(SDHCI_HOST *sdhci, uint32_t interruptmask);
 
+/**
+ * @brief Default host start function for SDHCI host controllers
+ * Called automatically to start each registered SDHCI controller when required
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_start(SDHCI_HOST *sdhci);
+
+/**
+ * @brief Default host stop function for SDHCI host controllers
+ * Called automatically to stop each registered SDHCI controller when required
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_stop(SDHCI_HOST *sdhci);
 
+/**
+ * @brief Default host lock function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_lock(SDHCI_HOST *sdhci);
+
+/**
+ * @brief Default host unlock function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_unlock(SDHCI_HOST *sdhci);
 
+/**
+ * @brief Default host semaphore signal function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_signal(SDHCI_HOST *sdhci, SEMAPHORE_HANDLE semaphore);
 
+/**
+ * @brief Default read byte function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint8_t STDCALL sdhci_host_read_byte(SDHCI_HOST *sdhci, uint32_t reg);
+
+/**
+ * @brief Default read word function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint16_t STDCALL sdhci_host_read_word(SDHCI_HOST *sdhci, uint32_t reg);
+
+/**
+ * @brief Default read longword function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_read_long(SDHCI_HOST *sdhci, uint32_t reg);
+
+/**
+ * @brief Default write byte function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 void STDCALL sdhci_host_write_byte(SDHCI_HOST *sdhci, uint32_t reg, uint8_t value);
+
+/**
+ * @brief Default write word function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 void STDCALL sdhci_host_write_word(SDHCI_HOST *sdhci, uint32_t reg, uint16_t value);
+
+/**
+ * @brief Default write longword function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 void STDCALL sdhci_host_write_long(SDHCI_HOST *sdhci, uint32_t reg, uint32_t value);
 
+/**
+ * @brief Default set clock divider function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_set_clock_divider(SDHCI_HOST *sdhci, int index, uint32_t divider);
+
+/**
+ * @brief Default set control register function for SDHCI host controllers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 uint32_t STDCALL sdhci_host_set_control_register(SDHCI_HOST *sdhci);
 
+/**
+ * @brief Get the DMA address of the ADMA table for the current request
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 size_t STDCALL sdhci_host_get_adma_address(SDHCI_HOST *sdhci);
+
+/**
+ * @brief Set the address of the transfer data in the Advanced DMA (ADMA) registers
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 void STDCALL sdhci_host_set_adma_address(SDHCI_HOST *sdhci, size_t address);
+
+/**
+ * @brief Get the DMA address of the transfer data for the current request
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 size_t STDCALL sdhci_host_get_sdma_address(SDHCI_HOST *sdhci, MMC_COMMAND *command);
+
+/**
+ * @brief Set the address of the transfer data in the Simple DMA (SDMA) register
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 void STDCALL sdhci_host_set_sdma_address(SDHCI_HOST *sdhci, size_t address);
 
+/**
+ * @brief Write the properties to an ADMA descriptor
+ * @note Not intended to be called directly by applications, may be used by SDHCI drivers
+ */
 void STDCALL sdhci_host_write_adma_descriptor(SDHCI_HOST *sdhci, void *descriptor, uint16_t command, uint16_t len, size_t address);
 
+/**
+ * @brief Create a new SDHCI entry
+ * @return Pointer to new SDHCI entry or nil if SDHCI could not be created
+ */
 SDHCI_HOST * STDCALL sdhci_host_create(void);
+
+/**
+ * @brief Create a new SDHCI entry
+ * @param Size Size in bytes to allocate for new SDHCI (Including the SDHCI entry)
+ * @return Pointer to new SDHCI entry or nil if SDHCI could not be created
+ */
 SDHCI_HOST * STDCALL sdhci_host_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing SDHCI entry
+ */
 uint32_t STDCALL sdhci_host_destroy(SDHCI_HOST *sdhci);
 
+/**
+ * @brief Register a new SDHCI in the SDHCI table
+ */
 uint32_t STDCALL sdhci_host_register(SDHCI_HOST *sdhci);
+
+/**
+ * @brief Deregister a SDHCI from the SDHCI table
+ */
 uint32_t STDCALL sdhci_host_deregister(SDHCI_HOST *sdhci);
 
 SDHCI_HOST * STDCALL sdhci_host_find(uint32_t sdhciid);
@@ -2627,6 +2985,10 @@ uint32_t STDCALL sdhci_host_enumerate(sdhci_enumerate_cb callback, void *data);
 uint32_t STDCALL sdhci_host_notification(SDHCI_HOST *sdhci, sdhci_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
 /** MMC Helper Functions */
+
+/**
+ * @brief Get the current MMC count
+ */
 uint32_t STDCALL mmc_get_count(void);
 
 MMC_DEVICE * STDCALL mmc_device_check(MMC_DEVICE *mmc);
@@ -2636,10 +2998,28 @@ BOOL STDCALL mmc_is_sdio(MMC_DEVICE *mmc);
 
 SDHCI_HOST * STDCALL mmc_get_sdhci(MMC_DEVICE *mmc);
 
+/**
+ * @brief Extract a CID field value from the 128 bit Card Identification register
+ */
 uint32_t STDCALL mmc_get_cid_value(MMC_DEVICE *mmc, uint32_t version, uint32_t value);
+
+/**
+ * @brief Extract a CSD field value from the 128 bit Card Specific register
+ */
 uint32_t STDCALL mmc_get_csd_value(MMC_DEVICE *mmc, uint32_t value);
 
+/**
+ * @brief Start is the starting bit to extract, Size is the number of bits to extract
+ * Start is the LSB so to extract 8 bits from 127 to 120 then Start would be 120 and Size would be 8
+ */
 uint32_t STDCALL mmc_extract_bits(void *buffer, uint32_t start, uint32_t size);
+
+/**
+ * @brief Length is the size of the buffer in LongWords, Start is the starting bit to extract, Size is the number of bits to extract
+ * Start is the LSB so to extract 8 bits from 127 to 120 then Start would be 120 and Size would be 8
+ * For a 128 bit buffer (16 bytes) Length would be 4
+ * For a 512 bit buffer (64 bytes) Length would be 16
+ */
 uint32_t STDCALL mmc_extract_bits_ex(void *buffer, uint32_t length, uint32_t start, uint32_t size);
 
 BOOL STDCALL mmc_is_multi_command(uint16_t command);
@@ -2650,52 +3030,134 @@ BOOL STDCALL mmc_has_set_block_count(MMC_DEVICE *mmc);
 BOOL STDCALL mmc_has_auto_block_count(MMC_DEVICE *mmc);
 BOOL STDCALL mmc_has_auto_command_stop(MMC_DEVICE *mmc);
 
+/**
+ * @brief Translates an MMC status code into a string describing it
+ */
 uint32_t STDCALL mmc_status_to_string(uint32_t status, char *string, uint32_t len);
 
+/**
+ * @brief Translates an MMC version into a string
+ */
 uint32_t STDCALL mmc_version_to_string(uint32_t version, char *string, uint32_t len);
+
+/**
+ * @brief Translates an MMC timing into a string
+ */
 uint32_t STDCALL mmc_timing_to_string(uint32_t timing, char *string, uint32_t len);
+
+/**
+ * @brief Translates an MMC bus width into a string
+ */
 uint32_t STDCALL mmc_bus_width_to_string(uint32_t buswidth, char *string, uint32_t len);
+
+/**
+ * @brief Translates an MMC driver type into a string
+ */
 uint32_t STDCALL mmc_driver_type_to_string(uint32_t drivertype, char *string, uint32_t len);
+
+/**
+ * @brief Translates an MMC signal voltage into a string
+ */
 uint32_t STDCALL mmc_signal_voltage_to_string(uint32_t signalvoltage, char *string, uint32_t len);
 
 uint32_t STDCALL mmc_device_type_to_string(uint32_t mmctype, char *string, uint32_t len);
 uint32_t STDCALL mmc_device_state_to_string(uint32_t mmcstate, char *string, uint32_t len);
 
+/**
+ * @brief Convert a Device state value into the notification code for device notifications
+ */
 uint32_t STDCALL mmc_device_state_to_notification(uint32_t state);
 
 /** SD Helper Functions */
+
+/**
+ * @brief Determine the Maximum Clock (DTR) for the current card
+ */
 uint32_t STDCALL sd_get_max_clock(MMC_DEVICE *mmc);
 
+/**
+ * @brief Extract a CID field value from the 128 bit Card Identification register
+ */
 uint32_t STDCALL sd_get_cid_value(MMC_DEVICE *mmc, uint32_t value);
+
+/**
+ * @brief Extract a CSD field value from the 128 bit Card Specific register
+ */
 uint32_t STDCALL sd_get_csd_value(MMC_DEVICE *mmc, uint32_t version, uint32_t value);
+
+/**
+ * @brief Extract an SCR field value from the 64 bit SD Configuration register
+ */
 uint32_t STDCALL sd_get_scr_value(MMC_DEVICE *mmc, uint32_t value);
+
+/**
+ * @brief Extract an SCR field value from the 512 bit SD Status register
+ */
 uint32_t STDCALL sd_get_ssr_value(MMC_DEVICE *mmc, uint32_t value);
+
+/**
+ * @brief Extract a Switch field value from the 512 bit SD Switch status
+ */
 uint32_t STDCALL sd_get_switch_value(MMC_DEVICE *mmc, uint32_t value);
 
+/**
+ * @brief Translates an SD version into a string
+ */
 uint32_t STDCALL sd_version_to_string(uint32_t version, char *string, uint32_t len);
+
+/**
+ * @brief Translates an SD bus width into a string
+ */
 uint32_t STDCALL sd_bus_width_to_string(uint32_t buswidth, char *string, uint32_t len);
 
 /** SDIO Helper Functions */
+
+/**
+ * @brief Get the current SDIO driver count
+ */
 uint32_t STDCALL sdio_driver_get_count(void);
 
+/**
+ * @brief Check if the supplied SDIO Driver is in the driver table
+ */
 SDIO_DRIVER * STDCALL sdio_driver_check(SDIO_DRIVER *driver);
 
+/**
+ * @brief Determine the Maximum Clock (DTR) for the current SDIO device
+ */
 uint32_t STDCALL sdio_device_get_max_clock(MMC_DEVICE *mmc);
 
 MMC_DEVICE * STDCALL sdio_function_get_mmc(SDIO_FUNCTION *func);
 SDHCI_HOST * STDCALL sdio_function_get_sdhci(SDIO_FUNCTION *func);
 
+/**
+ * @brief Translates an SDIO version into a string
+ */
 uint32_t STDCALL sdio_version_to_string(uint32_t version, char *string, uint32_t len);
 
 uint32_t STDCALL sdio_function_state_to_string(uint32_t sdiostate, char *string, uint32_t len);
 uint32_t STDCALL sdio_function_status_to_string(uint32_t sdiostatus, char *string, uint32_t len);
 
+/**
+ * @brief Convert a Device state value into the notification code for device notifications
+ */
 uint32_t STDCALL sdio_function_state_to_notification(uint32_t state);
+
+/**
+ * @brief Convert a Device status value into the notification code for device notifications
+ */
 uint32_t STDCALL sdio_function_status_to_notification(uint32_t status);
 
 /** SDHCI Helper Functions */
+
+/**
+ * @brief Get the current SDHCI count
+ */
 uint32_t STDCALL sdhci_get_count(void);
 
+/**
+ * @brief Check if the supplied SDHCI is in the SDHCI table
+ */
 SDHCI_HOST * STDCALL sdhci_host_check(SDHCI_HOST *sdhci);
 
 BOOL STDCALL sdhci_is_spi(SDHCI_HOST *sdhci);
@@ -2710,7 +3172,14 @@ uint16_t STDCALL sdhci_get_command(uint16_t command);
 uint16_t STDCALL sdhci_make_command(uint16_t command, uint16_t flags);
 uint16_t STDCALL sdhci_make_block_size(uint16_t dma, uint16_t blocksize);
 
+/**
+ * @brief Translate an SDHCI version into a string
+ */
 uint32_t STDCALL sdhci_version_to_string(uint32_t version, char *name, uint32_t len);
+
+/**
+ * @brief Translate an SDHCI power value into a string
+ */
 uint32_t STDCALL sdhci_power_to_string(uint32_t power, char *name, uint32_t len);
 
 uint32_t STDCALL sdhci_device_type_to_string(uint32_t sdhcitype, char *name, uint32_t len);
@@ -2718,6 +3187,9 @@ uint32_t STDCALL sdhci_host_type_to_string(uint32_t sdhcitype, char *name, uint3
 uint32_t STDCALL sdhci_device_state_to_string(uint32_t sdhcistate, char *name, uint32_t len);
 uint32_t STDCALL sdhci_host_state_to_string(uint32_t sdhcistate, char *name, uint32_t len);
 
+/**
+ * @brief Convert a Host state value into the notification code for device notifications
+ */
 uint32_t STDCALL sdhci_host_state_to_notification(uint32_t state);
 
 #ifdef __cplusplus

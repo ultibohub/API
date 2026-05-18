@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -941,6 +941,9 @@ typedef struct _EXTFS_BOOT_SECTOR
 uint32_t STDCALL file_sys_start(void);
 uint32_t STDCALL file_sys_stop(void);
 
+/**
+ * @brief Returns True if the filesystem has been started
+ */
 BOOL STDCALL file_sys_start_completed(void);
 
 void STDCALL file_sys_async_start(void *data);
@@ -1082,9 +1085,28 @@ BOOL STDCALL RemoveDirectory(const char *lppathname);
 BOOL STDCALL SetCurrentDirectory(const char *lppathname);
 
 /** FileSystem Helper Functions */
+
+/**
+ * @brief Redirect standard input to the file specified by Handle
+ * @param Handle The file handle to redirect input to (or INVALID_HANDLE_VALUE to stop redirection)
+ * @return True if completed successfully or False if an error occurred
+ * @note Redirects the input of the text file Input which also
+ *        redirects the input of Read, ReadLn and the standard C library
+ */
 BOOL STDCALL file_sys_redirect_input(HANDLE handle);
+
+/**
+ * @brief Redirect standard output to the file specified by Handle
+ * @param Handle The file handle to redirect output to (or INVALID_HANDLE_VALUE to stop redirection)
+ * @return True if completed successfully or False if an error occurred
+ * @note Redirects the output of the text files Output, ErrOutput, StdOut and StdErr
+ *        which also redirects the output of Write, WriteLn and the standard C library
+ */
 BOOL STDCALL file_sys_redirect_output(HANDLE handle);
 
+/**
+ * @brief Sort partitions in order of start sector
+ */
 int STDCALL compare_partitions(void *partition1, void *partition2);
 
 uint32_t STDCALL disk_media_type_to_string(MEDIA_TYPE _type, char *string, uint32_t len);
@@ -1100,7 +1122,19 @@ uint32_t STDCALL partition_id_to_string(uint8_t id, char *string, uint32_t len);
 uint8_t STDCALL string_to_partition_id(char *partitionid);
 
 uint32_t STDCALL cache_mode_to_string(CACHE_MODE cachemode, char *string, uint32_t len);
+
+/**
+ * @brief Convert a cache mode constant to a cache mode enum
+ * @param CacheMode The cache mode constant (eg FILESYS_CACHE_MODE_READONLY)
+ * @return The cache mode enum value (eg cmREADONLY)
+ */
 CACHE_MODE STDCALL const_to_cache_mode(uint32_t cachemode);
+
+/**
+ * @brief Convert a string value to a cache mode enum
+ * @param CacheMode The cache mode string value (eg READONLY)
+ * @return The cache mode enum value (eg cmREADONLY)
+ */
 CACHE_MODE STDCALL string_to_cache_mode(char *cachemode);
 uint32_t STDCALL cache_state_to_string(CACHE_STATE cachestate, char *string, uint32_t len);
 

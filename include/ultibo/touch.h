@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -203,52 +203,233 @@ struct _TOUCH_DEVICE
 };
 
 /** Touch Functions */
+
+/**
+ * @brief Start the specified Touch device ready for receiving events
+ * @param Touch The Touch device to start
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL touch_device_start(TOUCH_DEVICE *touch);
+
+/**
+ * @brief Stop the specified Touch device and terminate receiving events
+ * @param Touch The Touch device to stop
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL touch_device_stop(TOUCH_DEVICE *touch);
 
+/**
+ * @brief Peek at the buffer of the specified touch device to see if any data packets are ready
+ * @param Touch The Touch device to peek at
+ * @return ERROR_SUCCESS if packets are ready, ERROR_NO_MORE_ITEMS if not or another error code on failure
+ */
 uint32_t STDCALL touch_device_peek(TOUCH_DEVICE *touch);
 
+/**
+ * @brief Read touch data packets from the buffer of the specified touch device
+ * @param Touch The Touch device to read from
+ * @param Buffer Pointer to a buffer to copy the touch data packets to
+ * @param Size The size of the buffer in bytes (Must be at least TTouchData or greater)
+ * @param Flags The flags for the behaviour of the read (eg TOUCH_FLAG_NON_BLOCK)
+ * @param Count The number of touch data packets copied to the buffer
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL touch_device_read(TOUCH_DEVICE *touch, void *buffer, uint32_t size, uint32_t flags, uint32_t *count);
+
+/**
+ * @brief Write touch data packets to the buffer of the specified touch device
+ * @param Touch The Touch device to write to
+ * @param Buffer Pointer to a buffer to copy the touch data packets from
+ * @param Size The size of the buffer in bytes (Must be at least TTouchData or greater)
+ * @param Count The number of touch data packets to copy from the buffer
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL touch_device_write(TOUCH_DEVICE *touch, void *buffer, uint32_t size, uint32_t count);
 
+/**
+ * @brief Flush the contents of the buffer of the specified touch device
+ * @param Touch The Touch device to flush
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL touch_device_flush(TOUCH_DEVICE *touch);
+
+/**
+ * @brief Request the specified touch device to update the current configuration
+ * @param Touch The Touch device to update
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Items updated can include rotation, maximum X and Y and flags (If supported)
+ */
 uint32_t STDCALL touch_device_update(TOUCH_DEVICE *touch);
 
+/**
+ * @brief Perform a control request on the specified touch device
+ * @param Touch The Touch device to control
+ * @param Request The request code for the operation (eg TOUCH_CONTROL_GET_FLAG)
+ * @param Argument1 The first argument for the operation (Dependent on request code)
+ * @param Argument2 The second argument for the operation (Dependent on request code)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL touch_device_control(TOUCH_DEVICE *touch, int request, size_t argument1, size_t *argument2);
 
+/**
+ * @brief Get the properties for the specified Touch device
+ * @param Touch The Touch device to get properties from
+ * @param Properties Pointer to a TTouchProperties structure to fill in
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Replaced by TouchDeviceGetProperties for consistency
+ */
 uint32_t STDCALL touch_device_properties(TOUCH_DEVICE *touch, TOUCH_PROPERTIES *properties);
+
+/**
+ * @brief Get the properties for the specified Touch device
+ * @param Touch The Touch device to get properties from
+ * @param Properties Pointer to a TTouchProperties structure to fill in
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL touch_device_get_properties(TOUCH_DEVICE *touch, TOUCH_PROPERTIES *properties);
 
+/**
+ * @brief Create a new Touch device entry
+ * @return Pointer to new Touch device entry or nil if Touch device could not be created
+ */
 TOUCH_DEVICE * STDCALL touch_device_create(void);
+
+/**
+ * @brief Create a new Touch device entry
+ * @param Size Size in bytes to allocate for new Touch device (Including the Touch device entry)
+ * @return Pointer to new Touch device entry or nil if Touch device could not be created
+ */
 TOUCH_DEVICE * STDCALL touch_device_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing Touch device entry
+ * @param Touch The Touch device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL touch_device_destroy(TOUCH_DEVICE *touch);
 
+/**
+ * @brief Register a new Touch device in the Touch device table
+ * @param Touch The Touch device to register
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL touch_device_register(TOUCH_DEVICE *touch);
+
+/**
+ * @brief Deregister a Touch device from the Touch device table
+ * @param Touch The Touch device to deregister
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL touch_device_deregister(TOUCH_DEVICE *touch);
 
+/**
+ * @brief Find a Touch device by ID in the Touch device table
+ * @param TouchId The ID number of the Touch device to find
+ * @return Pointer to Touch device entry or nil if not found
+ */
 TOUCH_DEVICE * STDCALL touch_device_find(uint32_t touchid);
+
+/**
+ * @brief Find a Touch device by name in the device table
+ * @param Name The name of the Touch device to find (eg Touch0)
+ * @return Pointer to Touch device entry or nil if not found
+ */
 TOUCH_DEVICE * STDCALL touch_device_find_by_name(const char *name);
+
+/**
+ * @brief Find a Touch device by description in the device table
+ * @param Description The description of the Touch to find (eg USB Touchscreen)
+ * @return Pointer to Touch device entry or nil if not found
+ */
 TOUCH_DEVICE * STDCALL touch_device_find_by_description(const char *description);
+
+/**
+ * @brief Enumerate all Touch devices in the Touch device table
+ * @param Callback The callback function to call for each Touch device in the table
+ * @param Data A private data pointer to pass to callback for each Touch device in the table
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL touch_device_enumerate(touch_enumerate_cb callback, void *data);
 
+/**
+ * @brief Register a notification for Touch device changes
+ * @param Touch The Touch device to notify changes for (Optional, pass nil for all Touch devices)
+ * @param Callback The function to call when a notification event occurs
+ * @param Data A private data pointer to pass to callback when a notification event occurs
+ * @param Notification The events to register for notification of (eg DEVICE_NOTIFICATION_REGISTER)
+ * @param Flags The flags to control the notification (eg NOTIFIER_FLAG_WORKER)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL touch_device_notification(TOUCH_DEVICE *touch, touch_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
 /** Touch Helper Functions */
+
+/**
+ * @brief Get the current Touch device count
+ * @return The number of Touch devices
+ */
 uint32_t STDCALL touch_get_count(void);
+
+/**
+ * @brief Get the current default Touch device
+ * @return Pointer to default Touch device entry
+ */
 TOUCH_DEVICE * STDCALL touch_device_get_default(void);
+
+/**
+ * @brief Set the current default Touch device
+ * @param Touch The Touch device to set as default
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL touch_device_set_default(TOUCH_DEVICE *touch);
 
+/**
+ * @brief Check if the supplied Touch device is in the Touch device table
+ * @param Touch The Touch device to check
+ * @return Pointer to Touch device entry or nil if not found
+ */
 TOUCH_DEVICE * STDCALL touch_device_check(TOUCH_DEVICE *touch);
 
+/**
+ * @brief Return a string describing the Touch device type (eg TOUCH_TYPE_CAPACITIVE)
+ */
 uint32_t STDCALL touch_device_type_to_string(uint32_t touchtype, char *string, uint32_t len);
+
+/**
+ * @brief Return a string describing the Touch device state (eg TOUCH_STATE_ENABLED)
+ */
 uint32_t STDCALL touch_device_state_to_string(uint32_t touchstate, char *string, uint32_t len);
 
+/**
+ * @brief Return a string describing the supplied touch rotation value
+ */
 uint32_t STDCALL touch_device_rotation_to_string(uint32_t rotation, char *string, uint32_t len);
 
+/**
+ * @brief Resolve a value of 0, 90, 180 or 270 to a touch rotation constant (eg TOUCH_ROTATION_180)
+ * @note Also accepts passing the touch rotation constant values directly
+ */
 uint32_t STDCALL touch_device_resolve_rotation(uint32_t rotation);
 
+/**
+ * @brief Set the event callback function for the specified touch device
+ * @param Touch The touch device to set the event callback for
+ * @param Event The event callback function to be called when touch data is received
+ * @param Parameter A pointer to private data to be passed to the callback with each event
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note This function also clears the TOUCH_FLAG_MOUSE_DATA flag because the event
+ *       callback is not compatible with receiving touch events as mouse data
+ */
 uint32_t STDCALL touch_device_set_callback(TOUCH_DEVICE *touch, touch_event_cb event, void *parameter);
 
+/**
+ * @brief Insert a TTouchData entry into the touch device buffer
+ * @param Touch The touch device to insert data for
+ * @param Data The TTouchData entry to insert
+ * @param Signal If True then signal that new data is available in the buffer
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Caller must hold the touch device lock
+ */
 uint32_t STDCALL touch_insert_data(TOUCH_DEVICE *touch, TOUCH_DATA *data, BOOL signal);
 
 #ifdef __cplusplus

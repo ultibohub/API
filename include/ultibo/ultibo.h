@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -794,20 +794,49 @@ BOOL STDCALL ExitUltibo(uint32_t dwreserved, UINT ureserved);
 BOOL STDCALL ExitUltiboEx(UINT uflags, uint32_t dwreserved);
 
 /** General Functions (Ultibo) */
+
+/**
+ * @param Delay Milliseconds to delay before restart
+ */
 BOOL STDCALL RestartComputer(uint32_t delay);
+
+/**
+ * @param Delay Milliseconds to delay before shutdown
+ */
 BOOL STDCALL ShutdownComputer(uint32_t delay);
 
+/**
+ * @brief Get the current system up time as a FileTime value
+ */
 FILETIME STDCALL Uptime(void);
 
 /** Time Functions (Compatibility) */
 uint32_t STDCALL GetTickCount(void);
 ULONGLONG STDCALL GetTickCount64(void);
 
+/**
+ * @brief Get the current system time in UTC
+ */
 void STDCALL GetSystemTime(SYSTEMTIME *lpsystemtime);
+
+/**
+ * @brief Get the current system time in UTC as a FileTime value
+ */
 void STDCALL GetSystemTimeAsFileTime(FILETIME *lpsystemtimeasfiletime);
+
+/**
+ * @brief Set the current system time in UTC
+ */
 BOOL STDCALL SetSystemTime(SYSTEMTIME *lpsystemtime);
 
+/**
+ * @brief Get the current local time
+ */
 void STDCALL GetLocalTime(SYSTEMTIME *lpsystemtime);
+
+/**
+ * @brief Set the current local time
+ */
 BOOL STDCALL SetLocalTime(SYSTEMTIME *lpsystemtime);
 
 BOOL STDCALL SystemTimeToTzSpecificLocalTime(TIME_ZONE_INFORMATION *lptimezoneinformation, SYSTEMTIME *lpuniversaltime, SYSTEMTIME *lplocaltime);
@@ -816,66 +845,248 @@ BOOL STDCALL TzSpecificLocalTimeToSystemTime(TIME_ZONE_INFORMATION *lptimezonein
 uint32_t STDCALL GetTimeZoneInformation(TIME_ZONE_INFORMATION *lptimezoneinformation);
 BOOL STDCALL SetTimeZoneInformation(TIME_ZONE_INFORMATION *lptimezoneinformation);
 
+/**
+ * @brief Convert a SystemTime value to a FileTime value
+ * @note lpSystemTime is assumed to be UTC / lpFileTime is returned as UTC
+ */
 BOOL STDCALL SystemTimeToFileTime(SYSTEMTIME *lpsystemtime, FILETIME *lpfiletime);
+
+/**
+ * @brief Convert a FileTime value to a SystemTime value
+ * @note lpFileTime is assumed to be UTC / lpSystemTime is returned as UTC
+ * @note If lpFileTime is less than 30 December 1899 then SystemTime will be zero
+ */
 BOOL STDCALL FileTimeToSystemTime(FILETIME *lpfiletime, SYSTEMTIME *lpsystemtime);
 
+/**
+ * @brief Convert a FileTime in UTC to a FileTime in Local time
+ * @note TIMEZONE_TIME_OFFSET is the number of minutes offset from UTC
+ */
 BOOL STDCALL FileTimeToLocalFileTime(FILETIME *lpfiletime, FILETIME *lplocalfiletime);
+
+/**
+ * @brief Convert a FileTime in Local time to a FileTime in UTC
+ * @note TIMEZONE_TIME_OFFSET is the number of minutes offset from UTC
+ */
 BOOL STDCALL LocalFileTimeToFileTime(FILETIME *lplocalfiletime, FILETIME *lpfiletime);
 
 long STDCALL CompareFileTime(FILETIME *lpfiletime1, FILETIME *lpfiletime2);
 
+/**
+ * @brief Convert a FileTime value to a DOS date and time value
+ * @note FileTime is assumed to be Local / DOS date and time is returned as Local
+ * @note If FileTime is less than 1 January 1980 then DOS date and time will be 1 January 1980
+ */
 BOOL STDCALL FileTimeToDosDateTime(FILETIME *lpfiletime, uint16_t *lpfatdate, uint16_t *lpfattime);
+
+/**
+ * @brief Convert a DOS date and time value to a FileTime value
+ * @note DOS date and time is assumed to be Local / FileTime is returned as Local
+ * @note If DOS date and time is less than 1 January 1980 then FileTime will be 1 January 1980
+ */
 BOOL STDCALL DosDateTimeToFileTime(uint16_t wfatdate, uint16_t wfattime, FILETIME *lpfiletime);
 
+/**
+ * @brief Retrieves the current value of the performance counter, which is a high
+ *  resolution (<1us) time stamp that can be used for time-interval measurements
+ */
 BOOL STDCALL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount);
+
+/**
+ * @brief Retrieves the frequency of the performance counter.
+ *  The frequency of the performance counter is fixed at system boot and is
+ *  consistent across all processors. Therefore, the frequency need only be
+ *  queried upon application initialization, and the result can be cached
+ */
 BOOL STDCALL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency);
 
 /** Time Functions (Ultibo) */
+
+/**
+ * @brief Get the current system time in UTC as a FileTime value
+ */
 FILETIME STDCALL GetCurrentTime(void);
+
+/**
+ * @brief Set the current system time in UTC from a FileTime value
+ */
 void STDCALL SetCurrentTime(FILETIME *time);
 
+/**
+ * @brief Gets the time adjustment used internally
+ */
 int32_t STDCALL GetTimeAdjust(void);
+
+/**
+ * @brief Sets the time adjustment used internally
+ */
 void STDCALL SetTimeAdjust(int32_t adjust);
 
+/**
+ * @brief Get the name of the current Timezone
+ */
 uint32_t STDCALL GetCurrentTimezone(char *name, uint32_t len);
+
+/**
+ * @brief Set the current Timezone by name
+ */
 BOOL STDCALL SetCurrentTimezone(const char *name);
 
+/**
+ * @brief Gets the Active Offset from the current Timezone
+ */
 int32_t STDCALL GetTimezoneActiveOffset(void);
+
+/**
+ * @brief Gets the Standard Offset from the current Timezone
+ */
 int32_t STDCALL GetTimezoneStandardOffset(void);
+
+/**
+ * @brief Sets the Standard Offset for the current Timezone
+ */
 void STDCALL SetTimezoneStandardOffset(int32_t offset);
+
+/**
+ * @brief Gets the Daylight Offset from the current Timezone
+ */
 int32_t STDCALL GetTimezoneDaylightOffset(void);
+
+/**
+ * @brief Sets the Daylight Offset for the current Timezone
+ */
 void STDCALL SetTimezoneDaylightOffset(int32_t offset);
 
+/**
+ * @brief Get the description of the standard time start for the current Timezone
+ */
 uint32_t STDCALL GetTimezoneStandardStart(char *description, uint32_t len);
+
+/**
+ * @brief Get the description of the daylight time start for the current Timezone
+ */
 uint32_t STDCALL GetTimezoneDaylightStart(char *description, uint32_t len);
 
+/**
+ * @brief Get the next date of the standard time start for the current Timezone
+ */
 double_t STDCALL GetTimezoneStandardDate(void);
+
+/**
+ * @brief Get the next date of the daylight time start for the current Timezone
+ */
 double_t STDCALL GetTimezoneDaylightDate(void);
 
+/**
+ * @brief Convert a FileTime value to a DateTime value
+ * @note FileTime is assumed to be UTC / DateTime is returned as Local
+ * @note If FileTime is less than 30 December 1899 then Result will be zero
+ */
 double_t STDCALL FileTimeToDateTime(FILETIME *filetime);
+
+/**
+ * @brief Convert a DateTime value to a FileTime value
+ * @note DateTime is assumed to be Local / FileTime is returned as UTC
+ */
 FILETIME STDCALL DateTimeToFileTime(double_t datetime);
 
+/**
+ * @brief Convert a FileTime value to a DateTime value
+ * @note FileTime is assumed to be Local / DateTime is returned as Local
+ * @note If FileTime is less than 30 December 1899 then Result will be zero
+ */
 double_t STDCALL LocalFileTimeToDateTime(FILETIME *filetime);
+
+/**
+ * @brief Convert a DateTime value to a FileTime value
+ * @note DateTime is assumed to be Local / FileTime is returned as Local
+ */
 FILETIME STDCALL DateTimeToLocalFileTime(double_t datetime);
 
+/**
+ * @brief Convert a FileTime value to a DateTime value
+ * @note FileTime is assumed to be UTC / DateTime is returned as UTC
+ * @note If FileTime is less than 30 December 1899 then Result will be zero
+ * @note Same as LocalFileTimeToDateTime but renamed for clarity
+ */
 double_t STDCALL SystemFileTimeToDateTime(FILETIME *filetime);
+
+/**
+ * @brief Convert a DateTime value to a FileTime value
+ * @note DateTime is assumed to be UTC / FileTime is returned as UTC
+ * @note Same as DateTimeToLocalFileTime but renamed for clarity
+ */
 FILETIME STDCALL DateTimeToSystemFileTime(double_t datetime);
 
+/**
+ * @brief Convert a FileTime value to a Unix/Linux time value
+ * @note FileTime is assumed to be Local / UnixTime is returned as Local
+ * @note If FileTime is less than 1 January 1970 then Result will be zero
+ */
 time_t STDCALL FileTimeToUnixTime(FILETIME *filetime);
+
+/**
+ * @brief Convert a Unix/Linux time value to a FileTime value
+ * @note UnixTime is assumed to be Local / FileTime is returned as Local
+ */
 FILETIME STDCALL UnixTimeToFileTime(time_t unixtime);
 
+/**
+ * @brief Convert a Unix/Linux time value to a DateTime value
+ * @note UnixTime is assumed to be Local / DateTime is returned as Local
+ */
 double_t STDCALL UnixTimeToDateTime(time_t unixtime);
+
+/**
+ * @brief Convert a DateTime value to a Unix/Linux time value
+ * @note DateTime is assumed to be Local / UnixTime is returned as Local
+ * @note If DateTime is less than 1 January 1970 then Result will be zero
+ */
 time_t STDCALL DateTimeToUnixTime(double_t datetime);
 
+/**
+ * @brief Convert a FileTime value to a DOS date value
+ * @note FileTime is assumed to be UTC / FileDate is returned as Local
+ * @note If FileTime is less than 1 January 1980 then Result will be zero
+ */
 int STDCALL FileTimeToFileDate(FILETIME *filetime);
+
+/**
+ * @brief Convert a DOS date value to a FileTime value
+ * @note FileDate is assumed to be Local / FileTime is returned as UTC
+ * @note If FileDate is less than 1 January 1980 then Result will be zero
+ */
 FILETIME STDCALL FileDateToFileTime(int filedate);
 
+/**
+ * @brief Convert a local FileTime value to a DST adjusted FileTime value
+ * @note TIMEZONE_TIME_ADJUST is the number of minutes difference from TIMEZONE_TIME_OFFSET
+ */
 FILETIME STDCALL FileTimeToAdjustedTime(FILETIME *filetime);
+
+/**
+ * @brief Convert a DST adjusted FileTime value to a local FileTime value
+ * @note TIMEZONE_TIME_ADJUST is the number of minutes difference from TIMEZONE_TIME_OFFSET
+ */
 FILETIME STDCALL AdjustedTimeToFileTime(FILETIME *filetime);
 
+/**
+ * @brief Round FileTime to nearest 2 seconds for compatibility with FileDate
+ */
 FILETIME STDCALL RoundFileTime(FILETIME *filetime);
 
+/**
+ * @brief Convert a FileTime value to a specified offset (Local or UTC)
+ * @note Offset is the number of minutes to adjust in conversion
+ *       Local indicates whether the source time is Local or UTC
+ */
 FILETIME STDCALL ConvertFileTime(FILETIME *filetime, int offset, BOOL local);
+
+/**
+ * @brief Convert a DateTime value to a specified offset (Local or UTC)
+ * @note Offset is the number of minutes to adjust in conversion
+ *       Local indicates whether the source time is Local or UTC
+ */
 double_t STDCALL ConvertDateTime(double_t datetime, int offset, BOOL local);
 
 /** Drive Functions (Compatibility) */
@@ -941,7 +1152,15 @@ void STDCALL SetFileApisToOEM(void);
 void STDCALL SetFileApisToANSI(void);
 
 HANDLE STDCALL CreateFile(const char *lpfilename, uint32_t dwdesiredaccess, uint32_t dwsharemode, SECURITY_ATTRIBUTES *lpsecurityattributes, uint32_t dwcreationdisposition, uint32_t dwflagsandattributes, HANDLE htemplatefile);
+
+/**
+ * @note lpSecurityAttributes and hTemplateFile are currently ignored by Ultibo
+ */
 HANDLE STDCALL CreateFileA(const char *lpfilename, uint32_t dwdesiredaccess, uint32_t dwsharemode, SECURITY_ATTRIBUTES *lpsecurityattributes, uint32_t dwcreationdisposition, uint32_t dwflagsandattributes, HANDLE htemplatefile);
+
+/**
+ * @note lpSecurityAttributes and hTemplateFile are currently ignored by Ultibo
+ */
 HANDLE STDCALL CreateFileW(const WCHAR *lpfilename, uint32_t dwdesiredaccess, uint32_t dwsharemode, SECURITY_ATTRIBUTES *lpsecurityattributes, uint32_t dwcreationdisposition, uint32_t dwflagsandattributes, HANDLE htemplatefile);
 
 BOOL STDCALL SetFileAttributes(const char *lpfilename, uint32_t dwfileattributes);
@@ -995,7 +1214,15 @@ BOOL STDCALL SetFileShortNameA(HANDLE hfile, const char *lpshortname);
 BOOL STDCALL SetFileShortNameW(HANDLE hfile, const WCHAR *lpshortname);
 
 BOOL STDCALL CreateHardLink(const char *lpfilename, const char *lpexistingfilename, SECURITY_ATTRIBUTES *lpsecurityattributes);
+
+/**
+ * @note lpSecurityAttributes is currently ignored by Ultibo
+ */
 BOOL STDCALL CreateHardLinkA(const char *lpfilename, const char *lpexistingfilename, SECURITY_ATTRIBUTES *lpsecurityattributes);
+
+/**
+ * @note lpSecurityAttributes is currently ignored by Ultibo
+ */
 BOOL STDCALL CreateHardLinkW(const WCHAR *lpfilename, const WCHAR *lpexistingfilename, SECURITY_ATTRIBUTES *lpsecurityattributes);
 
 BOOL STDCALL CreateSymbolicLink(const char *lpsymlinkfilename, const char *lptargetfilename, uint32_t dwflags);
@@ -1004,15 +1231,34 @@ BOOL STDCALL CreateSymbolicLinkW(const WCHAR *lpsymlinkfilename, const WCHAR *lp
 
 BOOL STDCALL GetFileInformationByHandle(HANDLE hfile, BY_HANDLE_FILE_INFORMATION *lpfileinformation);
 
+/**
+ * @brief Retrieves the final path for the specified open file handle
+ */
 uint32_t STDCALL GetFinalPathNameByHandle(HANDLE hfile, char *lpszFilePath, uint32_t cchFilePath, uint32_t dwFlags);
+
+/**
+ * @brief Retrieves the final path for the specified open file handle
+ */
 uint32_t STDCALL GetFinalPathNameByHandleA(HANDLE hfile, char *lpszFilePath, uint32_t cchFilePath, uint32_t dwFlags);
+
+/**
+ * @brief Retrieves the final path for the specified open file handle
+ */
 uint32_t STDCALL GetFinalPathNameByHandleW(HANDLE hfile, WCHAR *lpszFilePath, uint32_t cchFilePath, uint32_t dwFlags);
 
 /** File Functions (Ultibo) */
 
 /** Directory Functions (Compatibility) */
 BOOL STDCALL CreateDirectory(const char *lppathname, SECURITY_ATTRIBUTES *lpsecurityattributes);
+
+/**
+ * @note lpSecurityAttributes is currently ignored by Ultibo
+ */
 BOOL STDCALL CreateDirectoryA(const char *lppathname, SECURITY_ATTRIBUTES *lpsecurityattributes);
+
+/**
+ * @note lpSecurityAttributes is currently ignored by Ultibo
+ */
 BOOL STDCALL CreateDirectoryW(const WCHAR *lppathname, SECURITY_ATTRIBUTES *lpsecurityattributes);
 
 BOOL STDCALL RemoveDirectory(const char *lppathname);
@@ -1036,19 +1282,47 @@ uint32_t STDCALL GetShortPathNameA(const char *lpszlongpath, char *lpszshortpath
 uint32_t STDCALL GetShortPathNameW(const WCHAR *lpszlongpath, WCHAR *lpszshortpath, uint32_t cchbuffer);
 
 uint32_t STDCALL GetFullPathName(const char *lpfilename, uint32_t nbufferlength, char *lpbuffer, char *lpfilepart);
+
+/**
+ * @note lpFilePart is currently ignored by Ultibo
+ */
 uint32_t STDCALL GetFullPathNameA(const char *lpfilename, uint32_t nbufferlength, char *lpbuffer, char *lpfilepart);
+
+/**
+ * @note lpFilePart is currently ignored by Ultibo
+ */
 uint32_t STDCALL GetFullPathNameW(const WCHAR *lpfilename, uint32_t nbufferlength, WCHAR *lpbuffer, WCHAR *lpfilepart);
 
 /** Directory Functions (Ultibo) */
 
 /** Command Line Functions (Compatibility) */
 char * STDCALL GetCommandLine(void);
+
+/**
+ * @note The returned string must be freed with SysUtils.StrDispose
+ */
 char * STDCALL GetCommandLineA(void);
+
+/**
+ * @note The returned string must be freed with SysUtils.StrDispose
+ */
 WCHAR * STDCALL GetCommandLineW(void);
 
 /** Command Line Functions (Ultibo) */
+
+/**
+ * @brief Check if the specified parameter is present in the command line
+ */
 BOOL STDCALL IsParamPresent(const char *param);
+
+/**
+ * @brief Get the index of the specified parameter in the command line
+ */
 int STDCALL GetParamIndex(const char *param);
+
+/**
+ * @brief Get the value of the specified parameter from the command line
+ */
 uint32_t STDCALL GetParamValue(const char *param, char *value, uint32_t len);
 
 /** Environment Functions (Compatibility) */
@@ -1073,16 +1347,46 @@ uint32_t STDCALL ExpandEnvironmentStringsA(const char *lpsrc, char *lpdst, uint3
 uint32_t STDCALL ExpandEnvironmentStringsW(const WCHAR *lpsrc, WCHAR *lpdst, uint32_t nsize);
 
 /** Error Functions (Compatibility) */
+
+/**
+ * @brief Get the last error value for the calling thread
+ */
 uint32_t STDCALL GetLastError(void);
+
+/**
+ * @brief Set the last error value for the calling thread
+ */
 void STDCALL SetLastError(uint32_t dwerrcode);
 
 /** String Functions (Ultibo) */
 
 /** GUID Functions (Ultibo) */
+
+/**
+ * @brief Create a new GUID
+ * GUID has the following format DWORD-WORD-WORD-WORD-WORDDWORD
+ *                                              | Not Swapped  |
+ */
 GUID STDCALL CreateGUID(void);
+
+/**
+ * @brief Convert a TGUID to a string representation
+ */
 uint32_t STDCALL GUIDToString(GUID *value, char *string, uint32_t len);
+
+/**
+ * @brief Convert a string to a native TGUID type
+ */
 GUID STDCALL StringToGUID(const char *value);
+
+/**
+ * @brief Check if a TGUID is empty (All zeroes)
+ */
 BOOL STDCALL NullGUID(GUID *guid);
+
+/**
+ * @brief Check whether two TGUID variables are equal
+ */
 BOOL STDCALL CompareGUID(GUID *guid1, GUID *guid2);
 
 /** SID Functions (Ultibo) */
@@ -1112,10 +1416,24 @@ uint32_t STDCALL Ror32(uint32_t value, uint8_t count);
 uint16_t STDCALL WordSwap(uint16_t value);
 uint32_t STDCALL LongSwap(uint32_t value);
 int64_t STDCALL Int64Swap(int64_t *value);
+
+/**
+ * @brief Swap each word in the buffer supplied up to size
+ * @note Size is the number of Bytes in the buffer to swap
+ */
 BOOL STDCALL BufferSwap(void *buffer, uint32_t size);
 
 /** Hash Functions (Ultibo) */
+
+/**
+ * @brief Sum of (byte value + 1) * (position + 257) for all bytes in uppercase string
+ * @note Case Insensitive Hash
+ */
 uint32_t STDCALL GenerateNameHash(const char *name, int size);
+
+/**
+ * @brief Sum of (byte value + 1) * (position + 257) for all bytes in string
+ */
 uint32_t STDCALL GenerateStringHash(const char *value, BOOL casesensitive);
 
 /** Locale Functions (Compatibility) */
@@ -1130,8 +1448,24 @@ BOOL STDCALL SetThreadLocale(LCID localeid);
 /** Locale Functions (Ultibo) */
 BOOL STDCALL SetSystemDefaultLCID(LCID localeid);
 
+/**
+ * @brief A replacement for WideCharToString in System unit to allow cross platform compatibility
+ * @note The WideStringManager installed by the Unicode unit should make the System version equivalent
+ */
 uint32_t STDCALL WideCharToString(const WCHAR *buffer, char *string, uint32_t len);
+
+/**
+ * @brief A replacement for WideCharLenToString in System unit to allow cross platform compatibility
+ * @note Length is the size of the Buffer in WideChars (not Bytes)
+ * @note The WideStringManager installed by the Unicode unit should make the System version equivalent
+ */
 uint32_t STDCALL WideCharLenToString(const WCHAR *buffer, int length, char *string, uint32_t len);
+
+/**
+ * @brief A replacement for StringToWideChar in System unit to allow cross platform compatibility
+ * @note Size is the size of the Buffer in Bytes (not WideChars)
+ * @note The WideStringManager installed by the Unicode unit should make the System version equivalent
+ */
 BOOL STDCALL StringToWideChar(const char *string, WCHAR *buffer, int size);
 
 /** Code Page Functions (Compatibility) */
@@ -1241,6 +1575,11 @@ BOOL STDCALL LocalUnlock(HLOCAL hmem);
 
 HLOCAL STDCALL LocalHandle(void *pmem);
 
+/**
+ * @note The value of lpAddress on entry is currently ignored by Ultibo
+ * @note The value of flProtect is currently ignored by Ultibo
+ * @note As per Win32, the value of dwSize is rounded to the next page multiple
+ */
 void * STDCALL VirtualAlloc(void *lpaddress, SIZE_T dwsize, uint32_t flallocationtype, uint32_t flprotect);
 BOOL STDCALL VirtualFree(void *lpaddress, SIZE_T dwsize, uint32_t dwfreetype);
 
@@ -1256,6 +1595,10 @@ BOOL STDCALL GetNumaProcessorNode(uint8_t *processor, uint8_t *nodenumber);
 
 /** Tls Functions (Compatibility) */
 uint32_t STDCALL TlsAlloc(void);
+
+/**
+ * @param bFree If true then TlsValue will be freed on TlsFree or thread terminate
+ */
 uint32_t STDCALL TlsAllocEx(BOOL bfree);
 void * STDCALL TlsGetValue(uint32_t dwtlsindex);
 BOOL STDCALL TlsSetValue(uint32_t dwtlsindex, void *lptlsvalue);
@@ -1265,12 +1608,27 @@ BOOL STDCALL TlsFree(uint32_t dwtlsindex);
 BOOL STDCALL SwitchToThread(void);
 
 void STDCALL Sleep(uint32_t dwmilliseconds);
+
+/**
+ * @note The bAlertable parameter is not currently used but is intended for I/O completion callback from ReadFileEx/WriteFileEx
+ */
 uint32_t STDCALL SleepEx(uint32_t dwmilliseconds, BOOL balertable);
 
 HANDLE STDCALL GetCurrentThread(void);
+
+/**
+ * @note Thread Id and Thread Handle are currently equivalent
+ */
 uint32_t STDCALL GetCurrentThreadId(void);
 
+/**
+ * @note Returns priority values in the range -15..+15, must use the FPC RTL function
+ */
 int STDCALL GetThreadPriority(HANDLE hthread);
+
+/**
+ * @note Expects priority values in the range -15..+15, must use the FPC RTL function
+ */
 BOOL STDCALL SetThreadPriority(HANDLE hthread, int npriority);
 
 BOOL STDCALL GetExitCodeThread(HANDLE hthread, uint32_t *lpexitcode);
@@ -1293,7 +1651,14 @@ void STDCALL ExitThread(uint32_t dwexitcode);
 uint32_t STDCALL WaitForSingleObject(HANDLE hhandle, uint32_t dwmilliseconds);
 uint32_t STDCALL WaitForMultipleObjects(uint32_t ncount, HANDLE *lphandles, BOOL bwaitall, uint32_t dwmilliseconds);
 
+/**
+ * @note The bAlertable parameter is not currently used but is intended for I/O completion callback from ReadFileEx/WriteFileEx
+ */
 uint32_t STDCALL WaitForSingleObjectEx(HANDLE hhandle, uint32_t dwmilliseconds, BOOL balertable);
+
+/**
+ * @note The bAlertable parameter is not currently used but is intended for I/O completion callback from ReadFileEx/WriteFileEx
+ */
 uint32_t STDCALL WaitForMultipleObjectsEx(uint32_t ncount, HANDLE *lphandles, BOOL bwaitall, uint32_t dwmilliseconds, BOOL balertable);
 
 /** Thread Functions (Ultibo) */
@@ -1356,13 +1721,38 @@ uint32_t STDCALL SetCriticalSectionSpinCount(CRITICAL_SECTION *lpcriticalsection
 void STDCALL DeleteCriticalSection(CRITICAL_SECTION *lpcriticalsection);
 
 /** Condition Variable Functions (Compatibility) */
+
+/**
+ * @brief Initializes a condition variable
+ * @param ConditionVariable The condition variable to initialize
+ */
 void STDCALL InitializeConditionVariable(CONDITION_VARIABLE *conditionvariable);
 
+/**
+ * @brief Wake a single thread waiting on the specified condition variable
+ * @param ConditionVariable The condition variable to wake
+ */
 void STDCALL WakeConditionVariable(CONDITION_VARIABLE *conditionvariable);
+
+/**
+ * @brief Wake all threads waiting on the specified condition variable
+ * @param ConditionVariable The condition variable to wake
+ */
 void STDCALL WakeAllConditionVariable(CONDITION_VARIABLE *conditionvariable);
 
+/**
+ * @brief Sleeps on the specified condition variable and releases the specified critical section as an atomic operation
+ * @param ConditionVariable The condition variable to sleep on
+ * @param CriticalSection The critical section object to release (This critical section must be entered exactly once by the caller at the time SleepConditionVariableCS is called)
+ * @param dwMilliseconds The time-out interval, in milliseconds. (If the time-out interval elapses, the function re-acquires the critical section and returns false)
+ */
 BOOL STDCALL SleepConditionVariableCS(CONDITION_VARIABLE *conditionvariable, CRITICAL_SECTION *criticalsection, uint32_t dwmilliseconds);
 
+/**
+ * @brief Destroy a condition variable
+ * @param ConditionVariable The condition variable to destroy
+ * @note This function is Ultibo specific and is not part of the normal Windows API
+ */
 void STDCALL DeleteConditionVariable(CONDITION_VARIABLE *conditionvariable);
 
 /** Event Functions (Compatibility) */
@@ -1379,18 +1769,51 @@ BOOL STDCALL ResetEvent(HANDLE hevent);
 BOOL STDCALL PulseEvent(HANDLE hevent);
 
 /** Process Functions (Compatibility) */
+
+/**
+ * @note Ultibo has no concept of a Process so this function is mapped to Threads instead
+ */
 BOOL STDCALL GetProcessAffinityMask(HANDLE hprocess, DWORD_PTR *lpprocessaffinitymask, DWORD_PTR *lpsystemaffinitymask);
+
+/**
+ * @note Ultibo has no concept of a Process so this function is mapped to Threads instead
+ */
 BOOL STDCALL SetProcessAffinityMask(HANDLE hprocess, DWORD_PTR dwprocessaffinitymask);
 
+/**
+ * @note Ultibo has no concept of a Process so this function is mapped to Threads instead
+ */
 BOOL STDCALL GetProcessTimes(HANDLE hprocess, FILETIME *lpcreationtime, FILETIME *lpexittime, FILETIME *lpkerneltime, FILETIME *lpusertime);
+
+/**
+ * @note Ultibo has no concept of a Process so this function is mapped to Threads instead
+ */
 BOOL STDCALL GetProcessIoCounters(HANDLE hprocess, IO_COUNTERS *lpiocounters);
 
+/**
+ * @note Ultibo has no concept of a Process so this function is mapped to Threads instead
+ */
 HANDLE STDCALL GetCurrentProcess(void);
+
+/**
+ * @note Ultibo has no concept of a Process so this function is mapped to Threads instead
+ * @note Thread Id and Thread Handle are currently equivalent
+ */
 uint32_t STDCALL GetCurrentProcessId(void);
 
+/**
+ * @note Ultibo has no concept of a Process so this function is mapped to Threads instead
+ */
 void STDCALL ExitProcess(UINT uexitcode);
+
+/**
+ * @note Ultibo has no concept of a Process so this function is mapped to Threads instead
+ */
 void STDCALL FatalExit(int exitcode);
 
+/**
+ * @note Ultibo has no concept of a Process so this function is mapped to Threads instead
+ */
 BOOL STDCALL TerminateProcess(HANDLE hprocess, UINT uexitcode);
 
 /** Debug Functions (Compatibility) */

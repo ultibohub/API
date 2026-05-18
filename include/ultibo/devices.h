@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -781,48 +781,255 @@ struct _WATCHDOG_DEVICE
 };
 
 /** Device Functions */
+
+/**
+ * @brief Create a new Device entry
+ * @return Pointer to new Device entry or nil if device could not be created
+ */
 DEVICE * STDCALL device_create(void);
+
+/**
+ * @brief Create a new Device entry
+ * @param Size Size in bytes to allocate for new device (Including the device entry)
+ * @return Pointer to new Device entry or nil if device could not be created
+ */
 DEVICE * STDCALL device_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing Device entry
+ * @param Device The device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL device_destroy(DEVICE *device);
 
+/**
+ * @brief Get the name of the supplied Device
+ * @param Device The device to get the name from
+ * @return The name of the device or a blank string on error
+ */
 uint32_t STDCALL device_get_name(DEVICE *device, char *name, uint32_t len);
+
+/**
+ * @brief Set the name of the supplied Device
+ * @param Device The device to set the name for
+ * @param Name The device name to set
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL device_set_name(DEVICE *device, const char *name);
 
+/**
+ * @brief Get the description of the supplied Device
+ * @param Device The device to get the description from
+ * @return The description of the device or a blank string on error
+ */
 uint32_t STDCALL device_get_description(DEVICE *device, char *name, uint32_t len);
+
+/**
+ * @brief Set the description of the supplied Device
+ * @param Device The device to set the description for
+ * @param Description The device description to set
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL device_set_description(DEVICE *device, const char *description);
 
+/**
+ * @brief Register a new Device in the Device table
+ * @param Device The device to register
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL device_register(DEVICE *device);
+
+/**
+ * @brief Deregister a Device from the Device table
+ * @param Device The device to deregister
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL device_deregister(DEVICE *device);
 
+/**
+ * @brief Find a device by ID in the device table
+ * @param DeviceClass The class of the device to find (DEVICE_CLASS_ANY for all classes)
+ * @param DeviceId The ID number of the device to find (DEVICE_ID_ANY for all devices)
+ * @return Pointer to device entry or nil if not found
+ */
 DEVICE * STDCALL device_find(uint32_t deviceclass, uint32_t deviceid);
+
+/**
+ * @brief Find a device with matching DeviceData property in the device table
+ * @param DeviceData The value to match against the DeviceData property
+ * @return Pointer to device entry or nil if not found
+ */
 DEVICE * STDCALL device_find_by_device_data(void *devicedata);
+
+/**
+ * @brief Find a device by name in the device table
+ * @param Name The name of the device to find (eg Timer0)
+ * @return Pointer to device entry or nil if not found
+ */
 DEVICE * STDCALL device_find_by_name(const char *name);
+
+/**
+ * @brief Find a device by class and name in the device table
+ * @param DeviceClass The class of the device to find (eg DEVICE_CLASS_USB) (DEVICE_CLASS_ANY for all classes)
+ * @param Name The name of the device to find (eg USB0)
+ * @return Pointer to device entry or nil if not found
+ */
 DEVICE * STDCALL device_find_by_name_ex(uint32_t deviceclass, const char *name);
+
+/**
+ * @brief Find a device by description in the device table
+ * @param Description The description of the device to find (eg BCM2836 ARM Timer)
+ * @return Pointer to device entry or nil if not found
+ */
 DEVICE * STDCALL device_find_by_description(const char *description);
+
+/**
+ * @brief Find a device by class and description in the device table
+ * @param DeviceClass The class of the device to find (eg DEVICE_CLASS_USB) (DEVICE_CLASS_ANY for all classes)
+ * @param Description The description of the device to find (eg BCM2836 ARM Timer)
+ * @return Pointer to device entry or nil if not found
+ */
 DEVICE * STDCALL device_find_by_description_ex(uint32_t deviceclass, const char *description);
+
+/**
+ * @brief Enumerate all devices in the device table
+ * @param DeviceClass The class of device to enumerate (DEVICE_CLASS_ANY for all classes)
+ * @param Callback The callback function to call for each device in the table
+ * @param Data A private data pointer to pass to callback for each device in the table
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL device_enumerate(uint32_t deviceclass, device_enumerate_cb callback, void *data);
 
+/**
+ * @brief Register a notification for device changes
+ * @param Device The device to notify changes for (Optional, pass nil for all devices)
+ * @param DeviceClass The class of device to notify changes for (DEVICE_CLASS_ANY for all classes)
+ * @param Callback The function to call when a notification event occurs
+ * @param Data A private data pointer to pass to callback when a notification event occurs
+ * @param Notification The events to register for notification of (eg DEVICE_NOTIFICATION_REGISTER)
+ * @param Flags The flags to control the notification (eg NOTIFIER_FLAG_WORKER)
+ */
 uint32_t STDCALL device_notification(DEVICE *device, uint32_t deviceclass, device_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
+/**
+ * @brief Create a new block (memory) based firmware entry using the standard block firmware handler
+ * @param DeviceClass The class of device this firmware applies to (eg DEVICE_CLASS_NETWORK)(or DEVICE_CLASS_ANY for all devices)
+ * @param Buffer A pointer to a block of memory containing the firmware to be provided to requesting devices
+ * @param Size The size in bytes of the block pointed to by buffer
+ * @return True if the new firmware entry was added or False on failure
+ * @note Can be used by device drivers to register built in firmware as a device firmware provider
+ * @note The supplied buffer can be statically or dynamically allocated but must not be freed once the device firmware has been created
+ */
 BOOL STDCALL device_firmware_create(uint32_t deviceclass, const char *name, void *buffer, uint32_t size);
 
+/**
+ * @brief Register a new device firmware handler for acquiring device specific firmware
+ * @param DeviceClass The class of device this firmware applies to (eg DEVICE_CLASS_NETWORK)(or DEVICE_CLASS_ANY for all devices)
+ * @param Name The name of the device firmware, device specific may be a filename, a device model, id or type
+ * @param Handler The handler function which is to be called when a device requests this firmware
+ * @return A handle for the new firmware handler on success or INVALID_HANDLE_VALUE on failure
+ * @note Used by device firmware providers to register firmware for device drivers
+ */
 HANDLE STDCALL device_firmware_register(uint32_t deviceclass, const char *name, device_firmware_handler handler);
+
+/**
+ * @brief Deregister an existing device firmware handler
+ * @param Handle The handle returned by Register
+ * @return ERROR_SUCCESS on completion or another error code on failure
+ * @note Used by device firmware providers to deregister firmware for device drivers
+ */
 uint32_t STDCALL device_firmware_deregister(HANDLE handle);
 
+/**
+ * @brief Find an existing device firmware handler for a specified device
+ * @param DeviceClass The class of device for the firmware (eg DEVICE_CLASS_NETWORK)(or DEVICE_CLASS_ANY for any class)
+ * @param Name The name of the device firmware which is a device specific value such as a filename, a device model, id or type
+ * @return A pointer to the device firmware entry which contains the details of the handler
+ * @note Used internally to locate compatible firmware for a device firmware open request
+ */
 DEVICE_FIRMWARE * STDCALL device_firmware_find(uint32_t deviceclass, const char *name);
+
+/**
+ * @brief Find an existing device firmware handler from a returned handle
+ * @param Handle A handle to the firmware returned by Open or Acquire
+ * @return A pointer to the device firmware entry which contains the details of the handler
+ * @note Used internally to locate referenced firmware for a device firmware request
+ */
 DEVICE_FIRMWARE * STDCALL device_firmware_find_by_handle(HANDLE handle);
 
+/**
+ * @brief Open the firmware for a specified device from a registered handler
+ * @param DeviceClass The class of device for the firmware (eg DEVICE_CLASS_NETWORK)(or DEVICE_CLASS_ANY for any class)
+ * @param Name The name of the device firmware which is a device specific value such as a filename, a device model, id or type
+ * @param Timeout Number of milliseconds to wait for the device firmware to be ready (0 to not wait, INFINITE to wait forever)
+ * @param Handle A variable to receive a handle to the firmware on return
+ * @return ERROR_SUCCESS on completion, ERROR_NOT_FOUND if no handler can supply firmware or another error code on failure
+ * @note A handler may return ERROR_NOT_READY if the firmware may be accepted but is not available yet
+ */
 uint32_t STDCALL device_firmware_open(uint32_t deviceclass, const char *name, uint32_t timeout, HANDLE *handle);
+
+/**
+ * @brief Close a handle to the firmware for a specified device from a registered handler
+ * @param Handle The handle to the firmware as returned by Open
+ * @return ERROR_SUCCESS on completion, ERROR_NOT_FOUND if no handler accepts this firmware or another error code on failure
+ */
 uint32_t STDCALL device_firmware_close(HANDLE handle);
 
+/**
+ * @brief Return the size of the firmware for a specified device from a registered handler
+ * @param Handle The handle to the firmware as returned by Open
+ * @return The size of the firmware on success or -1 on failure
+ */
 int32_t STDCALL device_firmware_size(HANDLE handle);
+
+/**
+ * @brief Seek to a position within the firmware for a specified device from a registered handler
+ * @param Handle The handle to the firmware as returned by Open
+ * @param Position The byte position within the firmware to seek to
+ * @return The new position within the firmware on success or -1 on failure
+ */
 int32_t STDCALL device_firmware_seek(HANDLE handle, int32_t position);
+
+/**
+ * @brief Read into a buffer from the firmware for a specified device from a registered handler
+ * @param Handle The handle to the firmware as returned by Open
+ * @param Buffer A pointer to a buffer to receive the data
+ * @param Count The maximum number of bytes to be read
+ * @return The number of bytes read on success or -1 on failure
+ */
 int32_t STDCALL device_firmware_read(HANDLE handle, void *buffer, int32_t count);
 
+/**
+ * @brief Acquire a memory block containing the firmware for a specified device from a registered handler
+ * @param DeviceClass The class of device for the firmware (eg DEVICE_CLASS_NETWORK)(or DEVICE_CLASS_ANY for any class)
+ * @param Name The name of the device firmware which is a device specific value such as a filename, a device model, id or type
+ * @param Timeout Number of milliseconds to wait for the device firmware to be ready (0 to not wait, INFINITE to wait forever)
+ * @param Handle A variable to receive a handle to the firmware on return
+ * @param Buffer A variable to receive a pointer to the block of memory containing the firmware on return
+ * @param Size A variable to receive the size of the memory block pointed to by buffer on return
+ * @return ERROR_SUCCESS on completion, ERROR_NOT_FOUND if no handler can supply firmware or another error code on failure
+ * @note A handler may return ERROR_NOT_READY if the firmware may be accepted but is not available yet
+ * @note A handler may return ERROR_MORE_DATA if the size of the firmware is larger than can be returned in a single buffer
+ */
 uint32_t STDCALL device_firmware_acquire(uint32_t deviceclass, const char *name, uint32_t timeout, HANDLE *handle, void *buffer, uint32_t *size);
+
+/**
+ * @brief Release a memory block containing the firmware for a specified device from a registered handler
+ * @param Handle The handle to the firmware as returned by Acquire
+ * @param Buffer The pointer to the block of memory containing the firmware as returned by Acquire
+ * @param Size The size of the memory block as returned by Acquire
+ * @return ERROR_SUCCESS on completion, ERROR_NOT_FOUND if no handler accepts this firmware or another error code on failure
+ */
 uint32_t STDCALL device_firmware_release(HANDLE handle, void *buffer, uint32_t size);
 
+/**
+ * @brief Create and Register a new Notifier entry in the Notifier table
+ */
 NOTIFIER * STDCALL notifier_allocate(DEVICE *device, uint32_t deviceclass, device_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
+
+/**
+ * @brief Deregister and Destroy a Notifier from the Notifier table
+ */
 uint32_t STDCALL notifier_release(NOTIFIER *notifier);
 
 NOTIFIER * STDCALL notifier_find(DEVICE *device, uint32_t deviceclass, device_notification_cb callback, void *data);
@@ -832,76 +1039,399 @@ void STDCALL notifier_retry(NOTIFIER_RETRY *retry);
 void STDCALL notifier_worker(NOTIFIER_TASK *task);
 
 /** Driver Functions */
+
+/**
+ * @brief Create a new Driver entry
+ * @return Pointer to new Driver entry or nil if driver could not be created
+ */
 DRIVER * STDCALL driver_create(void);
+
+/**
+ * @brief Create a new Driver entry
+ * @param Size Size in bytes to allocate for new driver (Including the driver entry)
+ * @return Pointer to new Driver entry or nil if driver could not be created
+ */
 DRIVER * STDCALL driver_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing Driver entry
+ * @param Driver The driver to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL driver_destroy(DRIVER *driver);
 
+/**
+ * @brief Get the name of the supplied Driver
+ * @param Driver The driver to get the name from
+ * @return The name of the driver or a blank string on error
+ */
 uint32_t STDCALL driver_get_name(DRIVER *driver, char *name, uint32_t len);
+
+/**
+ * @brief Set the name of the supplied Driver
+ * @param Driver The driver to set the name for
+ * @param Name The driver name to set
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL driver_set_name(DRIVER *driver, const char *name);
 
+/**
+ * @brief Register a new Driver in the Driver table
+ * @param Driver The driver to register
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL driver_register(DRIVER *driver);
+
+/**
+ * @brief Deregister a Driver from the Driver table
+ * @param Driver The driver to deregister
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL driver_deregister(DRIVER *driver);
 
+/**
+ * @brief Find a driver by ID in the driver table
+ * @param DriverClass The class of the driver to find (DRIVER_CLASS_ANY for all classes)
+ * @param DriverId The ID number of the driver to find
+ * @return Pointer to driver entry or nil if not found
+ */
 DRIVER * STDCALL driver_find(uint32_t driverclass, uint32_t driverid);
+
+/**
+ * @brief Find a driver by name in the driver table
+ * @param Name The name of the driver to find (eg USB Hub Driver)
+ * @return Pointer to driver entry or nil if not found
+ */
 DRIVER * STDCALL driver_find_by_name(const char *name);
+
+/**
+ * @brief Enumerate all drivers in the driver table
+ * @param DriverClass The class of driver to enumerate (DRIVER_CLASS_ANY for all classes)
+ * @param Callback The callback function to call for each driver in the table
+ * @param Data A private data pointer to pass to callback for each driver in the table
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL driver_enumerate(uint32_t driverclass, driver_enumerate_cb callback, void *data);
 
 /** Clock Device Functions */
+
+/**
+ * @brief Start the counter of the specified Clock device
+ * @param Clock The Clock device to start
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL clock_device_start(CLOCK_DEVICE *clock);
+
+/**
+ * @brief Stop the counter of the specified Clock device
+ * @param Clock The Clock device to stop
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL clock_device_stop(CLOCK_DEVICE *clock);
 
+/**
+ * @brief Read the counter value of the specified Clock device
+ * @param Clock The Clock device to read from
+ * @return The 32 bit counter value of the clock or 0 on failure
+ */
 uint32_t STDCALL clock_device_read(CLOCK_DEVICE *clock);
+
+/**
+ * @brief Read the counter value of the specified Clock device
+ * @param Clock The Clock device to read from
+ * @return The 64 bit counter value of the clock or 0 on failure
+ */
 int64_t STDCALL clock_device_read64(CLOCK_DEVICE *clock);
+
+/**
+ * @brief Write the counter value of the specified Clock device
+ * @param Clock The Clock device to write to
+ * @param Value The counter value to write
+ * @return ERROR_SUCCESS if the counter was set or another error code on failure
+ * @note Not all clock devices support setting the counter value, will return an error if unsupported
+ */
 uint32_t STDCALL clock_device_write64(CLOCK_DEVICE *clock, int64_t value);
 
+/**
+ * @brief Get the current clock rate in Hz of the specified Clock device
+ * @param Clock The Clock device to get the rate from
+ * @return The current clock rate in Hz or 0 on failure
+ */
 uint32_t STDCALL clock_device_get_rate(CLOCK_DEVICE *clock);
+
+/**
+ * @brief Set the current clock rate in Hz of the specified Clock device
+ * @param Clock The Clock device to set the rate for
+ * @param Rate The clock rate in Hz to set
+ * @return ERROR_SUCCESS if the clock rate was set or another error code on failure
+ * @note Not all clock devices support setting the clock rate, will return an error if unsupported
+ */
 uint32_t STDCALL clock_device_set_rate(CLOCK_DEVICE *clock, uint32_t rate);
 
+/**
+ * @brief Get the properties for the specified Clock device
+ * @param Clock The Clock device to get properties from
+ * @param Properties Pointer to a TClockProperties structure to fill in
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Replaced by ClockDeviceGetProperties for consistency
+ */
 uint32_t STDCALL clock_device_properties(CLOCK_DEVICE *clock, CLOCK_PROPERTIES *properties);
+
+/**
+ * @brief Get the properties for the specified Clock device
+ * @param Clock The Clock device to get properties from
+ * @param Properties Pointer to a TClockProperties structure to fill in
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL clock_device_get_properties(CLOCK_DEVICE *clock, CLOCK_PROPERTIES *properties);
 
+/**
+ * @brief Create a new Clock entry
+ * @return Pointer to new Clock entry or nil if Clock could not be created
+ */
 CLOCK_DEVICE * STDCALL clock_device_create(void);
+
+/**
+ * @brief Create a new Clock entry
+ * @param Size Size in bytes to allocate for new Clock (Including the Clock entry)
+ * @return Pointer to new Clock entry or nil if Clock could not be created
+ */
 CLOCK_DEVICE * STDCALL clock_device_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing Clock entry
+ * @param Clock The clock device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL clock_device_destroy(CLOCK_DEVICE *clock);
 
+/**
+ * @brief Register a new Clock in the Clock table
+ * @param Clock The clock device to register
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL clock_device_register(CLOCK_DEVICE *clock);
+
+/**
+ * @brief Deregister a Clock from the Clock table
+ * @param Clock The clock device to deregister
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL clock_device_deregister(CLOCK_DEVICE *clock);
 
+/**
+ * @brief Find a clock device by ID in the clock table
+ * @param ClockId The ID number of the clock to find
+ * @return Pointer to clock device entry or nil if not found
+ */
 CLOCK_DEVICE * STDCALL clock_device_find(uint32_t clockid);
+
+/**
+ * @brief Find a clock device by name in the clock table
+ * @param Name The name of the clock to find (eg Clock0)
+ * @return Pointer to clock device entry or nil if not found
+ */
 CLOCK_DEVICE * STDCALL clock_device_find_by_name(const char *name);
+
+/**
+ * @brief Find a clock device by description in the clock table
+ * @param Description The description of the clock to find (eg BCM2836 ARM Timer Clock)
+ * @return Pointer to clock device entry or nil if not found
+ */
 CLOCK_DEVICE * STDCALL clock_device_find_by_description(const char *description);
+
+/**
+ * @brief Enumerate all clock devices in the clock table
+ * @param Callback The callback function to call for each clock in the table
+ * @param Data A private data pointer to pass to callback for each clock in the table
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL clock_device_enumerate(clock_enumerate_cb callback, void *data);
 
+/**
+ * @brief Register a notification for clock device changes
+ * @param Clock The clock device to notify changes for (Optional, pass nil for all clocks)
+ * @param Callback The function to call when a notification event occurs
+ * @param Data A private data pointer to pass to callback when a notification event occurs
+ * @param Notification The events to register for notification of (eg DEVICE_NOTIFICATION_REGISTER)
+ * @param Flags The flags to control the notification (eg NOTIFIER_FLAG_WORKER)
+ */
 uint32_t STDCALL clock_device_notification(CLOCK_DEVICE *clock, clock_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
 /** Timer Device Functions */
+
+/**
+ * @brief Start the clock and counter of the specified Timer device
+ * @param Timer The Timer device to start
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL timer_device_start(TIMER_DEVICE *timer);
+
+/**
+ * @brief Stop the clock and counter of the specified Timer device
+ * @param Timer The Timer device to stop
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL timer_device_stop(TIMER_DEVICE *timer);
+
+/**
+ * @brief Read the current value of the specified Timer device
+ * @param Timer The Timer device to read from
+ * @return The 32 bit current value of the timer or 0 on failure
+ */
 uint32_t STDCALL timer_device_read(TIMER_DEVICE *timer);
+
+/**
+ * @brief Read the current value of the specified Timer device
+ * @param Timer The Timer device to read from
+ * @return The 64 bit current value of the timer or 0 on failure
+ */
 int64_t STDCALL timer_device_read64(TIMER_DEVICE *timer);
+
+/**
+ * @brief Wait for the current interval to expire on the specified Timer device
+ * @param Timer The Timer device to wait for
+ * @return ERROR_SUCCESS if the interval expired or another error code on failure
+ */
 uint32_t STDCALL timer_device_wait(TIMER_DEVICE *timer);
+
+/**
+ * @brief Schedule a function to be called when the current interval expires on the specified Timer device
+ * @param Timer The Timer device to schedule the callback for
+ * @param Flags The flags to control the event (eg TIMER_EVENT_FLAG_REPEAT)
+ * @param Callback The function to be called when the interval expires
+ * @param Data A pointer to be passed to the function when the interval expires (Optional)
+ * @return ERROR_SUCCESS if the callback was scheduled successfully or another error code on failure
+ */
 uint32_t STDCALL timer_device_event(TIMER_DEVICE *timer, uint32_t flags, timer_cb callback, void *data);
+
+/**
+ * @brief Cancel a previously scheduled event callback function on the specified Timer device
+ * @param Timer The Timer device to cancel the callback for
+ * @return ERROR_SUCCESS if the callback was cancelled successfully or another error code on failure
+ */
 uint32_t STDCALL timer_device_cancel(TIMER_DEVICE *timer);
+
+/**
+ * @brief Get the current clock rate in Hz of the specified Timer device
+ * @param Timer The Timer device to get the rate from
+ * @return The current clock rate in Hz or 0 on failure
+ */
 uint32_t STDCALL timer_device_get_rate(TIMER_DEVICE *timer);
+
+/**
+ * @brief Set the current clock rate in Hz of the specified Timer device
+ * @param Timer The Timer device to set the rate for
+ * @param Rate The clock rate in Hz to set
+ * @return ERROR_SUCCESS if the clock rate was set or another error code on failure
+ */
 uint32_t STDCALL timer_device_set_rate(TIMER_DEVICE *timer, uint32_t rate);
+
+/**
+ * @brief Get the current interval in ticks of the specified Timer device
+ * @param Timer The Timer device to get the interval from
+ * @return The current interval in ticks or 0 on failure (or not set)
+ * @note The tick rate is determined by the clock rate
+ */
 uint32_t STDCALL timer_device_get_interval(TIMER_DEVICE *timer);
+
+/**
+ * @brief Set the current interval in ticks of the specified Timer device
+ * @param Timer The Timer device to set the interval for
+ * @param Interval The interval in ticks to set
+ * @return ERROR_SUCCESS if the interval was set or another error code on failure
+ * @note The tick rate is determined by the clock rate
+ */
 uint32_t STDCALL timer_device_set_interval(TIMER_DEVICE *timer, uint32_t interval);
 
+/**
+ * @brief Get the properties for the specified Timer device
+ * @param Timer The Timer device to get properties from
+ * @param Properties Pointer to a TTimerProperties structure to fill in
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Replaced by TimerDeviceGetProperties for consistency
+ */
 uint32_t STDCALL timer_device_properties(TIMER_DEVICE *timer, TIMER_PROPERTIES *properties);
+
+/**
+ * @brief Get the properties for the specified Timer device
+ * @param Timer The Timer device to get properties from
+ * @param Properties Pointer to a TTimerProperties structure to fill in
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL timer_device_get_properties(TIMER_DEVICE *timer, TIMER_PROPERTIES *properties);
 
+/**
+ * @brief Create a new Timer entry
+ * @return Pointer to new Timer entry or nil if Timer could not be created
+ */
 TIMER_DEVICE * STDCALL timer_device_create(void);
+
+/**
+ * @brief Create a new Timer entry
+ * @param Size Size in bytes to allocate for new Timer (Including the Timer entry)
+ * @return Pointer to new Timer entry or nil if Timer could not be created
+ */
 TIMER_DEVICE * STDCALL timer_device_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing Timer entry
+ * @param Timer The timer device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL timer_device_destroy(TIMER_DEVICE *timer);
 
+/**
+ * @brief Register a new Timer in the Timer table
+ * @param Timer The timer device to register
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL timer_device_register(TIMER_DEVICE *timer);
+
+/**
+ * @brief Deregister a Timer from the Timer table
+ * @param Timer The timer device to deregister
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL timer_device_deregister(TIMER_DEVICE *timer);
 
+/**
+ * @brief Find a timer device by ID in the timer table
+ * @param TimerId The ID number of the timer to find
+ * @return Pointer to timer device entry or nil if not found
+ */
 TIMER_DEVICE * STDCALL timer_device_find(uint32_t timerid);
+
+/**
+ * @brief Find a timer device by name in the timer table
+ * @param Name The name of the timer to find (eg Timer0)
+ * @return Pointer to timer device entry or nil if not found
+ */
 TIMER_DEVICE * STDCALL timer_device_find_by_name(const char *name);
+
+/**
+ * @brief Find a timer device by description in the timer table
+ * @param Description The description of the timer to find (eg BCM2836 ARM Timer)
+ * @return Pointer to timer device entry or nil if not found
+ */
 TIMER_DEVICE * STDCALL timer_device_find_by_description(const char *description);
+
+/**
+ * @brief Enumerate all timer devices in the timer table
+ * @param Callback The callback function to call for each timer in the table
+ * @param Data A private data pointer to pass to callback for each timer in the table
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL timer_device_enumerate(timer_enumerate_cb callback, void *data);
 
+/**
+ * @brief Register a notification for timer device changes
+ * @param Timer The timer device to notify changes for (Optional, pass nil for all timers)
+ * @param Callback The function to call when a notification event occurs
+ * @param Data A private data pointer to pass to callback when a notification event occurs
+ * @param Notification The events to register for notification of (eg DEVICE_NOTIFICATION_REGISTER)
+ * @param Flags The flags to control the notification (eg NOTIFIER_FLAG_WORKER)
+ */
 uint32_t STDCALL timer_device_notification(TIMER_DEVICE *timer, timer_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
 /** Random Device Functions */
@@ -914,13 +1444,38 @@ uint16_t STDCALL random_device_read_word(RANDOM_DEVICE *random);
 uint32_t STDCALL random_device_read_long_word(RANDOM_DEVICE *random);
 int64_t STDCALL random_device_read_quad_word(RANDOM_DEVICE *random);
 double_t STDCALL random_device_read_double(RANDOM_DEVICE *random);
+
+/**
+ * @note Replaced by RandomDeviceReadDouble
+ */
 double_t STDCALL random_device_read_extended(RANDOM_DEVICE *random);
 
+/**
+ * @brief Create a new Random entry
+ * @return Pointer to new Random entry or nil if Random could not be created
+ */
 RANDOM_DEVICE * STDCALL random_device_create(void);
+
+/**
+ * @brief Create a new Random entry
+ * @param Size Size in bytes to allocate for new Random (Including the Random entry)
+ * @return Pointer to new Random entry or nil if Random could not be created
+ */
 RANDOM_DEVICE * STDCALL random_device_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing Random entry
+ */
 uint32_t STDCALL random_device_destroy(RANDOM_DEVICE *random);
 
+/**
+ * @brief Register a new Random in the Random table
+ */
 uint32_t STDCALL random_device_register(RANDOM_DEVICE *random);
+
+/**
+ * @brief Deregister a Random from the Random table
+ */
 uint32_t STDCALL random_device_deregister(RANDOM_DEVICE *random);
 
 RANDOM_DEVICE * STDCALL random_device_find(uint32_t randomid);
@@ -939,11 +1494,32 @@ uint32_t STDCALL mailbox_device_call(MAILBOX_DEVICE *mailbox, uint32_t channel, 
 uint32_t STDCALL mailbox_device_get_timeout(MAILBOX_DEVICE *mailbox);
 uint32_t STDCALL mailbox_device_set_timeout(MAILBOX_DEVICE *mailbox, uint32_t timeout);
 
+/**
+ * @brief Create a new Mailbox entry
+ * @return Pointer to new Mailbox entry or nil if Mailbox could not be created
+ */
 MAILBOX_DEVICE * STDCALL mailbox_device_create(void);
+
+/**
+ * @brief Create a new Mailbox entry
+ * @param Size Size in bytes to allocate for new Mailbox (Including the Mailbox entry)
+ * @return Pointer to new Mailbox entry or nil if Mailbox could not be created
+ */
 MAILBOX_DEVICE * STDCALL mailbox_device_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing Mailbox entry
+ */
 uint32_t STDCALL mailbox_device_destroy(MAILBOX_DEVICE *mailbox);
 
+/**
+ * @brief Register a new Mailbox in the Mailbox table
+ */
 uint32_t STDCALL mailbox_device_register(MAILBOX_DEVICE *mailbox);
+
+/**
+ * @brief Deregister a Mailbox from the Mailbox table
+ */
 uint32_t STDCALL mailbox_device_deregister(MAILBOX_DEVICE *mailbox);
 
 MAILBOX_DEVICE * STDCALL mailbox_device_find(uint32_t mailboxid);
@@ -962,11 +1538,32 @@ uint32_t STDCALL watchdog_device_get_remain(WATCHDOG_DEVICE *watchdog);
 uint32_t STDCALL watchdog_device_get_timeout(WATCHDOG_DEVICE *watchdog);
 uint32_t STDCALL watchdog_device_set_timeout(WATCHDOG_DEVICE *watchdog, uint32_t timeout);
 
+/**
+ * @brief Create a new Watchdog entry
+ * @return Pointer to new Watchdog entry or nil if Watchdog could not be created
+ */
 WATCHDOG_DEVICE * STDCALL watchdog_device_create(void);
+
+/**
+ * @brief Create a new Watchdog entry
+ * @param Size Size in bytes to allocate for new Watchdog (Including the Watchdog entry)
+ * @return Pointer to new Watchdog entry or nil if Watchdog could not be created
+ */
 WATCHDOG_DEVICE * STDCALL watchdog_device_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing Watchdog entry
+ */
 uint32_t STDCALL watchdog_device_destroy(WATCHDOG_DEVICE *watchdog);
 
+/**
+ * @brief Register a new Watchdog in the Watchdog table
+ */
 uint32_t STDCALL watchdog_device_register(WATCHDOG_DEVICE *watchdog);
+
+/**
+ * @brief Deregister a Watchdog from the Watchdog table
+ */
 uint32_t STDCALL watchdog_device_deregister(WATCHDOG_DEVICE *watchdog);
 
 WATCHDOG_DEVICE * STDCALL watchdog_device_find(uint32_t watchdogid);
@@ -977,12 +1574,25 @@ uint32_t STDCALL watchdog_device_enumerate(watchdog_enumerate_cb callback, void 
 uint32_t STDCALL watchdog_device_notification(WATCHDOG_DEVICE *watchdog, watchdog_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
 /** Device Helper Functions */
+
+/**
+ * @brief Get the current device count
+ */
 uint32_t STDCALL device_get_count(void);
 
+/**
+ * @brief Check if the supplied Device is in the device table
+ */
 DEVICE * STDCALL device_check(DEVICE *device);
 
+/**
+ * @brief Get the current notifier count
+ */
 uint32_t STDCALL notifier_get_count(void);
 
+/**
+ * @brief Check if the supplied Notifier is in the notifier table
+ */
 NOTIFIER * STDCALL notifier_check(NOTIFIER *notifier);
 
 uint32_t STDCALL device_bus_to_string(uint32_t devicebus, char *string, uint32_t len);
@@ -992,67 +1602,206 @@ uint32_t STDCALL device_class_to_string(uint32_t deviceclass, char *string, uint
 uint32_t STDCALL notification_to_string(uint32_t notification, char *string, uint32_t len);
 
 /** Driver Helper Functions */
+
+/**
+ * @brief Get the current driver count
+ */
 uint32_t STDCALL driver_get_count(void);
 
+/**
+ * @brief Check if the supplied Driver is in the driver table
+ */
 DRIVER * STDCALL driver_check(DRIVER *driver);
 
 uint32_t STDCALL driver_state_to_string(uint32_t driverstate, char *string, uint32_t len);
 uint32_t STDCALL driver_class_to_string(uint32_t driverclass, char *string, uint32_t len);
 
 /** Clock Device Helper Functions */
+
+/**
+ * @brief Get the current clock device count
+ */
 uint32_t STDCALL clock_device_get_count(void);
+
+/**
+ * @brief Get the current default clock device
+ */
 CLOCK_DEVICE * STDCALL clock_device_get_default(void);
+
+/**
+ * @brief Set the current default clock device
+ */
 uint32_t STDCALL clock_device_set_default(CLOCK_DEVICE *clock);
 
+/**
+ * @brief Check if the supplied Clock is in the Clock table
+ */
 CLOCK_DEVICE * STDCALL clock_device_check(CLOCK_DEVICE *clock);
 
+/**
+ * @brief Convert a Clock type value to a string
+ */
 uint32_t STDCALL clock_type_to_string(uint32_t clocktype, char *string, uint32_t len);
+
+/**
+ * @brief Convert a Clock state value to a string
+ */
 uint32_t STDCALL clock_state_to_string(uint32_t clockstate, char *string, uint32_t len);
 
 /** Timer Device Helper Functions */
+
+/**
+ * @brief Get the current timer device count
+ */
 uint32_t STDCALL timer_device_get_count(void);
+
+/**
+ * @brief Get the current default timer device
+ */
 TIMER_DEVICE * STDCALL timer_device_get_default(void);
+
+/**
+ * @brief Set the current default timer device
+ */
 uint32_t STDCALL timer_device_set_default(TIMER_DEVICE *timer);
 
+/**
+ * @brief Check if the supplied Timer is in the Timer table
+ */
 TIMER_DEVICE * STDCALL timer_device_check(TIMER_DEVICE *timer);
 
+/**
+ * @brief Convert a Timer type value to a string
+ */
 uint32_t STDCALL timer_type_to_string(uint32_t timertype, char *string, uint32_t len);
+
+/**
+ * @brief Convert a Timer state value to a string
+ */
 uint32_t STDCALL timer_state_to_string(uint32_t timerstate, char *string, uint32_t len);
 
+/**
+ * @brief Create a new waiter using the supplied parameters
+ * @note Waiter must be registered by calling TimerDeviceRegisterWaiter
+ * @note Caller must hold the Timer device lock
+ */
 TIMER_WAITER * STDCALL timer_device_create_waiter(TIMER_DEVICE *timer, timer_cb callback, void *data);
+
+/**
+ * @brief Destroy an existing waiter
+ * @note Waiter must be deregistered first by calling TimerDeviceDeregisterWaiter
+ * @note Caller must hold the Timer device lock
+ */
 uint32_t STDCALL timer_device_destroy_waiter(TIMER_DEVICE *timer, TIMER_WAITER *waiter);
 
+/**
+ * @brief Register a waiter in the waiter list of the supplied Timer
+ * @note Waiter must be created by calling TimerDeviceCreateWaiter
+ * @note Caller must hold the Timer device lock
+ */
 uint32_t STDCALL timer_device_register_waiter(TIMER_DEVICE *timer, TIMER_WAITER *waiter);
+
+/**
+ * @brief Deregister a waiter from the waiter list of the supplied Timer
+ * @note Waiter must be destroyed by calling TimerDeviceDestroyWaiter
+ * @note Caller must hold the Timer device lock
+ */
 uint32_t STDCALL timer_device_deregister_waiter(TIMER_DEVICE *timer, TIMER_WAITER *waiter);
 
 /** Random Device Helper Functions */
+
+/**
+ * @brief Get the current random device count
+ */
 uint32_t STDCALL random_device_get_count(void);
+
+/**
+ * @brief Get the current default random device
+ */
 RANDOM_DEVICE * STDCALL random_device_get_default(void);
+
+/**
+ * @brief Set the current default random device
+ */
 uint32_t STDCALL random_device_set_default(RANDOM_DEVICE *random);
 
+/**
+ * @brief Check if the supplied Random is in the Random table
+ */
 RANDOM_DEVICE * STDCALL random_device_check(RANDOM_DEVICE *random);
 
+/**
+ * @brief Convert a Random type value to a string
+ */
 uint32_t STDCALL random_type_to_string(uint32_t randomtype, char *string, uint32_t len);
+
+/**
+ * @brief Convert a Random state value to a string
+ */
 uint32_t STDCALL random_state_to_string(uint32_t randomstate, char *string, uint32_t len);
 
 /** Mailbox Device Helper Functions */
+
+/**
+ * @brief Get the current mailbox device count
+ */
 uint32_t STDCALL mailbox_device_get_count(void);
+
+/**
+ * @brief Get the current default mailbox device
+ */
 MAILBOX_DEVICE * STDCALL mailbox_device_get_default(void);
+
+/**
+ * @brief Set the current default mailbox device
+ */
 uint32_t STDCALL mailbox_device_set_default(MAILBOX_DEVICE *mailbox);
 
+/**
+ * @brief Check if the supplied Mailbox is in the Mailbox table
+ */
 MAILBOX_DEVICE * STDCALL mailbox_device_check(MAILBOX_DEVICE *mailbox);
 
+/**
+ * @brief Convert a Mailbox type value to a string
+ */
 uint32_t STDCALL mailbox_type_to_string(uint32_t mailboxtype, char *string, uint32_t len);
+
+/**
+ * @brief Convert a Mailbox state value to a string
+ */
 uint32_t STDCALL mailbox_state_to_string(uint32_t mailboxstate, char *string, uint32_t len);
 
 /** Watchdog Device Helper Functions */
+
+/**
+ * @brief Get the current watchdog device count
+ */
 uint32_t STDCALL watchdog_device_get_count(void);
+
+/**
+ * @brief Get the current default watchdog device
+ */
 WATCHDOG_DEVICE * STDCALL watchdog_device_get_default(void);
+
+/**
+ * @brief Set the current default watchdog device
+ */
 uint32_t STDCALL watchdog_device_set_default(WATCHDOG_DEVICE *watchdog);
 
+/**
+ * @brief Check if the supplied Watchdog is in the Watchdog table
+ */
 WATCHDOG_DEVICE * STDCALL watchdog_device_check(WATCHDOG_DEVICE *watchdog);
 
+/**
+ * @brief Convert a Watchdog type value to a string
+ */
 uint32_t STDCALL watchdog_type_to_string(uint32_t watchdogtype, char *string, uint32_t len);
+
+/**
+ * @brief Convert a Watchdog state value to a string
+ */
 uint32_t STDCALL watchdog_state_to_string(uint32_t watchdogstate, char *string, uint32_t len);
 
 #ifdef __cplusplus

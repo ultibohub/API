@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -163,36 +163,160 @@ struct _KEYMAP_ENTRY
 };
 
 /** Keymap Functions */
+
+/**
+ * @brief Load a Keymap from a keymap data block and add to the Keymap table
+ * @param Header Pointer to the keymap header
+ * @param Data Pointer to the keymap data
+ * @param Size Size of the keymap data
+ * @return Handle of the newly loaded keymap or INVALID_HANDLE_VALUE on failure
+ */
 KEYMAP_HANDLE STDCALL keymap_load(KEYMAP_HEADER *header, KEYMAP_DATA *data, uint32_t size);
+
+/**
+ * @brief Load a Keymap from a keymap data block and add to the Keymap table
+ * @param Header Pointer to the keymap header (See TKeymapHeader)
+ * @param Data Pointer to the keymap data (See TKeymapData)
+ * @param Capskeys Pointer to the capskeys table (Optional)
+ * @param Deadkeys Pointer to the deadkeys table (Optional)
+ * @param Size Size of the keymap data
+ * @param Properties Pointer to a keymap properties record to use instead of the header (Optional)
+ * @return Handle of the newly loaded keymap or INVALID_HANDLE_VALUE on failure
+ */
 KEYMAP_HANDLE STDCALL keymap_load_ex(KEYMAP_HEADER *header, KEYMAP_DATA *data, KEYMAP_CAPSKEYS *capskeys, KEYMAP_DEADKEYS *deadkeys, uint32_t size, KEYMAP_PROPERTIES *properties);
+
+/**
+ * @brief Unload an existing keymap and remove from the Keymap table
+ * @param Handle The handle of the keymap to unload
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL keymap_unload(KEYMAP_HANDLE handle);
 
+/**
+ * @brief Get the name of the specified keymap
+ * @param Handle The handle of the keymap to get the name for
+ * @return The name of the keymap (eg US)
+ */
 uint32_t STDCALL keymap_get_name(KEYMAP_HANDLE handle, char *name, uint32_t len);
+
+/**
+ * @brief Get the description of the specified keymap
+ * @param Handle The handle of the keymap to get the description for
+ * @return The description of the keymap (eg US English)
+ */
 uint32_t STDCALL keymap_get_description(KEYMAP_HANDLE handle, char *description, uint32_t len);
 
+/**
+ * @brief Check if a specified keymap has a particular flag set or not
+ * @param Handle The handle of the keymap to check the flag for
+ * @param Flag The flag value to check (eg KEYMAP_FLAG_CAPS_ASCII)
+ * @return True if the flag is set and False if not set
+ */
 BOOL STDCALL keymap_check_flag(KEYMAP_HANDLE handle, uint32_t flag);
 
+/**
+ * @brief Resolve a scan code and index value to a key code using the specified keymap
+ * @param Handle The handle of the keymap to use for translation
+ * @param ScanCode The keyboard scan code value to resolve (eg SCAN_CODE_A)
+ * @param Index The keymap index to use for the translation (eg KEYMAP_INDEX_SHIFT)
+ * @return The translated key code value (eg KEY_CODE_A) or KEY_CODE_NONE on failure
+ */
 uint16_t STDCALL keymap_get_key_code(KEYMAP_HANDLE handle, uint16_t scancode, uint8_t index);
 
+/**
+ * @brief Resolve a key code value to an ANSI character code using the specified keymap
+ * @param Handle The handle of the keymap to use for translation
+ * @param KeyCode The key code value to resolve (eg KEY_CODE_A)
+ * @return The ANSI character value for the keycode or 0 on failure
+ */
 char STDCALL keymap_get_char_code(KEYMAP_HANDLE handle, uint16_t keycode);
+
+/**
+ * @brief Resolve a key code value to a Unicode character code using the specified keymap
+ * @param Handle The handle of the keymap to use for translation
+ * @param KeyCode The key code value to resolve (eg KEY_CODE_A)
+ * @return The Unicode character value for the keycode or 0 on failure
+ */
 WCHAR STDCALL keymap_get_char_unicode(KEYMAP_HANDLE handle, uint16_t keycode);
 
+/**
+ * @brief Check if a scan code is affected by the Caps Lock key in the specified keymap
+ * @param Handle The handle of the keymap to check
+ * @param ScanCode The scan code value to check (eg SCAN_CODE_A)
+ * @return True if affected by Caps Lock, False if not
+ */
 BOOL STDCALL keymap_check_capskey(KEYMAP_HANDLE handle, uint16_t scancode);
 
+/**
+ * @brief Check if a scan code represents a Dead Key in the specified keymap
+ * @param Handle The handle of the keymap to check
+ * @param ScanCode The scan code value to check (eg SCAN_CODE_A)
+ * @param Index The keymap index to check (eg KEYMAP_INDEX_SHIFT)
+ * @return True if the scan key is a Dead Key, False if not
+ */
 BOOL STDCALL keymap_check_deadkey(KEYMAP_HANDLE handle, uint16_t scancode, uint8_t index);
+
+/**
+ * @brief Resolve a Dead Key and the next scan code to a key code value
+ * @param Handle The handle of the keymap to use for resolution
+ * @param DeadCode The scan code value of the dead key (eg SCAN_CODE_GRAVE)
+ * @param ScanCode The scan code value of the next key (eg (SCAN_CODE_A)
+ * @param DeadIndex The keymap index of the dead key (eg KEYMAP_INDEX_SHIFT)
+ * @param ScanIndex The keymap index of the next key (eg KEYMAP_INDEX_SHIFT)
+ * @param KeyCode Return value for the key code represented by the dead key / next key combination (or KEY_CODE_NONE)
+ * @return True if the dead key / next key combination resolves to a key code or False if not
+ */
 BOOL STDCALL keymap_resolve_deadkey(KEYMAP_HANDLE handle, uint16_t deadcode, uint16_t scancode, uint8_t deadindex, uint8_t scanindex, uint16_t *keycode);
 
+/**
+ * @brief Get the properties of the specified keymap
+ * @param Handle The handle of the keymap to get the properties for
+ * @param Properties Pointer to a keymap properties structure to return the properties
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL keymap_get_properties(KEYMAP_HANDLE handle, KEYMAP_PROPERTIES *properties);
 
+/**
+ * @brief Find a keymap by name
+ * @param Name The name of the keymap to find (eg US)
+ * @return The handle of the matching keymap or INVALID_HANDLE_VALUE if not found
+ */
 KEYMAP_HANDLE STDCALL keymap_find_by_name(const char *name);
+
+/**
+ * @brief Find a keymap by description
+ * @param Description The description of the keymap to find (eg US English)
+ * @return The handle of the matching keymap or INVALID_HANDLE_VALUE if not found
+ */
 KEYMAP_HANDLE STDCALL keymap_find_by_description(const char *description);
+
+/**
+ * @brief Enumerate all loaded keymaps
+ * @param Callback The function to call for each loaded keymap
+ * @param Data A private data pointer to pass to callback for each loaded keymap
+ */
 uint32_t STDCALL keymap_enumerate(keymap_enumerate_cb callback, void *data);
 
 /** Keymap Helper Functions */
+
+/**
+ * @brief Get the current keymap count
+ */
 uint32_t STDCALL keymap_get_count(void);
+
+/**
+ * @brief Get the current default keymap
+ */
 KEYMAP_HANDLE STDCALL keymap_get_default(void);
+
+/**
+ * @brief Set the current default keymap
+ */
 uint32_t STDCALL keymap_set_default(KEYMAP_HANDLE handle);
 
+/**
+ * @brief Check if the supplied Keymap is in the Keymap table
+ */
 KEYMAP_ENTRY * STDCALL keymap_check(KEYMAP_ENTRY *keymap);
 
 #ifdef __cplusplus

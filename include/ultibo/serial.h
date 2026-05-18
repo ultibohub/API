@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -204,57 +204,271 @@ struct _SERIAL_DEVICE
 };
 
 /** Serial Functions */
+
+/**
+ * @brief Open a Serial device ready for sending and receiving
+ * @param Serial The Serial device to open
+ * @param BaudRate Baud rate for the connection (eg 9600, 57600, 115200 etc
+ * @param DataBits Size of the data (eg SERIAL_DATA_8BIT)
+ * @param StopBits Number of stop bits (eg SERIAL_STOP_1BIT)
+ * @param Parity Parity type for the data (eg SERIAL_PARITY_NONE)
+ * @param FlowControl Flow control for the connection (eg SERIAL_FLOW_NONE)
+ * @param ReceiveDepth Size of the receive buffer (0 = Default size)
+ * @param TransmitDepth Size of the transmit buffer (0 = Default size)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL serial_device_open(SERIAL_DEVICE *serial, uint32_t baudrate, uint32_t databits, uint32_t stopbits, uint32_t parity, uint32_t flowcontrol, uint32_t receivedepth, uint32_t transmitdepth);
+
+/**
+ * @brief Close a Serial device and terminate sending and receiving
+ * @param Serial The Serial device to close
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL serial_device_close(SERIAL_DEVICE *serial);
 
+/**
+ * @brief Read data from a Serial device
+ * @param Serial The Serial device to read from
+ * @param Buffer Pointer to a buffer to receive the data
+ * @param Size The size of the buffer
+ * @param Flags The flags to control reading (eg SERIAL_READ_NON_BLOCK)
+ * @param Count The number of bytes read on return
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL serial_device_read(SERIAL_DEVICE *serial, void *buffer, uint32_t size, uint32_t flags, uint32_t *count);
+
+/**
+ * @brief Write data to a Serial device
+ * @param Serial The Serial device to write to
+ * @param Buffer Pointer to a buffer of data to transmit
+ * @param Size The size of the buffer
+ * @param Flags The flags to control writing (eg SERIAL_WRITE_NON_BLOCK)
+ * @param Count The number of bytes written on return
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL serial_device_write(SERIAL_DEVICE *serial, void *buffer, uint32_t size, uint32_t flags, uint32_t *count);
 
+/**
+ * @brief Wait for data to be available in the receive or transmit buffers of a Serial device
+ * @param Serial The Serial device to wait for
+ * @param Direction The direction of data to wait for (eg SERIAL_WAIT_RECEIVE)
+ * @param Timeout The number of milliseconds to wait for data (INFINITE to wait forever)
+ * @param Count The number of bytes available on return
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL serial_device_wait(SERIAL_DEVICE *serial, uint32_t direction, uint32_t timeout, uint32_t *count);
+
+/**
+ * @brief Discard the contents of the receive and/or transmit buffers of a Serial device
+ * @param Serial The Serial device to flush
+ * @param Flags The flags to indicate what to flush (eg SERIAL_FLUSH_RECEIVE)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL serial_device_flush(SERIAL_DEVICE *serial, uint32_t flags);
 
+/**
+ * @brief Get the current line status of a Serial device
+ * @param Serial The Serial device to get the status from
+ * @return A set of flags containing the device status (eg SERIAL_STATUS_RTS)
+ * @note Replaced by SerialDeviceGetStatus for consistency
+ */
 uint32_t STDCALL serial_device_status(SERIAL_DEVICE *serial);
+
+/**
+ * @brief Get the current line status of a Serial device
+ * @param Serial The Serial device to get the status from
+ * @return A set of flags containing the device status (eg SERIAL_STATUS_RTS)
+ */
 uint32_t STDCALL serial_device_get_status(SERIAL_DEVICE *serial);
+
+/**
+ * @brief Set the current line status of a Serial device
+ * @param Serial The Serial device to set the status for
+ * @param Status The device status flags to be set (eg SERIAL_STATUS_RTS)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Not all SERIAL_STATUS_* flags can be set, the device may ignore invalid values
+ * @note Not all serial devices support set status, returns ERROR_CALL_NOT_IMPLEMENTED if not supported
+ */
 uint32_t STDCALL serial_device_set_status(SERIAL_DEVICE *serial, uint32_t status);
 
+/**
+ * @brief Get the properties for the specified Serial device
+ * @param Serial The Serial device to get properties from
+ * @param Properties Pointer to a PSerialProperties structure to fill in
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Replaced by SerialDeviceGetProperties for consistency
+ */
 uint32_t STDCALL serial_device_properties(SERIAL_DEVICE *serial, SERIAL_PROPERTIES *properties);
+
+/**
+ * @brief Get the properties for the specified Serial device
+ * @param Serial The Serial device to get properties from
+ * @param Properties Pointer to a PSerialProperties structure to fill in
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL serial_device_get_properties(SERIAL_DEVICE *serial, SERIAL_PROPERTIES *properties);
+
+/**
+ * @brief Set the properties for the specified Serial device
+ * @param Serial The Serial device to set properties for
+ * @param Properties Pointer to a PSerialProperties structure to use
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL serial_device_set_properties(SERIAL_DEVICE *serial, SERIAL_PROPERTIES *properties);
 
+/**
+ * @brief Create a new Serial entry
+ * @return Pointer to new Serial entry or nil if Serial could not be created
+ */
 SERIAL_DEVICE * STDCALL serial_device_create(void);
+
+/**
+ * @brief Create a new Serial entry
+ * @param Size Size in bytes to allocate for new Serial (Including the Serial entry)
+ * @return Pointer to new Serial entry or nil if Serial could not be created
+ */
 SERIAL_DEVICE * STDCALL serial_device_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing Serial entry
+ * @param Serial The serial device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL serial_device_destroy(SERIAL_DEVICE *serial);
 
+/**
+ * @brief Register a new Serial in the Serial table
+ * @param Serial The serial device to register
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL serial_device_register(SERIAL_DEVICE *serial);
+
+/**
+ * @brief Deregister a Serial from the Serial table
+ * @param Serial The serial device to deregister
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL serial_device_deregister(SERIAL_DEVICE *serial);
 
+/**
+ * @brief Find a serial device by ID in the serial table
+ * @param SerialId The ID number of the serial to find
+ * @return Pointer to serial device entry or nil if not found
+ */
 SERIAL_DEVICE * STDCALL serial_device_find(uint32_t serialid);
+
+/**
+ * @brief Find a serial device by name in the serial table
+ * @param Name The name of the serial to find (eg Serial0)
+ * @return Pointer to serial device entry or nil if not found
+ */
 SERIAL_DEVICE * STDCALL serial_device_find_by_name(const char *name);
+
+/**
+ * @brief Find a serial device by description in the serial table
+ * @param Description The description of the serial to find (eg BCM2836 PL011 UART)
+ * @return Pointer to serial device entry or nil if not found
+ */
 SERIAL_DEVICE * STDCALL serial_device_find_by_description(const char *description);
+
+/**
+ * @brief Enumerate all serial devices in the serial table
+ * @param Callback The callback function to call for each serial in the table
+ * @param Data A private data pointer to pass to callback for each serial in the table
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL serial_device_enumerate(serial_enumerate_cb callback, void *data);
 
+/**
+ * @brief Register a notification for serial device changes
+ * @param Serial The serial device to notify changes for (Optional, pass nil for all serial devices)
+ * @param Callback The function to call when a notification event occurs
+ * @param Data A private data pointer to pass to callback when a notification event occurs
+ * @param Notification The events to register for notification of (eg DEVICE_NOTIFICATION_REGISTER)
+ * @param Flags The flags to control the notification (eg NOTIFIER_FLAG_WORKER)
+ */
 uint32_t STDCALL serial_device_notification(SERIAL_DEVICE *serial, serial_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
+/**
+ * @brief Print formatted text to a Serial device
+ * @param Serial The serial device to print text to
+ * @param Format The formatted text to print (As per printf in standard C library)
+ * @return On success the total number of characters sent to the serial device, on error a negative value is returned and errno is set to the error code
+ */
 int STDCALL serial_device_printf(SERIAL_DEVICE *serial, const char *format, ...) _ATTRIBUTE ((__format__ (__printf__, 2, 3)));
 
 /** Serial Helper Functions */
+
+/**
+ * @brief Get the current Serial count
+ */
 uint32_t STDCALL serial_get_count(void);
 
+/**
+ * @brief Get the current default Serial device
+ */
 SERIAL_DEVICE * STDCALL serial_device_get_default(void);
+
+/**
+ * @brief Set the current default Serial device
+ */
 uint32_t STDCALL serial_device_set_default(SERIAL_DEVICE *serial);
 
+/**
+ * @brief Check if the supplied Serial is in the Serial table
+ */
 SERIAL_DEVICE * STDCALL serial_device_check(SERIAL_DEVICE *serial);
 
+/**
+ * @brief Convert a Serial type value to a string
+ */
 uint32_t STDCALL serial_type_to_string(uint32_t serialtype, char *string, uint32_t len);
+
+/**
+ * @brief Convert a Serial state value to a string
+ */
 uint32_t STDCALL serial_state_to_string(uint32_t serialstate, char *string, uint32_t len);
 
+/**
+ * @brief Redirect standard input to the serial device specified by Serial
+ * @param Serial The serial device to redirect input to (or nil to stop redirection)
+ * @return True if completed successfully or False if an error occurred
+ * @note Redirects the input of the text file Input which also
+ *        redirects the input of Read, ReadLn and the standard C library
+ */
 BOOL STDCALL serial_device_redirect_input(SERIAL_DEVICE *serial);
+
+/**
+ * @brief Redirect standard output to the serial device specified by Serial
+ * @param Serial The serial device to redirect output to (or nil to stop redirection)
+ * @return True if completed successfully or False if an error occurred
+ * @note Redirects the output of the text files Output, ErrOutput, StdOut and StdErr
+ *        which also redirects the output of Write, WriteLn and the standard C library
+ */
 BOOL STDCALL serial_device_redirect_output(SERIAL_DEVICE *serial);
 
+/**
+ * @brief Return a pointer to the next read from the buffer and the number of bytes that can be read
+ * @note Caller must hold the lock on the serial device which owns the buffer
+ */
 void * STDCALL serial_buffer_read_start(SERIAL_BUFFER *buffer, uint32_t *available);
+
+/**
+ * @brief Update the buffer to reflect the number of bytes removed when reading
+ * @note Caller must hold the lock on the serial device which owns the buffer
+ */
 BOOL STDCALL serial_buffer_read_complete(SERIAL_BUFFER *buffer, uint32_t removed);
 
+/**
+ * @brief Return a pointer to the next write to the buffer and the number of bytes that can be written
+ * @note Caller must hold the lock on the serial device which owns the buffer
+ */
 void * STDCALL serial_buffer_write_start(SERIAL_BUFFER *buffer, uint32_t *available);
+
+/**
+ * @brief Update the buffer to reflect the number of bytes added when writing
+ * @note Caller must hold the lock on the serial device which owns the buffer
+ */
 BOOL STDCALL serial_buffer_write_complete(SERIAL_BUFFER *buffer, uint32_t added);
 
 uint32_t STDCALL serial_data_bits_to_string(uint32_t bits, char *string, uint32_t len);
@@ -263,8 +477,21 @@ uint32_t STDCALL serial_parity_to_string(uint32_t parity, char *string, uint32_t
 uint32_t STDCALL serial_flow_control_to_string(uint32_t flow, char *string, uint32_t len);
 
 /** Serial Logging Helper Functions */
+
+/**
+ * @brief Add a new serial logging device on receipt of a device register notification
+ */
 uint32_t STDCALL serial_logging_device_add(SERIAL_DEVICE *serial);
+
+/**
+ * @brief Remove a serial logging device on receipt of a device deregister notification
+ */
 uint32_t STDCALL serial_logging_device_remove(SERIAL_DEVICE *serial);
+
+/**
+ * @brief Break down the serial parameters value into component parts of baud rate, parity, data bits and stop bits
+ * The parameters must be in the form 'BaudRate,Parity,DataBits,StopBits' (eg '115200,N,8,1')
+ */
 uint32_t STDCALL serial_logging_device_parameters(SERIAL_DEVICE *serial, const char *parameters, uint32_t *baudrate, uint32_t *parity, uint32_t *databits, uint32_t *stopbits);
 
 #ifdef __cplusplus

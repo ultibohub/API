@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -260,50 +260,230 @@ struct _USB_HID_DESCRIPTOR
 #endif // _ULTIBO_MOUSE_H
 
 /** Keyboard Functions */
+
+/**
+ * @brief Get the first key code from the global keyboard buffer
+ * @param KeyCode The returned key code read from the buffer (eg KEY_CODE_A)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Key code is the value translated from the scan code using the current keymap
+ *        it may not be a character code and it may include non printable characters.
+ *
+ *        To translate a key code to a character call KeymapGetCharCode()
+ */
 uint32_t STDCALL keyboard_get(uint16_t *keycode);
+
+/**
+ * @brief Peek at the global keyboard buffer to see if any data packets are ready
+ * @return ERROR_SUCCESS if packets are ready, ERROR_NO_MORE_ITEMS if not or another error code on failure
+ */
 uint32_t STDCALL keyboard_peek(void);
+
+/**
+ * @brief Read keyboard data packets from the global keyboard buffer
+ * @param Buffer Pointer to a buffer to copy the keyboard data packets to
+ * @param Size The size of the buffer in bytes (Must be at least TKeyboardData or greater)
+ * @param Count The number of keyboard data packets copied to the buffer
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL keyboard_read(void *buffer, uint32_t size, uint32_t *count);
+
+/**
+ * @brief Read keyboard data packets from the global keyboard buffer
+ * @param Buffer Pointer to a buffer to copy the keyboard data packets to
+ * @param Size The size of the buffer in bytes (Must be at least TKeyboardData or greater)
+ * @param Flags The flags to use for the read (eg KEYBOARD_FLAG_NON_BLOCK)
+ * @param Count The number of keyboard data packets copied to the buffer
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL keyboard_read_ex(void *buffer, uint32_t size, uint32_t flags, uint32_t *count);
 
+/**
+ * @brief Put a scan code and key code in the global keyboard buffer
+ * @param ScanCode The scan code to write to the buffer (eg SCAN_CODE_A)
+ * @param KeyCode The key code to write to the buffer (eg KEY_CODE_A)
+ * @param Modifiers The modifier keys to write to the buffer (eg KEYBOARD_LEFT_CTRL)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL keyboard_put(uint16_t scancode, uint16_t keycode, uint32_t modifiers);
+
+/**
+ * @brief Write keyboard data packets to the global keyboard buffer
+ * @param Buffer Pointer to a buffer to copy the keyboard data packets from
+ * @param Size The size of the buffer in bytes (Must be at least TKeyboardData or greater)
+ * @param Count The number of keyboard data packets to copy from the buffer
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL keyboard_write(void *buffer, uint32_t size, uint32_t count);
 
+/**
+ * @brief Flush the contents of the global keyboard buffer
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL keyboard_flush(void);
 
+/**
+ * @brief Get the first key code from the buffer of the specified keyboard
+ * @param Keyboard The keyboard device to get from
+ * @param KeyCode The returned key code read from the buffer (eg KEY_CODE_A)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Key code is the value translated from the scan code using the current keymap
+ *        it may not be a character code and it may include non printable characters.
+ *
+ *        To translate a key code to a character call KeymapGetCharCode()
+ */
 uint32_t STDCALL keyboard_device_get(KEYBOARD_DEVICE *keyboard, uint16_t *keycode);
+
+/**
+ * @brief Read keyboard data packets from the buffer of the specified keyboard
+ * @param Keyboard The keyboard device to read from
+ * @param Buffer Pointer to a buffer to copy the keyboard data packets to
+ * @param Size The size of the buffer in bytes (Must be at least TKeyboardData or greater)
+ * @param Count The number of keyboard data packets copied to the buffer
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL keyboard_device_read(KEYBOARD_DEVICE *keyboard, void *buffer, uint32_t size, uint32_t *count);
+
+/**
+ * @brief Perform a control request on the specified keyboard device
+ * @param Keyboard The keyboard device to control
+ * @param Request The request code for the operation (eg KEYBOARD_CONTROL_GET_FLAG)
+ * @param Argument1 The first argument for the operation (Dependent on request code)
+ * @param Argument2 The second argument for the operation (Dependent on request code)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL keyboard_device_control(KEYBOARD_DEVICE *keyboard, int request, size_t argument1, size_t *argument2);
 
+/**
+ * @brief Set the state of the specified keyboard and send a notification
+ * @param Keyboard The keyboard to set the state for
+ * @param State The new state to set and notify
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL keyboard_device_set_state(KEYBOARD_DEVICE *keyboard, uint32_t state);
 
+/**
+ * @brief Create a new Keyboard device entry
+ * @return Pointer to new Keyboard device entry or nil if keyboard could not be created
+ */
 KEYBOARD_DEVICE * STDCALL keyboard_device_create(void);
+
+/**
+ * @brief Create a new Keyboard device entry
+ * @param Size Size in bytes to allocate for new keyboard (Including the keyboard device entry)
+ * @return Pointer to new Keyboard device entry or nil if keyboard could not be created
+ */
 KEYBOARD_DEVICE * STDCALL keyboard_device_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing Keyboard device entry
+ * @param Keyboard The keyboard device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL keyboard_device_destroy(KEYBOARD_DEVICE *keyboard);
 
+/**
+ * @brief Register a new Keyboard device in the Keyboard table
+ * @param Keyboard The keyboard device to register
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL keyboard_device_register(KEYBOARD_DEVICE *keyboard);
+
+/**
+ * @brief Deregister a Keyboard device from the Keyboard table
+ * @param Keyboard The keyboard device to deregister
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL keyboard_device_deregister(KEYBOARD_DEVICE *keyboard);
 
+/**
+ * @brief Find a keyboard device by ID in the keyboard table
+ * @param KeyboardId The ID number of the keyboard to find
+ * @return Pointer to keyboard device entry or nil if not found
+ */
 KEYBOARD_DEVICE * STDCALL keyboard_device_find(uint32_t keyboardid);
+
+/**
+ * @brief Find a keyboard device by name in the keyboard table
+ * @param Name The name of the keyboard to find (eg Keyboard0)
+ * @return Pointer to keyboard device entry or nil if not found
+ */
 KEYBOARD_DEVICE * STDCALL keyboard_device_find_by_name(const char *name);
+
+/**
+ * @brief Find a keyboard device by description in the keyboard table
+ * @param Description The description of the keyboard to find (eg USB HID Keyboard)
+ * @return Pointer to keyboard device entry or nil if not found
+ */
 KEYBOARD_DEVICE * STDCALL keyboard_device_find_by_description(const char *description);
+
+/**
+ * @brief Enumerate all keyboard devices in the keyboard table
+ * @param Callback The callback function to call for each keyboard in the table
+ * @param Data A private data pointer to pass to callback for each keyboard in the table
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL keyboard_device_enumerate(keyboard_enumerate_cb callback, void *data);
 
+/**
+ * @brief Register a notification for keyboard device changes
+ * @param Keyboard The keyboard device to notify changes for (Optional, pass nil for all keyboards)
+ * @param Callback The function to call when a notification event occurs
+ * @param Data A private data pointer to pass to callback when a notification event occurs
+ * @param Notification The events to register for notification of (eg DEVICE_NOTIFICATION_REGISTER)
+ * @param Flags The flags to control the notification (eg NOTIFIER_FLAG_WORKER)
+ */
 uint32_t STDCALL keyboard_device_notification(KEYBOARD_DEVICE *keyboard, keyboard_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
 /** Keyboard Helper Functions */
+
+/**
+ * @brief Get the current keyboard count
+ */
 uint32_t STDCALL keyboard_get_count(void);
 
+/**
+ * @brief Check if the supplied Keyboard is in the keyboard table
+ */
 KEYBOARD_DEVICE * STDCALL keyboard_device_check(KEYBOARD_DEVICE *keyboard);
 
 uint32_t STDCALL keyboard_device_type_to_string(uint32_t keyboardtype, char *string, uint32_t len);
 uint32_t STDCALL keyboard_device_state_to_string(uint32_t keyboardstate, char *string, uint32_t len);
 
+/**
+ * @brief Convert a Keyboard state value into the notification code for device notifications
+ */
 uint32_t STDCALL keyboard_device_state_to_notification(uint32_t state);
 
+/**
+ * @brief Remap Ctrl-<Key> combinations to ASCII control codes
+ * @note Caller must check for Left-Ctrl or Right-Ctrl modifiers
+ */
 uint16_t STDCALL keyboard_remap_ctrl_code(uint16_t keycode, uint16_t charcode);
+
+/**
+ * @brief Remap the SCAN_CODE_* and KEY_CODE_* values to DOS compatible scan codes
+ * @return True if the key was remapped, False if it was not
+ * @see http://www.freepascal.org/docs-html/rtl/keyboard/kbdscancode.html
+ * @note See below for a version that uses SCAN_CODE_* values instead of translated KEY_CODE_* values
+ */
 BOOL STDCALL keyboard_remap_key_code(uint16_t scancode, uint16_t keycode, uint8_t *charcode, uint32_t modifiers);
+
+/**
+ * @brief Remap the SCAN_CODE_* and KEY_CODE_* values to DOS compatible scan codes
+ * @return True if the key was remapped, False if it was not
+ * @see http://www.freepascal.org/docs-html/rtl/keyboard/kbdscancode.html
+ * @note Same as above except using SCAN_CODE_* values instead of translated KEY_CODE_* values
+ */
 BOOL STDCALL keyboard_remap_scan_code(uint16_t scancode, uint16_t keycode, uint8_t *charcode, uint32_t modifiers);
 
+/**
+ * @brief Insert a TKeyboardData entry into the keyboard buffer (Direct or Global)
+ * @param Keyboard The keyboard device to insert data for
+ * @param Data The TKeyboardData entry to insert
+ * @param Signal If True then signal that new data is available in the buffer
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Caller must hold the keyboard lock
+ */
 uint32_t STDCALL keyboard_insert_data(KEYBOARD_DEVICE *keyboard, KEYBOARD_DATA *data, BOOL signal);
 
 #ifdef __cplusplus

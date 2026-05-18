@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -284,7 +284,23 @@ struct _FONT_ENTRY
 };
 
 /** Font Functions */
+
+/**
+ * @brief Load a Font from a font data block and add to the Font table
+ * @param Header Pointer to the font header
+ * @param Data Pointer to the font data
+ * @param Size Size of the font data
+ */
 FONT_HANDLE STDCALL font_load(FONT_HEADER *header, FONT_DATA *data, uint32_t size);
+
+/**
+ * @brief Load a Font from a font data block and add to the Font table
+ * @param Header Pointer to the font header
+ * @param Data Pointer to the font data
+ * @param Unicode Pointer to the unicode translation table (Optional)
+ * @param Size Size of the font data
+ * @param Properties Pointer to a font properties record to use instead of the header (Optional)
+ */
 FONT_HANDLE STDCALL font_load_ex(FONT_HEADER *header, FONT_DATA *data, FONT_UNICODE *unicode, uint32_t size, FONT_PROPERTIES *properties);
 uint32_t STDCALL font_unload(FONT_HANDLE handle);
 
@@ -311,10 +327,25 @@ FONT_HANDLE STDCALL psf_font_load(const char *filename);
 FONT_HANDLE STDCALL psf_font_load_ex(void *data, uint32_t size);
 
 /** Font Helper Functions */
+
+/**
+ * @brief Get the current font count
+ */
 uint32_t STDCALL font_get_count(void);
+
+/**
+ * @brief Get the current default font
+ */
 FONT_HANDLE STDCALL font_get_default(void);
+
+/**
+ * @brief Set the current default font
+ */
 uint32_t STDCALL font_set_default(FONT_HANDLE handle);
 
+/**
+ * @brief Check if the supplied Font is in the Font table
+ */
 FONT_ENTRY * STDCALL font_check(FONT_ENTRY *font);
 
 /** PSF Font Helper Functions */

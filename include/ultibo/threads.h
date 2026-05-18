@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -926,428 +926,2451 @@ typedef ssize_t STDCALL (*thread_start_proc)(void *parameter);
 typedef void STDCALL (*thread_end_proc)(uint32_t exitcode);
 
 /** Spin Functions */
+
+/**
+ * @brief Create and insert a new Spin entry
+ * @return Handle of new Spin entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 SPIN_HANDLE STDCALL spin_create(void);
+
+/**
+ * @brief Create and insert a new Spin entry
+ * @param InitialOwner If true set the state of the spin to locked and the owner to the current thread
+ * @return Handle of new Spin entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 SPIN_HANDLE STDCALL spin_create_ex(BOOL initialowner);
+
+/**
+ * @brief Destroy and remove an existing Spin entry
+ * @param Spin Handle of Spin entry to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL spin_destroy(SPIN_HANDLE spin);
 
+/**
+ * @brief Get the current owner of an existing Spin entry
+ * @param Spin Handle of Spin entry to get owner for
+ * @return Handle of owning thread or INVALID_HANDLE_VALUE if not currently owned
+ */
 THREAD_HANDLE STDCALL spin_owner(SPIN_HANDLE spin);
 
+/**
+ * @brief Lock an existing Spin entry
+ * @param Spin Handle of Spin entry to lock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL spin_lock(SPIN_HANDLE spin);
+
+/**
+ * @brief Unlock an existing Spin entry
+ * @param Spin Handle of Spin entry to unlock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL spin_unlock(SPIN_HANDLE spin);
 
+/**
+ * @brief Lock an existing Spin entry, disable IRQ and save the previous IRQ state
+ * @param Spin Handle of Spin entry to lock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL spin_lock_irq(SPIN_HANDLE spin);
+
+/**
+ * @brief Unlock an existing Spin entry and restore the previous IRQ state
+ * @param Spin Handle of Spin entry to unlock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL spin_unlock_irq(SPIN_HANDLE spin);
 
+/**
+ * @brief Lock an existing Spin entry, disable FIQ and save the previous FIQ state
+ * @param Spin Handle of Spin entry to lock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL spin_lock_fiq(SPIN_HANDLE spin);
+
+/**
+ * @brief Unlock an existing Spin entry and restore the previous FIQ state
+ * @param Spin Handle of Spin entry to unlock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL spin_unlock_fiq(SPIN_HANDLE spin);
 
+/**
+ * @brief Lock an existing Spin entry, disable IRQ and FIQ and save the previous IRQ and FIQ state
+ * @param Spin Handle of Spin entry to lock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL spin_lock_irq_fiq(SPIN_HANDLE spin);
+
+/**
+ * @brief Unlock an existing Spin entry and restore the previous IRQ and FIQ state
+ * @param Spin Handle of Spin entry to unlock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL spin_unlock_irq_fiq(SPIN_HANDLE spin);
 
+/**
+ * @brief Lock an existing Spin entry, disable IRQ or IRQ/FIQ and save the previous IRQ or IRQ/FIQ state
+ * @param Spin Handle of Spin entry to lock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note This is a convenience wrapper which determines the appropriate SpinLock call to disable preemption
+ */
 uint32_t STDCALL spin_lock_preempt(SPIN_HANDLE spin);
+
+/**
+ * @brief Unlock an existing Spin entry and restore the previous IRQ or IRQ/FIQ state
+ * @param Spin Handle of Spin entry to unlock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note This is a convenience wrapper which determines the appropriate SpinUnlock call to enable preemption
+ */
 uint32_t STDCALL spin_unlock_preempt(SPIN_HANDLE spin);
 
+/**
+ * @brief Check the mask that stores the previous IRQ state to determine if IRQ is enabled
+ * @param Spin Handle of Spin entry to check
+ * @return True if the mask would enable IRQ on restore, False if it would not
+ * @note The Spin entry must be locked by the current thread
+ */
 BOOL STDCALL spin_check_irq(SPIN_HANDLE spin);
+
+/**
+ * @brief Check the mask that stores the previous FIQ state to determine if FIQ is enabled
+ * @param Spin Handle of Spin entry to check
+ * @return True if the mask would enable FIQ on restore, False if it would not
+ * @note The Spin entry must be locked by the current thread
+ */
 BOOL STDCALL spin_check_fiq(SPIN_HANDLE spin);
 
+/**
+ * @brief Exchange the previous IRQ state between two Spin entries
+ * @param Spin1 Handle of first Spin entry
+ * @param Spin2 Handle of second Spin entry
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Both Spin entries must be locked by the current thread
+ */
 uint32_t STDCALL spin_exchange_irq(SPIN_HANDLE spin1, SPIN_HANDLE spin2);
+
+/**
+ * @brief Exchange the previous FIQ state between two Spin entries
+ * @param Spin1 Handle of first Spin entry
+ * @param Spin2 Handle of second Spin entry
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Both Spin entries must be locked by the current thread
+ */
 uint32_t STDCALL spin_exchange_fiq(SPIN_HANDLE spin1, SPIN_HANDLE spin2);
 
 /** Mutex Functions */
+
+/**
+ * @brief Create and insert a new Mutex entry
+ * @return Handle of new Mutex entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 MUTEX_HANDLE STDCALL mutex_create(void);
+
+/**
+ * @brief Create and insert a new Mutex entry
+ * @param InitialOwner If true set the state of the mutex to locked and the owner to the current thread
+ * @param SpinCount The number of times the mutex will spin before yielding (Always 0 if CPU count equals 1)
+ * @param Flags The flags for the Mutex entry (eg MUTEX_FLAG_RECURSIVE)
+ * @return Handle of new Mutex entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 MUTEX_HANDLE STDCALL mutex_create_ex(BOOL initialowner, uint32_t spincount, uint32_t flags);
+
+/**
+ * @brief Destroy and remove an existing Mutex entry
+ * @param Mutex Handle of Mutex entry to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL mutex_destroy(MUTEX_HANDLE mutex);
 
+/**
+ * @brief Get the current flags of an existing Mutex entry
+ * @param Mutex Handle of Mutex entry to get flags for
+ * @return Current flags or INVALID_HANDLE_VALUE on error
+ */
 uint32_t STDCALL mutex_flags(MUTEX_HANDLE mutex);
+
+/**
+ * @brief Get the current lock count of an existing Mutex entry
+ * @param Mutex Mutex to get count for
+ * @return Current lock count or INVALID_HANDLE_VALUE on error
+ * @note Count is only valid if Flags includes MUTEX_FLAG_RECURSIVE
+ */
 uint32_t STDCALL mutex_count(MUTEX_HANDLE mutex);
+
+/**
+ * @brief Get the current owner of an existing Mutex entry
+ * @param Mutex Handle of Mutex entry to get owner for
+ * @return Handle of owning thread or INVALID_HANDLE_VALUE if not currently owned
+ */
 THREAD_HANDLE STDCALL mutex_owner(MUTEX_HANDLE mutex);
 
+/**
+ * @brief Lock an existing Mutex entry
+ * @param Mutex Handle of Mutex entry to lock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL mutex_lock(MUTEX_HANDLE mutex);
+
+/**
+ * @brief Unlock an existing Mutex entry
+ * @param Mutex Handle of Mutex entry to unlock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL mutex_unlock(MUTEX_HANDLE mutex);
+
+/**
+ * @brief Try to lock an existing Mutex entry
+ *
+ *  If the Mutex is not locked then lock it and mark the owner as the current thread
+ *
+ *  If the Mutex is already locked then return immediately with an error and do not
+ *  wait for it to be unlocked
+ * @param Mutex Mutex to try to lock
+ * @return ERROR_SUCCESS if completed, ERROR_LOCKED if already locked or another error code on failure
+ */
 uint32_t STDCALL mutex_try_lock(MUTEX_HANDLE mutex);
 
 /** Critical Section Functions */
+
+/**
+ * @brief Create and insert a new CriticalSection entry
+ * @return Handle of new CriticalSection entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 CRITICAL_SECTION_HANDLE STDCALL critical_section_create(void);
+
+/**
+ * @brief Create and insert a new CriticalSection entry
+ * @param InitialOwner If true set the state of the criticalsection to locked and the owner to the current thread
+ * @param SpinCount The number of times the criticalsection will spin before waiting (Always 0 if CPU count equals 1)
+ * @return Handle of new CriticalSection entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 CRITICAL_SECTION_HANDLE STDCALL critical_section_create_ex(BOOL initialowner, uint32_t spincount);
+
+/**
+ * @brief Destroy and remove an existing CriticalSection entry
+ * @param CriticalSection Handle of CriticalSection entry to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL critical_section_destroy(CRITICAL_SECTION_HANDLE criticalsection);
 
+/**
+ * @brief Get the current lock count of an existing CriticalSection entry
+ * @param CriticalSection CriticalSection to get count for
+ * @return Current lock count or INVALID_HANDLE_VALUE on error
+ */
 uint32_t STDCALL critical_section_count(CRITICAL_SECTION_HANDLE criticalsection);
+
+/**
+ * @brief Get the current owner of an existing CriticalSection entry
+ * @param CriticalSection CriticalSection to get owner for
+ * @return Handle of owning thread or INVALID_HANDLE_VALUE if not currently owned
+ */
 THREAD_HANDLE STDCALL critical_section_owner(CRITICAL_SECTION_HANDLE criticalsection);
+
+/**
+ * @brief Set the spin count of an existing CriticalSection entry
+ * @param CriticalSection CriticalSection to set spin count for
+ * @param SpinCount The spin count value to set
+ * @return Current spin count or INVALID_HANDLE_VALUE on error
+ */
 uint32_t STDCALL critical_section_set_spin_count(CRITICAL_SECTION_HANDLE criticalsection, uint32_t spincount);
 
+/**
+ * @brief Lock an existing CriticalSection entry
+ *
+ *  If the CriticalSection is not locked then lock it, set the count to one and
+ *  mark the owner as the current thread
+ *
+ *  If the CriticalSection is already locked by the current thread then increment
+ *  the count and return immediately
+ *
+ *  If the CriticalSection is already locked by another thread then wait until it
+ *  is unlocked
+ * @param CriticalSection CriticalSection to lock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL critical_section_lock(CRITICAL_SECTION_HANDLE criticalsection);
+
+/**
+ * @brief Lock an existing CriticalSection entry
+ *
+ *  If the CriticalSection is not locked then lock it, set the count to one and
+ *  mark the owner as the current thread
+ *
+ *  If the CriticalSection is already locked by the current thread then increment
+ *  the count and return immediately
+ *
+ *  If the CriticalSection is already locked by another thread then wait until it
+ *  is unlocked
+ * @param CriticalSection CriticalSection to lock
+ * @param Timeout Milliseconds to wait before timeout (0 equals do not wait, INFINITE equals wait forever)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL critical_section_lock_ex(CRITICAL_SECTION_HANDLE criticalsection, uint32_t timeout); ///< Timeout = 0 then No Wait,Timeout = INFINITE then Wait forever
+
+/**
+ * @brief Unlock an existing CriticalSection entry
+ *
+ *  If the CriticalSection is locked by the current thread then decrement the count
+ *
+ *  If the count is greater than zero then return immediately
+ *
+ *  If the count reaches zero then unlock the CriticalSection and release the first
+ *  thread waiting for it to be unlocked
+ *
+ *  If the CriticalSection is locked by another thread then return an error
+ *
+ *  If the CriticalSection is not locked then return an error
+ * @param CriticalSection CriticalSection to unlock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL critical_section_unlock(CRITICAL_SECTION_HANDLE criticalsection);
+
+/**
+ * @brief Try to lock an existing CriticalSection entry
+ *
+ *  If the CriticalSection is not locked then lock it, set the count to one and
+ *  mark the owner as the current thread
+ *
+ *  If the CriticalSection is already locked by the current thread then increment
+ *  the count and return immediately
+ *
+ *  If the CriticalSection is already locked by another thread then return immediately
+ *  with an error and do not wait for it to be unlocked
+ * @param CriticalSection CriticalSection to try to lock
+ * @return ERROR_SUCCESS if completed, ERROR_LOCKED if locked by another thread or another error code on failure
+ */
 uint32_t STDCALL critical_section_try_lock(CRITICAL_SECTION_HANDLE criticalsection);
 
 /** Semaphore Functions */
+
+/**
+ * @brief Create and insert a new Semaphore entry
+ * @param Count The initial count of the Semaphore (Must be greater than or equal to zero)
+ * @return Handle of new Semaphore entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 SEMAPHORE_HANDLE STDCALL semaphore_create(uint32_t count);
+
+/**
+ * @brief Create and insert a new Semaphore entry
+ * @param Count The initial count of the Semaphore (Must be greater than or equal to zero)
+ * @param Maximum The maximum count of the Semaphore (Must be greater than one)
+ * @param Flags The flags for the Semaphore entry (eg SEMAPHORE_FLAG_IRQ)
+ * @return Handle of new Semaphore entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 SEMAPHORE_HANDLE STDCALL semaphore_create_ex(uint32_t count, uint32_t maximum, uint32_t flags);
+
+/**
+ * @brief Destroy and remove an existing Semaphore entry
+ * @param Semaphore Handle of Semaphore entry to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL semaphore_destroy(SEMAPHORE_HANDLE semaphore);
 
+/**
+ * @brief Get the current count of an existing Semaphore entry
+ * @param Semaphore Semaphore to get count for
+ * @return Current count or INVALID_HANDLE_VALUE on error
+ */
 uint32_t STDCALL semaphore_count(SEMAPHORE_HANDLE semaphore);
 
+/**
+ * @brief Wait on an existing Semaphore entry
+ *
+ *  If the Semaphore count is greater than zero it will be decremented
+ *  and this function will return immediately
+ *
+ *  If the Semaphore count is zero the current thread will be put on a wait queue
+ *  until the Semaphore is signalled by another thread calling SemaphoreSignal()
+ *  or SemaphoreSignalEx()
+ * @param Semaphore Semaphore to wait on
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL semaphore_wait(SEMAPHORE_HANDLE semaphore);
+
+/**
+ * @brief Wait on an existing Semaphore entry
+ *
+ *  If the Semaphore count is greater than zero it will be decremented
+ *  and this function will return immediately
+ *
+ *  If the Semaphore count is zero the current thread will be put on a wait queue
+ *  until the Semaphore is signalled by another thread calling SemaphoreSignal()
+ *  or SemaphoreSignalEx()
+ * @param Semaphore Semaphore to wait on
+ * @param Timeout Milliseconds to wait before timeout (0 equals do not wait, INFINITE equals wait forever)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL semaphore_wait_ex(SEMAPHORE_HANDLE semaphore, uint32_t timeout); ///< Timeout = 0 then No Wait,Timeout = INFINITE then Wait forever
+
+/**
+ * @brief Signal an existing Semaphore entry
+ *
+ *  If any threads are waiting on the Semaphore then one thread will be woken up and
+ *  placed on the ready queue
+ *
+ *  If no threads are waiting then the Semaphore count will be incremented by one
+ * @param Semaphore Semaphore to signal
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL semaphore_signal(SEMAPHORE_HANDLE semaphore);
+
+/**
+ * @brief Signal an existing Semaphore entry one or more times
+ *
+ *  If any threads are waiting on the Semaphore then one thread will be woken up and
+ *  placed on the ready queue for each iteration of the count passed
+ *
+ *  If no threads are waiting then the Semaphore count will be incremented once for each
+ *  iteration of the count passed
+ * @param Semaphore Semaphore to signal
+ * @param Count The number is times to signal the Semaphore, must be greater than zero
+ * @param Previous A pointer to a value that receives the previous count of the Semaphore
+ *            Can be nil if the previous count is not required
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL semaphore_signal_ex(SEMAPHORE_HANDLE semaphore, uint32_t count, uint32_t *previous);
 
 /** Synchronizer Functions */
+
+/**
+ * @brief Create and insert a new Synchronizer entry
+ * @return Handle of new Synchronizer entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 SYNCHRONIZER_HANDLE STDCALL synchronizer_create(void);
+
+/**
+ * @brief Create and insert a new Synchronizer entry
+ * @param InitialReader If true set the state of the synchronizer to locked and the reader count to 1
+ * @param InitialWriter If true set the state of the synchronizer to locked and the writer owner to the current thread
+ * @return Handle of new Synchronizer entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 SYNCHRONIZER_HANDLE STDCALL synchronizer_create_ex(BOOL initialreader, BOOL initialwriter);
+
+/**
+ * @brief Destroy and remove an existing Synchronizer entry
+ * @param Synchronizer Handle of Synchronizer entry to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL synchronizer_destroy(SYNCHRONIZER_HANDLE synchronizer);
 
+/**
+ * @brief Get the current reader count of an existing Synchronizer entry
+ * @param Synchronizer Synchronizer to get count for
+ * @return Current reader count or INVALID_HANDLE_VALUE on error
+ */
 uint32_t STDCALL synchronizer_reader_count(SYNCHRONIZER_HANDLE synchronizer);
+
+/**
+ * @brief Get the last reader thread of an existing Synchronizer entry
+ * @param Synchronizer Synchronizer to last reader for
+ * @return Last reader thread or INVALID_HANDLE_VALUE on error
+ */
 THREAD_HANDLE STDCALL synchronizer_reader_last(SYNCHRONIZER_HANDLE synchronizer);
 
+/**
+ * @brief Lock an existing Synchronizer entry for reading
+ *
+ *  If the Synchronizer is not locked then lock it and set the reader count to one
+ *
+ *  If the Synchronizer is already locked for reading then increment the reader count
+ *  and return immediately
+ *
+ *  If the Synchronizer is already locked for writing then wait until it is unlocked
+ * @param Synchronizer Synchronizer to lock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL synchronizer_reader_lock(SYNCHRONIZER_HANDLE synchronizer);
+
+/**
+ * @brief Lock an existing Synchronizer entry for reading
+ *
+ *  If the Synchronizer is not locked then lock it and set the reader count to one
+ *
+ *  If the Synchronizer is already locked for reading then increment the reader count
+ *  and return immediately
+ *
+ *  If the Synchronizer is already locked for writing then wait until it is unlocked
+ * @param Synchronizer Synchronizer to lock
+ * @param Timeout Milliseconds to wait before timeout (0 equals do not wait, INFINITE equals wait forever)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL synchronizer_reader_lock_ex(SYNCHRONIZER_HANDLE synchronizer, uint32_t timeout); ///< Timeout = 0 then No Wait,Timeout = INFINITE then Wait forever
+
+/**
+ * @brief Unlock an existing Synchronizer entry
+ *
+ *  If the Synchronizer is locked for reading then decrement the count
+ *
+ *  If the count is greater than zero then return immediately
+ *
+ *  If the count reaches zero then unlock the Synchronizer and release the first
+ *  writer thread waiting for it to be unlocked
+ *
+ *  If the Synchronizer is locked for writing then return an error
+ *
+ *  If the Synchronizer is not locked then return an error
+ * @param Synchronizer Synchronizer to unlock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL synchronizer_reader_unlock(SYNCHRONIZER_HANDLE synchronizer);
+
+/**
+ * @brief Convert a reader lock on an existing Synchronizer entry to a writer lock
+ *
+ *  If the Synchronizer is locked for reading then decrement the count
+ *
+ *  If the count is greater than zero then wait to acquire the writer lock
+ *
+ *  If the count reaches zero then convert to writer lock with the current
+ *  thread as the owner
+ *
+ *  If the Synchronizer is locked for writing then return an error
+ *
+ *  If the Synchronizer is not locked then return an error
+ * @param Synchronizer Synchronizer to convert
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Since reader locks are recursive but do not maintain reader thread ownership,
+ *  caller must ensure that one and only one reader lock is held by the current thread
+ */
 uint32_t STDCALL synchronizer_reader_convert(SYNCHRONIZER_HANDLE synchronizer);
+
+/**
+ * @brief Convert a reader lock on an existing Synchronizer entry to a writer lock
+ *
+ *  If the Synchronizer is locked for reading then decrement the count
+ *
+ *  If the count is greater than zero then wait to acquire the writer lock
+ *
+ *  If the count reaches zero then convert to writer lock with the current
+ *  thread as the owner
+ *
+ *  If the Synchronizer is locked for writing then return an error
+ *
+ *  If the Synchronizer is not locked then return an error
+ * @param Synchronizer Synchronizer to convert
+ * @param Timeout Milliseconds to wait before timeout (0 equals do not wait, INFINITE equals wait forever)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Since reader locks are recursive but do not maintain reader thread ownership,
+ *  caller must ensure that one and only one reader lock is held by the current thread
+ */
 uint32_t STDCALL synchronizer_reader_convert_ex(SYNCHRONIZER_HANDLE synchronizer, uint32_t timeout); ///< Timeout = 0 then No Wait,Timeout = INFINITE then Wait forever
 
+/**
+ * @brief Get the current writer count of an existing Synchronizer entry
+ * @param Synchronizer Synchronizer to get count for
+ * @return Current writer count or INVALID_HANDLE_VALUE on error
+ */
 uint32_t STDCALL synchronizer_writer_count(SYNCHRONIZER_HANDLE synchronizer);
+
+/**
+ * @brief Get the current writer owner of an existing Synchronizer entry
+ * @param Synchronizer Synchronizer to get owner for
+ * @return Handle of owning thread or INVALID_HANDLE_VALUE if not currently owned
+ */
 THREAD_HANDLE STDCALL synchronizer_writer_owner(SYNCHRONIZER_HANDLE synchronizer);
 
+/**
+ * @brief Lock an existing Synchronizer entry for writing
+ *
+ *  If the Synchronizer is not locked then lock it, set the writer count to one
+ *  and mark the owner as the current thread
+ *
+ *  If the Synchronizer is already locked by the current thread then increment
+ *  the writer count and return immediately
+ *
+ *  If the Synchronizer is already locked for reading then wait until it is unlocked
+ * @param Synchronizer Synchronizer to lock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL synchronizer_writer_lock(SYNCHRONIZER_HANDLE synchronizer);
+
+/**
+ * @brief Lock an existing Synchronizer entry for writing
+ *
+ *  If the Synchronizer is not locked then lock it, set the writer count to one
+ *  and mark the owner as the current thread
+ *
+ *  If the Synchronizer is already locked by the current thread then increment
+ *  the writer count and return immediately
+ *
+ *  If the Synchronizer is already locked for reading then wait until it is unlocked
+ * @param Synchronizer Synchronizer to lock
+ * @param Timeout Milliseconds to wait before timeout (0 equals do not wait, INFINITE equals wait forever)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL synchronizer_writer_lock_ex(SYNCHRONIZER_HANDLE synchronizer, uint32_t timeout); ///< Timeout = 0 then No Wait,Timeout = INFINITE then Wait forever
+
+/**
+ * @brief Unlock an existing Synchronizer entry
+ *
+ *  If the Synchronizer is locked for writing by the current thread then decrement the count
+ *
+ *  If the count is greater than zero then return immediately
+ *
+ *  If the count reaches zero then unlock the Synchronizer and release all reader threads
+ *  waiting for it to be unlocked or the first writer thread waiting for it to be unlocked
+ *
+ *  If the Synchronizer is locked for reading then return an error
+ *
+ *  If the Synchronizer is locked for writing by another thread then return an error
+ *
+ *  If the Synchronizer is not locked then return an error
+ * @param Synchronizer Synchronizer to unlock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL synchronizer_writer_unlock(SYNCHRONIZER_HANDLE synchronizer);
+
+/**
+ * @brief Convert a writer lock on an existing Synchronizer entry to a reader lock
+ *
+ *  If the Synchronizer is locked for writing by the current thread and the count
+ *  is one then decrement the count
+ *
+ *  If the count is greater than one then return an error
+ *
+ *  If the count reaches zero then convert to reader lock and release all waiting
+ *  reader threads
+ *
+ *  If the Synchronizer is locked for reading then return an error
+ *
+ *  If the Synchronizer is not locked then return an error
+ * @param Synchronizer Synchronizer to convert
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Since writer locks are recursive, caller must ensure that one and only
+ *  one writer lock is held by the current thread
+ */
 uint32_t STDCALL synchronizer_writer_convert(SYNCHRONIZER_HANDLE synchronizer);
 
 /** Condition Functions */
+
+/**
+ * @brief Create and insert a new Condition entry
+ * @return Handle of new Condition entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 CONDITION_HANDLE STDCALL condition_create(void);
+
+/**
+ * @brief Destroy and remove an existing Condition entry
+ * @param Condition Handle of Condition entry to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL condition_destroy(CONDITION_HANDLE condition);
 
+/**
+ * @brief Wait on an existing Condition
+ * @param Condition Condition to wait on
+ * @param Timeout Time in milliseconds to wait to be woken
+ *           0 = No Wait
+ *           INFINITE = Wait Indefinitely
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL condition_wait(CONDITION_HANDLE condition, uint32_t timeout); ///< Timeout = 0 then No Wait,Timeout = INFINITE then Wait forever
+
+/**
+ * @brief Release a Mutex and Wait on an existing Condition in an atomic operation
+ * @param Condition Condition to wait on
+ * @param Mutex Mutex to release
+ * @param Timeout Time in milliseconds to wait to be woken
+ *           0 = No Wait
+ *           INFINITE = Wait Indefinitely
+ * @return ERROR_SUCCESS if completed or another error code on failure.
+ *          Before returning (with either success or failure) the thread will reacquire the Mutex
+ * @note Caller must be the owner of the Mutex with a count of one on entry to this function
+ */
 uint32_t STDCALL condition_wait_mutex(CONDITION_HANDLE condition, MUTEX_HANDLE mutex, uint32_t timeout); ///< Timeout = 0 then No Wait,Timeout = INFINITE then Wait forever
+
+/**
+ * @brief Release a Synchronizer and Wait on an existing Condition in an atomic operation
+ * @param Condition Condition to wait on
+ * @param Synchronizer Synchronizer to release
+ * @param Flags Flags to indicate reader or writer lock for the Synchronizer (eg CONDITION_LOCK_FLAG_WRITER)
+ * @param Timeout Time in milliseconds to wait to be woken
+ *           0 = No Wait
+ *           INFINITE = Wait Indefinitely
+ * @return ERROR_SUCCESS if completed or another error code on failure.
+ *          Before returning (with either success or failure) the thread will reacquire the Synchronizer
+ *          for either reading or writing depending on the flags value
+ * @note Caller must be the owner of the Synchronizer with a count of one on entry to this function
+ *        and the ownership must match the flags value provided
+ */
 uint32_t STDCALL condition_wait_synchronizer(CONDITION_HANDLE condition, SYNCHRONIZER_HANDLE synchronizer, uint32_t flags, uint32_t timeout); ///< Timeout = 0 then No Wait,Timeout = INFINITE then Wait forever
+
+/**
+ * @brief Release a Critical Section and Wait on an existing Condition in an atomic operation
+ * @param Condition Condition to wait on
+ * @param CriticalSection Critical Section to release
+ * @param Timeout Time in milliseconds to wait to be woken
+ *           0 = No Wait
+ *           INFINITE = Wait Indefinitely
+ * @return ERROR_SUCCESS if completed or another error code on failure.
+ *          Before returning (with either success or failure) the thread will reacquire the Synchronizer
+ *          for either reading or writing depending on the flags value
+ * @note Caller must be the owner of the Critical Section with a count of one on entry to this function
+ */
 uint32_t STDCALL condition_wait_critical_section(CONDITION_HANDLE condition, CRITICAL_SECTION_HANDLE criticalsection, uint32_t timeout); ///< Timeout = 0 then No Wait,Timeout = INFINITE then Wait forever
 
+/**
+ * @brief Wake one thread waiting on an existing Condition
+ * @param Condition Condition to wake
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL condition_wake(CONDITION_HANDLE condition);
+
+/**
+ * @brief Wake all threads waiting on an existing Condition
+ * @param Condition Condition to wake
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL condition_wake_all(CONDITION_HANDLE condition);
 
 /** Completion Functions */
+
+/**
+ * @brief Create and insert a new Completion entry
+ * @param Flags The flags for the Completion entry (eg COMPLETION_FLAG_IRQ)
+ * @return Handle of new Completion entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 COMPLETION_HANDLE STDCALL completion_create(uint32_t flags);
+
+/**
+ * @brief Destroy and remove an existing Completion entry
+ * @param Completion Handle of Completion entry to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL completion_destroy(COMPLETION_HANDLE completion);
 
+/**
+ * @brief Get the current state of an existing Completion entry
+ * @param Completion Completion to get the state for
+ * @return Current state (eg COMPLETION_STATE_COMPLETE) or INVALID_HANDLE_VALUE on error
+ */
 uint32_t STDCALL completion_state(COMPLETION_HANDLE completion);
 
+/**
+ * @brief Wait on an existing Completion
+ *
+ *  If the completion is set (complete) then return immediately with success
+ *
+ *  If the completion is not set then wait for it to be completed before
+ *  returning
+ *
+ *  For counted completions, decrement the count if it is not 0 or -1 after
+ *  testing if the completion is set
+ * @param Completion Completion to wait on
+ * @param Timeout Time in milliseconds to wait to be woken
+ *           0 = No Wait
+ *           INFINITE = Wait Indefinitely
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL completion_wait(COMPLETION_HANDLE completion, uint32_t timeout);
+
+/**
+ * @brief Try an existing Completion to see if it is completed
+ *
+ *  If the completion is not set (complete) then return immediately with an error
+ *  and do not wait for it to be completed
+ * @param Completion Completion to try
+ * @return ERROR_SUCCESS if completed, ERROR_NOT_READY if not completed or another error code on failure
+ */
 uint32_t STDCALL completion_try_wait(COMPLETION_HANDLE completion);
 
+/**
+ * @brief Reset (uncomplete) the state of an existing Completion entry
+ *
+ *  If the completion is not set then return with no action
+ *
+ *  If the completion is set then change the state to not set
+ *
+ *  For counted completions, reset the counter to 0
+ * @param Completion Completion to reset the state for
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL completion_reset(COMPLETION_HANDLE completion);
+
+/**
+ * @brief Set (complete) the state of an existing Completion entry
+ *
+ *  If the completion is already set then return with no action
+ *
+ *  If the completion is not set then release one waiting thread (if any)
+ *  and return
+ *
+ *  For counted completions, release one waiting thread, if there are no
+ *  waiting threads increment the count if it is not -1 and return
+ * @param Completion Completion to set the state for
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL completion_complete(COMPLETION_HANDLE completion);
+
+/**
+ * @brief Set (complete) the state of an existing Completion entry
+ *
+ *  If the completion is already set then return with no action
+ *
+ *  If the completion is not set then release all waiting threads (if any)
+ *  and return
+ *
+ *  For counted completions, set the count to -1, release all waiting threads
+ *  (if any) and return
+ * @param Completion Completion to set the state for
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL completion_complete_all(COMPLETION_HANDLE completion);
 
 /** List Functions */
+
+/**
+ * @brief Create and insert a new List entry
+ * @return Handle of new List entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 LIST_HANDLE STDCALL list_create(void);
+
+/**
+ * @brief Create and insert a new List entry
+ * @param ListType Type of list to create (eg LIST_TYPE_WAIT_SEMAPHORE)
+ * @param Flags Flags for the new list (eg LIST_FLAG_IRQ)
+ * @return Handle of new List entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 LIST_HANDLE STDCALL list_create_ex(uint32_t listtype, uint32_t flags);
+
+/**
+ * @brief Destroy and remove an existing List entry
+ * @param List Handle of List entry to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note If list is part of a synchronisation object then caller must hold the lock on the object containing the list
+ */
 uint32_t STDCALL list_destroy(LIST_HANDLE list);
 
+/**
+ * @brief Get the current count from the supplied list
+ * @param List Handle of List entry to get from
+ * @return List count on success or INVALID_HANDLE_VALUE on failure
+ */
 uint32_t STDCALL list_count(LIST_HANDLE list);
 
+/**
+ * @brief Add the supplied element as the first item in the List
+ * @param List Handle of List entry to add to
+ * @param Element The list element to be added
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note If list is part of a synchronisation object then caller must hold the lock on the object containing the list
+ */
 uint32_t STDCALL list_add_first(LIST_HANDLE list, LIST_ELEMENT *element);
+
+/**
+ * @brief Add the supplied element as the last item in the List
+ * @param List Handle of List entry to add to
+ * @param Element The list element to be added
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note If list is part of a synchronisation object then caller must hold the lock on the object containing the list
+ */
 uint32_t STDCALL list_add_last(LIST_HANDLE list, LIST_ELEMENT *element);
 
+/**
+ * @brief Find the supplied thread in the List and return its element
+ * @param List Handle of List entry to find from
+ * @param Thread The thread handle to be found
+ * @return List element on success, nil on failure or list empty
+ * @note If list is part of a synchronisation object then caller must hold the lock on the object containing the list
+ */
 LIST_ELEMENT * STDCALL list_get_thread(LIST_HANDLE list, THREAD_HANDLE thread);
 
+/**
+ * @brief Get the first element from the List
+ * @param List Handle of List entry to get from
+ * @return List element on success, nil on failure or list empty
+ * @note If list is part of a synchronisation object then caller must hold the lock on the object containing the list
+ */
 LIST_ELEMENT * STDCALL list_get_first(LIST_HANDLE list);
+
+/**
+ * @brief Get the first element from the List
+ * @param List Handle of List entry to get from
+ * @param Remove If true then remove the element from the list
+ * @return List element on success, nil on failure or list empty
+ * @note If list is part of a synchronisation object then caller must hold the lock on the object containing the list
+ */
 LIST_ELEMENT * STDCALL list_get_first_ex(LIST_HANDLE list, BOOL remove);
+
+/**
+ * @brief Get the last element from the List
+ * @param List Handle of List entry to get from
+ * @return List element on success, nil on failure or list empty
+ * @note If list is part of a synchronisation object then caller must hold the lock on the object containing the list
+ */
 LIST_ELEMENT * STDCALL list_get_last(LIST_HANDLE list);
+
+/**
+ * @brief Get the last element from the List
+ * @param List Handle of List entry to get from
+ * @param Remove If true then remove the element from the list
+ * @return List element on success, nil on failure or list empty
+ * @note If list is part of a synchronisation object then caller must hold the lock on the object containing the list
+ */
 LIST_ELEMENT * STDCALL list_get_last_ex(LIST_HANDLE list, BOOL remove);
 
+/**
+ * @brief Insert a new element in the List
+ * @param List Handle of List entry to insert into
+ * @param Previous The element to insert the new element after
+ * @param Element The list element to be inserted
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note If list is part of a synchronisation object then caller must hold the lock on the object containing the list
+ */
 uint32_t STDCALL list_insert(LIST_HANDLE list, LIST_ELEMENT *previous, LIST_ELEMENT *element);
+
+/**
+ * @brief Remove an element from the List
+ * @param List Handle of List entry to remove from
+ * @param Element The list element to be removed
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note If list is part of a synchronisation object then caller must hold the lock on the object containing the list
+ */
 uint32_t STDCALL list_remove(LIST_HANDLE list, LIST_ELEMENT *element);
 
+/**
+ * @brief Check if the supplied List is empty
+ * @param List Handle of List entry to check
+ * @return True if List is empty or does not exist, False if List is not empty
+ * @note If list is part of a synchronisation object then caller must hold the lock on the object containing the list
+ */
 BOOL STDCALL list_is_empty(LIST_HANDLE list);
+
+/**
+ * @brief Check if the supplied List is empty
+ * @param List Handle of List entry to check
+ * @return True if List is not empty, False if List is empty or does not exist
+ * @note If list is part of a synchronisation object then caller must hold the lock on the object containing the list
+ */
 BOOL STDCALL list_not_empty(LIST_HANDLE list);
 
+/**
+ * @brief Lock the supplied List
+ * @param List Handle of List entry to lock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL list_lock(LIST_HANDLE list);
+
+/**
+ * @brief Unlock the supplied List
+ * @param List Handle of List entry to unlock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL list_unlock(LIST_HANDLE list);
 
 /** Queue Functions */
+
+/**
+ * @brief Create and insert a new Queue entry
+ * @return Handle of new Queue entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 QUEUE_HANDLE STDCALL queue_create(void);
+
+/**
+ * @brief Create and insert a new Queue entry
+ * @param QueueType Type of queue to create (eg QUEUE_TYPE_SCHEDULE_SLEEP)
+ * @param Flags Flags for the new queue (eg QUEUE_FLAG_DESCENDING)
+ * @return Handle of new Queue entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 QUEUE_HANDLE STDCALL queue_create_ex(uint32_t queuetype, uint32_t flags);
+
+/**
+ * @brief Destroy and remove an existing Queue entry
+ * @param Queue Handle of Queue entry to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL queue_destroy(QUEUE_HANDLE queue);
 
+/**
+ * @brief Get the current count from the supplied queue
+ * @param List Handle of Queue entry to get from
+ * @return Queue count on success or INVALID_HANDLE_VALUE on failure
+ */
 uint32_t STDCALL queue_count(QUEUE_HANDLE queue);
 
+/**
+ * @brief Add the supplied thread as the last item in the Queue
+ * @param Queue Handle of Queue entry to add to
+ * @param Thread Handle of the Thread to enqueue
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note If queue is a scheduler queue then caller must hold the lock on the thread
+ */
 uint32_t STDCALL queue_enqueue(QUEUE_HANDLE queue, THREAD_HANDLE thread);
+
+/**
+ * @brief Get and remove the first thread from the Queue
+ * @param Queue Handle of Queue entry to get from
+ * @return Handle of dequeued Thread or INVALID_HANDLE_VALUE on failure
+ */
 THREAD_HANDLE STDCALL queue_dequeue(QUEUE_HANDLE queue);
 
+/**
+ * @brief Get the first Key value from the Queue
+ * @param Queue Handle of Queue entry to get from
+ * @return First Key value from queue or QUEUE_KEY_NONE on failure
+ */
 int STDCALL queue_first_key(QUEUE_HANDLE queue);
+
+/**
+ * @brief Get the last Key value from the Queue
+ * @param Queue Handle of Queue entry to get from
+ * @return Last Key value from queue or QUEUE_KEY_NONE on failure
+ */
 int STDCALL queue_last_key(QUEUE_HANDLE queue);
 
+/**
+ * @brief Insert the supplied thread in the Queue ordered based on Key and the flags of the Queue
+ * @param Queue Handle of Queue entry to insert into
+ * @param Thread Handle of thread to be inserted
+ * @param Key The key to order the insertion on
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note If queue is a scheduler queue then caller must hold the lock on the thread
+ */
 uint32_t STDCALL queue_insert_key(QUEUE_HANDLE queue, THREAD_HANDLE thread, int key);
+
+/**
+ * @brief Delete the supplied thread from the Queue based on the flags of the Queue
+ * @param Queue Handle of Queue entry to delete from
+ * @param Thread Handle of thread to be deleted
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note If queue is a scheduler queue then caller must hold the lock on the thread
+ */
 uint32_t STDCALL queue_delete_key(QUEUE_HANDLE queue, THREAD_HANDLE thread);
+
+/**
+ * @brief Increment the first Key value in the Queue
+ * @param Queue Handle of Queue entry to increment in
+ * @return First Key value in queue after increment or QUEUE_KEY_NONE on failure
+ */
 int STDCALL queue_increment_key(QUEUE_HANDLE queue);
+
+/**
+ * @brief Decrement the first Key value in the Queue
+ * @param Queue Handle of Queue entry to decrement in
+ * @return First Key value in queue after decrement or QUEUE_KEY_NONE on failure
+ */
 int STDCALL queue_decrement_key(QUEUE_HANDLE queue);
 
+/**
+ * @brief Check if the supplied Queue is empty
+ * @param Queue Handle of Queue entry to check
+ * @return True if Queue is empty or does not exist, False if Queue is not empty
+ */
 BOOL STDCALL queue_is_empty(QUEUE_HANDLE queue);
+
+/**
+ * @brief Check if the supplied Queue is not empty
+ * @param Queue Handle of Queue entry to check
+ * @return True if Queue is not empty, False if Queue is empty or does not exist
+ */
 BOOL STDCALL queue_not_empty(QUEUE_HANDLE queue);
 
+/**
+ * @brief Lock the supplied Queue
+ * @param Queue Handle of Queue entry to lock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL queue_lock(QUEUE_HANDLE queue);
+
+/**
+ * @brief Unlock the supplied Queue
+ * @param Queue Handle of Queue entry to unlock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL queue_unlock(QUEUE_HANDLE queue);
 
 /** Thread Functions */
+
+/**
+ * @brief Create and insert a new Thread entry
+ *
+ *  The new thread will be created suspended so it will not start running until it is
+ *  scheduled with either ThreadReady or ThreadResume
+ * @param StartProc Procedure address where the thread will start running
+ * @param StackSize Stack size in bytes
+ * @param Priority Thread priority (eg THREAD_PRIORITY_NORMAL)
+ * @param Name Name of the thread
+ * @param Parameter Parameter passed to StartProc of new thread
+ * @return Handle of new thread or INVALID_HANDLE_VALUE if a new thread could not be created
+ * @note Calls ThreadCreateEx with:
+ *          Affinity = SCHEDULER_CPU_MASK (Run on any available CPU)
+ *          CPU = SchedulerThreadNext (Assign to next CPU in round robin)
+ * @param WARNING ThreadCreate and ThreadCreateEx are only used internally by SysBeginThread and SysBeginThreadEx
+ *
+ *           These functions do not handle setting up certain RTL functionality such as thread variables,
+ *           exceptions and standard input/output handles.
+ *
+ *           If you need to create a standard thread use either BeginThread (or BeginThreadEx) or use the
+ *           TThread class and its descendants. Only use ThreadCreate and ThreadCreateEx if you need to modify
+ *           the thread creation behaviour and understand that you also need to handle the additional RTL setup
+ */
 THREAD_HANDLE STDCALL thread_create(thread_start_proc startproc, uint32_t stacksize, uint32_t priority, const char *name, void *parameter);
+
+/**
+ * @brief Create and insert a new Thread entry
+ *
+ *  The new thread will be created suspended so it will not start running until it is
+ *  scheduled with either ThreadReady or ThreadResume
+ * @param StartProc Procedure address where the thread will start running
+ * @param StackSize Stack size in bytes
+ * @param Priority Thread priority (eg THREAD_PRIORITY_NORMAL)
+ * @param Affinity Thread affinity (eg CPU_AFFINITY_ALL)
+ * @param CPU The CPU to assign new thread to (eg CPU_ID_0)
+ * @param Name Name of the thread
+ * @param Parameter Parameter passed to StartProc of new thread
+ * @return Handle of new thread or INVALID_HANDLE_VALUE if a new thread could not be created
+ * @param WARNING ThreadCreate and ThreadCreateEx are only used internally by SysBeginThread and SysBeginThreadEx
+ *
+ *           These functions do not handle setting up certain RTL functionality such as thread variables,
+ *           exceptions and standard input/output handles.
+ *
+ *           If you need to create a standard thread use either BeginThread (or BeginThreadEx) or use the
+ *           TThread class or its descendants. Only use ThreadCreate and ThreadCreateEx if you need to modify
+ *           the thread creation behaviour and understand that you also need to handle the additional RTL setup
+ */
 THREAD_HANDLE STDCALL thread_create_ex(thread_start_proc startproc, uint32_t stacksize, uint32_t priority, uint32_t affinity, uint32_t cpu, const char *name, void *parameter);
+
+/**
+ * @brief Destroy and remove an existing Thread entry
+ * @param Thread Handle of thread to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL thread_destroy(THREAD_HANDLE thread);
 
+/**
+ * @brief Get the Handle of currently executing thread
+ * @return Thread handle of the currently running thread
+ */
 THREAD_HANDLE STDCALL thread_get_current(void);
+
+/**
+ * @brief Set the Handle of currently executing thread
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Must not be called except during initialization
+ */
 uint32_t STDCALL thread_set_current(THREAD_HANDLE thread);
 
+/**
+ * @brief Get the name of a Thread
+ * @param Thread Handle of thread to get
+ * @return Name of thread or empty string on failure
+ */
 uint32_t STDCALL thread_get_name(THREAD_HANDLE thread, char *name, uint32_t len);
+
+/**
+ * @brief Set the name of a Thread
+ * @param Thread Handle of thread to set
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL thread_set_name(THREAD_HANDLE thread, const char *name);
 
+/**
+ * @brief Get the current CPU of a thread (eg CPU_ID_0)
+ * @param Thread Handle of thread to get
+ * @return CPU of the thread or INVALID_HANDLE_VALUE on failure
+ */
 uint32_t STDCALL thread_get_cpu(THREAD_HANDLE thread);
+
+/**
+ * @brief Set the current CPU of a thread (eg CPU_ID_0)
+ *
+ *  The new CPU will not take affect until the thread is next rescheduled
+ * @param Thread Handle of thread to set
+ * @param CPU New thread CPU (eg CPU_ID_0)
+ * @return Previous CPU of thread or INVALID_HANDLE_VALUE on failure
+ */
 uint32_t STDCALL thread_set_cpu(THREAD_HANDLE thread, uint32_t cpu);
 
+/**
+ * @brief Get the current state of a thread (eg THREAD_STATE_SUSPENDED)
+ * @param Thread Handle of thread to get
+ * @return State of the thread or INVALID_HANDLE_VALUE on failure
+ */
 uint32_t STDCALL thread_get_state(THREAD_HANDLE thread);
 
+/**
+ * @brief Get the current flags of a thread
+ * @param Thread Handle of thread to get
+ * @return Flags of the thread (eg THREAD_FLAG_PERSIST) or INVALID_HANDLE_VALUE on failure
+ */
 uint32_t STDCALL thread_get_flags(THREAD_HANDLE thread);
+
+/**
+ * @brief Set the current flags of a thread
+ * @param Thread Handle of thread to set
+ * @param Flags Flags to set (eg THREAD_FLAG_PERSIST)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL thread_set_flags(THREAD_HANDLE thread, uint32_t flags);
+
+/**
+ * @brief Add flags to the current flags of a thread
+ * @param Thread Handle of thread to add flags for
+ * @param Flags Flags to add (eg THREAD_FLAG_PERSIST)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL thread_add_flags(THREAD_HANDLE thread, uint32_t flags);
+
+/**
+ * @brief Remove flags from the current flags of a thread
+ * @param Thread Handle of thread to remove flags from
+ * @param Flags Flags to remove (eg THREAD_FLAG_PERSIST)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL thread_remove_flags(THREAD_HANDLE thread, uint32_t flags);
 
+/**
+ * @brief Get the current locale of a thread
+ * @param Thread Handle of thread to get
+ * @return Locale of the thread or INVALID_HANDLE_VALUE on failure
+ */
 LCID STDCALL thread_get_locale(THREAD_HANDLE thread);
+
+/**
+ * @brief Set the locale of a thread
+ * @param Thread Handle of thread to set
+ * @param Locale Locale id to set
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL thread_set_locale(THREAD_HANDLE thread, LCID locale);
 
+/**
+ * @brief Get the current times of a thread
+ * @param Thread Handle of thread to get
+ * @param CreateTime Buffer to receive the CreateTime value
+ * @param ExitTime Buffer to receive the ExitTime value
+ * @param KernelTime Buffer to receive the KernelTime value
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL thread_get_times(THREAD_HANDLE thread, int64_t *createtime, int64_t *exittime, int64_t *kerneltime);
+
+/**
+ * @brief Get the current context switch count of a thread (How many times the thread has been scheduled)
+ * @param Thread Handle of thread to get
+ * @param SwitchCount Buffer to receive the SwitchCount value
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL thread_get_switch_count(THREAD_HANDLE thread, int64_t *switchcount);
 
+/**
+ * @brief Get the free stack size of the current thread
+ * @return Free stack size of the current thread or 0 on error
+ * @note No lock required as only ever called by the thread itself
+ */
 uint32_t STDCALL thread_get_stack_free(void);
+
+/**
+ * @brief Get the current stack size of a thread
+ * @param Thread Handle of thread to get
+ * @return Stack size of the thread or INVALID_HANDLE_VALUE on failure
+ */
 uint32_t STDCALL thread_get_stack_size(THREAD_HANDLE thread);
+
+/**
+ * @brief Get the current stack base of a thread
+ * @param Thread Handle of thread to get
+ * @return Stack base of the thread or INVALID_HANDLE_VALUE on failure
+ */
 size_t STDCALL thread_get_stack_base(THREAD_HANDLE thread);
+
+/**
+ * @brief Set the current stack base of a thread
+ * @param Thread Handle of thread to set
+ * @param StackBase Stack base to set
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Must not be called except during initialization
+ */
 uint32_t STDCALL thread_set_stack_base(THREAD_HANDLE thread, size_t stackbase);
+
+/**
+ * @brief Get the current stack pointer of a thread
+ * @param Thread Handle of thread to get
+ * @return Stack pointer of the thread or INVALID_HANDLE_VALUE on failure
+ */
 size_t STDCALL thread_get_stack_pointer(THREAD_HANDLE thread);
 
+/**
+ * @brief Get the exit code of a Thread
+ * @param Thread Handle of thread to get
+ * @return Exit code of thread, STILL_ACTIVE if the thread has not terminated or INVALID_HANDLE_VALUE on failure
+ */
 uint32_t STDCALL thread_get_exit_code(THREAD_HANDLE thread);
 
+/**
+ * @brief Get the scheduling affinity of a Thread
+ * @param Thread Handle of thread to get
+ * @return Affinity of thread or INVALID_HANDLE_VALUE on failure
+ */
 uint32_t STDCALL thread_get_affinity(THREAD_HANDLE thread);
+
+/**
+ * @brief Set the scheduling affinity of a Thread
+ *
+ *  The new affinity will not take affect until the thread is next rescheduled
+ * @param Thread Handle of thread to set
+ * @param Affinity New thread affinity (eg CPU_AFFINITY_0)
+ * @return Previous affinity of thread or INVALID_HANDLE_VALUE on failure
+ */
 uint32_t STDCALL thread_set_affinity(THREAD_HANDLE thread, uint32_t affinity);
 
+/**
+ * @brief Get the scheduling priority of a Thread
+ * @param Thread Handle of thread to get
+ * @return Priority of thread or INVALID_HANDLE_VALUE on failure
+ */
 uint32_t STDCALL thread_get_priority(THREAD_HANDLE thread);
+
+/**
+ * @brief Set the scheduling priority of a Thread
+ *
+ *  The new priority will not take affect until the thread is next rescheduled
+ * @param Thread Handle of thread to set
+ * @param Priority New thread priority (eg THREAD_PRIORITY_NORMAL)
+ * @return Previous priority of thread or INVALID_HANDLE_VALUE on failure
+ */
 uint32_t STDCALL thread_set_priority(THREAD_HANDLE thread, uint32_t priority);
 
+/**
+ * @brief Get the last error value for the current Thread
+ * @return Last Error of thread or ERROR_SUCCESS if no error
+ * @note No lock required as only ever called by the thread itself
+ */
 uint32_t STDCALL thread_get_last_error(void);
+
+/**
+ * @brief Set the last error value for the current Thread
+ * @note No lock required as only ever called by the thread itself
+ */
 void STDCALL thread_set_last_error(uint32_t lasterror);
+
+/**
+ * @brief Set the last error value for the current Thread
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note No lock required as only ever called by the thread itself
+ */
 uint32_t STDCALL thread_set_last_error_ex(uint32_t lasterror);
 
+/**
+ * @brief Get the result of the last wait timeout for the current Thread
+ * @return Result of last wait timeout or ERROR_SUCCESS if no error
+ * @note No lock required as only ever called by the thread itself
+ */
 uint32_t STDCALL thread_get_wait_result(void);
+
+/**
+ * @brief Get the result of the last receive timeout for the current Thread
+ * @return Result of last receive timeout or ERROR_SUCCESS if no error
+ * @note No lock required as only ever called by the thread itself
+ */
 uint32_t STDCALL thread_get_receive_result(void);
 
+/**
+ * @brief Get the current status of a TLS index in the TLS index table
+ * @param TlsIndex The TLS index to get the status for
+ * @return THREAD_TLS_FREE if unused, THREAD_TLS_USED if in use or THREAD_TLS_INVALID on error
+ * @note No lock required as only ever reads from the table
+ */
 uint32_t STDCALL thread_get_tls_index(uint32_t tlsindex);
+
+/**
+ * @brief Allocate a TLS index in the TLS index table
+ * @return Allocated TLS index or TLS_OUT_OF_INDEXES on failure
+ */
 uint32_t STDCALL thread_alloc_tls_index(void);
+
+/**
+ * @brief Allocate a TLS index in the TLS index table
+ * @param Flags The flags to apply to the TLS index entries (eg THREAD_TLS_FLAG_FREE)
+ * @return Allocated TLS index or TLS_OUT_OF_INDEXES on failure
+ */
 uint32_t STDCALL thread_alloc_tls_index_ex(uint32_t flags);
+
+/**
+ * @brief Deallocate a TLS index from the TLS index table
+ * @param TlsIndex The TLS index to deallocate
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL thread_release_tls_index(uint32_t tlsindex);
+
+/**
+ * @brief Get the pointer associated with the TLS index for the current thread
+ * @return Pointer for the specified TLS index or nil if not set or on error
+ * @note No lock required as only ever called by the thread itself
+ */
 void * STDCALL thread_get_tls_value(uint32_t tlsindex);
+
+/**
+ * @brief Set the pointer associated with the TLS index for the current thread
+ * @param TlsIndex The TLS index to get the pointer for
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note No lock required as only ever called by the thread itself
+ */
 uint32_t STDCALL thread_set_tls_value(uint32_t tlsindex, void *tlsvalue);
 
+/**
+ * @brief Get the RTL TLS (Thread Local Storage) pointer of a Thread
+ * @param Thread Handle of thread to get
+ * @return Pointer to the RTL TLS of thread or nil on failure
+ */
 void * STDCALL thread_get_tls_pointer(THREAD_HANDLE thread);
+
+/**
+ * @brief Set the RTL TLS (Thread Local Storage) pointer of a Thread
+ * @param Thread Handle of thread to set
+ * @param TlsPointer Pointer value to set (Can be nil to clear the pointer)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL thread_set_tls_pointer(THREAD_HANDLE thread, void *tlspointer);
 
+/**
+ * @brief Place the supplied Thread on the ready queue
+ * @param Thread Handle of thread to make ready
+ * @param Reschedule If True then call SchedulerReschedule
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note When called by the scheduler, thread has already been removed from the sleep queue
+ */
 uint32_t STDCALL thread_ready(THREAD_HANDLE thread, BOOL reschedule);
+
+/**
+ * @brief Place the supplied Thread on the ready queue after a timeout waiting on a resource
+ * @param Thread Handle of thread to make ready
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note When called by the scheduler, thread has already been removed from the timeout queue
+ */
 uint32_t STDCALL thread_timeout(THREAD_HANDLE thread);
+
+/**
+ * @brief Remove a thread prematurely from the sleep or timeout queues
+ * @param Thread Handle of thread to remove
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note A thread that was sleeping will simply return early
+ *        A thread that was waiting or receiving with a timeout will return
+ *        with the error WAIT_TIMEOUT
+ *        A thread that was waiting or receiving with INFINITE timeout will return
+ *        with the error WAIT_ABANDONED
+ */
 uint32_t STDCALL thread_wake(THREAD_HANDLE thread);
 
+/**
+ * @brief Migrate a thread to a new CPU
+ * @param Thread Handle of thread to migrate
+ * @param CPU New CPU for the thread
+ * @return Previous CPU of thread or INVALID_HANDLE_VALUE on failure
+ */
 uint32_t STDCALL thread_migrate(THREAD_HANDLE thread, uint32_t cpu);
 
+/**
+ * @brief Terminate the current Thread
+ * @param ExitCode The return code of the thread
+ */
 void STDCALL thread_end(uint32_t exitcode);
+
+/**
+ * @brief Halt the current thread so it will never be rescheduled.
+ *
+ *  Normally only called due to an unhandled exception etc so that the thread
+ *  is put to sleep permanently without being terminated
+ * @param ExitCode The return code of the thread
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL thread_halt(uint32_t exitcode);
+
+/**
+ * @brief Terminate but do not destroy the supplied Thread
+ *
+ *  The terminated thread is placed on the termination queue until any threads
+ *  waiting on it have been released
+ * @param Thread Handle of thread to terminate
+ * @param ExitCode The return code of the thread
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Terminating a thread from another thread is not safe unless specific precautions are taken
+ *        to prevent deadlocks
+ *        It is normally safe for a thread to terminate itself as long as it releases any locks it is
+ *        holding that may be required by other threads before terminating
+ */
 uint32_t STDCALL thread_terminate(THREAD_HANDLE thread, uint32_t exitcode);
 
+/**
+ * @brief Make the current thread yield the processor (Same as ThreadSleep(0))
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL thread_yield(void);
+
+/**
+ * @brief Place the current thread on the sleep queue for a specified number of milliseconds
+ * @param Milliseconds Number of milliseconds to sleep
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL thread_sleep(uint32_t milliseconds);
 
+/**
+ * @brief Put the current thread into a wait state on the supplied list
+ * @param List Handle of List entry to put thread into
+ * @param Lock Handle of Lock to release before going into wait state
+ * @param Flags Flag to indicate which unlock method to use
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Caller must hold the lock on the synchronisation object containing the list
+ */
 uint32_t STDCALL thread_wait(LIST_HANDLE list, SPIN_HANDLE lock, uint32_t flags);
+
+/**
+ * @brief Put the current thread into a wait state with timeout on the supplied list
+ * @param List Handle of List entry to put thread into
+ * @param Lock Handle of Lock to release before going into wait state
+ * @param Flags Flag to indicate which unlock method to use
+ * @param Timeout Milliseconds to wait before timeout (INFINITE equals wait forever)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Caller must hold the lock on the synchronisation object containing the list
+ */
 uint32_t STDCALL thread_wait_ex(LIST_HANDLE list, SPIN_HANDLE lock, uint32_t flags, uint32_t timeout); ///< Timeout = 0 then No Wait,Timeout = INFINITE then Wait forever
+
+/**
+ * @brief Release the first thread waiting on the supplied list
+ * @param List Handle of List entry to release thread from
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Caller must hold the lock on the synchronisation object containing the list
+ */
 uint32_t STDCALL thread_release(LIST_HANDLE list);
+
+/**
+ * @brief Release the first thread waiting on the supplied list and return with WAIT_ABANDONED
+ * @param List Handle of List entry to release thread from
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Caller must hold the lock on the synchronisation object containing the list
+ */
 uint32_t STDCALL thread_abandon(LIST_HANDLE list);
+
+/**
+ * @brief Make the current thread wait until the specified thread has terminated
+ * @param Thread Handle of the thread to wait on
+ * @param Timeout Milliseconds to wait before timeout (0 equals do not wait, INFINITE equals wait forever)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note The wait can be abandoned by calling ThreadWake with the handle of the waiting thread
+ */
 uint32_t STDCALL thread_wait_terminate(THREAD_HANDLE thread, uint32_t timeout); ///< Timeout = 0 then No Wait,Timeout = INFINITE then Wait forever
 
+/**
+ * @brief Suspend a thread, placing it in hibernation
+ * @param Thread Handle of thread to suspend
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Suspending a thread from another thread is not safe unless specific precautions are taken
+ *        to prevent deadlocks
+ *        It is normally safe for a thread to suspend itself as long as it releases any locks it is
+ *        holding that may be required by other threads before suspending
+ */
 uint32_t STDCALL thread_suspend(THREAD_HANDLE thread);
+
+/**
+ * @brief Resume a suspended thread, making it ready
+ * @param Thread Handle of thread to resume
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL thread_resume(THREAD_HANDLE thread);
 
+/**
+ * @brief Make the current thread wait until a message is received (indefinitely)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note The received message is not removed from the message list
+ */
 uint32_t STDCALL thread_wait_message(void);
+
+/**
+ * @brief Send a message to another thread
+ * @param Thread Handle of thread to send to
+ * @param Message Contents of message to send
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL thread_send_message(THREAD_HANDLE thread, THREAD_MESSAGE *message);
+
+/**
+ * @brief Make the current thread wait to receive a message (indefinitely)
+ * @param Message The received message if successful, undefined on error
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL thread_receive_message(THREAD_MESSAGE *message);
+
+/**
+ * @brief Make the current thread wait to receive a message
+ * @param Message The received message if successful, undefined on error
+ * @param Timeout Milliseconds to wait before timeout (0 equals do not wait, INFINITE equals wait forever)
+ * @param Remove If true then remove the received message from the message list
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL thread_receive_message_ex(THREAD_MESSAGE *message, uint32_t timeout, BOOL remove); ///< Timeout = 0 then no Wait,Timeout = INFINITE then Wait forever
+
+/**
+ * @brief Tell another thread to abandon waiting for a message
+ * @param Thread Handle of thread to abandon waiting
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note The waiting thread will return with ERROR_WAIT_ABANDONED or ERROR_WAIT_TIMEOUT
+ */
 uint32_t STDCALL thread_abandon_message(THREAD_HANDLE thread);
 
+/**
+ * @brief Lock a thread allowing access to internal structures such as the thread stack
+ * @param Thread Handle of thread to lock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Locking a thread will also disable IRQ or FIQ depending on scheduler
+ *        settings. The lock should only be held for the briefest time possible
+ */
 uint32_t STDCALL thread_lock(THREAD_HANDLE thread);
+
+/**
+ * @brief Unlok a thread that was locked by ThreadLock
+ * @param Thread Handle of thread to unlock
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Locking a thread will also disable IRQ or FIQ depending on scheduler
+ *        settings. The lock should only be held for the briefest time possible
+ */
 uint32_t STDCALL thread_unlock(THREAD_HANDLE thread);
 
 /** Scheduler Functions */
+
+/**
+ * @brief Check if the sleep queue is empty, if not then decrement the first key
+ *  Then check if the timeout queue is empty, if not then decrement the first key
+ *
+ *  If either key reaches zero, return success to indicate there are threads to be
+ *  woken or threads whose timeout has expired
+ *
+ *  Finally check if the termination queue is empty, if not then decrement the first
+ *  key
+ *
+ *  Items will be removed from the termination queue by SchedulerReschedule
+ * @param CPUID The ID of the current CPU
+ * @return ERROR_SUCCESS if either first key is zero, ERROR_NO_MORE_ITEMS if both queues are empty or another error code on failure
+ * @note Called by scheduler interrupt with IRQ or FIQ disabled and running on the IRQ or FIQ thread
+ */
 uint32_t STDCALL scheduler_check(uint32_t cpuid);
+
+/**
+ * @brief Remove all threads from the sleep queue that have no more time to sleep
+ *
+ *  Threads will be placed back on the ready queue for rescheduling
+ * @param CPUID The ID of the current CPU
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Called by scheduler interrupt with IRQ or FIQ disabled and running on the IRQ or FIQ thread
+ */
 uint32_t STDCALL scheduler_wakeup(uint32_t cpuid);
+
+/**
+ * @brief Remove all threads from the timeout queue that have no more time to wait
+ *
+ *  Threads will be placed back on the ready queue for rescheduling but will
+ *  return with an error indicating the timeout expired
+ * @param CPUID The ID of the current CPU
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Called by scheduler interrupt with IRQ or FIQ disabled and running on the IRQ or FIQ thread
+ */
 uint32_t STDCALL scheduler_expire(uint32_t cpuid);
+
+/**
+ * @brief Perform a preemptive thread switch operation under an interrupt handler
+ *
+ *  The next thread to run will be selected based on remaining quantum of the current
+ *  thread, ready threads at higher priority levels and scheduler priority quantum for
+ *  fair scheduling of lower priority threads
+ * @param CPUID The ID of the current CPU
+ * @param Thread The handle of the currently running thread (Before IRQ or FIQ occurred)
+ * @return The handle of the current thread which may be the old thread or a new thread
+ * @note Called by scheduler interrupt with IRQ or FIQ disabled and running on the IRQ or FIQ thread
+ */
 THREAD_HANDLE STDCALL scheduler_switch(uint32_t cpuid, THREAD_HANDLE thread);
+
+/**
+ * @brief Select the next thread to be run based on state, yield, quantum and priority
+ * @param CPUID The ID of the current CPU
+ * @param Thread The handle of the currently running thread (Before IRQ or FIQ occurred or when Reschedule was called)
+ * @param Yield True if the current thread is giving up its remaining time slice
+ * @return The handle of the next thread to run or INVALID_HANDLE_VALUE on no selection or error
+ * @note Called either by scheduler interrupt with IRQ or FIQ disabled and running on the IRQ or FIQ thread
+ *        Or by scheduler reschedule with IRQ or FIQ disabled and running on the current thread
+ * @note Caller must either hold a lock on the current thread or have disabled IRQ or FIQ
+ */
 THREAD_HANDLE STDCALL scheduler_select(uint32_t cpuid, THREAD_HANDLE thread, BOOL yield);
+
+/**
+ * @brief Perform a thread switch operation when a thread yields, sleeps or waits
+ *
+ *  The next thread to run will be selected based on whether the current thread is
+ *  yielding or no longer ready, remaining quantum of the current thread, ready
+ *  threads at higher priority levels and scheduler priority quantum for fair
+ *  scheduling of lower priority threads
+ * @param Yield True if the current thread is giving up its remaining time slice
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Called by the currently running thread to force a reschedule before sleeping, waiting etc
+ */
 uint32_t STDCALL scheduler_reschedule(BOOL yield);
 
+/**
+ * @brief Enable scheduler thread migration
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL scheduler_migration_enable(void);
+
+/**
+ * @brief Disable scheduler thread migration
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL scheduler_migration_disable(void);
 
+/**
+ * @brief Enable thread preemption for the specified CPU
+ * @param CPUID The ID of the CPU to enable for
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL scheduler_preempt_enable(uint32_t cpuid);
+
+/**
+ * @brief Disable thread preemption for the specified CPU
+ * @param CPUID The ID of the CPU to disable for
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL scheduler_preempt_disable(uint32_t cpuid);
 
+/**
+ * @brief Enable thread allocation for the specified CPU
+ * @param CPUID The ID of the CPU to enable for
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL scheduler_allocation_enable(uint32_t cpuid);
+
+/**
+ * @brief Disable thread allocation for the specified CPU
+ * @param CPUID The ID of the CPU to disable for
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL scheduler_allocation_disable(uint32_t cpuid);
 
 /** Messageslot Functions */
+
+/**
+ * @brief Create and insert a new Messageslot entry
+ * @return Handle of new Messageslot entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 MESSAGESLOT_HANDLE STDCALL messageslot_create(void);
+
+/**
+ * @brief Create and insert a new Messageslot entry
+ * @param Maximum Maximum number of messages allowed for the Messageslot (Must be greater than zero)
+ * @param Flags The flags for the Messageslot entry (eg MESSAGESLOT_FLAG_IRQ)
+ * @return Handle of new Messageslot entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 MESSAGESLOT_HANDLE STDCALL messageslot_create_ex(uint32_t maximum, uint32_t flags);
+
+/**
+ * @brief Destroy and remove an existing Messageslot entry
+ * @param Messageslot Handle of Messageslot entry to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL messageslot_destroy(MESSAGESLOT_HANDLE messageslot);
 
+/**
+ * @brief Get the number of available messages in a Messageslot entry
+ * @param Messageslot Messageslot to get from
+ * @return Number of messages or INVALID_HANDLE_VALUE on error
+ */
 uint32_t STDCALL messageslot_count(MESSAGESLOT_HANDLE messageslot);
 
+/**
+ * @brief Send a message to a Messageslot
+ * @param Messageslot Messageslot to send to
+ * @param Message Contents of message to send
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL messageslot_send(MESSAGESLOT_HANDLE messageslot, THREAD_MESSAGE *message);
+
+/**
+ * @brief Receive a message from a Messageslot
+ * @param Messageslot Messageslot to receive from
+ * @param Message The received message if successful, undefined on error
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL messageslot_receive(MESSAGESLOT_HANDLE messageslot, THREAD_MESSAGE *message);
+
+/**
+ * @brief Receive a message from a Messageslot
+ * @param Messageslot Messageslot to receive from
+ * @param Message The received message if successful, undefined on error
+ * @param Timeout Milliseconds to wait before timeout (0 equals do not wait, INFINITE equals wait forever)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL messageslot_receive_ex(MESSAGESLOT_HANDLE messageslot, THREAD_MESSAGE *message, uint32_t timeout); ///< Timeout = 0 then No Wait,Timeout = INFINITE then Wait forever
 
 /** Mailslot Functions */
+
+/**
+ * @brief Create and insert a new Mailslot entry
+ * @param Maximum Maximum number of messages allowed for the Mailslot (Must be greater than zero)
+ * @return Handle of new Mailslot entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 MAILSLOT_HANDLE STDCALL mailslot_create(uint32_t maximum);
+
+/**
+ * @brief Destroy and remove an existing Mailslot entry
+ * @param Mailslot Handle of Mailslot entry to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL mailslot_destroy(MAILSLOT_HANDLE mailslot);
 
+/**
+ * @brief Get the number of available messages in a Mailslot entry
+ * @param Mailslot Mailslot to get from
+ * @return Number of messages or INVALID_HANDLE_VALUE on error
+ */
 uint32_t STDCALL mailslot_count(MAILSLOT_HANDLE mailslot);
 
+/**
+ * @brief Send a message to a Mailslot
+ * @param Mailslot Mailslot to send to
+ * @param Data Message to send to mailslot
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL mailslot_send(MAILSLOT_HANDLE mailslot, ssize_t data);
+
+/**
+ * @brief Send a message to a Mailslot
+ * @param Mailslot Mailslot to send to
+ * @param Data Message to send to mailslot
+ * @param Timeout Milliseconds to wait before timeout (0 equals do not wait, INFINITE equals wait forever)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL mailslot_send_ex(MAILSLOT_HANDLE mailslot, ssize_t data, uint32_t timeout); ///< Timeout = 0 then No Wait,Timeout = INFINITE then Wait forever
+
+/**
+ * @brief Receive a message from a Mailslot
+ * @param Mailslot Mailslot to receive from
+ * @return Received message or INVALID_HANDLE_VALUE on error
+ */
 ssize_t STDCALL mailslot_receive(MAILSLOT_HANDLE mailslot);
+
+/**
+ * @brief Receive a message from a Mailslot
+ * @param Mailslot Mailslot to receive from
+ * @param Timeout Milliseconds to wait before timeout (0 equals do not wait, INFINITE equals wait forever)
+ * @return Received message or INVALID_HANDLE_VALUE on error
+ */
 ssize_t STDCALL mailslot_receive_ex(MAILSLOT_HANDLE mailslot, uint32_t timeout); ///< Timeout = 0 then No Wait,Timeout = INFINITE then Wait forever
 
 /** Buffer Functions */
+
+/**
+ * @brief Create and insert a new Buffer entry
+ * @param Size Size of each buffer in bytes
+ * @param Count Total number of buffers
+ * @return Handle of new Buffer entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 BUFFER_HANDLE STDCALL buffer_create(uint32_t size, uint32_t count);
+
+/**
+ * @brief Create and insert a new Buffer entry
+ * @param Size Size of each buffer in bytes
+ * @param Count Total number of buffers
+ * @param Flags Flags for buffer (eg BUFFER_FLAG_SHARED)
+ * @return Handle of new Buffer entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 BUFFER_HANDLE STDCALL buffer_create_ex(uint32_t size, uint32_t count, uint32_t flags);
+
+/**
+ * @brief Destroy and remove an existing Buffer entry
+ * @param Buffer Handle of Buffer entry to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL buffer_destroy(BUFFER_HANDLE buffer);
 
+/**
+ * @brief Get the total count of buffers in an existing Buffer entry
+ * @param Buffer Buffer to get total count for
+ * @return Total count or INVALID_HANDLE_VALUE on error
+ */
 uint32_t STDCALL buffer_count(BUFFER_HANDLE buffer);
+
+/**
+ * @brief Get the available count of buffers in an existing Buffer entry
+ * @param Buffer Buffer to get available count for
+ * @return Available count or INVALID_HANDLE_VALUE on error
+ */
 uint32_t STDCALL buffer_available(BUFFER_HANDLE buffer);
 
+/**
+ * @brief Allocate an available buffer from an existing Buffer entry
+ * @param Buffer Handle of Buffer entry to allocate from
+ * @return A pointer to the allocated buffer or nil on error
+ */
 void * STDCALL buffer_get(BUFFER_HANDLE buffer);
+
+/**
+ * @brief Allocate an available buffer from an existing Buffer entry
+ * @param Buffer Handle of Buffer entry to allocate from
+ * @param Timeout Milliseconds to wait before timeout (0 equals do not wait, INFINITE equals wait forever)
+ * @return A pointer to the allocated buffer or nil on error
+ */
 void * STDCALL buffer_get_ex(BUFFER_HANDLE buffer, uint32_t timeout); ///< Timeout = 0 then No Wait,Timeout = INFINITE then Wait forever
+
+/**
+ * @brief Release a allocated buffer from an existing Buffer entry
+ * @param Buffer Pointer to the allocated buffer (As returned by BufferGet/BufferGetEx)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL buffer_free(void *buffer);
 
+/**
+ * @brief Iterate through each of the buffers in an existing Buffer entry
+ * @param Buffer Handle of Buffer entry to iterate from
+ * @param Previous The pointer returned by the previous call or nil on first call
+ * @return A pointer to the next buffer or nil on error
+ * @note Iterate is intended to allow allocating or initializing buffers after
+ *  a Buffer entry is created, or deallocating before a Buffer entry is destroyed.
+ *
+ *  The function will fail if any buffers are already in use (if the count and
+ *  available count are not equal)
+ */
 void * STDCALL buffer_iterate(BUFFER_HANDLE buffer, void *previous);
 
 /** Event Functions */
+
+/**
+ * @brief Create and insert a new Event entry
+ * @param ManualReset Create a manual reset event if true or an auto reset event if false
+ *               An manual reset event must be reset by calling EventReset
+ *               An auto reset event is reset when a single waiting thread is released
+ * @param InitialState Set the initial state of the event to signaled if true
+ *                or to unsignaled if false
+ * @return Handle of new Event entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 EVENT_HANDLE STDCALL event_create(BOOL manualreset, BOOL initialstate);
+
+/**
+ * @brief Create and insert a new Event entry
+ * @param Flags Event flags to use for the new entry (eg EVENT_FLAG_MANUAL_RESET)
+ * @return Handle of new Event entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 EVENT_HANDLE STDCALL event_create_ex(uint32_t flags);
+
+/**
+ * @brief Destroy and remove an existing Event entry
+ * @param Event Handle of Event entry to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL event_destroy(EVENT_HANDLE event);
 
+/**
+ * @brief Get the current state of an existing Event entry
+ * @param Event Event to get state for
+ * @return Current state or INVALID_HANDLE_VALUE on error
+ */
 uint32_t STDCALL event_state(EVENT_HANDLE event);
 
+/**
+ * @brief Wait on an existing Event entry
+ *
+ *  If the Event is currently signaled then simply return immediately
+ *
+ *  If the Event is currently unsignaled then wait for it to be signaled
+ *  before returning
+ * @param Event Event to wait on
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL event_wait(EVENT_HANDLE event);
+
+/**
+ * @brief Wait on an existing Event entry
+ *
+ *  If the Event is currently signaled then simply return immediately
+ *
+ *  If the Event is currently unsignaled then wait for it to be signaled
+ *  before returning
+ * @param Event Event to wait on
+ * @param Timeout Time in milliseconds to wait for the event to be signaled
+ *           0 = No Wait
+ *           INFINITE = Wait Indefinitely
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL event_wait_ex(EVENT_HANDLE event, uint32_t timeout); ///< Timeout = 0 then no Wait,Timeout = INFINITE then Wait forever
 
+/**
+ * @brief Set (Signal) an existing Event entry
+ *
+ *  If the event is currently signaled then return with no action
+ *
+ *  If the event is unsignaled then, if the event is manual reset release
+ *  all waiting threads and return. If the event is auto reset release one
+ *  waiting thread, unsignal the event and return
+ *
+ *  If no threads are waiting then simply signal the event and return, if
+ *  the event is auto reset then the next thread to wait will unsignal the
+ *  event
+ * @param Event Event to set
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL event_set(EVENT_HANDLE event);
+
+/**
+ * @brief Reset (Unsignal) an existing Event entry
+ *
+ *  If the event is currently unsignaled then return with no action
+ *
+ *  If the event is signaled then unsignal the event and return
+ * @param Event Event to reset
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL event_reset(EVENT_HANDLE event);
+
+/**
+ * @brief Pulse (Set then Reset) an existing Event entry
+ *
+ *  If the event is currently signaled then unsignal the event and return
+ *
+ *  If the event is unsignaled then, if the event is manual reset release
+ *  all waiting threads, unsignal the event and return. If the event is
+ *  auto reset release one waiting thread, unsignal the event and return
+ *
+ *  If no threads are waiting then simply unsignal the event and return
+ * @param Event Event to pulse
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL event_pulse(EVENT_HANDLE event);
 
 /** Timer Functions */
+
+/**
+ * @brief Create and insert a new Timer entry
+ * @param Interval Number of milliseconds between timer events
+ * @param Enabled If true then timer generates events
+ * @param Reschedule If true then reschedule timer after each event
+ * @param Event The function to call when the timer event is generated
+ * @param Data Data to be passed to the function when the timer event is generated (May be nil)
+ * @return Handle of new Timer entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 TIMER_HANDLE STDCALL timer_create(uint32_t interval, BOOL enabled, BOOL reschedule, timer_event_proc event, void *data);
+
+/**
+ * @brief Create and insert a new Timer entry
+ * @param Interval Number of milliseconds between timer events
+ * @param State State of timer entry (eg TIMER_STATE_ENABLED)
+ * @param Flags Flags of timer entry (eg TIMER_FLAG_RESCHEDULE)
+ * @param Event The function to call when the timer event is generated
+ * @param Data Data to be passed to the function when the timer event is generated (May be nil)
+ * @return Handle of new Timer entry or INVALID_HANDLE_VALUE if entry could not be created
+ */
 TIMER_HANDLE STDCALL timer_create_ex(uint32_t interval, uint32_t state, uint32_t flags, timer_event_proc event, void *data);
+
+/**
+ * @brief Destroy and remove an existing Timer entry
+ * @param Timer Handle of Timer entry to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL timer_destroy(TIMER_HANDLE timer);
 
+/**
+ * @brief Enable an existing Timer entry (Timer events will be generated)
+ * @param Timer Handle of Timer entry to enable
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL timer_enable(TIMER_HANDLE timer);
+
+/**
+ * @brief Enable and update an existing Timer entry (Timer events will be generated)
+ * @param Timer Handle of Timer entry to enable
+ * @param Interval Number of milliseconds between timer events
+ * @param Event The function to call when the timer event is generated
+ * @param Data Data to be passed to the function when the timer event is generated (May be nil)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL timer_enable_ex(TIMER_HANDLE timer, uint32_t interval, timer_event_proc event, void *data);
+
+/**
+ * @brief Disable an existing Timer entry (Timer events will not be generated)
+ * @param Timer Handle of Timer entry to disable
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL timer_disable(TIMER_HANDLE timer);
 
+/**
+ * @brief Get and remove the first timer from the Timer list
+ * @return Handle of dequeued Timer or INVALID_HANDLE_VALUE on failure
+ */
 TIMER_HANDLE STDCALL timer_dequeue(void);
 
+/**
+ * @brief Get the first Key value from the Timer list
+ * @return First Key value from timer list or TIMER_KEY_NONE on failure
+ */
 int STDCALL timer_first_key(void);
+
+/**
+ * @brief Insert the supplied timer in the Timer list in delta ascending order based on Key
+ * @param Timer Handle of timer to be inserted
+ * @param Key The key to order the insertion on
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Caller must hold the lock on the timer
+ */
 uint32_t STDCALL timer_insert_key(TIMER_HANDLE timer, int key);
+
+/**
+ * @brief Delete the supplied timer from the Timer list
+ * @param Timer Handle of timer to be deleted
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Caller must hold the lock on the timer
+ */
 uint32_t STDCALL timer_delete_key(TIMER_HANDLE timer);
+
+/**
+ * @brief Decrement the first Key value in the Timer list
+ * @return First Key value in timer list after decrement or TIMER_KEY_NONE on failure
+ */
 int STDCALL timer_decrement_key(void);
 
+/**
+ * @brief Check if the Timer list is empty
+ * @return True if Timer list is empty or does not exist, False if Timer list is not empty
+ */
 BOOL STDCALL timer_is_empty(void);
+
+/**
+ * @brief Check if the Timer list is not empty
+ * @return True if Timer list is not empty, False if Timer list is empty or does not exist
+ */
 BOOL STDCALL timer_not_empty(void);
 
+/**
+ * @brief Check if the timer list is empty, if not then decrement the first key
+ *
+ *  If the key reaches zero, return success to indicate there are timers to
+ *  be triggered
+ * @return ERROR_SUCCESS if the first key is zero, ERROR_NO_MORE_ITEMS if list is empty or another error code on failure
+ * @note Called by clock interrupt with IRQ or FIQ disabled and running on the IRQ or FIQ thread
+ */
 uint32_t STDCALL timer_check(void);
+
+/**
+ * @brief Remove all entries from the timer list that have reached their interval
+ *
+ *  For each timer a message will be sent to the Timer thread to call the event
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Called by clock interrupt with IRQ or FIQ disabled and running on the IRQ or FIQ thread
+ */
 uint32_t STDCALL timer_trigger(void);
 
 /** Worker Functions */
+
+/**
+ * @brief Schedule a task to be performed by a worker thread now or in the future
+ * @param Interval The number of milliseconds before the task is to be performed (0 for immediate)
+ * @param Task The function to be called by the worker when the interval has elapsed
+ * @param Data A pointer to user defined data which will be passed to the task function (Optional)
+ * @param Callback The function to be called by the worker when the task has completed (Optional)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL worker_schedule(uint32_t interval, worker_task_proc task, void *data, worker_cb callback);
+
+/**
+ * @brief Schedule a task to be performed by a worker thread now or in the future
+ * @param Interval The number of milliseconds before the task is to be performed (0 for immediate)
+ * @param Flags The flags for the task (eg WORKER_FLAG_RESCHEDULE)
+ * @param Task The function to be called by the worker when the interval has elapsed
+ * @param Data A pointer to user defined data which will be passed to the task function (Optional)
+ * @param Callback The function to be called by the worker when the task has completed (Optional)
+ * @return Handle of new Worker task or INVALID_HANDLE_VALUE if task could not be created
+ * @note If the flags do not contain WORKER_FLAG_RESCHEDULE then return will be ERROR_SUCCESS
+ */
 WORKER_HANDLE STDCALL worker_schedule_ex(uint32_t interval, uint32_t flags, worker_task_proc task, void *data, worker_cb callback);
+
+/**
+ * @brief Cancel a previously scheduled worker thread task
+ * @param Worker The handle of the worker task to cancel
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL worker_cancel(WORKER_HANDLE worker);
 
+/**
+ * @brief Schedule a task to be performed by a worker thread when the caller is an IRQ handler
+ * @param Affinity CPU Affinity for memory allocation (eg CPU_AFFINITY_0 or CPU_AFFINITY_NONE)
+ * @param Task The function to be called by the worker
+ * @param Data A pointer to user defined data which will be passed to the task function (Optional)
+ * @param Callback The function to be called by the worker when the task has completed (Optional)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note The task will be performed immediately, for delayed tasks etc see WorkerSchedule(Ex)
+ */
 uint32_t STDCALL worker_schedule_irq(uint32_t affinity, worker_task_proc task, void *data, worker_cb callback);
+
+/**
+ * @brief Schedule a task to be performed by a worker thread when the caller is an IRQ handler
+ * @param Affinity CPU Affinity for memory allocation (eg CPU_AFFINITY_0 or CPU_AFFINITY_NONE)
+ * @param Flags The flags for the task (eg WORKER_FLAG_PRIORITY)
+ * @param Task The function to be called by the worker
+ * @param Data A pointer to user defined data which will be passed to the task function (Optional)
+ * @param Callback The function to be called by the worker when the task has completed (Optional)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note The task will be performed immediately, for delayed tasks etc see WorkerSchedule(Ex)
+ */
 uint32_t STDCALL worker_schedule_irq_ex(uint32_t affinity, uint32_t flags, worker_task_proc task, void *data, worker_cb callback);
 
+/**
+ * @brief Schedule a task to be performed by a worker thread when the caller is an FIQ handler
+ * @param Affinity CPU Affinity for memory allocation (eg CPU_AFFINITY_0 or CPU_AFFINITY_NONE)
+ * @param Task The function to be called by the worker
+ * @param Data A pointer to user defined data which will be passed to the task function (Optional)
+ * @param Callback The function to be called by the worker when the task has completed (Optional)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note The task will be performed immediately, for delayed tasks etc see WorkerSchedule(Ex)
+ */
 uint32_t STDCALL worker_schedule_fiq(uint32_t affinity, worker_task_proc task, void *data, worker_cb callback);
+
+/**
+ * @brief Schedule a task to be performed by a worker thread when the caller is an FIQ handler
+ * @param Affinity CPU Affinity for memory allocation (eg CPU_AFFINITY_0 or CPU_AFFINITY_NONE)
+ * @param Flags The flags for the task (eg WORKER_FLAG_PRIORITY)
+ * @param Task The function to be called by the worker
+ * @param Data A pointer to user defined data which will be passed to the task function (Optional)
+ * @param Callback The function to be called by the worker when the task has completed (Optional)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note The task will be performed immediately, for delayed tasks etc see WorkerSchedule(Ex)
+ */
 uint32_t STDCALL worker_schedule_fiq_ex(uint32_t affinity, uint32_t flags, worker_task_proc task, void *data, worker_cb callback);
 
+/**
+ * @brief Increase the number of worker threads available
+ * @param Count Number of worker threads to increase by
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL worker_increase(uint32_t count);
+
+/**
+ * @brief Increase the number of worker threads available
+ * @param Count Number of worker threads to increase by
+ * @param Priority If true increase worker priority threads
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL worker_increase_ex(uint32_t count, BOOL priority);
+
+/**
+ * @brief Decrease the number of worker threads available
+ * @param Count Number of worker threads to decrease by
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL worker_decrease(uint32_t count);
+
+/**
+ * @brief Decrease the number of worker threads available
+ * @param Count Number of worker threads to decrease by
+ * @param Priority If true decrease worker priority threads
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL worker_decrease_ex(uint32_t count, BOOL priority);
 
 /** Tasker Functions */
+
+/**
+ * @brief Perform a ThreadSendMessage() function call using the tasker list
+ */
 uint32_t STDCALL tasker_thread_send_message(THREAD_HANDLE thread, THREAD_MESSAGE *message);
+
+/**
+ * @brief Perform a MessageslotSend() function call using the tasker list
+ */
 uint32_t STDCALL tasker_messageslot_send(MESSAGESLOT_HANDLE messageslot, THREAD_MESSAGE *message);
+
+/**
+ * @brief Perform a SemaphoreSignal() function call using the tasker list
+ */
 uint32_t STDCALL tasker_semaphore_signal(SEMAPHORE_HANDLE semaphore, uint32_t count);
+
+/**
+ * @brief Perform a CompletionReset() function call using the tasker list
+ */
 uint32_t STDCALL tasker_completion_reset(COMPLETION_HANDLE completion);
+
+/**
+ * @brief Perform a CompletionComplete() or CompletionCompleteAll() function call using the tasker list
+ */
 uint32_t STDCALL tasker_completion_complete(COMPLETION_HANDLE completion, BOOL all);
 
+/**
+ * @brief Add the supplied task to the end of the Tasker list
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL tasker_enqueue(TASKER_TASK *task);
+
+/**
+ * @brief Get and remove the first task from the Tasker list
+ * @return Dequeued Task or nil on failure (or list empty)
+ */
 TASKER_TASK * STDCALL tasker_dequeue(void);
 
+/**
+ * @brief Check if the tasker list is empty or contains tasks
+ * @return ERROR_SUCCESS if the list contains tasks, ERROR_NO_MORE_ITEMS if list is empty or another error code on failure
+ * @note Called by clock interrupt with IRQ or FIQ disabled and running on the IRQ or FIQ thread
+ */
 uint32_t STDCALL tasker_check(void);
+
+/**
+ * @brief Dequeue all tasks in the tasker list and perform the requested task for each
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Called by clock interrupt with IRQ or FIQ disabled and running on the IRQ or FIQ thread
+ */
 uint32_t STDCALL tasker_trigger(void);
 
 /** RTL Thread Manager Functions */
 /** See: \source\rtl\inc\thread.inc and \source\rtl\inc\threadh.inc */
 /** See: \source\rtl\inc\system.inc and \source\rtl\inc\systemh.inc */
 
+/**
+ * @brief Start a new thread
+ * @param SignalAction Not used by Ultibo
+ * @param StackSize The stack size for the new thread
+ * @param ThreadFunction The function to be executed by the new thread
+ * @param ThreadParameter A pointer to be passed to ThreadFunction (Optional)
+ * @param CreationFlags Flags to determine how the new thread is created (eg THREAD_CREATE_SUSPENDED)
+ * @param ThreadId Filled with the thread ID of the new thread on return
+ * @note SignalAction not used by Ultibo threading
+ */
 THREAD_ID STDCALL begin_thread(void *signalaction, size_t stacksize, thread_func threadfunction, void *threadparameter, uint32_t creationflags, THREAD_ID *threadid);
+
+/**
+ * @brief Start a new thread
+ * @param SignalAction Not used by Ultibo
+ * @param StackSize The stack size for the new thread
+ * @param ThreadFunction The function to be executed by the new thread
+ * @param ThreadParameter A pointer to be passed to ThreadFunction (Optional)
+ * @param CreationFlags Flags to determine how the new thread is created (eg THREAD_CREATE_SUSPENDED)
+ * @param Priority The priority of the new thread (eg THREAD_PRIORITY_NORMAL)
+ * @param Affinity The CPU affinity of the new thread (eg CPU_AFFINITY_ALL)
+ * @param CPU The CPU to assign new thread to (eg CPU_ID_0)
+ * @param Name The name of the new thread
+ * @param ThreadId Filled with the thread ID of the new thread on return
+ * @note SignalAction not used by Ultibo threading
+ */
 THREAD_ID STDCALL begin_thread_ex(void *signalaction, size_t stacksize, thread_func threadfunction, void *threadparameter, uint32_t creationflags, uint32_t priority, uint32_t affinity, uint32_t cpu, const char *name, THREAD_ID *threadid);
 
+/**
+ * @brief End the current thread
+ * @param ExitCode The exit code returned by a call to ThreadGetExitCode
+ */
 void STDCALL end_thread(uint32_t exitcode);
 
 /** Thread Helper Functions */
+
+/**
+ * @brief Get the current spin lock count
+ */
 uint32_t STDCALL spin_get_count(void);
 
+/**
+ * @brief Get the current mutex count
+ */
 uint32_t STDCALL mutex_get_count(void);
 
+/**
+ * @brief Get the current critical section count
+ */
 uint32_t STDCALL critical_section_get_count(void);
 
+/**
+ * @brief Get the current semaphore count
+ */
 uint32_t STDCALL semaphore_get_count(void);
 
+/**
+ * @brief Get the current synchronizer count
+ */
 uint32_t STDCALL synchronizer_get_count(void);
 
+/**
+ * @brief Get the current condition count
+ */
 uint32_t STDCALL condition_get_count(void);
 
+/**
+ * @brief Get the current completion count
+ */
 uint32_t STDCALL completion_get_count(void);
 
+/**
+ * @brief Get the current list count
+ */
 uint32_t STDCALL list_get_count(void);
 
+/**
+ * @brief Get the current queue count
+ */
 uint32_t STDCALL queue_get_count(void);
 
+/**
+ * @brief Get the current thread count
+ */
 uint32_t STDCALL thread_get_count(void);
 
+/**
+ * @brief Get the current thread tls count
+ */
 uint32_t STDCALL thread_tls_get_count(void);
 
+/**
+ * @brief Allocate memory for a new thread stack
+ * @param StackSize Number of bytes requested for new thread stack
+ * @return nil if StackSize was 0 or if there is not enough memory to satisfy the
+ *          request
+ *          Otherwise returns a pointer to the top (highest address) of the newly
+ *          allocated memory region
+ *          This address is the base of the stack which grows down in memory
+ */
 void * STDCALL thread_allocate_stack(uint32_t stacksize);
+
+/**
+ * @brief Release a thread stack allocated with ThreadAllocateStack
+ * @param StackBase Pointer to the top (highest address) of the thread stack
+ *             (as returned by ThreadAllocateStack
+ * @param StackSize Size of the thread stack, in bytes (Same value passed to ThreadAllocateStack)
+ */
 void STDCALL thread_release_stack(void *stackbase, uint32_t stacksize);
 void * STDCALL thread_setup_stack(void *stackbase, thread_start_proc startproc, thread_end_proc returnproc, void *parameter);
 
 THREAD_SNAPSHOT * STDCALL thread_snapshot_create(void);
 uint32_t STDCALL thread_snapshot_destroy(THREAD_SNAPSHOT *snapshot);
 
+/**
+ * @brief Get the current messageslot count
+ */
 uint32_t STDCALL messageslot_get_count(void);
 
+/**
+ * @brief Get the current mailslot count
+ */
 uint32_t STDCALL mailslot_get_count(void);
 
+/**
+ * @brief Get the current buffer count
+ */
 uint32_t STDCALL buffer_get_count(void);
 
+/**
+ * @brief Get the current event count
+ */
 uint32_t STDCALL event_get_count(void);
 
+/**
+ * @brief Get the current timer count
+ */
 uint32_t STDCALL timer_get_count(void);
 
+/**
+ * @brief Get the current worker thread count
+ */
 uint32_t STDCALL worker_get_count(void);
+
+/**
+ * @brief Get the current worker priority thread count
+ */
 uint32_t STDCALL worker_get_priority_count(void);
 
+/**
+ * @brief Get the current tasker count
+ */
 uint32_t STDCALL tasker_get_count(void);
 
 uint32_t STDCALL list_type_to_string(uint32_t listtype, char *string, uint32_t len);
@@ -1357,23 +3380,85 @@ uint32_t STDCALL thread_state_to_string(uint32_t threadstate, char *string, uint
 uint32_t STDCALL thread_priority_to_string(uint32_t threadpriority, char *string, uint32_t len);
 
 /** Scheduler Helper Functions */
+
+/**
+ * @brief Get the list flags for the specified type of list
+ */
 uint32_t STDCALL scheduler_get_list_flags(uint32_t listtype);
+
+/**
+ * @brief Get the queue flags for the specified type of scheduler queue
+ */
 uint32_t STDCALL scheduler_get_queue_flags(uint32_t queuetype);
+
+/**
+ * @brief Get the queue handle for the specified type of scheduler queue on the specified CPU
+ */
 QUEUE_HANDLE STDCALL scheduler_get_queue_handle(uint32_t cpuid, uint32_t queuetype);
+
+/**
+ * @brief Get the queue handle for the specified thread priority on the specified CPU
+ */
 QUEUE_HANDLE STDCALL scheduler_get_queue_handle_ex(uint32_t cpuid, uint32_t priority);
+
+/**
+ * @brief Get the thread count for the specified CPU
+ */
 uint32_t STDCALL scheduler_get_thread_count(uint32_t cpuid);
+
+/**
+ * @brief Get the current thread quantum for the specified CPU
+ */
 uint32_t STDCALL scheduler_get_thread_quantum(uint32_t cpuid);
+
+/**
+ * @brief Get the thread handle for the specified type of thread on the specified CPU
+ */
 THREAD_HANDLE STDCALL scheduler_get_thread_handle(uint32_t cpuid, uint32_t threadtype);
+
+/**
+ * @brief Get the current priority mask for the specified CPU
+ */
 uint32_t STDCALL scheduler_get_priority_mask(uint32_t cpuid);
+
+/**
+ * @brief Get the scheduler quantum for the specified thread priority
+ */
 uint32_t STDCALL scheduler_get_priority_quantum(uint32_t priority);
+
+/**
+ * @brief Set the scheduler quantum for the specified thread priority
+ */
 uint32_t STDCALL scheduler_set_priority_quantum(uint32_t priority, uint32_t quantum);
+
+/**
+ * @brief Get the current migration quantum
+ */
 uint32_t STDCALL scheduler_get_migration_quantum(void);
+
+/**
+ * @brief Get the current starvation quantum for the specified CPU
+ */
 uint32_t STDCALL scheduler_get_starvation_quantum(uint32_t cpuid);
 
+/**
+ * @brief Get the next CPU for thread allocation
+ */
 uint32_t STDCALL scheduler_get_thread_next(void);
+
+/**
+ * @brief Get the current thread migration setting
+ */
 uint32_t STDCALL scheduler_get_thread_migration(void);
 
+/**
+ * @brief Get the current thread preempt setting for the specified CPU
+ */
 uint32_t STDCALL scheduler_get_thread_preempt(uint32_t cpuid);
+
+/**
+ * @brief Get the current thread allocation setting for the specified CPU
+ */
 uint32_t STDCALL scheduler_get_thread_allocation(uint32_t cpuid);
 
 uint32_t STDCALL scheduler_migration_to_string(uint32_t migration, char *string, uint32_t len);
@@ -1381,10 +3466,22 @@ uint32_t STDCALL scheduler_preempt_to_string(uint32_t preempt, char *string, uin
 uint32_t STDCALL scheduler_allocation_to_string(uint32_t allocation, char *string, uint32_t len);
 
 /** Timer Helper Functions */
+
+/**
+ * @brief Get the lock flags for the timer list
+ */
 uint32_t STDCALL timer_get_list_flags(void);
+
+/**
+ * @brief Get the lock flags for the timer messageslot
+ */
 uint32_t STDCALL timer_get_messageslot_flags(void);
 
 /** Worker Helper Functions */
+
+/**
+ * @brief Get the lock flags for the worker messageslot
+ */
 uint32_t STDCALL worker_get_messageslot_flags(void);
 
 #ifdef __cplusplus

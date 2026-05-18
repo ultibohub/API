@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -236,110 +236,446 @@ struct _HEAP_SNAPSHOT
 };
 
 /** Heap Functions */
+
+/**
+ * @brief Allocate a block of normal memory
+ */
 void * STDCALL get_mem(size_t size);
+
+/**
+ * @brief Allocate a block of memory with the flags and affinity requested
+ */
 void * STDCALL get_mem_ex(size_t size, uint32_t flags, uint32_t affinity);
 
+/**
+ * @brief Allocate a block of normal memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL get_aligned_mem(size_t size, size_t alignment);
+
+/**
+ * @brief Allocate a block of memory aligned on a multiple of the alignment value with the
+ *  flags and affinity requested
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL get_aligned_mem_ex(size_t size, size_t alignment, uint32_t flags, uint32_t affinity);
 
+/**
+ * @brief Allocate a block of shared memory
+ */
 void * STDCALL get_shared_mem(size_t size);
+
+/**
+ * @brief Allocate a block of shared memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL get_shared_aligned_mem(size_t size, size_t alignment);
 
+/**
+ * @brief Allocate a block of local memory
+ */
 void * STDCALL get_local_mem(size_t size, uint32_t affinity);
+
+/**
+ * @brief Allocate a block of local memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL get_local_aligned_mem(size_t size, size_t alignment, uint32_t affinity);
 
+/**
+ * @brief Allocate a block of code memory
+ */
 void * STDCALL get_code_mem(size_t size, uint32_t affinity);
+
+/**
+ * @brief Allocate a block of code memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL get_code_aligned_mem(size_t size, size_t alignment, uint32_t affinity);
 
+/**
+ * @brief Allocate a block of device memory
+ */
 void * STDCALL get_device_mem(size_t size);
+
+/**
+ * @brief Allocate a block of device memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL get_device_aligned_mem(size_t size, size_t alignment);
 
+/**
+ * @brief Allocate a block of non cached memory
+ */
 void * STDCALL get_nocache_mem(size_t size);
+
+/**
+ * @brief Allocate a block of non cached memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL get_nocache_aligned_mem(size_t size, size_t alignment);
 
+/**
+ * @brief Allocate a block of non shared memory
+ */
 void * STDCALL get_nonshared_mem(size_t size);
+
+/**
+ * @brief Allocate a block of non shared memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL get_nonshared_aligned_mem(size_t size, size_t alignment);
 
+/**
+ * @brief Allocate a block of IRQ memory
+ * @note The memory must be freed using FreeIRQMem
+ */
 void * STDCALL get_irq_mem(size_t size, uint32_t affinity);
+
+/**
+ * @brief Allocate a block of IRQ memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ * @note The memory must be freed using FreeIRQMem
+ */
 void * STDCALL get_irq_aligned_mem(size_t size, size_t alignment, uint32_t affinity);
 
+/**
+ * @brief Allocate a block of FIQ memory
+ * @note The memory must be freed using FreeFIQMem
+ */
 void * STDCALL get_fiq_mem(size_t size, uint32_t affinity);
+
+/**
+ * @brief Allocate a block of FIQ memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ * @note The memory must be freed using FreeFIQMem
+ */
 void * STDCALL get_fiq_aligned_mem(size_t size, size_t alignment, uint32_t affinity);
 
+/**
+ * @brief Free a block of memory
+ */
 size_t STDCALL free_mem(void *addr);
+
+/**
+ * @brief Free a block of IRQ memory
+ */
 size_t STDCALL free_irq_mem(void *addr);
+
+/**
+ * @brief Free a block of FIQ memory
+ */
 size_t STDCALL free_fiq_mem(void *addr);
 
+/**
+ * @brief Allocate and clear a block of normal memory
+ * @note Not inlined to AllocMemEx to save extra call from memory manager
+ */
 void * STDCALL alloc_mem(size_t size);
+
+/**
+ * @brief Allocate and clear a block of memory with the flags and affinity requested
+ */
 void * STDCALL alloc_mem_ex(size_t size, uint32_t flags, uint32_t affinity);
+
+/**
+ * @brief Reallocate a block of normal memory
+ */
 void * STDCALL realloc_mem(void *addr, size_t size);
+
+/**
+ * @brief Reallocate a block of memory with the flags and affinity requested
+ */
 void * STDCALL realloc_mem_ex(void *addr, size_t size, uint32_t flags, uint32_t affinity);
 
+/**
+ * @brief Allocate and clear a block of normal memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL alloc_aligned_mem(size_t size, size_t alignment);
+
+/**
+ * @brief Allocate and clear a block of normal memory aligned on a multiple of the
+ *  alignment value with the flags and affinity requested
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL alloc_aligned_mem_ex(size_t size, size_t alignment, uint32_t flags, uint32_t affinity);
+
+/**
+ * @brief Reallocate a block of normal memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL realloc_aligned_mem(void *addr, size_t size, size_t alignment);
+
+/**
+ * @brief Reallocate a block of memory aligned on a multiple of the alignment value with the
+ *  flags and affinity requested
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL realloc_aligned_mem_ex(void *addr, size_t size, size_t alignment, uint32_t flags, uint32_t affinity);
 
+/**
+ * @brief Allocate and clear a block of shared memory
+ */
 void * STDCALL alloc_shared_mem(size_t size);
+
+/**
+ * @brief Allocate and clear a block of shared memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL alloc_shared_aligned_mem(size_t size, size_t alignment);
+
+/**
+ * @brief Reallocate a block of shared memory
+ */
 void * STDCALL realloc_shared_mem(void *addr, size_t size);
+
+/**
+ * @brief Reallocate a block of shared memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL realloc_shared_aligned_mem(void *addr, size_t size, size_t alignment);
 
+/**
+ * @brief Allocate and clear a block of local memory
+ */
 void * STDCALL alloc_local_mem(size_t size, uint32_t affinity);
+
+/**
+ * @brief Allocate and clear a block of local memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL alloc_local_aligned_mem(size_t size, size_t alignment, uint32_t affinity);
+
+/**
+ * @brief Reallocate a block of local memory
+ */
 void * STDCALL realloc_local_mem(void *addr, size_t size, uint32_t affinity);
+
+/**
+ * @brief Reallocate a block of local memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL realloc_local_aligned_mem(void *addr, size_t size, size_t alignment, uint32_t affinity);
 
+/**
+ * @brief Allocate and clear a block of code memory
+ */
 void * STDCALL alloc_code_mem(size_t size, uint32_t affinity);
+
+/**
+ * @brief Allocate and clear a block of code memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL alloc_code_aligned_mem(size_t size, size_t alignment, uint32_t affinity);
+
+/**
+ * @brief Reallocate a block of code memory
+ */
 void * STDCALL realloc_code_mem(void *addr, size_t size, uint32_t affinity);
+
+/**
+ * @brief Reallocate a block of code memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL realloc_code_aligned_mem(void *addr, size_t size, size_t alignment, uint32_t affinity);
 
+/**
+ * @brief Allocate and clear a block of device memory
+ */
 void * STDCALL alloc_device_mem(size_t size);
+
+/**
+ * @brief Allocate and clear a block of device memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL alloc_device_aligned_mem(size_t size, size_t alignment);
+
+/**
+ * @brief Reallocate a block of device memory
+ */
 void * STDCALL realloc_device_mem(void *addr, size_t size);
+
+/**
+ * @brief Reallocate a block of device memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL realloc_device_aligned_mem(void *addr, size_t size, size_t alignment);
 
+/**
+ * @brief Allocate and clear a block of non cached memory
+ */
 void * STDCALL alloc_nocache_mem(size_t size);
+
+/**
+ * @brief Allocate and clear a block of non cached memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL alloc_nocache_aligned_mem(size_t size, size_t alignment);
+
+/**
+ * @brief Reallocate a block of non cached memory
+ */
 void * STDCALL realloc_nocache_mem(void *addr, size_t size);
+
+/**
+ * @brief Reallocate a block of non cached memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL realloc_nocache_aligned_mem(void *addr, size_t size, size_t alignment);
 
+/**
+ * @brief Allocate and clear a block of non shared memory
+ */
 void * STDCALL alloc_nonshared_mem(size_t size);
+
+/**
+ * @brief Allocate and clear a block of non shared memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL alloc_nonshared_aligned_mem(size_t size, size_t alignment);
+
+/**
+ * @brief Reallocate a block of non shared memory
+ */
 void * STDCALL realloc_nonshared_mem(void *addr, size_t size);
+
+/**
+ * @brief Reallocate a block of non shared memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ */
 void * STDCALL realloc_nonshared_aligned_mem(void *addr, size_t size, size_t alignment);
 
+/**
+ * @brief Allocate and clear a block of IRQ memory
+ * @note The memory must be freed using FreeIRQMem
+ */
 void * STDCALL alloc_irq_mem(size_t size, uint32_t affinity);
+
+/**
+ * @brief Allocate and clear a block of IRQ memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ * @note The memory must be freed using FreeIRQMem
+ */
 void * STDCALL alloc_irq_aligned_mem(size_t size, size_t alignment, uint32_t affinity);
+
+/**
+ * @brief Reallocate a block of IRQ memory
+ * @note The memory must be freed using FreeIRQMem
+ */
 void * STDCALL realloc_irq_mem(void *addr, size_t size, uint32_t affinity);
+
+/**
+ * @brief Reallocate a block of IRQ memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ * @note The memory must be freed using FreeIRQMem
+ */
 void * STDCALL realloc_irq_aligned_mem(void *addr, size_t size, size_t alignment, uint32_t affinity);
 
+/**
+ * @brief Allocate and clear a block of FIQ memory
+ * @note The memory must be freed using FreeFIQMem
+ */
 void * STDCALL alloc_fiq_mem(size_t size, uint32_t affinity);
+
+/**
+ * @brief Allocate and clear a block of FIQ memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ * @note The memory must be freed using FreeFIQMem
+ */
 void * STDCALL alloc_fiq_aligned_mem(size_t size, size_t alignment, uint32_t affinity);
+
+/**
+ * @brief Reallocate a block of FIQ memory
+ * @note The memory must be freed using FreeFIQMem
+ */
 void * STDCALL realloc_fiq_mem(void *addr, size_t size, uint32_t affinity);
+
+/**
+ * @brief Reallocate a block of FIQ memory aligned on a multiple of the alignment value
+ * @note Alignment must be a power of 2
+ * @note The memory must be freed using FreeFIQMem
+ */
 void * STDCALL realloc_fiq_aligned_mem(void *addr, size_t size, size_t alignment, uint32_t affinity);
 
+/**
+ * @brief Return the size of an allocated block of memory
+ */
 size_t STDCALL size_mem(void *addr);
+
+/**
+ * @brief Return the size of an allocated block of IRQ memory
+ */
 size_t STDCALL size_irq_mem(void *addr);
+
+/**
+ * @brief Return the size of an allocated block of FIQ memory
+ */
 size_t STDCALL size_fiq_mem(void *addr);
 
+/**
+ * @brief Return the flags of an allocated block of memory
+ */
 uint32_t STDCALL mem_flags(void *addr);
+
+/**
+ * @brief Return the flags of an allocated block of IRQ memory
+ */
 uint32_t STDCALL mem_flags_irq(void *addr);
+
+/**
+ * @brief Return the flags of an allocated block of FIQ memory
+ */
 uint32_t STDCALL mem_flags_fiq(void *addr);
 
+/**
+ * @brief Return status information for the heap manager
+ */
 HEAP_STATUS STDCALL get_heap_status(void);
+
+/**
+ * @brief Return status information for the heap manager
+ */
 FPC_HEAP_STATUS STDCALL get_fpc_heap_status(void);
+
 #ifdef HEAP_STATISTICS_ENABLED
+/**
+ * @brief Return detailed statistics for the heap manager
+ */
 HEAP_STATISTICS STDCALL get_heap_statistics(void);
 #endif
+
+/**
+ * @brief Get the total number of current heap blocks based on state
+ */
 uint32_t STDCALL get_heap_block_count(uint32_t state);
+
+/**
+ * @brief Get the number of current heap blocks based on state, flags and affinity
+ * @note This uses the block list (not the Free/Used/Small lists) in order to account for all blocks
+ */
 uint32_t STDCALL get_heap_block_count_ex(uint32_t state, uint32_t flags, uint32_t affinity);
 
+/**
+ * @brief Get the minimum size of current heap blocks based on state
+ */
 uint32_t STDCALL get_heap_block_min(uint32_t state);
+
+/**
+ * @brief Get the minimum size of current heap blocks based on state, flags and affinity
+ * @note This uses the block list (not the Free/Used/Small lists) in order to account for all blocks
+ */
 uint32_t STDCALL get_heap_block_min_ex(uint32_t state, uint32_t flags, uint32_t affinity);
 
+/**
+ * @brief Get the maximum size of current heap blocks based on state
+ */
 uint32_t STDCALL get_heap_block_max(uint32_t state);
+
+/**
+ * @brief Get the maximum size of current heap blocks based on state, flags and affinity
+ * @note This uses the block list (not the Free/Used/Small lists) in order to account for all blocks
+ */
 uint32_t STDCALL get_heap_block_max_ex(uint32_t state, uint32_t flags, uint32_t affinity);
 
 HEAP_SNAPSHOT * STDCALL create_heap_snapshot(uint32_t state);

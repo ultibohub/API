@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1231,51 +1231,271 @@ BOOL STDCALL WS2Stop(void);
 void STDCALL WS2AsyncStart(void *data);
 
 /** Winsock2 Functions */
+
+/**
+ * @brief Accept an incoming connection attempt on a socket
+ * See the Windows Sockets 2 documentation for additional information
+ */
 SOCKET STDCALL accept(SOCKET s, SOCKADDR *addr, int32_t *addrlen);
+
+/**
+ * @brief Associate a local address with a socket
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL bind(SOCKET s, SOCKADDR *addr, int32_t namelen);
+
+/**
+ * @brief Close an existing socket
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL closesocket(SOCKET s);
+
+/**
+ * @brief Establish a connection to a specified socket
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL connect(SOCKET s, SOCKADDR *name, int32_t namelen);
+
+/**
+ * @brief Control the I/O mode of a socket
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL ioctlsocket(SOCKET s, int32_t cmd, u_long *arg);
+
+/**
+ * @brief Retrieve the address of the peer to which a socket is connected
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL getpeername(SOCKET s, SOCKADDR *name, int32_t *namelen);
+
+/**
+ * @brief Retrieve the local name for a socket
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL getsockname(SOCKET s, SOCKADDR *name, int32_t *namelen);
+
+/**
+ * @brief Retrieve a socket option
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL getsockopt(SOCKET s, int32_t level, int32_t optname, char *optval, int32_t *optlen);
+
+/**
+ * @brief Convert a double from host byte order to TCP/IP network byte order (which is big-endian)
+ * See the Windows Sockets 2 documentation for additional information
+ */
 uint64_t STDCALL htond(double_t hostdouble);
+
+/**
+ * @brief Convert a float from host byte order to TCP/IP network byte order (which is big-endian)
+ * See the Windows Sockets 2 documentation for additional information
+ */
 uint32_t STDCALL htonf(float_t hostfloat);
+
+/**
+ * @brief Convert a u_long from host byte order to TCP/IP network byte order (which is big-endian)
+ * See the Windows Sockets 2 documentation for additional information
+ */
 u_long STDCALL htonl(u_long hostlong);
+
+/**
+ * @brief Convert an unsigned int64 from host byte order to TCP/IP network byte order (which is big-endian)
+ * See the Windows Sockets 2 documentation for additional information
+ */
 uint64_t STDCALL htonll(uint64_t hostlonglong);
+
+/**
+ * @brief Convert a u_short from host byte order to TCP/IP network byte order (which is big-endian)
+ * See the Windows Sockets 2 documentation for additional information
+ */
 u_short STDCALL htons(u_short hostshort);
+
+/**
+ * @brief Convert a string containing an IPv4 dotted-decimal address into a proper address for the IN_ADDR structure
+ * @note Address will be returned in network byte order
+ * See the Windows Sockets 2 documentation for additional information
+ */
 u_long STDCALL inet_addr(const char *cp);
+
+/**
+ * @brief Convert an (IPv4) Internet network address into an ASCII string in Internet standard dotted-decimal format
+ * As per the Winsock specification, the buffer returned by this function is only
+ *  guaranteed to be valid until the next Winsock function call is made within the
+ *  same thread. Therefore, the data should be copied before another Winsock call
+ * @note Address will be in network byte order
+ * See the Windows Sockets 2 documentation for additional information
+ */
 char * STDCALL inet_ntoa(in_addr inaddr);
+
+/**
+ * @brief Place a socket in a state in which it is listening for incoming connections
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL listen(SOCKET s, int32_t backlog);
+
+/**
+ * @brief Convert an unsigned int64 from TCP/IP network byte order to host byte order and return a double
+ * See the Windows Sockets 2 documentation for additional information
+ */
 double_t STDCALL ntohd(uint64_t netdouble);
+
+/**
+ * @brief Convert an unsigned int32 from TCP/IP network byte order to host byte order and return a float
+ * See the Windows Sockets 2 documentation for additional information
+ */
 float_t STDCALL ntohf(uint32_t netfloat);
+
+/**
+ * @brief Convert a u_long from TCP/IP network byte order to host byte order
+ * See the Windows Sockets 2 documentation for additional information
+ */
 u_long STDCALL ntohl(u_long netlong);
+
+/**
+ * @brief Convert an unsigned nt64 from TCP/IP network byte order to host byte order
+ * See the Windows Sockets 2 documentation for additional information
+ */
 uint64_t STDCALL ntohll(uint64_t netlonglong);
+
+/**
+ * @brief Convert a u_short from TCP/IP network byte order to host byte order
+ * See the Windows Sockets 2 documentation for additional information
+ */
 u_short STDCALL ntohs(u_short netshort);
+
+/**
+ * @brief Receive data from a connected socket or a bound connectionless socket
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL recv(SOCKET s, char *buf, int32_t len, int32_t flags);
+
+/**
+ * @brief Receive a datagram and store the source address
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL recvfrom(SOCKET s, char *buf, int32_t len, int32_t flags, SOCKADDR *from, int32_t *fromlen);
+
+/**
+ * @brief Determine the status of one or more sockets, waiting if necessary, to perform synchronous I/O
+ * @note All sockets contained by the FDSet must be of the same type
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL select(int32_t nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, wstimeval *timeout);
+
+/**
+ * @brief Send data on a connected socket
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL send(SOCKET s, const char *buf, int32_t len, int32_t flags);
+
+/**
+ * @brief Send data to a specific destination
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL sendto(SOCKET s, const char *buf, int32_t len, int32_t flags, SOCKADDR *addrto, int32_t tolen);
+
+/**
+ * @brief Set a socket option
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL setsockopt(SOCKET s, int32_t level, int32_t optname, const char *optval, int32_t optlen); ///< overload;
+
+/**
+ * @brief Disable sends or receives on a socket
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL shutdown(SOCKET s, int32_t how);
+
+/**
+ * @brief Create a socket that is bound to a specific transport service provider
+ * See the Windows Sockets 2 documentation for additional information
+ */
 SOCKET STDCALL socket(int32_t af, int32_t type, int32_t protocol);
 
+/**
+ * @brief Retrieve the host information corresponding to a network address
+ * @note Address will be in network byte order where applicable
+ * See the Windows Sockets 2 documentation for additional information
+ */
 hostent * STDCALL gethostbyaddr(void *addr, int32_t len, int32_t family);
+
+/**
+ * @brief Retrieve network address corresponding to a host name
+ * See the Windows Sockets 2 documentation for additional information
+ */
 hostent * STDCALL gethostbyname(const char *name);
+
+/**
+ * @brief Retrieve the standard host name for the local computer
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL gethostname(char *name, int32_t len);
+
+/**
+ * @brief Retrieve service information corresponding to a port and protocol
+ * @note Port will be in network byte order
+ * See the Windows Sockets 2 documentation for additional information
+ */
 servent * STDCALL getservbyport(int32_t port, const char *proto);
+
+/**
+ * @brief Retrieve service information corresponding to a service name and protocol
+ * See the Windows Sockets 2 documentation for additional information
+ */
 servent * STDCALL getservbyname(const char *name, const char *proto);
+
+/**
+ * @brief Retrieve protocol information corresponding to a protocol number
+ * See the Windows Sockets 2 documentation for additional information
+ */
 protoent * STDCALL getprotobynumber(int32_t proto);
+
+/**
+ * @brief Retrieve the protocol information corresponding to a protocol name
+ * See the Windows Sockets 2 documentation for additional information
+ */
 protoent * STDCALL getprotobyname(const char *name);
 
+/**
+ * @brief RFC 3493 protocol-independent translation from a host name to an address
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL getaddrinfo(const char *pnodename, const char *pservicename, ADDRINFO *phints, ADDRINFO **ppresult);
+
+/**
+ * @brief Free address information that GetAddrInfo dynamically allocates in TAddrInfo structures
+ * See the Windows Sockets 2 documentation for additional information
+ */
 void STDCALL freeaddrinfo(ADDRINFO *ai);
+
+/**
+ * @brief RFC 3493 protocol-independent name resolution from an address to a host name and a port number to a service name
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int STDCALL getnameinfo(SOCKADDR *sa, int salen, char *host, uint32_t hostlen, char *serv, uint32_t servlen, int flags);
 
+/**
+ * @brief Initiate use of Winsock 2 by an application
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSAStartup(uint16_t wversionrequired, WSADATA *wsdata);
+
+/**
+ * @brief Terminate use of Winsock 2 by an application
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSACleanup(void);
+
+/**
+ * @brief Set the error code that can be retrieved through the WSAGetLastError function
+ * See the Windows Sockets 2 documentation for additional information
+ */
 void STDCALL WSASetLastError(int32_t ierror);
+
+/**
+ * @brief Return the error status for the last Windows Sockets operation that failed
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSAGetLastError(void);
 BOOL STDCALL WSAIsBlocking(void);
 int32_t STDCALL WSAUnhookBlockingHook(void);
@@ -1289,58 +1509,250 @@ HANDLE STDCALL WSAAsyncGetHostByName(HWND hwindow, u_int wmsg, const char *name,
 HANDLE STDCALL WSAAsyncGetHostByAddr(HWND hwindow, u_int wmsg, const char *addr, int32_t len, int32_t family, char *buf, int32_t buflen);
 int32_t STDCALL WSACancelAsyncRequest(HANDLE hasynctaskhandle);
 int32_t STDCALL WSAAsyncSelect(SOCKET s, HWND hwindow, u_int wmsg, int32_t levent);
+
+/**
+ * @brief Return a value indicating whether a socket is included in a set of socket descriptors
+ * See the Windows Sockets 2 documentation for additional information
+ */
 BOOL STDCALL __WSAFDIsSet(SOCKET s, fd_set *fdset);
 
 /**  WinSock 2 API new function prototypes  */
+
+/**
+ * @brief Convert an IPv4 or IPv6 Internet network address in its standard text presentation form into its numeric binary form
+ * @note Address will be returned in network byte order where applicable
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL inet_pton(int32_t family, const char *pszaddrstring, void *paddrbuf);
+
+/**
+ * @brief Convert an IPv4 or IPv6 Internet network address in its standard text presentation form into its numeric binary form
+ * @note Address will be returned in network byte order where applicable
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL InetPtonA(int32_t family, const char *pszaddrstring, void *paddrbuf);
+
+/**
+ * @brief Convert an IPv4 or IPv6 Internet network address in its standard text presentation form into its numeric binary form
+ * @note Address will be returned in network byte order where applicable
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL InetPtonW(int32_t family, const WCHAR *pszaddrstring, void *paddrbuf);
 
+/**
+ * @brief Convert an IPv4 or IPv6 Internet network address into a string in Internet standard format
+ * @note Address will be in network byte order where applicable
+ * See the Windows Sockets 2 documentation for additional information
+ */
 char * STDCALL inet_ntop(int32_t family, void *paddr, char *pstringbuf, int32_t stringbufsize);
+
+/**
+ * @brief Convert an IPv4 or IPv6 Internet network address into a string in Internet standard format
+ * @note Address will be in network byte order where applicable
+ * See the Windows Sockets 2 documentation for additional information
+ */
 char * STDCALL InetNtopA(int32_t family, void *paddr, char *pstringbuf, int32_t stringbufsize);
+
+/**
+ * @brief Convert an IPv4 or IPv6 Internet network address into a string in Internet standard format
+ * @note Address will be in network byte order where applicable
+ * See the Windows Sockets 2 documentation for additional information
+ */
 WCHAR * STDCALL InetNtopW(int32_t family, void *paddr, WCHAR *pstringbuf, int32_t stringbufsize);
 
+/**
+ * @brief Conditionally accept a connection based on the return value of a condition function and allows the transfer of connection data
+ * See the Windows Sockets 2 documentation for additional information
+ */
 SOCKET STDCALL WSAAccept(SOCKET s, SOCKADDR *addr, int32_t *addrlen, LPCONDITIONPROC lpfncondition, uintptr_t dwcallbackdata);
+
+/**
+ * @brief Close the handle to an event object and free resources associated with the event object
+ * See the Windows Sockets 2 documentation for additional information
+ */
 BOOL STDCALL WSACloseEvent(WSAEVENT hevent);
+
+/**
+ * @brief Establish a connection to another socket application and exchange connect data
+ * @note The lpCallerData, lpCalleeData, lpSQOS and lpGQOS parameters are currently ignored
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSAConnect(SOCKET s, SOCKADDR *name, int32_t namelen, WSABUF *lpcallerdata, WSABUF *lpcalleedata, QOS *lpsqos, QOS *lpgqos);
 BOOL STDCALL WSAConnectByList(SOCKET s, SOCKET_ADDRESS_LIST *socketaddresslist, uint32_t *localaddresslength, SOCKADDR *localaddress, uint32_t *remoteaddresslength, SOCKADDR *remoteaddress, wstimeval *timeout, WSAOVERLAPPED *reserved);
 BOOL STDCALL WSAConnectByNameA(SOCKET s, char *nodename, char *servicename, uint32_t *localaddresslength, SOCKADDR *localaddress, uint32_t *remoteaddresslength, SOCKADDR *remoteaddress, wstimeval *timeout, WSAOVERLAPPED *reserved);
 BOOL STDCALL WSAConnectByNameW(SOCKET s, WCHAR *nodename, WCHAR *servicename, uint32_t *localaddresslength, SOCKADDR *localaddress, uint32_t *remoteaddresslength, SOCKADDR *remoteaddress, wstimeval *timeout, WSAOVERLAPPED *reserved);
+
+/**
+ * @brief Create a manual reset event object with an initial state of unsignaled
+ * See the Windows Sockets 2 documentation for additional information
+ */
 WSAEVENT STDCALL WSACreateEvent(void);
 int32_t STDCALL WSADuplicateSocketA(SOCKET s, uint32_t dwprocessid, WSAPROTOCOL_INFOA *lpprotocolinfo);
 int32_t STDCALL WSADuplicateSocketW(SOCKET s, uint32_t dwprocessid, WSAPROTOCOL_INFOW *lpprotocolinfo);
+
+/**
+ * @brief Discover occurrences of network events for the indicated socket, clear internal network event records, and reset event objects
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSAEnumNetworkEvents(SOCKET s, WSAEVENT heventobject, WSANETWORKEVENTS *lpnetworkevents);
 int32_t STDCALL WSAEnumProtocolsA(int32_t *lpiprotocols, WSAPROTOCOL_INFOA *lpprotocolbuffer, uint32_t *lpdwbufferlength);
 int32_t STDCALL WSAEnumProtocolsW(int32_t *lpiprotocols, WSAPROTOCOL_INFOW *lpprotocolbuffer, uint32_t *lpdwbufferlength);
+
+/**
+ * @brief Specify an event object to be associated with the requested set of FD_XXX network events
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSAEventSelect(SOCKET s, WSAEVENT heventobject, int32_t lnetworkevents);
+
+/**
+ * @brief Retrieve the results of an overlapped operation on the specified socket
+ * See the Windows Sockets 2 documentation for additional information
+ */
 BOOL STDCALL WSAGetOverlappedResult(SOCKET s, WSAOVERLAPPED *lpoverlapped, DWORD *lpcbtransfer, BOOL fwait, uint32_t *lpdwflags);
 BOOL STDCALL WSAGetQosByName(SOCKET s, WSABUF *lpqosname, QOS *lpqos);
+
+/**
+ * @brief Convert a u_long from host byte order to network byte order
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSAHtonl(SOCKET s, u_long hostlong, uint32_t *lpnetlong);
+
+/**
+ * @brief Convert a u_short from host byte order to network byte order
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSAHtons(SOCKET s, u_short hostshort, uint16_t *lpnetshort);
+
+/**
+ * @brief Control the mode of a socket
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSAIoctl(SOCKET s, uint32_t dwiocontrolcode, void *lpvinbuffer, uint32_t cbinbuffer, void *lpvoutbuffer, uint32_t cboutbuffer, DWORD *lpcbbytesreturned, WSAOVERLAPPED *lpoverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpcompletionroutine);
 SOCKET STDCALL WSAJoinLeaf(SOCKET s, SOCKADDR *name, int32_t namelen, WSABUF *lpcallerdata, WSABUF *lpcalleedata, QOS *lpsqos, QOS *lpgqos, uint32_t dwflags);
+
+/**
+ * @brief Convert a u_long from network byte order to host byte order
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSANtohl(SOCKET s, u_long netlong, uint32_t *lphostlong);
+
+/**
+ * @brief Convert a u_short from network byte order to host byte order
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSANtohs(SOCKET s, u_short netshort, uint16_t *lphostshort);
+
+/**
+ * @brief Determine status of one or more sockets
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSAPoll(WSAPOLLFD *fdarray, ULONG fds, int32_t timeout);
 int32_t STDCALL WSAProviderConfigChange(HANDLE *lpnotificationhandle, WSAOVERLAPPED *lpoverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpcompletionroutine);
+
+/**
+ * @brief Receive data from a connected socket or a bound connectionless socket
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSARecv(SOCKET s, WSABUF *lpbuffers, uint32_t dwbuffercount, uint32_t *lpnumberofbytesrecvd, uint32_t *lpflags, WSAOVERLAPPED *lpoverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpcompletionroutine);
 int32_t STDCALL WSARecvDisconnect(SOCKET s, WSABUF *lpinbounddisconnectdata);
+
+/**
+ * @brief Receive a datagram and store the source address
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSARecvFrom(SOCKET s, WSABUF *lpbuffers, uint32_t dwbuffercount, uint32_t *lpnumberofbytesrecvd, uint32_t *lpflags, SOCKADDR *lpfrom, int32_t *lpfromlen, WSAOVERLAPPED *lpoverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpcompletionroutine);
+
+/**
+ * @brief Receive data and optional control information from connected and unconnected sockets
+ * @note The Control field of lpMsg parameter is currently ignored
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSARecvMsg(SOCKET s, WSAMSG *lpmsg, uint32_t *lpdwnumberofbytesrecvd, WSAOVERLAPPED *lpoverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpcompletionroutine);
+
+/**
+ * @brief Reset the state of the specified event object to unsignaled
+ * See the Windows Sockets 2 documentation for additional information
+ */
 BOOL STDCALL WSAResetEvent(WSAEVENT hevent);
+
+/**
+ * @brief Send data on a connected socket
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSASend(SOCKET s, WSABUF *lpbuffers, uint32_t dwbuffercount, uint32_t *lpnumberofbytessent, uint32_t dwflags, WSAOVERLAPPED *lpoverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpcompletionroutine);
 int32_t STDCALL WSASendDisconnect(SOCKET s, WSABUF *lpoutbounddisconnectdata);
+
+/**
+ * @brief Send data to a specific destination, using overlapped I/O where applicable
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSASendTo(SOCKET s, WSABUF *lpbuffers, uint32_t dwbuffercount, uint32_t *lpnumberofbytessent, uint32_t dwflags, SOCKADDR *lpto, int32_t itolen, WSAOVERLAPPED *lpoverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpcompletionroutine);
+
+/**
+ * @brief Send data and optional control information from connected and unconnected sockets
+ * @note The Control field of lpMsg parameter is currently ignored
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSASendMsg(SOCKET s, WSAMSG *lpmsg, uint32_t dwflags, uint32_t *lpnumberofbytessent, WSAOVERLAPPED *lpoverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpcompletionroutine);
+
+/**
+ * @brief Set the state of the specified event object to signaled
+ * See the Windows Sockets 2 documentation for additional information
+ */
 BOOL STDCALL WSASetEvent(WSAEVENT hevent);
+
+/**
+ * @brief Create a socket that is bound to a specific transport-service provider
+ * @note The WSAProtocol_InfoA and GROUP parameters are currently ignored
+ *       The only currently supported flag value is WSA_FLAG_OVERLAPPED
+ * See the Windows Sockets 2 documentation for additional information
+ */
 SOCKET STDCALL WSASocketA(int32_t af, int32_t itype, int32_t protocol, WSAPROTOCOL_INFOA *lpprotocolinfo, GROUP g, uint32_t dwflags);
+
+/**
+ * @brief Create a socket that is bound to a specific transport-service provider
+ * @note The WSAProtocol_InfoW and GROUP parameters are currently ignored
+ *       The only currently supported flag value is WSA_FLAG_OVERLAPPED
+ * See the Windows Sockets 2 documentation for additional information
+ */
 SOCKET STDCALL WSASocketW(int32_t af, int32_t itype, int32_t protocol, WSAPROTOCOL_INFOW *lpprotocolinfo, GROUP g, uint32_t dwflags);
 
+/**
+ * @brief Wait for one or all of the specified event objects to be in the signaled state or the time-out interval to expire
+ * See the Windows Sockets 2 documentation for additional information
+ */
 uint32_t STDCALL WSAWaitForMultipleEvents(uint32_t cevents, WSAEVENT *lphevents, BOOL fwaitall, uint32_t dwtimeout, BOOL falertable);
+
+/**
+ * @brief Convert all components of a sockaddr structure into a human-readable string representation of the address.
+ * @note Address will be in network byte order where applicable
+ * @note The lpProtocolInfo parameter is currently ignored
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSAAddressToStringA(SOCKADDR *lpsaaddress, uint32_t dwaddresslength, WSAPROTOCOL_INFOA *lpprotocolinfo, char *lpszaddressstring, uint32_t *lpdwaddressstringlength);
+
+/**
+ * @brief Convert all components of a sockaddr structure into a human-readable string representation of the address.
+ * @note Address will be in network byte order where applicable
+ * @note The lpProtocolInfo parameter is currently ignored
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSAAddressToStringW(SOCKADDR *lpsaaddress, uint32_t dwaddresslength, WSAPROTOCOL_INFOW *lpprotocolinfo, WCHAR *lpszaddressstring, uint32_t *lpdwaddressstringlength);
 
+/**
+ * @brief Convert a network address in its standard text presentation form into its numeric binary form in a sockaddr structure
+ * @note Address will be returned in network byte order where applicable
+ * @note The lpProtocolInfo parameter is currently ignored
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSAStringToAddressA(const char *addressstring, int32_t addressfamily, WSAPROTOCOL_INFOA *lpprotocolinfo, SOCKADDR *lpaddress, int32_t *lpaddresslength);
+
+/**
+ * @brief Convert a network address in its standard text presentation form into its numeric binary form in a sockaddr structure
+ * @note Address will be returned in network byte order where applicable
+ * @note The lpProtocolInfo parameter is currently ignored
+ * See the Windows Sockets 2 documentation for additional information
+ */
 int32_t STDCALL WSAStringToAddressW(const WCHAR *addressstring, int32_t addressfamily, WSAPROTOCOL_INFOA *lpprotocolinfo, SOCKADDR *lpaddress, int32_t *lpaddresslength);
 
 /**  Registration and Name Resolution API functions  */
@@ -1371,22 +1783,65 @@ uint16_t STDCALL WSAGetAsyncError(int32_t param);
 uint16_t STDCALL WSAGetSelectEvent(int32_t param);
 uint16_t STDCALL WSAGetSelectError(int32_t param);
 
+/**
+ * @brief Remove a socket from an fd_set
+ * See the Windows Sockets 2 documentation for additional information
+ */
 void STDCALL FD_CLR(SOCKET socket, fd_set *fdset);
+
+/**
+ * @brief Check if a socket is a member of an fd_set
+ * See the Windows Sockets 2 documentation for additional information
+ */
 BOOL STDCALL FD_ISSET(SOCKET socket, fd_set *fdset);
+
+/**
+ * @brief Add a socket to an fd_set
+ * See the Windows Sockets 2 documentation for additional information
+ */
 void STDCALL FD_SET(SOCKET socket, fd_set *fdset);
+
+/**
+ * @brief Initialize an fd_set to null
+ * See the Windows Sockets 2 documentation for additional information
+ */
 void STDCALL FD_ZERO(fd_set *fdset);
 
 /** Winsock2 Undocumented Functions */
 int STDCALL WsControl(uint32_t proto, uint32_t action, void *prequestinfo, uint32_t *pcbrequestinfolen, void *presponseinfo, uint32_t *pcbresponseinfolen);
 
+/**
+ * @brief Retrieve the network information corresponding to a network address
+ * @note Address will be in network byte order where applicable
+ */
 netent * STDCALL getnetbyaddr(void *addr, int len, int type);
+
+/**
+ * @brief Retrieve network address corresponding to a network name
+ */
 netent * STDCALL getnetbyname(const char *name);
 
 /** Winsock2 Enhanced Functions */
 int STDCALL WsControlEx(uint32_t proto, uint32_t action, void *prequestinfo, uint32_t *pcbrequestinfolen, void *presponseinfo, uint32_t *pcbresponseinfolen);
 
 /** Winsock2 Helper Functions */
+
+/**
+ * @brief Redirect standard input to the socket specified by s
+ * @param s The socket to redirect input to (or INVALID_SOCKET to stop redirection)
+ * @return True if completed successfully or False if an error occurred
+ * @note Redirects the input of the text file Input which also
+ *        redirects the input of Read, ReadLn and the standard C library
+ */
 BOOL STDCALL Winsock2RedirectInput(SOCKET s);
+
+/**
+ * @brief Redirect standard output to the socket specified by s
+ * @param s The socket to redirect output to (or INVALID_SOCKET to stop redirection)
+ * @return True if completed successfully or False if an error occurred
+ * @note Redirects the output of the text files Output, ErrOutput, StdOut and StdErr
+ *        which also redirects the output of Write, WriteLn and the standard C library
+ */
 BOOL STDCALL Winsock2RedirectOutput(SOCKET s);
 
 uint32_t STDCALL Winsock2ErrorToString(int32_t error, char *string, uint32_t len);

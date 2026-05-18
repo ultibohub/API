@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -158,32 +158,162 @@ struct _PWM_DEVICE
 };
 
 /** PWM Functions */
+
+/**
+ * @brief Start the specified PWM device
+ * @param PWM The PWM device to start
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL pwm_device_start(PWM_DEVICE *pwm);
+
+/**
+ * @brief Stop the specified PWM device
+ * @param PWM The PWM device to stop
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL pwm_device_stop(PWM_DEVICE *pwm);
 
+/**
+ * @brief Write a value to the specified PWM device
+ * @param PWM The PWM device to write to
+ * @param Value The value to write
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note The exact meaning of value may depend on the device and other configured options,
+ *        in many cases the value will represent the "on" time of each pulse with regard to
+ *        the duty cycle of the waveform output by the device
+ */
 uint32_t STDCALL pwm_device_write(PWM_DEVICE *pwm, uint32_t value);
 
+/**
+ * @brief Get the GPIO pin used by the specified PWM device
+ * @param PWM The PWM device to get the GPIO pin from
+ * @return The current GPIO pin or GPIO_PIN_UNKNOWN on failure
+ */
 uint32_t STDCALL pwm_device_get_gpio(PWM_DEVICE *pwm);
+
+/**
+ * @brief Set the GPIO pin used by the specified PWM device
+ * @param PWM The PWM device to set the GPIO pin for
+ * @param GPIO The GPIO pin to set (eg GPIO_PIN_12)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL pwm_device_set_gpio(PWM_DEVICE *pwm, uint32_t gpio);
+
+/**
+ * @brief Get the current mode of the specified PWM device
+ * @param PWM The PWM device to get the mode from
+ * @return The current mode or a default value of PWM_MODE_MARKSPACE
+ */
 uint32_t STDCALL pwm_device_get_mode(PWM_DEVICE *pwm);
+
+/**
+ * @brief Set the current mode for the specified PWM device
+ * @param PWM The PWM device to set the mode for
+ * @param Mode The mode value to set (eg PWM_MODE_MARKSPACE)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL pwm_device_set_mode(PWM_DEVICE *pwm, uint32_t mode);
+
+/**
+ * @brief Get the current range of the specified PWM device
+ * @param PWM The PWM device to get the range from
+ * @return The current range or 0 on failure
+ */
 uint32_t STDCALL pwm_device_get_range(PWM_DEVICE *pwm);
+
+/**
+ * @brief Set the current range for the specified PWM device
+ * @param PWM The PWM device to set the clock rate for
+ * @param Range The range value to set
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note The exact meaning of range may depend on the device and other configured options,
+ *        in many cases the range will represent the period of one full cycle of the
+ *        waveform output by the device
+ */
 uint32_t STDCALL pwm_device_set_range(PWM_DEVICE *pwm, uint32_t range);
+
+/**
+ * @brief Get the clock frequency of the specified PWM device
+ * @param PWM The PWM device to get the clock frequency from
+ * @return The clock frequency in Hz or 0 on failure
+ */
 uint32_t STDCALL pwm_device_get_frequency(PWM_DEVICE *pwm);
+
+/**
+ * @brief Set the clock frequency for the specified PWM device
+ * @param PWM The PWM device to set the clock frequency for
+ * @param Frequency The clock frequency to set in Hz
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL pwm_device_set_frequency(PWM_DEVICE *pwm, uint32_t frequency);
+
+/**
+ * @brief Get the current polarity of the specified PWM device
+ * @param PWM The PWM device to get the polarity from
+ * @return The current polarity or a default value of PWM_POLARITY_NORMAL
+ */
 uint32_t STDCALL pwm_device_get_polarity(PWM_DEVICE *pwm);
+
+/**
+ * @brief Set the current polarity for the specified PWM device
+ * @param PWM The PWM device to set the polarity for
+ * @param Polarity The polarity value to set (eg PWM_POLARITY_NORMAL)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL pwm_device_set_polarity(PWM_DEVICE *pwm, uint32_t polarity);
 
+/**
+ * @brief Set the configuration of the specified PWM device
+ * @param PWM The PWM device to set the configuration for
+ * @param DutyNS The "on" time part of the cycle (Nanoseconds)
+ * @param PeriodNS The duration of one full cycle (Nanoseconds)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL pwm_device_configure(PWM_DEVICE *pwm, uint32_t dutyns, uint32_t periodns);
 
+/**
+ * @brief Get the properties for the specified PWM device
+ * @param PWM The PWM device to get properties from
+ * @param Properties Pointer to a TPWMProperties structure to fill in
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Replaced by PWMDeviceGetProperties for consistency
+ */
 uint32_t STDCALL pwm_device_properties(PWM_DEVICE *pwm, PWM_PROPERTIES *properties);
+
+/**
+ * @brief Get the properties for the specified PWM device
+ * @param PWM The PWM device to get properties from
+ * @param Properties Pointer to a TPWMProperties structure to fill in
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL pwm_device_get_properties(PWM_DEVICE *pwm, PWM_PROPERTIES *properties);
 
+/**
+ * @brief Create a new PWM entry
+ * @return Pointer to new PWM entry or nil if PWM could not be created
+ */
 PWM_DEVICE * STDCALL pwm_device_create(void);
+
+/**
+ * @brief Create a new PWM entry
+ * @param Size Size in bytes to allocate for new PWM (Including the PWM entry)
+ * @return Pointer to new PWM entry or nil if PWM could not be created
+ */
 PWM_DEVICE * STDCALL pwm_device_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing PWM entry
+ */
 uint32_t STDCALL pwm_device_destroy(PWM_DEVICE *pwm);
 
+/**
+ * @brief Register a new PWM in the PWM table
+ */
 uint32_t STDCALL pwm_device_register(PWM_DEVICE *pwm);
+
+/**
+ * @brief Deregister a PWM from the PWM table
+ */
 uint32_t STDCALL pwm_device_deregister(PWM_DEVICE *pwm);
 
 PWM_DEVICE * STDCALL pwm_device_find(uint32_t pwmid);
@@ -194,15 +324,45 @@ uint32_t STDCALL pwm_device_enumerate(pwm_enumerate_cb callback, void *data);
 uint32_t STDCALL pwm_device_notification(PWM_DEVICE *pwm, pwm_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
 /** PWM Helper Functions */
+
+/**
+ * @brief Get the current PWM count
+ */
 uint32_t STDCALL pwm_get_count(void);
+
+/**
+ * @brief Get the current default PWM device
+ */
 PWM_DEVICE * STDCALL pwm_device_get_default(void);
+
+/**
+ * @brief Set the current default PWM device
+ */
 uint32_t STDCALL pwm_device_set_default(PWM_DEVICE *pwm);
 
+/**
+ * @brief Check if the supplied PWM is in the PWM table
+ */
 PWM_DEVICE * STDCALL pwm_device_check(PWM_DEVICE *pwm);
 
+/**
+ * @brief Convert a PWM type value to a string
+ */
 uint32_t STDCALL pwm_type_to_string(uint32_t pwmtype, char *string, uint32_t len);
+
+/**
+ * @brief Convert a PWM state value to a string
+ */
 uint32_t STDCALL pwm_state_to_string(uint32_t pwmstate, char *string, uint32_t len);
+
+/**
+ * @brief Convert a PWM mode value to a string
+ */
 uint32_t STDCALL pwm_mode_to_string(uint32_t pwmmode, char *string, uint32_t len);
+
+/**
+ * @brief Convert a PWM polarity value to a string
+ */
 uint32_t STDCALL pwm_polarity_to_string(uint32_t pwmpolarity, char *string, uint32_t len);
 
 #ifdef __cplusplus

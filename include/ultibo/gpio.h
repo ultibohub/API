@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -192,59 +192,291 @@ static const GPIO_INFO GPIO_INFO_UNKNOWN = {
   GPIO_TRIGGER_UNKNOWN};
 
 /** GPIO Functions */
+
+/**
+ * @brief Start the specified GPIO device and enable access
+ * @param GPIO The GPIO device to start
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL gpio_device_start(GPIO_DEVICE *gpio);
+
+/**
+ * @brief Stop the specified GPIO device and disable access
+ * @param GPIO The GPIO device to stop
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL gpio_device_stop(GPIO_DEVICE *gpio);
 
+/**
+ * @brief Perform a direct read from a register of the specified GPIO device
+ * @param GPIO The GPIO device to read from
+ * @param Reg The memory register to read from
+ * @return The value of the memory register
+ */
 uint32_t STDCALL gpio_device_read(GPIO_DEVICE *gpio, uint32_t reg);
+
+/**
+ * @brief Perform a direct write to a register of the specified GPIO device
+ * @param GPIO The GPIO device to write to
+ * @param Reg The memory register to write to
+ * @param Value The value to write to the register
+ */
 void STDCALL gpio_device_write(GPIO_DEVICE *gpio, uint32_t reg, uint32_t value);
 
+/**
+ * @brief Get the current state of an input pin on the specified GPIO device
+ * @param GPIO The GPIO device to get from
+ * @param Pin The pin to get the state for (eg GPIO_PIN_1)
+ * @return The current state (eg GPIO_LEVEL_HIGH) or GPIO_LEVEL_UNKNOWN on failure
+ */
 uint32_t STDCALL gpio_device_input_get(GPIO_DEVICE *gpio, uint32_t pin);
+
+/**
+ * @brief Wait for the state of a input pin to change on the specified GPIO device
+ * @param GPIO The GPIO device to wait for
+ * @param Pin The pin to wait for the state to change (eg GPIO_PIN_1)
+ * @param Trigger The trigger event to wait for (eg GPIO_TRIGGER_HIGH)
+ * @param Timeout Number of milliseconds to wait for the change (INFINITE to wait forever)
+ * @return The state after the change (eg GPIO_LEVEL_HIGH) or GPIO_LEVEL_UNKNOWN on failure or timeout
+ */
 uint32_t STDCALL gpio_device_input_wait(GPIO_DEVICE *gpio, uint32_t pin, uint32_t trigger, uint32_t timeout);
+
+/**
+ * @brief Schedule a function to be called when the state of a input pin changes on the specified GPIO device
+ * @param GPIO The GPIO device to schedule the callback for
+ * @param Pin The pin to schedule the state change for (eg GPIO_PIN_1)
+ * @param Trigger The trigger event which will cause the function to be called (eg GPIO_TRIGGER_HIGH)
+ * @param Flags The flags to control the event (eg GPIO_EVENT_FLAG_REPEAT)
+ * @param Timeout The number of milliseconds before the scheduled trigger expires (INFINITE to never expire)
+ * @param Callback The function to be called when the trigger occurs
+ * @param Data A pointer to be pass to the function when the trigger occurs (Optional)
+ * @return ERROR_SUCCESS if the trigger was scheduled successfully or another error code on failure
+ * @note The pin and trigger that caused the event will be passed to the callback function
+ */
 uint32_t STDCALL gpio_device_input_event(GPIO_DEVICE *gpio, uint32_t pin, uint32_t trigger, uint32_t flags, uint32_t timeout, gpio_event_cb callback, void *data);
+
+/**
+ * @brief Cancel a previously scheduled event callback function for an input pin on the specified GPIO device
+ * @param GPIO The GPIO device to cancel the callback for
+ * @param Pin The pin to cancel the state change for (eg GPIO_PIN_1)
+ * @return ERROR_SUCCESS if the callback was cancelled successfully or another error code on failure
+ */
 uint32_t STDCALL gpio_device_input_cancel(GPIO_DEVICE *gpio, uint32_t pin);
 
+/**
+ * @brief Set the state of a output pin on the specified GPIO device
+ * @param GPIO The GPIO device to set for
+ * @param Pin The pin to set the state for (eg GPIO_PIN_1)
+ * @param Level The state to set the pin to (eg GPIO_LEVEL_HIGH)
+ * @return ERROR_SUCCESS if completed successfully or another error code on failure
+ */
 uint32_t STDCALL gpio_device_output_set(GPIO_DEVICE *gpio, uint32_t pin, uint32_t level);
 
+/**
+ * @brief Get the current level (state) of a pin on the specified GPIO device
+ * @param GPIO The GPIO device to get from
+ * @param Pin The pin to get the level for (eg GPIO_PIN_1)
+ * @return The current level (eg GPIO_LEVEL_HIGH) or GPIO_LEVEL_UNKNOWN on failure
+ * @note This function is a synonym for GPIODeviceInputGet as in many cases the
+ *        level can be read from a pin regardless of input or output mode. This
+ *        may help to make code clearer or easier to understand in some cases
+ */
 uint32_t STDCALL gpio_device_level_get(GPIO_DEVICE *gpio, uint32_t pin);
+
+/**
+ * @brief Set the level (state) of a pin on the specified GPIO device
+ * @param GPIO The GPIO device to set for
+ * @param Pin The pin to set the level for (eg GPIO_PIN_1)
+ * @param Level The level to set the pin to (eg GPIO_LEVEL_HIGH)
+ * @return ERROR_SUCCESS if completed successfully or another error code on failure
+ * @note This function is a synonym for GPIODeviceOutputSet as in many cases the
+ *        level can be set for a pin regardless of input or output mode. This
+ *        may help to make code clearer or easier to understand in some cases
+ */
 uint32_t STDCALL gpio_device_level_set(GPIO_DEVICE *gpio, uint32_t pin, uint32_t level);
 
+/**
+ * @brief Get the current pull state of a pin on the specified GPIO device
+ * @param GPIO The GPIO device to get from
+ * @param Pin The pin to get the pull state for (eg GPIO_PIN_1)
+ * @return The current pull state of the pin (eg GPIO_PULL_UP) or GPIO_PULL_UNKNOWN on failure
+ */
 uint32_t STDCALL gpio_device_pull_get(GPIO_DEVICE *gpio, uint32_t pin);
+
+/**
+ * @brief Change the pull state of a pin on the specified GPIO device
+ * @param GPIO The GPIO device to set for
+ * @param Pin The pin to change the pull state for (eg GPIO_PIN_1)
+ * @param Mode The pull state to set for the pin (eg GPIO_PULL_UP)
+ * @return ERROR_SUCCESS if completed successfully or another error code on failure
+ */
 uint32_t STDCALL gpio_device_pull_select(GPIO_DEVICE *gpio, uint32_t pin, uint32_t mode);
 
+/**
+ * @brief Get the current function of a pin on the specified GPIO device
+ * @param GPIO The GPIO device to get from
+ * @param Pin The pin to get the function for (eg GPIO_PIN_1)
+ * @return The current function of the pin (eg GPIO_FUNCTION_IN) or GPIO_FUNCTION_UNKNOWN on failure
+ */
 uint32_t STDCALL gpio_device_function_get(GPIO_DEVICE *gpio, uint32_t pin);
+
+/**
+ * @brief Change the function of a pin on the specified GPIO device
+ * @param GPIO The GPIO device to set for
+ * @param Pin The pin to change the function for (eg GPIO_PIN_1)
+ * @param Mode The function to set for the pin (eg GPIO_FUNCTION_OUT)
+ * @return ERROR_SUCCESS if completed successfully or another error code on failure
+ */
 uint32_t STDCALL gpio_device_function_select(GPIO_DEVICE *gpio, uint32_t pin, uint32_t mode);
 
+/**
+ * @brief Get the properties for the specified GPIO device
+ * @param GPIO The GPIO device to get properties from
+ * @param Properties Pointer to a TGPIOProperties structure to fill in
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note Replaced by GPIODeviceGetProperties for consistency
+ */
 uint32_t STDCALL gpio_device_properties(GPIO_DEVICE *gpio, GPIO_PROPERTIES *properties);
+
+/**
+ * @brief Get the properties for the specified GPIO device
+ * @param GPIO The GPIO device to get properties from
+ * @param Properties Pointer to a TGPIOProperties structure to fill in
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL gpio_device_get_properties(GPIO_DEVICE *gpio, GPIO_PROPERTIES *properties);
 
+/**
+ * @brief Create a new GPIO entry
+ * @return Pointer to new GPIO entry or nil if GPIO could not be created
+ */
 GPIO_DEVICE * STDCALL gpio_device_create(void);
+
+/**
+ * @brief Create a new GPIO entry
+ * @param Size Size in bytes to allocate for new GPIO (Including the GPIO entry)
+ * @return Pointer to new GPIO entry or nil if GPIO could not be created
+ */
 GPIO_DEVICE * STDCALL gpio_device_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing GPIO entry
+ * @param GPIO The GPIO device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL gpio_device_destroy(GPIO_DEVICE *gpio);
 
+/**
+ * @brief Register a new GPIO in the GPIO table
+ * @param GPIO The GPIO device to register
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL gpio_device_register(GPIO_DEVICE *gpio);
+
+/**
+ * @brief Deregister a GPIO from the GPIO table
+ * @param GPIO The GPIO device to deregister
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL gpio_device_deregister(GPIO_DEVICE *gpio);
 
+/**
+ * @brief Find a GPIO device by ID in the GPIO table
+ * @param GPIOId The ID number of the GPIO device to find
+ * @return Pointer to GPIO device entry or nil if not found
+ */
 GPIO_DEVICE * STDCALL gpio_device_find(uint32_t gpioid);
+
+/**
+ * @brief Find a GPIO device by name in the GPIO table
+ * @param Name The name of the GPIO to find (eg GPIO0)
+ * @return Pointer to GPIO device entry or nil if not found
+ */
 GPIO_DEVICE * STDCALL gpio_device_find_by_name(const char *name);
+
+/**
+ * @brief Find a GPIO device by description in the GPIO table
+ * @param Description The description of the GPIO to find (eg BCM2836 GPIO)
+ * @return Pointer to GPIO device entry or nil if not found
+ */
 GPIO_DEVICE * STDCALL gpio_device_find_by_description(const char *description);
+
+/**
+ * @brief Enumerate all GPIO devices in the GPIO table
+ * @param Callback The callback function to call for each GPIO in the table
+ * @param Data A private data pointer to pass to callback for each GPIO in the table
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL gpio_device_enumerate(gpio_enumerate_cb callback, void *data);
 
+/**
+ * @brief Register a notification for GPIO device changes
+ * @param GPIO The GPIO device to notify changes for (Optional, pass nil for all GPIO devices)
+ * @param Callback The function to call when a notification event occurs
+ * @param Data A private data pointer to pass to callback when a notification event occurs
+ * @param Notification The events to register for notification of (eg DEVICE_NOTIFICATION_REGISTER)
+ * @param Flags The flags to control the notification (eg NOTIFIER_FLAG_WORKER)
+ */
 uint32_t STDCALL gpio_device_notification(GPIO_DEVICE *gpio, gpio_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
 /** GPIO Helper Functions */
+
+/**
+ * @brief Get the current GPIO count
+ */
 uint32_t STDCALL gpio_get_count(void);
+
+/**
+ * @brief Get the current default GPIO device
+ */
 GPIO_DEVICE * STDCALL gpio_device_get_default(void);
+
+/**
+ * @brief Set the current default GPIO device
+ */
 uint32_t STDCALL gpio_device_set_default(GPIO_DEVICE *gpio);
 
+/**
+ * @brief Check if the supplied GPIO is in the GPIO table
+ */
 GPIO_DEVICE * STDCALL gpio_device_check(GPIO_DEVICE *gpio);
 
+/**
+ * @brief Convert a GPIO type value to a string
+ */
 uint32_t STDCALL gpio_type_to_string(uint32_t gpiotype, char *string, uint32_t len);
+
+/**
+ * @brief Convert a GPIO state value to a string
+ */
 uint32_t STDCALL gpio_state_to_string(uint32_t gpiostate, char *string, uint32_t len);
 
+/**
+ * @brief Create a new event using the supplied parameters
+ * @note Event must be registered by calling GPIODeviceRegisterEvent
+ * @note Caller must hold the GPIO device lock
+ */
 GPIO_EVENT * STDCALL gpio_device_create_event(GPIO_DEVICE *gpio, GPIO_PIN *pin, gpio_event_cb callback, void *data, uint32_t timeout);
+
+/**
+ * @brief Destroy an existing event
+ * @note Event must be deregistered first by calling GPIODeviceDeregisterEvent
+ * @note Caller must hold the GPIO device lock
+ */
 uint32_t STDCALL gpio_device_destroy_event(GPIO_DEVICE *gpio, GPIO_EVENT *event);
 
+/**
+ * @brief Register an event in the event list of the supplied Pin
+ * @note Event must be created by calling GPIODeviceCreateEvent
+ * @note Caller must hold the GPIO device lock
+ */
 uint32_t STDCALL gpio_device_register_event(GPIO_DEVICE *gpio, GPIO_PIN *pin, GPIO_EVENT *event);
+
+/**
+ * @brief Deregister an event from the event list of the supplied Pin
+ * @note Event must be destroyed by calling GPIODeviceDestroyEvent
+ * @note Caller must hold the GPIO device lock
+ */
 uint32_t STDCALL gpio_device_deregister_event(GPIO_DEVICE *gpio, GPIO_PIN *pin, GPIO_EVENT *event);
 
 uint32_t STDCALL gpio_pin_to_string(uint32_t pin, char *string, uint32_t len);

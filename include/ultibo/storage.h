@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -140,19 +140,64 @@ uint32_t STDCALL storage_device_write(STORAGE_DEVICE *storage, int64_t start, in
 uint32_t STDCALL storage_device_erase(STORAGE_DEVICE *storage, int64_t start, int64_t count);
 uint32_t STDCALL storage_device_control(STORAGE_DEVICE *storage, int request, size_t argument1, size_t *argument2);
 
+/**
+ * @brief Set the state of the specified storage and send a notification
+ * @param Storage The storage to set the state for
+ * @param State The new state to set and notify
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL storage_device_set_state(STORAGE_DEVICE *storage, uint32_t state);
 
+/**
+ * @brief Start status monitoring on the specified storage for insert/eject notifications
+ * @param Storage The storage to start status monitoring for
+ * @param Interval The status monitoring interval in milliseconds
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL storage_device_start_status(STORAGE_DEVICE *storage, uint32_t interval);
+
+/**
+ * @brief Stop status monitoring on the specified storage for insert/eject notifications
+ * @param Storage The storage to stop status monitoring for
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL storage_device_stop_status(STORAGE_DEVICE *storage);
 
+/**
+ * @brief Create a new Storage entry
+ * @return Pointer to new Storage entry or nil if storage could not be created
+ */
 STORAGE_DEVICE * STDCALL storage_device_create(void);
+
+/**
+ * @brief Create a new Storage entry
+ * @param Size Size in bytes to allocate for new storage (Including the storage entry)
+ * @return Pointer to new Storage entry or nil if storage could not be created
+ */
 STORAGE_DEVICE * STDCALL storage_device_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing Storage entry
+ */
 uint32_t STDCALL storage_device_destroy(STORAGE_DEVICE *storage);
 
+/**
+ * @brief Register a new Storage in the Storage table
+ */
 uint32_t STDCALL storage_device_register(STORAGE_DEVICE *storage);
+
+/**
+ * @brief Deregister a Storage from the Storage table
+ */
 uint32_t STDCALL storage_device_deregister(STORAGE_DEVICE *storage);
 
 STORAGE_DEVICE * STDCALL storage_device_find(uint32_t storageid);
+
+/**
+ * @brief Find a Storage device by the matching DeviceData property
+ * @param Device The device entry to match with the DeviceData value
+ * @return The Storage device matched or nil if none found
+ */
 STORAGE_DEVICE * STDCALL storage_device_find_by_device(DEVICE *device);
 STORAGE_DEVICE * STDCALL storage_device_find_by_name(const char *name);
 STORAGE_DEVICE * STDCALL storage_device_find_by_description(const char *description);
@@ -161,13 +206,23 @@ uint32_t STDCALL storage_device_enumerate(storage_enumerate_cb callback, void *d
 uint32_t STDCALL storage_device_notification(STORAGE_DEVICE *storage, storage_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
 /** Storage Helper Functions */
+
+/**
+ * @brief Get the current storage count
+ */
 uint32_t STDCALL storage_get_count(void);
 
+/**
+ * @brief Check if the supplied Storage is in the storage table
+ */
 STORAGE_DEVICE * STDCALL storage_device_check(STORAGE_DEVICE *storage);
 
 uint32_t STDCALL storage_device_type_to_string(uint32_t storagetype, char *string, uint32_t len);
 uint32_t STDCALL storage_device_state_to_string(uint32_t storagestate, char *string, uint32_t len);
 
+/**
+ * @brief Convert a Storage state value into the notification code for device notifications
+ */
 uint32_t STDCALL storage_device_state_to_notification(uint32_t state);
 
 #ifdef __cplusplus

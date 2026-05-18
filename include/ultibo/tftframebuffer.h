@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -81,12 +81,36 @@ struct _TFT_FRAMEBUFFER
 };
 
 /** TFTFramebuffer Functions */
+
+/**
+ * @brief Implementation of FramebufferDeviceAllocate API for TFT Framebuffer
+ * @note Not intended to be called directly by applications, use FramebufferDeviceAllocate instead
+ */
 uint32_t STDCALL tft_framebuffer_allocate(FRAMEBUFFER_DEVICE *framebuffer, FRAMEBUFFER_PROPERTIES *properties);
+
+/**
+ * @brief Implementation of FramebufferDeviceRelease API for TFT Framebuffer
+ * @note Not intended to be called directly by applications, use FramebufferDeviceRelease instead
+ */
 uint32_t STDCALL tft_framebuffer_release(FRAMEBUFFER_DEVICE *framebuffer);
 
+/**
+ * @brief Implementation of FramebufferDeviceMark API for TFT Framebuffer
+ * @note Not intended to be called directly by applications, use FramebufferDeviceMark instead
+ * @note Marks full lines only, X and Width are ignored for TFT Framebuffer
+ */
 uint32_t STDCALL tft_framebuffer_mark(FRAMEBUFFER_DEVICE *framebuffer, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t flags);
+
+/**
+ * @brief Implementation of FramebufferDeviceCommit API for TFT Framebuffer
+ * @note Not intended to be called directly by applications, use FramebufferDeviceCommit instead
+ */
 uint32_t STDCALL tft_framebuffer_commit(FRAMEBUFFER_DEVICE *framebuffer, size_t address, uint32_t size, uint32_t flags);
 
+/**
+ * @brief Timer function for display dirty region redraw
+ * @note Not intended to be called directly by applications
+ */
 void STDCALL tft_framebuffer_update_display(TFT_FRAMEBUFFER *framebuffer);
 
 /** TFTFramebuffer Helper Functions */

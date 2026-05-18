@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,30 +37,30 @@ extern "C" {
 /** RTL Heap Manager Types */
 typedef struct _FPC_HEAP_STATUS
 {
-	size_t maxheapsize;
-	size_t maxheapused;
-	size_t currheapsize;
-	size_t currheapused;
-	size_t currheapfree;
+	size_t maxheapsize; ///< Maximum allowed size for the heap, in bytes
+	size_t maxheapused; ///< Maximum used size for the heap, in bytes
+	size_t currheapsize; ///< Current heap size, in bytes
+	size_t currheapused; ///< Currently used heap size, in bytes
+	size_t currheapfree; ///< Currently free memory on heap, in bytes
 } FPC_HEAP_STATUS;
 
 typedef struct _HEAP_STATUS
 {
-	uint32_t totaladdrspace;
-	uint32_t totaluncommitted;
-	uint32_t totalcommitted;
-	uint32_t totalallocated;
-	uint32_t totalfree;
-	uint32_t freesmall;
-	uint32_t freebig;
-	uint32_t unused;
-	uint32_t overhead;
-	uint32_t heaperrorcode;
+	uint32_t totaladdrspace; ///< Total amount of available addressable memory
+	uint32_t totaluncommitted; ///< Total amount of uncommitted memory
+	uint32_t totalcommitted; ///< Total amount of committed memory
+	uint32_t totalallocated; ///< Total amount of allocated memory
+	uint32_t totalfree; ///< Total amount of free memory
+	uint32_t freesmall; ///< Total amount of free small memory blocks
+	uint32_t freebig; ///< Total amount of free large memory blocks
+	uint32_t unused; ///< Total amount of free process memory
+	uint32_t overhead; ///< Total bytes of overhead by memory manager
+	uint32_t heaperrorcode; ///< Last error code
 } HEAP_STATUS;
 
 /** RTL Thread Manager Types */
-typedef ssize_t STDCALL (*thread_func)(void * parameter);
-typedef HANDLE THREAD_ID;
+typedef ssize_t STDCALL (*thread_func)(void * parameter); ///< Thread function prototype
+typedef HANDLE THREAD_ID; ///< Type for Thread-IDs
 
 typedef struct _THREAD_INFO
 {

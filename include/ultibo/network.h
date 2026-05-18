@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -668,6 +668,9 @@ static const HARDWARE_ADDRESS ETHERNET_MULTICAST = {0x01,0x00,0x5E,0x00,0x00,0x0
 uint32_t STDCALL network_start(void);
 uint32_t STDCALL network_stop(void);
 
+/**
+ * @brief Returns True if the network sub system has been started
+ */
 BOOL STDCALL network_start_completed(void);
 
 /** Network Functions */
@@ -677,19 +680,81 @@ uint32_t STDCALL network_device_read(NETWORK_DEVICE *network, void *buffer, uint
 uint32_t STDCALL network_device_write(NETWORK_DEVICE *network, void *buffer, uint32_t size, uint32_t *length);
 uint32_t STDCALL network_device_control(NETWORK_DEVICE *network, int request, size_t argument1, size_t *argument2);
 
+/**
+ * @brief Allocate a transmit buffer from the specified network device, the returned entry will
+ *  include a buffer for writing data to as well as an offset value to allow the driver
+ *  data to be written to the start of the buffer.
+ *
+ *  When the data has been copied to the buffer, pass the entry to NetworkBufferTransmit
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL network_buffer_allocate(NETWORK_DEVICE *network, NETWORK_ENTRY *entry);
+
+/**
+ * @brief Release a receive buffer to the specified network device, the entry must have been
+ *  returned from NetworkBufferReceive
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL network_buffer_release(NETWORK_DEVICE *network, NETWORK_ENTRY *entry);
+
+/**
+ * @brief Receive a completed receive buffer from the specified network device. The returned
+ *  entry will contain a one or more packets of data to read from.
+ *
+ *  When the data has been processed pass the returned buffer to NetworkBufferRelease
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL network_buffer_receive(NETWORK_DEVICE *network, NETWORK_ENTRY *entry);
+
+/**
+ * @brief Transmit a completed transmit buffer to the specified network device. The entry
+ *  must have been allocated using NetworkBufferAllocate
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL network_buffer_transmit(NETWORK_DEVICE *network, NETWORK_ENTRY *entry);
 
+/**
+ * @brief Set the state of the specified network and send a notification
+ * @param Network The network to set the state for
+ * @param State The new state to set and notify
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL network_device_set_state(NETWORK_DEVICE *network, uint32_t state);
+
+/**
+ * @brief Set the status of the specified network and send a notification
+ * @param Network The network to set the status for
+ * @param Status The new status to set and notify
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL network_device_set_status(NETWORK_DEVICE *network, uint32_t status);
 
+/**
+ * @brief Create a new Network entry
+ * @return Pointer to new Network entry or nil if network could not be created
+ */
 NETWORK_DEVICE * STDCALL network_device_create(void);
+
+/**
+ * @brief Create a new Network entry
+ * @param Size Size in bytes to allocate for new network (Including the network entry)
+ * @return Pointer to new Network entry or nil if network could not be created
+ */
 NETWORK_DEVICE * STDCALL network_device_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing Network entry
+ */
 uint32_t STDCALL network_device_destroy(NETWORK_DEVICE *network);
 
+/**
+ * @brief Register a new Network in the Network table
+ */
 uint32_t STDCALL network_device_register(NETWORK_DEVICE *network);
+
+/**
+ * @brief Deregister a Network from the Network table
+ */
 uint32_t STDCALL network_device_deregister(NETWORK_DEVICE *network);
 
 NETWORK_DEVICE * STDCALL network_device_find(uint32_t networkid);
@@ -699,29 +764,68 @@ uint32_t STDCALL network_device_enumerate(network_enumerate_cb callback, void *d
 
 uint32_t STDCALL network_device_notification(NETWORK_DEVICE *network, network_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
+/**
+ * @brief Create and Register a new Event entry in the Event table
+ */
 NETWORK_EVENT * STDCALL network_event_allocate(network_event_callback_cb callback, void *data, uint32_t event);
+
+/**
+ * @brief Deregister and Destroy an Event from the Event table
+ */
 uint32_t STDCALL network_event_release(NETWORK_EVENT *event);
 
+/**
+ * @brief Register a callback for one or more network events
+ */
 HANDLE STDCALL network_event_register(network_event_callback_cb callback, void *data, uint32_t event);
+
+/**
+ * @brief Deregister a network event callback
+ */
 uint32_t STDCALL network_event_deregister(HANDLE handle);
 
 uint32_t STDCALL network_event_notify(uint32_t event);
 
 /** Network Helper Functions */
+
+/**
+ * @brief Get the last network error value for the current Thread
+ * @return Last Network Error or ERROR_SUCCESS if no error
+ */
 int32_t STDCALL network_get_last_error(void);
+
+/**
+ * @brief Set the last network error value for the current Thread
+ */
 void STDCALL network_set_last_error(int32_t error);
 
+/**
+ * @brief Get the current network count
+ */
 uint32_t STDCALL network_get_count(void);
 
+/**
+ * @brief Check if the supplied Network is in the network table
+ */
 NETWORK_DEVICE * STDCALL network_device_check(NETWORK_DEVICE *network);
 
 uint32_t STDCALL network_device_type_to_string(uint32_t networktype, char *string, uint32_t len);
 uint32_t STDCALL network_device_state_to_string(uint32_t networkstate, char *string, uint32_t len);
 uint32_t STDCALL network_device_status_to_string(uint32_t networkstatus, char *string, uint32_t len);
 
+/**
+ * @brief Convert a Network state value into the notification code for device notifications
+ */
 uint32_t STDCALL network_device_state_to_notification(uint32_t state);
+
+/**
+ * @brief Convert a Network status value into the notification code for device notifications
+ */
 uint32_t STDCALL network_device_status_to_notification(uint32_t status);
 
+/**
+ * @brief Check if the supplied Event is in the event table
+ */
 NETWORK_EVENT * STDCALL network_event_check(NETWORK_EVENT *event);
 
 uint32_t STDCALL hardware_address_to_string(HARDWARE_ADDRESS *address, char *separator, char *string, uint32_t len);

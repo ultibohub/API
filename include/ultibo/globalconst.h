@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -929,8 +929,8 @@ extern "C" {
 #define SIZE_1G	0x40000000
 #define SIZE_2G	0x80000000
 
-#define SIZE_4G	0x100000000;
-#define SIZE_8G	0x200000000;
+#define SIZE_4G	0x100000000
+#define SIZE_8G	0x200000000
 
 /** Universal frequency constants */
 #define FREQUENCY_KHZ	1000
@@ -953,8 +953,10 @@ extern "C" {
 #define MILLISECONDS_PER_SECOND	1000
 #define MICROSECONDS_PER_SECOND	1000000
 #define NANOSECONDS_PER_SECOND	1000000000
+#define MILLISECONDS_PER_DAY	86400000 ///< 60*60*24*1000
+#define SECONDS_PER_DAY	86400 ///< 60*60*24
 
-/** Ultibo time constants (100 nanosecond ticks since 1/1/1601) */
+/** Ultibo time constants (100 nanosecond ticks since 1 January 1601) */
 /** Note: Nanoseconds is 10^9 so 100 nanosecond ticks is 10^7 */
 #define TIME_TICKS_PER_MICROSECOND	10 ///< 10^7 / 10^6
 #define TIME_TICKS_PER_MILLISECOND	10000 ///< 10^7 / 10^3
@@ -963,22 +965,22 @@ extern "C" {
 #define TIME_TICKS_PER_HOUR	36000000000 ///< 60 * 60 * 10^7
 #define TIME_TICKS_PER_DAY	864000000000 ///< 24 * 60 * 60 * 10^7
 
-#define TIME_TICKS_TO_1899	94353120000000000 ///< Offset between 1/1/1601 (Ultibo) and 30/12/1899 (FreePascal)
-#define TIME_TICKS_TO_1970	116444736000000000 ///< Offset between 1/1/1601 (Ultibo) and 1/1/1970 (Unix/Linux)
-#define TIME_TICKS_TO_1980	119600064000000000 ///< Offset between 1/1/1601 (Ultibo) and 1/1/1980 (DOS)
-#define TIME_TICKS_TO_2001	126227808000000000 ///< Offset between 1/1/1601 (Ultibo) and 1/1/2001 (Clock is assumed not set if time is less than this)
+#define TIME_TICKS_TO_1899	94353120000000000 ///< Offset between 1 January 1601 (Ultibo) and 30 December 1899 (FreePascal)
+#define TIME_TICKS_TO_1970	116444736000000000 ///< Offset between 1 January 1601 (Ultibo) and 1 January 1970 (Unix/Linux)
+#define TIME_TICKS_TO_1980	119600064000000000 ///< Offset between 1 January 1601 (Ultibo) and 1 January 1980 (DOS)
+#define TIME_TICKS_TO_2001	126227808000000000 ///< Offset between 1 January 1601 (Ultibo) and 1 January 2001 (Clock is assumed not set if time is less than this)
 
 #define TIME_TICKS_PER_10MILLISECONDS	100000 ///< 10^7 / 10^2
 
-/** Unix/Linux time constants (Seconds since 1/1/1970) */
+/** Unix/Linux time constants (Seconds since 1 January 1970) */
 #define UNIX_TIME_MILLISECONDS_PER_DAY	86400000 ///< 60*60*24*1000;
 #define UNIX_TIME_SECONDS_PER_DAY	86400 ///< 60*60*24;
 #define UNIX_TIME_DAYS_TO_1970	25569.0 ///< Offset between 1899 (FreePascal) and 1970 (Unix/Linux)
 
-/** FreePascal time constants (TDateTime starts at 30/12/1899) */
+/** FreePascal time constants (TDateTime starts at 30 December 1899) */
 #define PASCAL_TIME_MILLISECONDS_PER_DAY	86400000 ///< 60*60*24*1000;
 #define PASCAL_TIME_SECONDS_PER_DAY	86400 ///< 60*60*24;
-#define PASCAL_TIME_DOS_TIME_START	2162688 ///< DOS date time value for start of DOS time (1/1/1980)
+#define PASCAL_TIME_DOS_TIME_START	2162688 ///< DOS date time value for start of DOS time (1 January 1980)
 
 #define PASCAL_DAY_OFFSET	1.0 ///< TDateTime value 1 day
 #define PASCAL_MINUTE_OFFSET	0.000694444444444444 ///< TDateTime value of 1 minute
@@ -993,7 +995,7 @@ extern "C" {
 #define MACHINE_TYPE_BCM2709	2 ///< Broadcom BCM2709 (Raspberry Pi 2)
 #define MACHINE_TYPE_BCM2710	3 ///< Broadcom BCM2710 (Raspberry Pi 3)
 #define MACHINE_TYPE_VERSATILEPB	4 ///< ARM Versatile PB (QEMU)
-#define MACHINE_TYPE_BCM2711    5 ///< Broadcom BCM2711 (Raspberry Pi 4)
+#define MACHINE_TYPE_BCM2711	5 ///< Broadcom BCM2711 (Raspberry Pi 4)
 
 /** Board Type constants */
 #define BOARD_TYPE_UNKNOWN	0
@@ -1232,7 +1234,7 @@ extern "C" {
 #define GPU_TYPE_MALI450	3 ///< ARM Mali 450
 #define GPU_TYPE_GC880	4 ///< Vivante GC880
 #define GPU_TYPE_GC2000	5 ///< Vivante GC2000
-#define GPU_TYPE_VC6    6 ///< Broadcom VideoCore VI
+#define GPU_TYPE_VC6	6 ///< Broadcom VideoCore VI
 
 /** GPU State constants */
 #define GPU_STATE_NONE	(0 << 0)
@@ -1301,6 +1303,7 @@ extern "C" {
 #define DMA_DREQ_ID_EMMC0	DMA_DREQ_ID_MMC
 #define DMA_DREQ_ID_EMMC1	DMA_DREQ_ID_SDHOST
 #define DMA_DREQ_ID_EMMC2	35
+#define DMA_DREQ_ID_SMI	36
 
 /** GPIO Pin constants */
 #define GPIO_PIN_0	0
@@ -1707,7 +1710,7 @@ extern "C" {
 #define LOGGING_FACILITY_CODEC	35 ///< Codec log messages
 #define LOGGING_FACILITY_NFS	36 ///< NFS log messages
 #define LOGGING_FACILITY_RPC	37 ///< RPC log messages
-#define LOGGING_FACILITY_PCI    38 ///< PCI log messages
+#define LOGGING_FACILITY_PCI	38 ///< PCI log messages
 #define LOGGING_FACILITY_VIRTIO	39 ///< VIRTIO log messages
 #define LOGGING_FACILITY_BLUETOOTH	40 ///< Bluetooth log messages
 #define LOGGING_FACILITY_JOYSTICK	41 ///< Joystick log messages

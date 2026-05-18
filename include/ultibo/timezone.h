@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -102,6 +102,10 @@ struct _TIMEZONE_ENTRY
 };
 
 /** Timezone Functions */
+
+/**
+ * @brief Add a Timezone from a timezone data block and to the Timezone table
+ */
 uint32_t STDCALL timezone_add(TIMEZONE_DATA *data, BOOL _default);
 uint32_t STDCALL timezone_delete(TIMEZONE_ENTRY *timezone);
 
@@ -109,9 +113,35 @@ uint32_t STDCALL timezone_get_name(TIMEZONE_ENTRY *timezone, char *name, uint32_
 uint32_t STDCALL timezone_get_description(TIMEZONE_ENTRY *timezone, char *description, uint32_t len);
 
 int32_t STDCALL timezone_get_bias(TIMEZONE_ENTRY *timezone);
+
+/**
+ * @brief Get the state of the supplied Timezone at the current date and time
+ * @param Timezone The timezone entry to get the state for
+ * @return The TIME_ZONE_ID_* constant representing the standard / daylight state of the timezone
+ */
 uint32_t STDCALL timezone_get_state(TIMEZONE_ENTRY *timezone);
+
+/**
+ * @brief Get the state of the supplied Timezone at the specified date and time
+ * @param Timezone The timezone entry to get the state for
+ * @param DateTime The date and time to get the state of the timezone at (Assumed to be Local)
+ * @return The TIME_ZONE_ID_* constant representing the standard / daylight state of the timezone
+ */
 uint32_t STDCALL timezone_get_state_ex(TIMEZONE_ENTRY *timezone, double_t datetime);
+
+/**
+ * @brief Get the bias (offset between UTC and Local) of the supplied Timezone at the current date and time
+ * @param Timezone The timezone entry to get the bias for
+ * @return The bias in minutes offset between UTC and Local including any daylight bias if active
+ */
 int32_t STDCALL timezone_get_active_bias(TIMEZONE_ENTRY *timezone);
+
+/**
+ * @brief Get the bias (offset between UTC and Local) of the supplied Timezone at the specified date and time
+ * @param Timezone The timezone entry to get the bias for
+ * @param DateTime The date and time to get the bias of the timezone at (Assumed to be Local)
+ * @return The bias in minutes offset between UTC and Local
+ */
 int32_t STDCALL timezone_get_active_bias_ex(TIMEZONE_ENTRY *timezone, double_t datetime);
 
 uint32_t STDCALL timezone_get_standard_name(TIMEZONE_ENTRY *timezone, char *name, uint32_t len);
@@ -131,18 +161,52 @@ TIMEZONE_ENTRY * STDCALL timezone_find_by_daylight(const char *daylightname);
 uint32_t STDCALL timezone_enumerate(timezone_enumerate_cb callback, void *data);
 
 /** Timezone Helper Functions */
+
+/**
+ * @brief Get the current timezone count
+ */
 uint32_t STDCALL timezone_get_count(void);
+
+/**
+ * @brief Get the current default timezone
+ */
 TIMEZONE_ENTRY * STDCALL timezone_get_default(void);
+
+/**
+ * @brief Set the current default timezone
+ */
 uint32_t STDCALL timezone_set_default(TIMEZONE_ENTRY *timezone);
 
+/**
+ * @brief Check if the supplied Timezone is in the Timezone table
+ */
 TIMEZONE_ENTRY * STDCALL timezone_check(TIMEZONE_ENTRY *timezone);
 
 uint32_t STDCALL timezone_update_offset(void);
+
+/**
+ * @brief Update the TZ environment variable to represent the current timezone
+ * @see https://www.gnu.org/software/libc/manual/html_node/TZ-Variable.html
+ */
 uint32_t STDCALL timezone_update_environment(void);
 
+/**
+ * @brief Calculate the Timezone Offset at the given date and time in the current timezone
+ * @param DateTime The date and time to calculate the offset for (Assumed to be Local)
+ * @param Offset The returned Offset in minutes
+ * @param Daylight True on return if daylight savings is in effect at the specified date and time
+ * @return ERROR_SUCCESS if the offset was calculated or another error code on failure
+ */
 uint32_t STDCALL timezone_calculate_offset(double_t datetime, int32_t *offset, BOOL *daylight);
 
+/**
+ * @brief Calculate the start date and time from the start date of a timezone
+ */
 double_t STDCALL timezone_start_to_date_time(SYSTEMTIME *start, uint16_t year);
+
+/**
+ * @brief Get the description of the start date of a timezone
+ */
 uint32_t STDCALL timezone_start_to_description(SYSTEMTIME *start, char *description, uint32_t len);
 
 #ifdef __cplusplus

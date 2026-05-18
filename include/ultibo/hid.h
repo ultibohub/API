@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -803,132 +803,661 @@ struct _HID_DEFINITION
 };
 
 /** HID Functions */
+
+/**
+ * @brief Parse the HID report descriptor of the provided device and populate the collections, reports and usages
+ * @param Device The HID device to parse collections for
+ * @param Collections A pointer to the top level collections array to be populated
+ * @param Count A variable to return the number of top level collections
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_parser_parse_collections(HID_DEVICE *device, HID_COLLECTION **collections, uint32_t *count);
+
+/**
+ * @brief Free the collections, reports and usages parsed from a HID report descriptor
+ * @param Collections A pointer to the top level collections array to be freed
+ * @param Count The number of top level collections in the array
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_parser_free_collections(HID_COLLECTION *collections, uint32_t count);
 
+/**
+ * @brief Count the number of collections found in the HID report descriptor of the provided device
+ * @param Device The HID device to count collections for
+ * @param Parent The parent HID collection, if supplied count child collections else count top level collections
+ * @return The number of collections found, 0 if none for or on error
+ */
 uint32_t STDCALL hid_parser_count_collections(HID_DEVICE *device, HID_COLLECTION *parent);
+
+/**
+ * @brief Count the number of reports found in the HID report descriptor of the supplied device and collection
+ * @param Device The HID device to count reports for
+ * @param Collection The HID collection to count reports for
+ * @return The number of reports found, 0 if none for or on error
+ */
 uint32_t STDCALL hid_parser_count_reports(HID_DEVICE *device, HID_COLLECTION *collection);
+
+/**
+ * @brief Count the number of usages found in the HID report descriptor for the supplied device and report
+ * @param Device The HID device to count usages for
+ * @param Report The HID report to count usages for
+ * @return The number of usages found, 0 if none for or on error
+ */
 uint32_t STDCALL hid_parser_count_usages(HID_DEVICE *device, HID_REPORT *report);
 
+/**
+ * @brief Allocate a HID collection to contain a set of reports and usages from a HID report descriptor
+ * @param Device The HID device containing the collection
+ * @param Parent The HID collection containing the collection (or nil for a top level collection)
+ * @param State The current HID parser state
+ * @param Flags The flags for the collection from the HID report descriptor
+ * @param Start The starting byte offset of the collection in the HID report descriptor
+ * @return A pointer to the HID collection or nil on error
+ */
 HID_COLLECTION * STDCALL hid_parser_allocate_collection(HID_DEVICE *device, HID_COLLECTION *parent, HID_STATE *state, uint32_t flags, uint32_t start);
+
+/**
+ * @brief Allocate a HID report to contain a set of usages from a HID report descriptor
+ * @param Device The HID device containing the report
+ * @param Collection The HID collection containing the report
+ * @param State The current HID parser state
+ * @param Kind The report kind (eg HID_REPORT_INPUT)
+ * @param Flags The flags for the report from the HID report descriptor
+ * @param Index The index of this report in the collection (First report is 0)
+ * @param Sequence The sequence of this report in all collections (First report is 0)
+ * @return A pointer to the HID report or nil on error
+ */
 HID_REPORT * STDCALL hid_parser_allocate_report(HID_DEVICE *device, HID_COLLECTION *collection, HID_STATE *state, uint8_t kind, uint32_t flags, uint32_t index, uint32_t sequence);
+
+/**
+ * @brief Allocate a HID usage from a HID report descriptor
+ * @param Device The HID device containing the usage
+ * @param Report The HID report containing the usage
+ * @param State The current HID parser state
+ * @param Index The index of this usage in the report (First usage is 0)
+ * @return A pointer to the HID usage or nil on error
+ */
 HID_USAGE * STDCALL hid_parser_allocate_usage(HID_DEVICE *device, HID_REPORT *report, HID_STATE *state, uint32_t index);
+
+/**
+ * @brief Update a HID usage from a HID report descriptor
+ * @param Device The HID device containing the usage
+ * @param Report The HID report containing the usage
+ * @param State The current HID parser state
+ * @param Usage The HID usage to update
+ * @return True if completed or False on error
+ * @note As usages must precede the main item they relate to in the HID report descriptor they need to be allocated
+ *       before all the required information is known, this function updates the usage after the main item is found
+ */
 BOOL STDCALL hid_parser_update_usage(HID_DEVICE *device, HID_REPORT *report, HID_STATE *state, HID_USAGE *usage);
+
+/**
+ * @brief Free a HID usage and any associated usage aliases
+ * @param Device The HID device containing the usage
+ * @param Usage The HID usage to free
+ * @return True if completed or False on error
+ */
 BOOL STDCALL hid_parser_free_usage(HID_DEVICE *device, HID_USAGE *usage);
 
+/**
+ * @brief Replace the current HID parser state with the top item from the parser stack
+ * @param Stack The HID parser stack
+ * @param State The HID parser state to replace
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_parser_pop_stack(HID_STACK *stack, HID_STATE *state);
+
+/**
+ * @brief Place a copy of the current HID parser state on top of the parser stack
+ * @param Stack The HID parser stack
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_parser_push_stack(HID_STACK *stack);
+
+/**
+ * @brief Free the HID parser stack and state
+ * @param Stack The HID parser stack
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_parser_free_stack(HID_STACK *stack);
 
+/**
+ * @brief Clear the Local and Global HID parser state
+ * @param State The HID parser state to reset
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_parser_reset_state(HID_STATE *state);
+
+/**
+ * @brief Clear the Local HID parser state
+ * @param State The HID parser state to clean
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_parser_clean_state(HID_STATE *state);
 
+/**
+ * @brief Find the first HID collection matching the specified page and usage
+ * @param Device The HID device to find collections from
+ * @param Page The HID Usage Page to match (eg HID_PAGE_GENERIC_DESKTOP)
+ * @param Usage The HID Usage to match (eg HID_DESKTOP_MOUSE)
+ * @return A pointer to the first matching collection or nil if not matched
+ */
 HID_COLLECTION * STDCALL hid_find_collection(HID_DEVICE *device, uint16_t page, uint16_t usage);
 
+/**
+ * @brief Find the minimum and maximum report ids contained in the specified HID collection or all collections
+ * @param Device The HID device to find report ids from
+ * @param Collection The HID collection to find report ids from (or nil to find from all collections)
+ * @param MinId A variable to receive the minimum report id number
+ * @param MaxId A variable to receive the maximum report id number
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_find_report_ids(HID_DEVICE *device, HID_COLLECTION *collection, uint8_t *minid, uint8_t *maxid);
+
+/**
+ * @brief Find the minimum and maximum report sizes contained in the specified HID collection or all collections
+ * @param Device The HID device to find report sizes from
+ * @param Collection The HID collection to find report sizes from (or nil to find from all collections)
+ * @param Kind The report kind to find sizes for (eg HID_REPORT_INPUT)
+ * @param MinSize A variable to receive the minimum report size
+ * @param MaxSize A variable to receive the maximum report size
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_find_report_sizes(HID_DEVICE *device, HID_COLLECTION *collection, uint8_t kind, uint32_t *minsize, uint32_t *maxsize);
 
+/**
+ * @brief Count the number of HID reports of the specified type and id in the specified collection
+ * @param Device The HID device to get the report count from
+ * @param Collection The HID collection to get the report count from
+ * @param Kind The report kind to count reports for (eg HID_REPORT_INPUT)
+ * @param Id The report id to count reports for (must be less than or equal to the maximum report id)
+ * @param Count A variable to return the number of reports
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_count_reports(HID_DEVICE *device, HID_COLLECTION *collection, uint8_t kind, uint8_t id, uint32_t *count);
+
+/**
+ * @brief Find all HID reports of the specified type and id in the specified collection
+ * @param Device The HID device to get the reports from
+ * @param Collection The HID collection to get the reports from
+ * @param Kind The report kind to get reports for (eg HID_REPORT_INPUT)
+ * @param Id The report id to get reports for (must be less than or equal to the maximum report id)
+ * @param Reports A pointer to an array to return the list of reports
+ * @param Count The number of reports able to be returned in the reports array
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note The caller is responsible for allocating the reports array which must be large enough
+ *       to hold a pointer to every report in the returned list
+ *       When finished the array should be freed by the caller but not the reports themselves
+ *       Call HIDCountReports first to obtain the correct size to be allocated for the array
+ */
 uint32_t STDCALL hid_find_reports(HID_DEVICE *device, HID_COLLECTION *collection, uint8_t kind, uint8_t id, HID_REPORT *reports, uint32_t count);
 
+/**
+ * @brief Allocate a HID definition to describe an input, output or feature report contained in the specified collection
+ * @param Device The HID device to create the report definition from
+ * @param Collection The HID collection to create the report definition from
+ * @param Kind The report kind to create a definition for (eg HID_REPORT_INPUT)
+ * @param Id The report id to create a definition for (must be less than or equal to the maximum report id)
+ * @return A pointer to the allocated definition or nil on error
+ */
 HID_DEFINITION * STDCALL hid_allocate_definition(HID_DEVICE *device, HID_COLLECTION *collection, uint8_t kind, uint8_t id);
+
+/**
+ * @brief Free a HID definition describing an input, output or feature report
+ * @param Definition The HID definition to be freed
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_free_definition(HID_DEFINITION *definition);
 
+/**
+ * @brief Insert a bit field value into a report buffer
+ * @param Field The field to insert into the report
+ * @param Buffer A pointer to the report buffer
+ * @param Size The size in bytes of the report buffer
+ * @param Value The value to insert into the buffer
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_insert_bit_field(HID_FIELD *field, void *buffer, uint32_t size, BOOL value);
+
+/**
+ * @brief Insert a signed field value into a report buffer
+ * @param Field The field to insert into the report
+ * @param Buffer A pointer to the report buffer
+ * @param Size The size in bytes of the report buffer
+ * @param Value The value to insert into the buffer
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_insert_signed_field(HID_FIELD *field, void *buffer, uint32_t size, int32_t value);
+
+/**
+ * @brief Insert an unsigned field value into a report buffer
+ * @param Field The field to insert into the report
+ * @param Buffer A pointer to the report buffer
+ * @param Size The size in bytes of the report buffer
+ * @param Value The value to insert into the buffer
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_insert_unsigned_field(HID_FIELD *field, void *buffer, uint32_t size, uint32_t value);
 
+/**
+ * @brief Extract a bit field value from a report buffer
+ * @param Field The field to extract from the report
+ * @param Buffer A pointer to the report buffer
+ * @param Size The size in bytes of the report buffer
+ * @param Value A variable to receive the extracted value
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_extract_bit_field(HID_FIELD *field, void *buffer, uint32_t size, BOOL *value);
+
+/**
+ * @brief Extract a signed field value from a report buffer
+ * @param Field The field to extract from the report
+ * @param Buffer A pointer to the report buffer
+ * @param Size The size in bytes of the report buffer
+ * @param Value A variable to receive the extracted value
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_extract_signed_field(HID_FIELD *field, void *buffer, uint32_t size, int32_t *value);
+
+/**
+ * @brief Extract an unsigned field value from a report buffer
+ * @param Field The field to extract from the report
+ * @param Buffer A pointer to the report buffer
+ * @param Size The size in bytes of the report buffer
+ * @param Value A variable to receive the extracted value
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_extract_unsigned_field(HID_FIELD *field, void *buffer, uint32_t size, uint32_t *value);
 
 /** HID Device Functions */
+
+/**
+ * @brief Set the state of the specified HID device and send a notification
+ * @param Device The HID device to set the state for
+ * @param State The new state to set and notify (eg HID_STATE_ATTACHED)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_device_set_state(HID_DEVICE *device, uint32_t state);
 
+/**
+ * @brief Get the idle rate from a HID device for the specified report id
+ * @param Device The HID device to get the idle rate from
+ * @param Duration A variable to receive the idle rate (in Milliseconds)
+ * @param ReportId The report id to get the idle rate from
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_device_get_idle(HID_DEVICE *device, uint16_t *duration, uint8_t reportid);
+
+/**
+ * @brief Set the idle rate on a HID device for the specified report id
+ * @param Device The HID device to set the idle rate for
+ * @param Duration The idle rate to set (in Milliseconds)
+ * @param ReportId The report id to set the idle rate for
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_device_set_idle(HID_DEVICE *device, uint16_t duration, uint8_t reportid);
 
+/**
+ * @brief Read a report by type and id from a HID device
+ * @param Device The HID device to read the report from
+ * @param ReportType The report type to read (eg HID_REPORT_INPUT)
+ * @param ReportId The report id to read (eg HID_REPORTID_NONE)
+ * @param ReportData A pointer to a buffer to receive the report data
+ * @param ReportSize The size in bytes of the buffer pointed to by report data
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_device_get_report(HID_DEVICE *device, uint8_t reporttype, uint8_t reportid, void *reportdata, uint32_t reportsize);
+
+/**
+ * @brief Write a report by type and id to a HID device
+ * @param Device The HID device to write the report to
+ * @param ReportType The report type to write (eg HID_REPORT_OUTPUT)
+ * @param ReportId The report id to write (eg HID_REPORTID_NONE)
+ * @param ReportData A pointer to a buffer containing the report data
+ * @param ReportSize The size in bytes of the buffer pointed to by report data
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_device_set_report(HID_DEVICE *device, uint8_t reporttype, uint8_t reportid, void *reportdata, uint32_t reportsize);
 
+/**
+ * @brief Allocate and initialize an input report by id on a HID device
+ * @param Device The HID device to allocate the report on
+ * @param Collection The HID collection this request corresponds to
+ * @param ReportId The report id to allocate (eg HID_REPORTID_NONE)
+ * @param ReportSize The size in bytes to allocate for the report (Provider will handle alignment and other requirements)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note An allocated report must be submitted before reports will be received from the device
+ */
 uint32_t STDCALL hid_device_allocate_report(HID_DEVICE *device, HID_COLLECTION *collection, uint8_t reportid, uint32_t reportsize);
+
+/**
+ * @brief Release an input report by id from a HID device
+ * @param Device The HID device to release the report from
+ * @param ReportId The report id to allocate (eg HID_REPORTID_NONE)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note If the report has been submitted it must be cancelled before being released
+ */
 uint32_t STDCALL hid_device_release_report(HID_DEVICE *device, uint8_t reportid);
 
+/**
+ * @brief Submit an input report by id on a HID device
+ * @param Device The HID device to submit the report on
+ * @param ReportId The report id to submit (eg HID_REPORTID_NONE)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note The report must be allocated then submitted before reports will be received from the device
+ */
 uint32_t STDCALL hid_device_submit_report(HID_DEVICE *device, uint8_t reportid);
+
+/**
+ * @brief Cancel an input report by id on a HID device
+ * @param Device The HID device to cancel the report on
+ * @param ReportId The report id to cancel (eg HID_REPORTID_NONE)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ * @note The report should be cancelled then released to stop receiving reports from the device
+ */
 uint32_t STDCALL hid_device_cancel_report(HID_DEVICE *device, uint8_t reportid);
 
+/**
+ * @brief Get the report protocol from a HID device
+ * @param Device The HID device to get the report protocol from
+ * @param Protocol A variable to receive the report protocol (eg HID_PROTOCOL_REPORT)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_device_get_protocol(HID_DEVICE *device, uint8_t *protocol);
+
+/**
+ * @brief Set the report protocol for a HID device
+ * @param Device The HID device to set the report protocol for
+ * @param Protocol The report protocol to set (eg HID_PROTOCOL_REPORT)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_device_set_protocol(HID_DEVICE *device, uint8_t protocol);
 
+/**
+ * @brief Get the polling interval from a HID device
+ * @param Device The HID device to get the polling interval from
+ * @param Interval A variable to receive the polling interval (in Milliseconds)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_device_get_interval(HID_DEVICE *device, uint32_t *interval);
+
+/**
+ * @brief Set the polling interval for a HID device
+ * @param Device The HID device to set the polling interval for
+ * @param Interval The polling interval to set (in Milliseconds)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_device_set_interval(HID_DEVICE *device, uint32_t interval);
 
+/**
+ * @brief Get the Report Descriptor for a HID device
+ * @param Device The HID device to get the descriptor for
+ * @param Descriptor Pointer to a buffer to return the HID Report Descriptor
+ * @param Size The size in bytes of the buffer pointed to by Descriptor
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_device_get_report_descriptor(HID_DEVICE *device, HID_REPORT_DESCRIPTOR *descriptor, uint32_t size);
+
+/**
+ * @brief Get the HID Physical Descriptor Set 0 for a HID device
+ * @param Device The HID device to get the descriptor for
+ * @param Descriptor Pointer to a HID Physical Descriptor Set 0 structure for the returned data
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_device_get_physical_descriptor_set0(HID_DEVICE *device, HID_PHYSICAL_DESCRIPTOR_SET0 *descriptor);
+
+/**
+ * @brief Get a HID Physical Descriptor Set for a HID device
+ * @param Device The HID device to get the descriptor for
+ * @param Descriptor Pointer to a HID Physical Descriptor Set structure for the returned data
+ * @param Index The index of the physical descriptor set to return
+ * @param Size The size in bytes of the buffer pointed to by Descriptor
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_device_get_physical_descriptor_set(HID_DEVICE *device, HID_PHYSICAL_DESCRIPTOR_SET *descriptor, uint8_t index, uint32_t size);
 
+/**
+ * @brief Attempt to bind a HID device to one of the registered consumers
+ * @param Device The HID device to attempt to bind a consumer to
+ * @return ERROR_SUCCESS if completed, ERROR_NOT_SUPPORTED if unsupported or another error code on failure
+ */
 uint32_t STDCALL hid_device_bind_device(HID_DEVICE *device);
+
+/**
+ * @brief Unbind a HID device from a consumer
+ * @param Device The HID device to unbind a consumer from
+ * @param Consumer The consumer to unbind the device from (nil to unbind from current consumer)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_device_unbind_device(HID_DEVICE *device, HID_CONSUMER *consumer);
 
+/**
+ * @brief Attempt to bind the HID collections in the specified device to one of the registered consumers
+ * @param Device The HID device containing the collections to attempt to bind a consumer to
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_device_bind_collections(HID_DEVICE *device);
+
+/**
+ * @brief Unbind the HID collections in the specified device from a consumer
+ * @param Device The HID device containing the collections to unbind a consumer from
+ * @param Consumer The consumer to unbind the collections from (nil to unbind from current consumer)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_device_unbind_collections(HID_DEVICE *device, HID_CONSUMER *consumer);
 
+/**
+ * @brief Create a new HID device entry
+ * @return Pointer to new HID device entry or nil if HID device could not be created
+ */
 HID_DEVICE * STDCALL hid_device_create(void);
+
+/**
+ * @brief Create a new HID device entry
+ * @param Size Size in bytes to allocate for new HID device (Including the HID device entry)
+ * @return Pointer to new HID device entry or nil if HID device could not be created
+ */
 HID_DEVICE * STDCALL hid_device_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing HID device entry
+ * @param Device The HID device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_device_destroy(HID_DEVICE *device);
 
+/**
+ * @brief Register a new HID device in the HID device table
+ * @param Device The HID device to register
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_device_register(HID_DEVICE *device);
+
+/**
+ * @brief Deregister a HID device from the HID device table
+ * @param Device The HID device to deregister
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_device_deregister(HID_DEVICE *device);
 
+/**
+ * @brief Find a HID device by ID in the HID device table
+ * @param HIDId The ID number of the HID device to find
+ * @return Pointer to HID device entry or nil if not found
+ */
 HID_DEVICE * STDCALL hid_device_find(uint32_t hidid);
+
+/**
+ * @brief Find a HID device by name in the device table
+ * @param Name The name of the HID device to find (eg HID0)
+ * @return Pointer to HID device entry or nil if not found
+ */
 HID_DEVICE * STDCALL hid_device_find_by_name(const char *name);
+
+/**
+ * @brief Find a HID device by description in the device table
+ * @param Description The description of the HID to find (eg Optical USB Mouse)
+ * @return Pointer to HID device entry or nil if not found
+ */
 HID_DEVICE * STDCALL hid_device_find_by_description(const char *description);
+
+/**
+ * @brief Enumerate all HID devices in the HID device table
+ * @param Callback The callback function to call for each HID device in the table
+ * @param Data A private data pointer to pass to callback for each HID device in the table
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL hid_device_enumerate(hid_device_enumerate_cb callback, void *data);
 
+/**
+ * @brief Register a notification for HID device changes
+ * @param Device The HID device to notify changes for (Optional, pass nil for all HID devices)
+ * @param Callback The function to call when a notification event occurs
+ * @param Data A private data pointer to pass to callback when a notification event occurs
+ * @param Notification The events to register for notification of (eg DEVICE_NOTIFICATION_REGISTER)
+ * @param Flags The flags to control the notification (eg NOTIFIER_FLAG_WORKER)
+ */
 uint32_t STDCALL hid_device_notification(HID_DEVICE *device, hid_device_notification_cb callback, void *data, uint32_t notification, uint32_t flags);
 
 /** HID Consumer Functions */
+
+/**
+ * @brief Create a new HID Consumer entry
+ * @return Pointer to new Consumer entry or nil if consumer could not be created
+ */
 HID_CONSUMER * STDCALL hid_consumer_create(void);
+
+/**
+ * @brief Create a new HID Consumer entry
+ * @param Size Size in bytes to allocate for new consumer (Including the consumer entry)
+ * @return Pointer to new Consumer entry or nil if consumer could not be created
+ */
 HID_CONSUMER * STDCALL hid_consumer_create_ex(uint32_t size);
+
+/**
+ * @brief Destroy an existing HID Consumer entry
+ */
 uint32_t STDCALL hid_consumer_destroy(HID_CONSUMER *consumer);
 
+/**
+ * @brief Register a new Consumer in the HID Consumer table
+ */
 uint32_t STDCALL hid_consumer_register(HID_CONSUMER *consumer);
+
+/**
+ * @brief Deregister a Consumer from the HID Consumer table
+ */
 uint32_t STDCALL hid_consumer_deregister(HID_CONSUMER *consumer);
 
+/**
+ * @brief Find a consumer by Id in the HID Consumer table
+ */
 HID_CONSUMER * STDCALL hid_consumer_find(uint32_t consumerid);
+
+/**
+ * @brief Find a consumer by name in the Driver table
+ */
 HID_CONSUMER * STDCALL hid_consumer_find_by_name(const char *name);
+
+/**
+ * @brief Enumerate all consumers in the HID Consumer table
+ */
 uint32_t STDCALL hid_consumer_enumerate(hid_consumer_enumerate_cb callback, void *data);
 
 /** HID Helper Functions */
+
+/**
+ * @brief Return True if the supplied field contains a 1 bit value
+ */
 BOOL STDCALL hid_is_bit_field(HID_FIELD *field);
+
+/**
+ * @brief Return True if the supplied HID field contains a 1 byte value
+ */
 BOOL STDCALL hid_is_byte_field(HID_FIELD *field);
+
+/**
+ * @brief Return True if the supplied HID field contains a 2 byte value
+ */
 BOOL STDCALL hid_is_word_field(HID_FIELD *field);
+
+/**
+ * @brief Return True if the supplied HID field contains a 3 or 4 byte value
+ */
 BOOL STDCALL hid_is_long_field(HID_FIELD *field);
+
+/**
+ * @brief Return True if the supplied HID field contains a signed value
+ */
 BOOL STDCALL hid_is_signed_field(HID_FIELD *field);
 
+/**
+ * @brief Return a string describing a HID usage page
+ */
 uint32_t STDCALL hid_page_to_string(uint16_t page, char *string, uint32_t len);
+
+/**
+ * @brief Return a string describing a HID usage within the given page
+ */
 uint32_t STDCALL hid_usage_to_string(uint16_t page, uint16_t usage, uint16_t count, char *string, uint32_t len);
 
+/**
+ * @brief Return a string describing a HID unit type
+ */
 uint32_t STDCALL hid_unit_type_to_string(uint32_t unittype, char *string, uint32_t len);
 
+/**
+ * @brief Return a string describing a HID report type
+ */
 uint32_t STDCALL hid_report_kind_to_string(uint8_t kind, char *string, uint32_t len);
+
+/**
+ * @brief Return a string describing the flags of a HID report
+ */
 uint32_t STDCALL hid_report_flags_to_string(uint32_t flags, char *string, uint32_t len);
 
+/**
+ * @brief Return a string describing the flags of a HID collection
+ */
 uint32_t STDCALL hid_collection_flags_to_string(uint32_t flags, char *string, uint32_t len);
 
 /** HID Device Helper Functions */
+
+/**
+ * @brief Get the current HID Device count
+ */
 uint32_t STDCALL hid_device_get_count(void);
 
+/**
+ * @brief Check if the supplied HID Device is in the device table
+ */
 HID_DEVICE * STDCALL hid_device_check(HID_DEVICE *device);
 
+/**
+ * @brief Return a string describing the HID device type (eg HID_TYPE_USB)
+ */
 uint32_t STDCALL hid_device_type_to_string(uint32_t hidtype, char *string, uint32_t len);
+
+/**
+ * @brief Return a string describing the HID device state (eg HID_STATE_ATTACHED)
+ */
 uint32_t STDCALL hid_device_state_to_string(uint32_t hidstate, char *string, uint32_t len);
 
+/**
+ * @brief Convert a Device state value into the notification code for device notifications
+ */
 uint32_t STDCALL hid_device_state_to_notification(uint32_t state);
 
 /** HID Consumer Helper Functions */
+
+/**
+ * @brief Get the current HID Consumer count
+ */
 uint32_t STDCALL hid_consumer_get_count(void);
 
+/**
+ * @brief Check if the supplied HID Consumer is in the consumer table
+ */
 HID_CONSUMER * STDCALL hid_consumer_check(HID_CONSUMER *consumer);
 
 #ifdef __cplusplus

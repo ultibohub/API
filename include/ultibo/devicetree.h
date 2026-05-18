@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -250,42 +250,206 @@ typedef void STDCALL (*dtb_log_output_cb)(const char *text, void *data);
 typedef char * STDCALL (*dtb_decode_value_cb)(HANDLE node, HANDLE handle, void *value, uint32_t size, void *data);
 
 /** Device Tree Functions */
+
+/**
+ * @brief Check the data at the supplied address to determine if it is a valid Device Tree Blob
+ * @param Address The address to be validated
+ * @param Size On return contains the total size of the Device Tree Blob if valid
+ * @return True if the address points to a valid Device Tree Blob, False if not
+ * @note Does not overwrite passed Size unless the DTB is valid
+ */
 BOOL STDCALL device_tree_validate(size_t address, uint32_t *size);
 
+/**
+ * @brief Find the next DTB node within the Device Tree
+ * @param Parent Handle of the parent node to search in, INVALID_HANDLE_VALUE to search the entire tree
+ * @param Previous Handle of the node to start from, INVALID_HANDLE_VALUE to start from the root node
+ * @return The handle of the next node in the tree or INVALID_HANDLE_VALUE if no node was found
+ */
 HANDLE STDCALL device_tree_next_node(HANDLE parent, HANDLE previous);
+
+/**
+ * @brief Find the next DTB property within the specified node of the Device Tree
+ * @param Node Handle of the node to search in
+ * @param Previous Handle of the property to start from, INVALID_HANDLE_VALUE to start from the first property
+ * @return The handle of the next property in the node or INVALID_HANDLE_VALUE if no property was found
+ */
 HANDLE STDCALL device_tree_next_property(HANDLE node, HANDLE previous);
 
+/**
+ * @brief Get the handle of the node matching the specified path, optionally within a specified parent
+ * @param Path The path of the node to find, relative to parent node or fully qualified if parent not specified (eg /chosen or /cpus/cpu0)
+ * @param Parent Handle of the parent node to search in, INVALID_HANDLE_VALUE to search the entire tree
+ * @return The handle of the node which matches the path or INVALID_HANDLE_VALUE if no node was found
+ */
 HANDLE STDCALL device_tree_get_node(const char *path, HANDLE parent);
+
+/**
+ * @brief Get the handle of the property matching the specified name
+ * @param Node Handle of the node to search in
+ * @param Name The name of the node to find (eg compatible)
+ * @return The handle of the property which matches the name or INVALID_HANDLE_VALUE if no property was found
+ */
 HANDLE STDCALL device_tree_get_property(HANDLE node, const char *name);
 
+/**
+ * @brief Get the name of the specified node
+ * @param Handle The handle of the node to get the name of
+ * @return The name of the specified node or an empty string if the node was not valid
+ */
 uint32_t STDCALL device_tree_get_node_name(HANDLE handle, char *name, uint32_t len);
+
+/**
+ * @brief Split the name of a node into node name and unit address
+ * @param Handle The handle of the node to split the name of
+ * @param NodeName The node name on return or an empty string if the node was not valid
+ * @param UnitAddress The unit address on return (If applicable)
+ */
 uint32_t STDCALL device_tree_split_node_name(HANDLE handle, char *nodename, uint32_t namelen, char *unitaddress, uint32_t addresslen);
 
+/**
+ * @brief Get the parent node of the specified node
+ * @param Handle The handle of the node to get the parent of
+ * @return The handle of the parent node or INVALID_HANDLE_VALUE if the node was not valid
+ */
 HANDLE STDCALL device_tree_get_node_parent(HANDLE handle);
+
+/**
+ * @brief Get the #address-cells and #size-cells values that apply to reg properties of the specified node
+ * @param Handle The handle of the node to get the cell sizes for
+ * @param Address The #address-cells value on return (or the default value if not found)
+ * @param Size The #size-cells value on return (or the default value if not found)
+ * @return True if the cell sizes were found or False if the node was not valid
+ * @note The address and size values applicable to a given node will be those
+ *        from a parent node, not those found in the node itself (if present)
+ * @note Used by early stage boot stage processing which must limit the use of strings
+ *        and other memory allocations. This function uses a memory compare for names
+ */
 BOOL STDCALL device_tree_get_node_reg_cells(HANDLE handle, uint32_t *address, uint32_t *size);
+
+/**
+ * @brief Get the #address-cells and #size-cells values that apply to range properties of the specified node
+ * @param Handle The handle of the node to get the cell sizes for
+ * @param ParentAddress The #address-cells value from the parent on return (or the default value if not found)
+ * @param NodeAddress The #address-cells value from this node on return (or the default value if not found)
+ * @param NodeSize The #size-cells value from this node on return (or the default value if not found)
+ * @return True if the cell sizes were found or False if the node was not valid
+ * @note Range properties use the address value from the parent node and the address and size values
+ *        from the node itself to determine the size of each range
+ * @note Used by early stage boot stage processing which must limit the use of strings
+ *        and other memory allocations. This function uses a memory compare for names
+ */
 BOOL STDCALL device_tree_get_node_range_cells(HANDLE handle, uint32_t *parentaddress, uint32_t *nodeaddress, uint32_t *nodesize);
 
+/**
+ * @brief Get the name of the specified property
+ * @param Handle The handle of the property to get the name of
+ * @return The name of the specified property or an empty string if the property was not valid
+ */
 uint32_t STDCALL device_tree_get_property_name(HANDLE handle, char *name, uint32_t len);
+
+/**
+ * @brief Split the name of a property into property name and unique prefix
+ * @param Handle The handle of the property to split the name of
+ * @param UniquePrefix The unique prefix on return (If applicable)
+ * @param PropertyName The property name on return or an empty string if the property was not valid
+ */
 uint32_t STDCALL device_tree_split_property_name(HANDLE handle, char *uniqueprefix, uint32_t prefixlen, char *propertyname, uint32_t namelen);
 
+/**
+ * @brief Get a pointer to the raw value of the specified property
+ * @param Handle The handle of the property to get the value of
+ * @return A pointer to the specified property value or nil if the property was not valid
+ * @note The returned value points to the memory block where device tree is stored and should not be modified or freed
+ */
 void * STDCALL device_tree_get_property_value(HANDLE handle);
+
+/**
+ * @brief Get the length of the raw value of the specified property
+ * @param Handle The handle of the property to get the value length of
+ * @return The length of the specified property value in bytes or -1 if the property was not valid
+ */
 uint32_t STDCALL device_tree_get_property_length(HANDLE handle);
 
+/**
+ * @brief Get the value of the specified property as a string
+ * @param Handle The handle of the property to get the value of
+ * @return A string representation of the value or an empty string if the property was not valid
+ */
 uint32_t STDCALL device_tree_get_property_string(HANDLE handle, char *string, uint32_t len);
+
+/**
+ * @brief Get the value of the specified property as a longword
+ * @param Handle The handle of the property to get the value of
+ * @return A longword representation of the value or 0 if the property was not valid
+ */
 uint32_t STDCALL device_tree_get_property_longword(HANDLE handle);
+
+/**
+ * @brief Get the value of the specified property as a quadword
+ * @param Handle The handle of the property to get the value of
+ * @return A quadword representation of the value or 0 if the property was not valid
+ */
 uint64_t STDCALL device_tree_get_property_quadword(HANDLE handle);
 
 /** Device Tree Helper Functions */
+
+/**
+ * @brief Return a character pointer to the location of the command line in the device tree blob
+ * @note Intended primarily for use by early boot stage processing which must limit the use of strings
+ *        and other memory allocations. For normal use see DeviceTreeGetNode and DeviceTreeGetProperty
+ */
 char * STDCALL device_tree_get_boot_args(void);
+
+/**
+ * @brief Return the address and size of the initial ram disk specified in the device tree blob
+ * @param Address Used to return the address value
+ * @param Size Used to return the size value
+ * @return True if an initial ram disk was specified in the device tree, False if not
+ * @note Intended primarily for use by early boot stage processing which must limit the use of strings
+ *        and other memory allocations. For normal use see DeviceTreeGetNode and DeviceTreeGetProperty
+ */
 BOOL STDCALL device_tree_get_ramdisk(size_t *address, uint64_t *size);
+
+/**
+ * @brief Return the address and size of a memory block specified in the device tree blob
+ * @param Index The index of the memory block to return (The first block is 0)
+ * @param Range Used to return the page range value (If applicable)
+ * @param Address Used to return the address value
+ * @param Size Used to return the size value
+ * @return True if the memory block requested was found in the device tree, False if not
+ * @note Intended primarily for use by early boot stage processing which must limit the use of strings
+ *        and other memory allocations. For normal use see DeviceTreeGetNode and DeviceTreeGetProperty
+ */
 #if defined (__i386__) || defined (__arm__)
 BOOL STDCALL device_tree_get_memory(uint32_t index, uint32_t *range, size_t *address, uint64_t *size);
 #else
 BOOL STDCALL device_tree_get_memory(uint32_t index, size_t *address, uint64_t *size);
 #endif
+
+/**
+ * @brief Return the address and size of a memory reservation specified in the device tree blob
+ * @param Index The index of the memory reservation to return (The first reservation is 0)
+ * @param Address Used to return the address value
+ * @param Size Used to return the size value
+ * @return True if the memory reservation requested was found in the device tree, False if not
+ */
 BOOL STDCALL device_tree_get_reservation(uint32_t index, size_t *address, uint64_t *size);
 
+/**
+ * @brief Print information about all nodes and properties in the device tree
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL device_tree_log_tree(void);
+
+/**
+ * @brief Print information about one or all nodes and properties in the device tree with custom value decode callback
+ * @param Node The node to print information about (INVALID_HANDLE_VALUE for all nodes)
+ * @param Output The log output callback to print information to (nil to use the default output)
+ * @param Decode The callback to decode a value into a string (nil to use the default decode)
+ * @param Data A pointer to caller specific data which should be passed to the callbacks (Optional)
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL device_tree_log_tree_ex(HANDLE node, dtb_log_output_cb output, dtb_decode_value_cb decode, void *data);
 
 #ifdef __cplusplus

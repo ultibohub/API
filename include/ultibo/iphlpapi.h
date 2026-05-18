@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -432,56 +432,269 @@ typedef struct _FIXED_INFO
 } FIXED_INFO;
 
 /** IP Helper Functions */
+
+/**
+ * @brief Retrieve the number of interfaces on the local computer
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetNumberOfInterfaces(uint32_t *pdwnumif);
+
+/**
+ * @brief Retrieve information for the specified interface on the local computer
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetIfEntry(MIB_IFROW *pifrow);
+
+/**
+ * @brief Retrieve the MIB-II interface table
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetIfTable(MIB_IFTABLE *piftable, uint32_t *pdwsize, BOOL border);
+
+/**
+ * @brief Retrieve the interface to IPv4 address mapping table
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetIpAddrTable(MIB_IPADDRTABLE *pipaddrtable, uint32_t *pdwsize, BOOL border);
+
+/**
+ * @brief Retrieve the IPv4 to physical address mapping table
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetIpNetTable(MIB_IPNETTABLE *pipnettable, uint32_t *pdwsize, BOOL border);
+
+/**
+ * @brief Retrieve the IPv4 routing table
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetIpForwardTable(MIB_IPFORWARDTABLE *pipforwardtable, uint32_t *pdwsize, BOOL border);
+
+/**
+ * @brief Retrieve the IPv4 TCP connection table
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetTcpTable(MIB_TCPTABLE *ptcptable, uint32_t *pdwsize, BOOL border);
+
+/**
+ * @brief Retrieve the IPv4 User Datagram Protocol (UDP) listener table
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetUdpTable(MIB_UDPTABLE *pudptable, uint32_t *pdwsize, BOOL border);
 
+/**
+ * @brief Retrieve the IP statistics for the current computer
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetIpStatistics(MIB_IPSTATS *pstats);
+
+/**
+ * @brief Retrieve the Internet Control Message Protocol (ICMP) for IPv4 statistics for the local computer
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetIcmpStatistics(MIB_ICMP *pstats);
+
+/**
+ * @brief Retrieve the TCP statistics for the local computer
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetTcpStatistics(MIB_TCPSTATS *pstats);
+
+/**
+ * @brief Retrieve the User Datagram Protocol (UDP) statistics for the local computer
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetUdpStatistics(MIB_UDPSTATS *pstats);
 
+/**
+ * @brief Set the administrative status of an interface
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL SetIfEntry(MIB_IFROW *pifrow);
+
+/**
+ * @brief Create a route in the local computer's IPv4 routing table
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL CreateIpForwardEntry(MIB_IPFORWARDROW *proute);
+
+/**
+ * @brief Modify an existing route in the local computer's IPv4 routing table
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL SetIpForwardEntry(MIB_IPFORWARDROW *proute);
+
+/**
+ * @brief Delete an existing route in the local computer's IPv4 routing table
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL DeleteIpForwardEntry(MIB_IPFORWARDROW *proute);
 
+/**
+ * @brief Toggle IP forwarding on or off and set the default time-to-live (TTL) value for the local computer
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL SetIpStatistics(MIB_IPSTATS *pipstats);
+
+/**
+ * @brief Set the default time-to-live (TTL) value for the local computer
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL SetIpTTL(UINT nttl);
 
+/**
+ * @brief Create an Address Resolution Protocol (ARP) entry in the ARP table on the local computer
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL CreateIpNetEntry(MIB_IPNETROW *parpentry);
+
+/**
+ * @brief Modify an existing ARP entry in the ARP table on the local computer
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL SetIpNetEntry(MIB_IPNETROW *parpentry);
+
+/**
+ * @brief Delete an ARP entry from the ARP table on the local computer
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL DeleteIpNetEntry(MIB_IPNETROW *parpentry);
+
+/**
+ * @brief Delete all ARP entries for the specified interface from the ARP table on the local computer
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL FlushIpNetTable(uint32_t dwifindex);
 
+/**
+ * @brief Create a Proxy Address Resolution Protocol (PARP) entry on the local computer for the specified IPv4 address
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL CreateProxyArpEntry(uint32_t dwaddress, uint32_t dwmask, uint32_t dwifindex);
+
+/**
+ * @brief Delete the PARP entry on the local computer specified by the dwAddress and dwIfIndex parameters
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL DeleteProxyArpEntry(uint32_t dwaddress, uint32_t dwmask, uint32_t dwifindex);
 
+/**
+ * @brief Set the state of a TCP connection
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL SetTcpEntry(MIB_TCPROW *ptcprow);
+
+/**
+ * @brief Obtain the list of the network interface adapters with IPv4 enabled on the local system
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetInterfaceInfo(IP_INTERFACE_INFO *piftable, uint32_t *dwoutbuflen);
+
+/**
+ * @brief Retrieve information about the unidirectional adapters installed on the local computer
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetUniDirectionalAdapterInfo(IP_UNIDIRECTIONAL_ADAPTER_ADDRESS *pipifinfo, uint32_t *dwoutbuflen);
 
+/**
+ * @brief Retrieve the index of the interface that has the best route to the specified IPv4 address
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetBestInterface(IP_ADDR dwdestaddr, uint32_t *pdwbestifindex);
+
+/**
+ * @brief Retrieve the best route to the specified destination IP address
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetBestRoute(uint32_t dwdestaddr, uint32_t dwsourceaddr, MIB_IPFORWARDROW *pbestroute);
+
+/**
+ * @brief Cause a notification to be sent to the caller whenever a change occurs in the table that maps IPv4 addresses to interfaces
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL NotifyAddrChange(HANDLE *handle, OVERLAPPED *overlapped);
+
+/**
+ * @brief Cause a notification to be sent to the caller whenever a change occurs in the IPv4 routing table
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL NotifyRouteChange(HANDLE *handle, OVERLAPPED *overlapped);
+
+/**
+ * @brief Obtain the index of an adapter, given its name
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetAdapterIndex(WCHAR *adaptername, uint32_t *ifindex);
+
+/**
+ * @brief Add the specified IPv4 address to the specified adapter
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL AddIPAddress(IP_ADDR address, IP_MASK ipmask, uint32_t ifindex, uint32_t *ntecontext, uint32_t *nteinstance);
+
+/**
+ * @brief Delete an IP address previously added using AddIPAddress
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL DeleteIPAddress(uint32_t ntecontext);
+
+/**
+ * @brief Retrieve network parameters for the local computer
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetNetworkParams(FIXED_INFO *pfixedinfo, uint32_t *poutbuflen);
+
+/**
+ * @brief Retrieve adapter information for the local computer
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetAdaptersInfo(IP_ADAPTER_INFO *padapterinfo, uint32_t *poutbuflen);
+
+/**
+ * @brief Retrieve information about the adapter corresponding to the specified interface
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetPerAdapterInfo(uint32_t ifindex, IP_PER_ADAPTER_INFO *pperadapterinfo, uint32_t *poutbuflen);
+
+/**
+ * @brief Release an IPv4 address previously obtained through the Dynamic Host Configuration Protocol (DHCP)
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL IpReleaseAddress(IP_ADAPTER_INDEX_MAP *adapterinfo);
+
+/**
+ * @brief Renew a lease on an IPv4 address previously obtained through Dynamic Host Configuration Protocol (DHCP)
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL IpRenewAddress(IP_ADAPTER_INDEX_MAP *adapterinfo);
+
+/**
+ * @brief Sends an Address Resolution Protocol (ARP) request to obtain the physical address that corresponds to the specified destination IPv4 address
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL SendARP(IP_ADDR *destip, IP_ADDR *srcip, DWORD *pmacaddr, uint32_t *phyaddrlen);
+
+/**
+ * @brief Determine the round-trip time (RTT) and hop count to the specified destination
+ * See the Windows IP Helper documentation for additional information
+ */
 BOOL STDCALL GetRTTAndHopCount(IP_ADDR destipaddress, uint32_t *hopcount, uint32_t maxhops, uint32_t *rtt);
+
+/**
+ * @brief Take an interface index and return a backward-compatible interface index
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL GetFriendlyIfIndex(uint32_t ifindex);
+
+/**
+ * @brief Turn on IPv4 forwarding on the local computer
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL EnableRouter(HANDLE *phandle, OVERLAPPED *poverlapped);
+
+/**
+ * @brief Turn off IPv4 forwarding on the local computer
+ * See the Windows IP Helper documentation for additional information
+ */
 uint32_t STDCALL UnenableRouter(OVERLAPPED *poverlapped, DWORD *lpdwenablecount);
 
 /** IP Helper Helper Functions */
