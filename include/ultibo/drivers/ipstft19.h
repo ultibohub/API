@@ -35,7 +35,7 @@ extern "C" {
 #include "ultibo/framebuffer.h"
 
 /** IPSTFT19 specific constants */
-#define IPSTFT19_FRAMEBUFFER_DESCRIPTION	"Adafruit 1.9" IPS TFT" ///< Description of IPSTFT19 device
+#define IPSTFT19_FRAMEBUFFER_DESCRIPTION	"Adafruit 1.9\" IPS TFT" ///< Description of IPSTFT19 device
 
 #define IPSTFT19_SIGNATURE	0xAF000019
 

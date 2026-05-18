@@ -37,7 +37,7 @@ extern "C" {
 #include "ultibo/touch.h"
 
 /** PiTFT35 specific constants */
-#define PITFT35_FRAMEBUFFER_DESCRIPTION	"Adafruit PiTFT 3.5" LCD" ///< Description of PiTFT35 device
+#define PITFT35_FRAMEBUFFER_DESCRIPTION	"Adafruit PiTFT 3.5\" LCD" ///< Description of PiTFT35 device
 
 #define PITFT35_SIGNATURE	0xAF000035
 

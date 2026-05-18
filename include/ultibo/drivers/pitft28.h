@@ -37,7 +37,7 @@ extern "C" {
 #include "ultibo/touch.h"
 
 /** PiTFT28 specific constants */
-#define PITFT28_FRAMEBUFFER_DESCRIPTION	"Adafruit PiTFT 2.8" LCD" ///< Description of PiTFT28 device
+#define PITFT28_FRAMEBUFFER_DESCRIPTION	"Adafruit PiTFT 2.8\" LCD" ///< Description of PiTFT28 device
 
 #define PITFT28_SIGNATURE	0xAF000028
 
