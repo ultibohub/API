@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -587,18 +587,107 @@ static uint8_t STMPE_I_DRIVE = 0;
 void STDCALL stmpe_init(void);
 
 /** STMPE Functions */
+
+/**
+ * @brief Create, register and start a new STMPE610 GPIO device connected to the specified I2C or SPI device
+ * @param I2C The I2C device this STMPE610 is connected to (Optional)
+ * @param SPI The SPI device this STMPE610 is connected to (Optional)
+ * @param Address The I2C address for this STMPE610 (or I2C_ADDRESS_INVALID if SPI connected)
+ * @param ChipSelect The SPI chip select for this STMPE610 (or SPI_CS_NONE if I2C connected)
+ * @param IRQ The GPIO information for the IRQ line (Optional)
+ * @return Pointer to the new GPIO device or nil on failure
+ * @note Either I2C or SPI must be specified but not both
+ */
 GPIO_DEVICE * STDCALL stmpe610_gpio_create(I2C_DEVICE *i2c, SPI_DEVICE *spi, uint16_t address, uint16_t chipselect, GPIO_INFO *irq);
+
+/**
+ * @brief Create, register and start a new STMPE801 GPIO device connected to the specified I2C device
+ * @param I2C The I2C device this STMPE801 is connected to
+ * @param Address The I2C address for this STMPE801
+ * @param IRQ The GPIO information for the IRQ line (Optional)
+ * @return Pointer to the new GPIO device or nil on failure
+ */
 GPIO_DEVICE * STDCALL stmpe801_gpio_create(I2C_DEVICE *i2c, uint16_t address, GPIO_INFO *irq);
+
+/**
+ * @brief Create, register and start a new STMPE811 GPIO device connected to the specified I2C or SPI device
+ * @param I2C The I2C device this STMPE811 is connected to (Optional)
+ * @param SPI The SPI device this STMPE811 is connected to (Optional)
+ * @param Address The I2C address for this STMPE811 (or I2C_ADDRESS_INVALID if SPI connected)
+ * @param ChipSelect The SPI chip select for this STMPE811 (or SPI_CS_NONE if I2C connected)
+ * @param IRQ The GPIO information for the IRQ line (Optional)
+ * @return Pointer to the new GPIO device or nil on failure
+ * @note Either I2C or SPI must be specified but not both
+ */
 GPIO_DEVICE * STDCALL stmpe811_gpio_create(I2C_DEVICE *i2c, SPI_DEVICE *spi, uint16_t address, uint16_t chipselect, GPIO_INFO *irq);
+
+/**
+ * @brief Create, register and start a new STMPE1601 GPIO device connected to the specified I2C device
+ * @param I2C The I2C device this STMPE1601 is connected to
+ * @param Address The I2C address for this STMPE1601
+ * @param IRQ The GPIO information for the IRQ line (Optional)
+ * @return Pointer to the new GPIO device or nil on failure
+ */
 GPIO_DEVICE * STDCALL stmpe1601_gpio_create(I2C_DEVICE *i2c, uint16_t address, GPIO_INFO *irq);
+
+/**
+ * @brief Create, register and start a new STMPE1801 GPIO device connected to the specified I2C device
+ * @param I2C The I2C device this STMPE1801 is connected to
+ * @param Address The I2C address for this STMPE1801
+ * @param IRQ The GPIO information for the IRQ line (Optional)
+ * @return Pointer to the new GPIO device or nil on failure
+ */
 GPIO_DEVICE * STDCALL stmpe1801_gpio_create(I2C_DEVICE *i2c, uint16_t address, GPIO_INFO *irq);
+
+/**
+ * @brief Create, register and start a new STMPE2401 GPIO device connected to the specified I2C device
+ * @param I2C The I2C device this STMPE2401 is connected to
+ * @param Address The I2C address for this STMPE2401
+ * @param IRQ The GPIO information for the IRQ line (Optional)
+ * @return Pointer to the new GPIO device or nil on failure
+ */
 GPIO_DEVICE * STDCALL stmpe2401_gpio_create(I2C_DEVICE *i2c, uint16_t address, GPIO_INFO *irq);
 
+/**
+ * @brief Stop, deregister and destroy an STMPE GPIO device created by this driver
+ * @param GPIO The GPIO device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL stmpe_gpio_destroy(GPIO_DEVICE *gpio);
 
+/**
+ * @brief Create, register and start a new STMPE610 Touch device connected to the specified I2C or SPI device
+ * @param I2C The I2C device this STMPE610 is connected to (Optional)
+ * @param SPI The SPI device this STMPE610 is connected to (Optional)
+ * @param Address The I2C address for this STMPE610 (or I2C_ADDRESS_INVALID if SPI connected)
+ * @param ChipSelect The SPI chip select for this STMPE610 (or SPI_CS_NONE if I2C connected)
+ * @param Width The width of the screen in pixels
+ * @param Height The height of the screen in pixels
+ * @param IRQ The GPIO information for the IRQ line (Optional)
+ * @return Pointer to the new Touch device or nil on failure
+ * @note Either I2C or SPI must be specified but not both
+ */
 TOUCH_DEVICE * STDCALL stmpe610_touch_create(I2C_DEVICE *i2c, SPI_DEVICE *spi, uint16_t address, uint16_t chipselect, uint32_t width, uint32_t height, GPIO_INFO *irq);
+
+/**
+ * @brief Create, register and start a new STMPE811 Touch device connected to the specified I2C or SPI device
+ * @param I2C The I2C device this STMPE811 is connected to (Optional)
+ * @param SPI The SPI device this STMPE811 is connected to (Optional)
+ * @param Address The I2C address for this STMPE811 (or I2C_ADDRESS_INVALID if SPI connected)
+ * @param ChipSelect The SPI chip select for this STMPE811 (or SPI_CS_NONE if I2C connected)
+ * @param Width The width of the screen in pixels
+ * @param Height The height of the screen in pixels
+ * @param IRQ The GPIO information for the IRQ line (Optional)
+ * @return Pointer to the new Touch device or nil on failure
+ * @note Either I2C or SPI must be specified but not both
+ */
 TOUCH_DEVICE * STDCALL stmpe811_touch_create(I2C_DEVICE *i2c, SPI_DEVICE *spi, uint16_t address, uint16_t chipselect, uint32_t width, uint32_t height, GPIO_INFO *irq);
 
+/**
+ * @brief Stop, deregister and destroy an STMPE Touch device created by this driver
+ * @param Touch The Touch device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL stmpe_touch_destroy(TOUCH_DEVICE *touch);
 
 #ifdef __cplusplus

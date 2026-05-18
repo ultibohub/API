@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -343,9 +343,36 @@ struct _PL18X_SDHCIHOST
 void STDCALL pl18x_init(void);
 
 /** PL18X Functions */
+
+/**
+ * @brief Create and register a new PL180 SDHCI device which can be accessed using the SDHCI API
+ * @param Address The address of the PL180 registers
+ * @param Name The text description of this device which will show in the device list (Optional)
+ * @param IRQ0 The interrupt 0 number for the PL180
+ * @param IRQ1 The interrupt 1 number for the PL180
+ * @param ClockMinimum The minimum frequency for the Pl180 clock
+ * @param ClockMaximum The maximum frequency for the Pl180 clock
+ * @return Pointer to the new SDHCI device or nil if the SDHCI device could not be created
+ */
 SDHCI_HOST * STDCALL pl180sdhci_create(size_t address, char *name, uint32_t irq0, uint32_t irq1, uint32_t clockminimum, uint32_t clockmaximum, mmc_device_get_card_detect_proc carddetect, mmc_device_get_write_protect_proc writeprotect);
+
+/**
+ * @brief Create and register a new PL181 SDHCI device which can be accessed using the SDHCI API
+ * @param Address The address of the PL181 registers
+ * @param Name The text description of this device which will show in the device list (Optional)
+ * @param IRQ0 The interrupt 0 number for the PL181
+ * @param IRQ1 The interrupt 1 number for the PL181
+ * @param ClockMinimum The minimum frequency for the Pl181 clock
+ * @param ClockMaximum The maximum frequency for the Pl181 clock
+ * @return Pointer to the new SDHCI device or nil if the SDHCI device could not be created
+ */
 SDHCI_HOST * STDCALL pl181sdhci_create(size_t address, char *name, uint32_t irq0, uint32_t irq1, uint32_t clockminimum, uint32_t clockmaximum, mmc_device_get_card_detect_proc carddetect, mmc_device_get_write_protect_proc writeprotect);
 
+/**
+ * @brief Stop, deregister and destroy a PL18X SDHCI device created by this driver
+ * @param SDHCI The SDHCI device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL pl18xsdhci_destroy(SDHCI_HOST *sdhci);
 
 #ifdef __cplusplus

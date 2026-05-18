@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -138,10 +138,39 @@ struct _PL050_MOUSE
 };
 
 /** PL050 Functions */
+
+/**
+ * @brief Create, register and attach a new PL050 Keyboard device which can be accessed using the keyboard API
+ * @param Address The address of the PL050 registers
+ * @param Name The text description of this device which will show in the device list (Optional)
+ * @param IRQ The interrupt number for the PL050
+ * @param ClockRate The clock source frequency for the PL050
+ * @return Pointer to the new Keyboard device or nil if the Keyboard device could not be created
+ */
 KEYBOARD_DEVICE * STDCALL pl050_keyboard_create(size_t address, char *name, uint32_t irq, uint32_t clockrate);
+
+/**
+ * @brief Detach, deregister and destroy a PL050 Keyboard device created by this driver
+ * @param Keyboard The Keyboard device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL pl050_keyboard_destroy(KEYBOARD_DEVICE *keyboard);
 
+/**
+ * @brief Create, register and attach a new PL050 Mouse device which can be accessed using the mouse API
+ * @param Address The address of the PL050 registers
+ * @param Name The text description of this device which will show in the device list (Optional)
+ * @param IRQ The interrupt number for the PL050
+ * @param ClockRate The clock source frequency for the PL050
+ * @return Pointer to the new Mouse device or nil if the Mouse device could not be created
+ */
 MOUSE_DEVICE * STDCALL pl050_mouse_create(size_t address, char *name, uint32_t irq, uint32_t clockrate);
+
+/**
+ * @brief Detach, deregister and destroy a PL050 Mouse device created by this driver
+ * @param Mouse The Mouse device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL pl050_mouse_destroy(MOUSE_DEVICE *mouse);
 
 #ifdef __cplusplus

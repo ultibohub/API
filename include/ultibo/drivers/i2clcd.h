@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -62,10 +62,38 @@ struct _I2CLCD_DISPLAY
 };
 
 /** I2CLCD Functions */
+
+/**
+ * @brief Start the I2CLCD driver and register the GPIO and Console devices associated with the display
+ * @param Device The I2C device that the PCF8574 I/O Expander on the display is connected to
+ * @param Address The I2C address of the PCF8574 I/O Expander on the display
+ * @param Width The width in columns of the HD44780 LCD on the display
+ * @param Height The height in rows of the HD44780 LCD on the display
+ * @return The handle of the I2CLCD on success or INVALID_HANDLE_VALUE on failure
+ * @note This function will be called during startup if the parameter I2CLCD_AUTOSTART is True
+ *        Can be called multiple times to support more than one LCD display
+ */
 HANDLE STDCALL i2clcd_start(char *device, uint16_t address, uint32_t width, uint32_t height);
+
+/**
+ * @brief Stop the I2CLCD driver and deregister the GPIO and Console devices associated with the display
+ * @param Handle The handle of the I2CLCD or INVALID_HANDLE_VALUE for the default display
+ * @return True if completed or False on failure
+ */
 BOOL STDCALL i2clcd_stop(HANDLE handle);
 
+/**
+ * @brief Turn on the backlight on the I2CLCD display
+ * @param Handle The handle of the I2CLCD or INVALID_HANDLE_VALUE for the default display
+ * @return True if completed or False on failure
+ */
 BOOL STDCALL i2clcd_backlight_on(HANDLE handle);
+
+/**
+ * @brief Turn off the backlight on the I2CLCD display
+ * @param Handle The handle of the I2CLCD or INVALID_HANDLE_VALUE for the default display
+ * @return True if completed or False on failure
+ */
 BOOL STDCALL i2clcd_backlight_off(HANDLE handle);
 
 #ifdef __cplusplus

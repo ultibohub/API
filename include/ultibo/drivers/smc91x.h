@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -395,7 +395,21 @@ struct _SMC91X_NETWORK
 };
 
 /** SMC91X Functions */
+
+/**
+ * @brief Create and register a new SMC91X Network device which can be accessed using the Network API
+ * @param Address The address of the SMC91X registers
+ * @param Name The text description of this device which will show in the device list (Optional)
+ * @param IRQ The interrupt number for the SMC91X
+ * @return Pointer to the new Network device or nil if the Network device could not be created
+ */
 NETWORK_DEVICE * STDCALL smc91x_network_create(size_t address, char *name, uint32_t irq);
+
+/**
+ * @brief Close, deregister and destroy an SMC91X Network device created by this driver
+ * @param Network The Network device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL smc91x_network_destroy(NETWORK_DEVICE *network);
 
 #ifdef __cplusplus

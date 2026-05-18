@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -61,7 +61,23 @@ struct _IPSTFT19LCD
 };
 
 /** IPSTFT19 Functions */
+
+/**
+ * @brief Start the IPSTFT19 driver and Framebuffer device associated with the display
+ * @param Rotation The rotation of the display (eg FRAMEBUFFER_ROTATION_180)
+ * @param Device The SPI device that the ST7789 device is connected to
+ * @param DisplaySelect The SPI chip select of the ST7789 LCD controller
+ * @return The handle of the IPSTFT19 on success or INVALID_HANDLE_VALUE on failure
+ * @note This function will be called during startup if the parameter IPSTFT19_AUTOSTART is True
+ *        Can be called multiple times to support more than one IPSTFT LCD display
+ */
 HANDLE STDCALL ipstft19_start(uint32_t rotation, char *device, uint16_t displayselect);
+
+/**
+ * @brief Stop the IPSTFT19 driver and Framebuffer device associated with the display
+ * @param Handle The handle of the IPSTFT19 or INVALID_HANDLE_VALUE for the default display
+ * @return True if completed or False on failure
+ */
 BOOL STDCALL ipstft19_stop(HANDLE handle);
 
 #ifdef __cplusplus

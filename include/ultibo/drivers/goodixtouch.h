@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -119,7 +119,23 @@ typedef uint8_t GOODIX_POINT_DATA[2 + GOODIX_MAX_CONTACT_SIZE * GOODIX_MAX_CONTA
 void STDCALL goodix_init(void);
 
 /** Goodix Functions */
+
+/**
+ * @brief Create, register and start a new Goodix Touch device connected to the specified I2C device
+ * @param I2C The I2C device this Goodix Touch device is connected to
+ * @param Address The I2C address for this Goodix Touch device
+ * @param Width The width of the screen in pixels (When set at TOUCH_ROTATION_0)
+ * @param Height The height of the screen in pixels (When set at TOUCH_ROTATION_0)
+ * @param IRQ The GPIO information for the IRQ line (Optional)
+ * @return Pointer to the new Touch device or nil on failure
+ */
 TOUCH_DEVICE * STDCALL goodix_touch_create(I2C_DEVICE *i2c, uint16_t address, uint32_t width, uint32_t height, GPIO_INFO *irq, GPIO_INFO *rst);
+
+/**
+ * @brief Stop, deregister and destroy a Goodix Touch device created by this driver
+ * @param Touch The Touch device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL goodix_touch_destroy(TOUCH_DEVICE *touch);
 
 #ifdef __cplusplus

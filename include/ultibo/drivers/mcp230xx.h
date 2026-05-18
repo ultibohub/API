@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -87,9 +87,28 @@ struct _MCP230XXGPIO
 };
 
 /** MCP230XX Functions */
+
+/**
+ * @brief Create, register and start a new MCP23008 GPIO device connected to the specified I2C device
+ * @param I2C The I2C device this MCP23008 is connected to
+ * @param Address The I2C address for this MCP23008
+ * @return Pointer to the new GPIO device or nil on failure
+ */
 GPIO_DEVICE * STDCALL mcp23008_gpio_create(I2C_DEVICE *i2c, uint16_t address);
+
+/**
+ * @brief Create, register and start a new MCP23017 GPIO device connected to the specified I2C device
+ * @param I2C The I2C device this MCP23017 is connected to
+ * @param Address The I2C address for this MCP23017
+ * @return Pointer to the new GPIO device or nil on failure
+ */
 GPIO_DEVICE * STDCALL mcp23017_gpio_create(I2C_DEVICE *i2c, uint16_t address);
 
+/**
+ * @brief Stop, deregister and destroy an MCP230XX GPIO device created by this driver
+ * @param GPIO The GPIO device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL mcp230xx_gpio_destroy(GPIO_DEVICE *gpio);
 
 #ifdef __cplusplus

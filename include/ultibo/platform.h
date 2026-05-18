@@ -2401,7 +2401,7 @@ size_t STDCALL get_pc(void);
 
 /**
  * @brief Get Interrupts (IRQ) state
- * @return True is enabled, False if disabled
+ * @return True if enabled, False if disabled
  */
 BOOL STDCALL get_irq(void);
 
@@ -2430,7 +2430,7 @@ IRQ_MASK STDCALL restore_irq(IRQ_MASK irqmask);
 
 /**
  * @brief Get Fast Interrupts (FIQ) state
- * @return True is enabled, False if disabled
+ * @return True if enabled, False if disabled
  */
 BOOL STDCALL get_fiq(void);
 
@@ -2482,7 +2482,7 @@ IRQ_FIQ_MASK STDCALL restore_irq_fiq(IRQ_FIQ_MASK irqfiqmask);
 
 /**
  * @brief Get Abort state
- * @return True is enabled, False if disabled
+ * @return True if enabled, False if disabled
  */
 BOOL STDCALL get_abort(void);
 

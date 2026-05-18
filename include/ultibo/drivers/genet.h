@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -889,7 +889,22 @@ struct _GENET_STATUS64
 void STDCALL genet_init(void);
 
 /** GENET Functions */
+
+/**
+ * @brief Create and register a new GENET Network device which can be accessed using the Network API
+ * @param Address The address of the GENET registers
+ * @param MDIOOffset The offset from address of the MDIO registers
+ * @param IRQ0 The interrupt number for interrupt 0 of the GENET
+ * @param IRQ1 The interrupt number for interrupt 1 of the GENET
+ * @return Pointer to the new Network device or nil if the Network device could not be created
+ */
 NETWORK_DEVICE * STDCALL genet_network_create(size_t address, uint32_t mdiooffset, uint32_t irq0, uint32_t irq1);
+
+/**
+ * @brief Close, deregister and destroy a GENET Network device created by this driver
+ * @param Network The Network device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL genet_network_destroy(NETWORK_DEVICE *network);
 
 #ifdef __cplusplus

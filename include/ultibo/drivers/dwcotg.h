@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -679,7 +679,21 @@ struct _DWC_USB_HOST
 };
 
 /** DWCOTG Functions */
+
+/**
+ * @brief Create and register a new DWCOTG host which can be accessed using the USB API
+ * @param Address The address of the DWCOTG registers
+ * @param IRQ The interrupt number for the DWCOTG host
+ * @param PowerID The power ID value to power on the host using PowerOn (or POWER_ID_UNKNOWN if not applicable)
+ * @return Pointer to the new USB host or nil if the USB host could not be created
+ */
 USB_HOST * STDCALL dwc_host_create(size_t address, uint32_t irq, uint32_t powerid);
+
+/**
+ * @brief Stop, deregister and destroy a DWCOTG USB host created by this driver
+ * @param Host The USB host to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL dwc_host_destroy(USB_HOST *host);
 
 #ifdef __cplusplus

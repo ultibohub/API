@@ -2114,27 +2114,27 @@ BOOL STDCALL usb_is_interrupt_request(USB_REQUEST *request);
 BOOL STDCALL usb_is_isochronous_request(USB_REQUEST *request);
 
 /**
- * @brief Returns True is Endpoint is an IN endpoint or False if not
+ * @brief Returns True if Endpoint is an IN endpoint or False if not
  */
 BOOL STDCALL usb_is_in_endpoint(USB_ENDPOINT_DESCRIPTOR *endpoint);
 
 /**
- * @brief Returns True is Endpoint is an OUT endpoint or False if not
+ * @brief Returns True if Endpoint is an OUT endpoint or False if not
  */
 BOOL STDCALL usb_is_out_endpoint(USB_ENDPOINT_DESCRIPTOR *endpoint);
 
 /**
- * @brief Returns True is Endpoint is a BULK endpoint or False if not
+ * @brief Returns True if Endpoint is a BULK endpoint or False if not
  */
 BOOL STDCALL usb_is_bulk_endpoint(USB_ENDPOINT_DESCRIPTOR *endpoint);
 
 /**
- * @brief Returns True is Endpoint is a INTERRUPT endpoint or False if not
+ * @brief Returns True if Endpoint is a INTERRUPT endpoint or False if not
  */
 BOOL STDCALL usb_is_interrupt_endpoint(USB_ENDPOINT_DESCRIPTOR *endpoint);
 
 /**
- * @brief Returns True is Endpoint is a ISOCHRONOUS endpoint or False if not
+ * @brief Returns True if Endpoint is a ISOCHRONOUS endpoint or False if not
  */
 BOOL STDCALL usb_is_isochronous_endpoint(USB_ENDPOINT_DESCRIPTOR *endpoint);
 

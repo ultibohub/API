@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -150,7 +150,23 @@ struct _FT5X06_TOUCH
 void STDCALL ft5x06_init(void);
 
 /** FT5x06 Functions */
+
+/**
+ * @brief Create, register and start a new FT5x06 Touch device connected to the specified I2C device
+ * @param I2C The I2C device this FT5x06 Touch device is connected to
+ * @param Address The I2C address for this FT5x06 Touch device
+ * @param Width The width of the screen in pixels (When set at TOUCH_ROTATION_0)
+ * @param Height The height of the screen in pixels (When set at TOUCH_ROTATION_0)
+ * @param IRQ The GPIO information for the IRQ line (Optional)
+ * @return Pointer to the new Touch device or nil on failure
+ */
 TOUCH_DEVICE * STDCALL ft5x06_touch_create(I2C_DEVICE *i2c, uint16_t address, uint32_t width, uint32_t height, GPIO_INFO *irq, GPIO_INFO *rst);
+
+/**
+ * @brief Stop, deregister and destroy a FT5x06 Touch device created by this driver
+ * @param Touch The Touch device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL ft5x06_touch_destroy(TOUCH_DEVICE *touch);
 
 #ifdef __cplusplus

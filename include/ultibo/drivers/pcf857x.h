@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -77,8 +77,20 @@ struct _PCF857XGPIO
 };
 
 /** PCF857X Functions */
+
+/**
+ * @brief Create, register and start a new PCF8574 GPIO device connected to the specified I2C device
+ * @param I2C The I2C device this PCF8574 is connected to
+ * @param Address The I2C address for this PCF8574
+ * @return Pointer to the new GPIO device or nil on failure
+ */
 GPIO_DEVICE * STDCALL pcf8574gpio_create(I2C_DEVICE *i2c, uint16_t address);
 
+/**
+ * @brief Stop, deregister and destroy a PCF857X GPIO device created by this driver
+ * @param GPIO The GPIO device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL pcf857xgpio_destroy(GPIO_DEVICE *gpio);
 
 /** PCF857X Helper Functions */

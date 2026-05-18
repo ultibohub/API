@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -117,7 +117,23 @@ struct _RPISENSE_JOYSTICK
 };
 
 /** RPiSenseHat Functions */
+
+/**
+ * @brief Create, register and allocate a new RPiSenseHat Framebuffer device which can be accessed using the framebuffer API
+ * @param I2C The I2C device that the RPiSenseHat is connected to
+ * @param Name The text description of this device which will show in the device list (Optional)
+ * @param Rotation The rotation value of the framebuffer (eg FRAMEBUFFER_ROTATION_180)
+ * @param Width The width of the framebuffer in pixels (Virtual width only, the Physical width is fixed at 8 pixels)
+ * @param Height The height of the framebuffer in pixels (Virtual height only, the Physical height is fixed at 8 pixels)
+ * @return Pointer to the new Framebuffer device or nil if the framebuffer device could not be created
+ */
 HANDLE STDCALL rpisense_start(char *i2cdevice, char *gpiodevice, uint32_t rotation, uint32_t width, uint32_t height);
+
+/**
+ * @brief Release, deregister and destroy an RPiSenseHat Framebuffer device created by this driver
+ * @param Framebuffer The Framebuffer device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 BOOL STDCALL rpisense_stop(HANDLE handle);
 
 #ifdef __cplusplus

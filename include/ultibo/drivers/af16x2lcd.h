@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -74,13 +74,56 @@ struct _AF16X2LCD_PLATE
 
 
 /** AF16x2LCD Functions */
+
+/**
+ * @brief Start the AF16x2LCD driver and register the GPIO and Console devices associated with the display
+ * @param Model The Adafruit 16x2 LCD Plate model (eg AF16X2LCD_MODEL_RGB)
+ * @param Invert Invert the signal level for the LCD backlight (If True then GPIO_LEVEL_LOW equals On)
+ * @param Device The I2C device that the MCP23017 I/O Expander on the LCD Plate is connected to
+ * @param Address The I2C address of the MCP23017 I/O Expander on the LCD Plate
+ * @return The handle of the AF16x2LCD on success or INVALID_HANDLE_VALUE on failure
+ * @note This function will be called during startup if the parameter AF16X2LCD_AUTOSTART is True
+ *        Can be called multiple times to support more than one 16x2 LCD display
+ */
 HANDLE STDCALL af16x2lcd_start(uint32_t model, BOOL invert, char *device, uint16_t address);
+
+/**
+ * @brief Stop the AF16x2LCD driver and deregister the GPIO and Console devices associated with the display
+ * @param Handle The handle of the AF16x2LCD or INVALID_HANDLE_VALUE for the default display
+ * @return True if completed or False on failure
+ */
 BOOL STDCALL af16x2lcd_stop(HANDLE handle);
 
+/**
+ * @brief Get the GPIO level of a button on the AF16x2LCD display
+ * @param Handle The handle of the AF16x2LCD or INVALID_HANDLE_VALUE for the default display
+ * @param Button The button to get the level for (eg AF16X2LCD_BUTTON_LEFT)
+ * @return The GPIO level of the button (eg GPIO_LEVEL_HIGH) or GPIO_LEVEL_UNKNOWN on failure
+ */
 uint32_t STDCALL af16x2lcd_get_button(HANDLE handle, uint32_t button);
 
+/**
+ * @brief Turn on the backlight on the AF16x2LCD display
+ * @param Handle The handle of the AF16x2LCD or INVALID_HANDLE_VALUE for the default display
+ * @return True if completed or False on failure
+ */
 BOOL STDCALL af16x2lcd_backlight_on(HANDLE handle);
+
+/**
+ * @brief Turn off the backlight on the AF16x2LCD display
+ * @param Handle The handle of the AF16x2LCD or INVALID_HANDLE_VALUE for the default display
+ * @return True if completed or False on failure
+ */
 BOOL STDCALL af16x2lcd_backlight_off(HANDLE handle);
+
+/**
+ * @brief Set the backlight color on the AF16x2LCD display
+ * @param Handle The handle of the AF16x2LCD or INVALID_HANDLE_VALUE for the default display
+ * @param Red The Red value (0 for Off / 1 for On)
+ * @param Green The Green value (0 for Off / 1 for On)
+ * @param Blue The Blue value (0 for Off / 1 for On)
+ * @return True if completed or False on failure
+ */
 BOOL STDCALL af16x2lcd_backlight_color(HANDLE handle, uint8_t red, uint8_t green, uint8_t blue);
 
 #ifdef __cplusplus

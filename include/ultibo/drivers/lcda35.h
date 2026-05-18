@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -66,7 +66,24 @@ struct _LCDA35LCD
 };
 
 /** LCDA35 Functions */
+
+/**
+ * @brief Start the LCDA35 driver and register the Touch and Framebuffer devices associated with the display
+ * @param Rotation The rotation of the display (eg FRAMEBUFFER_ROTATION_180)
+ * @param Device The SPI device that the ILI9486 and XPT2046 devices are connected to
+ * @param DisplaySelect The SPI chip select of the ILI9486 LCD controller
+ * @param TouchSelect The SPI chip select of the XPT2046 touch controller
+ * @return The handle of the LCDA35 on success or INVALID_HANDLE_VALUE on failure
+ * @note This function will be called during startup if the parameter LCDA35_AUTOSTART is True
+ *        Can be called multiple times to support more than one LCD display
+ */
 HANDLE STDCALL lcda35_start(uint32_t rotation, char *device, uint16_t displayselect, uint16_t touchselect);
+
+/**
+ * @brief Stop the LCDA35 driver and deregister the Touch and Framebuffer devices associated with the display
+ * @param Handle The handle of the LCDA35 or INVALID_HANDLE_VALUE for the default display
+ * @return True if completed or False on failure
+ */
 BOOL STDCALL lcda35_stop(HANDLE handle);
 
 #ifdef __cplusplus

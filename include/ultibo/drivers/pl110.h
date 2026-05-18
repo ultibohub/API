@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -173,9 +173,36 @@ struct _PL110_FRAMEBUFFER
 };
 
 /** PL110 Functions */
+
+/**
+ * @brief Create, register and allocate a new PL110 Framebuffer device which can be accessed using the framebuffer API
+ * @param Address The address of the PL110 registers
+ * @param Name The text description of this device which will show in the device list (Optional)
+ * @param Rotation The rotation value for the framebuffer device (eg FRAMEBUFFER_ROTATION_180)
+ * @param Width The width of the framebuffer in pixels
+ * @param Height The height of the framebuffer in pixels
+ * @param Depth The color depth (bits per pixel) for the framebuffer (eg FRAMEBUFFER_DEPTH_16)
+ * @return Pointer to the new Framebuffer device or nil if the framebuffer device could not be created
+ */
 FRAMEBUFFER_DEVICE * STDCALL pl110_framebuffer_create_vga(size_t address, char *name, uint32_t rotation, uint32_t width, uint32_t height, uint32_t depth);
+
+/**
+ * @brief Create, register and allocate a new PL110 Framebuffer device which can be accessed using the framebuffer API
+ * @param Address The address of the PL110 registers
+ * @param Name The text description of this device which will show in the device list (Optional)
+ * @param Rotation The rotation value for the framebuffer device (eg FRAMEBUFFER_ROTATION_180)
+ * @param Width The width of the framebuffer in pixels
+ * @param Height The height of the framebuffer in pixels
+ * @param Depth The color depth (bits per pixel) for the framebuffer (eg FRAMEBUFFER_DEPTH_16)
+ * @return Pointer to the new Framebuffer device or nil if the framebuffer device could not be created
+ */
 FRAMEBUFFER_DEVICE * STDCALL pl110_framebuffer_create_svga(size_t address, char *name, uint32_t rotation, uint32_t width, uint32_t height, uint32_t depth);
 
+/**
+ * @brief Release, deregister and destroy a PL110 Framebuffer device created by this driver
+ * @param Framebuffer The Framebuffer device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL pl110_framebuffer_destroy(FRAMEBUFFER_DEVICE *framebuffer);
 
 #ifdef __cplusplus

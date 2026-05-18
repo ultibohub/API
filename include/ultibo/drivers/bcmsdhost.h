@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -180,7 +180,28 @@ struct _BCMSDHOST_HOST
 void STDCALL bcmsdhost_init(void);
 
 /** BCMSDHOST Functions */
+
+/**
+ * @brief Create and register a new BCMSDHOST SDHCI device which can be accessed using the SDHCI API
+ * @param Address The address of the BCMSDHOST registers
+ * @param Name The text description of this device which will show in the device list (Optional)
+ * @param IRQ The interrupt number for the BCMSDHOST
+ * @param DREQ The DMA data request ID for the BCMSDHOST
+ * @param ClockMinimum The minimum frequency for the BCMSDHOST clock
+ * @param ClockMaximum The maximum frequency for the BCMSDHOST clock
+ * @param GPIOFirst The starting pin number for GPIO assignments (or GPIO_PIN_UNKNOWN if externally configured)
+ * @param GPIOLast The ending pin number for GPIO assignments (or GPIO_PIN_UNKNOWN if externally configured)
+ * @param GPIOFunction The function number for GPIO assignments (or GPIO_FUNCTION_UNKNOWN if externally configured)
+ * @param EnableFIQ Enable fast interrupt support for the BCMSDHOST
+ * @return Pointer to the new SDHCI device or nil if the SDHCI device could not be created
+ */
 SDHCI_HOST * STDCALL bcmsdhost_create(size_t address, char *name, uint32_t irq, uint32_t dreq, uint32_t clockminimum, uint32_t clockmaximum, uint32_t gpiofirst, uint32_t gpiolast, uint32_t gpiofunction, BOOL enablefiq);
+
+/**
+ * @brief Stop, deregister and destroy a BCMSDHOST SDHCI device created by this driver
+ * @param SDHCI The SDHCI device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL bcmsdhost_destroy(SDHCI_HOST *sdhci);
 
 #ifdef __cplusplus

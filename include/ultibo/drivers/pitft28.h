@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -65,9 +65,50 @@ struct _PITFT28LCD
 };
 
 /** PiTFT28 Functions */
+
+/**
+ * @brief Start the PiTFT28 driver and register the Touch, Backlight (GPIO) and Framebuffer devices associated with the display
+ * @param Rotation The rotation of the display (eg FRAMEBUFFER_ROTATION_180)
+ * @param Device The SPI device that the ILI9340 and STMPE610 devices are connected to
+ * @param DisplaySelect The SPI chip select of the ILI9340 LCD controller
+ * @param TouchSelect The SPI chip select of the STMPE610 touch controller
+ * @return The handle of the PiTFT28 on success or INVALID_HANDLE_VALUE on failure
+ * @note This function will be called during startup if the parameter PITFT28_AUTOSTART is True
+ *        Can be called multiple times to support more than one PiTFT LCD display
+ * @note Replaced by PiTFT28ResistiveStart to accommodate capacitive display option
+ */
 HANDLE STDCALL pitft28_start(uint32_t rotation, char *device, uint16_t displayselect, uint16_t touchselect);
+
+/**
+ * @brief Start the PiTFT28 driver and register the resistive Touch, Backlight (GPIO) and Framebuffer devices associated with the display
+ * @param Rotation The rotation of the display (eg FRAMEBUFFER_ROTATION_180)
+ * @param Device The SPI device that the ILI9340 and STMPE610 devices are connected to
+ * @param DisplaySelect The SPI chip select of the ILI9340 LCD controller
+ * @param TouchSelect The SPI chip select of the STMPE610 touch controller
+ * @return The handle of the PiTFT28 on success or INVALID_HANDLE_VALUE on failure
+ * @note This function will be called during startup if the parameter PITFT28_AUTOSTART is True
+ *        Can be called multiple times to support more than one PiTFT LCD display
+ */
 HANDLE STDCALL pitft28_resistive_start(uint32_t rotation, char *device, uint16_t displayselect, uint16_t touchselect);
+
+/**
+ * @brief Start the PiTFT28 driver and register the capacitive Touch and Framebuffer devices associated with the display
+ * @param Rotation The rotation of the display (eg FRAMEBUFFER_ROTATION_180)
+ * @param SPIDevice The SPI device that the ILI9340 device is connected to
+ * @param I2CDevice The I2C device that the FT6236 device is connected to
+ * @param DisplaySelect The SPI chip select of the ILI9340 LCD controller
+ * @param TouchAddress The I2C address of the FT6236 touch controller
+ * @return The handle of the PiTFT28 on success or INVALID_HANDLE_VALUE on failure
+ * @note This function will be called during startup if the parameter PITFT28_AUTOSTART is True
+ *        Can be called multiple times to support more than one PiTFT LCD display
+ */
 HANDLE STDCALL pitft28_capacitive_start(uint32_t rotation, char *spidevice, char *i2cdevice, uint16_t displayselect, uint16_t touchaddress);
+
+/**
+ * @brief Stop the PiTFT28 driver and deregister the Touch, Backlight (GPIO) and Framebuffer devices associated with the display
+ * @param Handle The handle of the PiTFT28 or INVALID_HANDLE_VALUE for the default display
+ * @return True if completed or False on failure
+ */
 BOOL STDCALL pitft28_stop(HANDLE handle);
 
 #ifdef __cplusplus

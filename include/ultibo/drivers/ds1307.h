@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -149,7 +149,21 @@ struct _DS1307_RTC_DEVICE
 
 
 /** DS1307 Functions */
+
+/**
+ * @brief Create, register and start a new DS1307 RTC device connected to the specified I2C device
+ * @param Device The I2C device this DS1307 is connected to
+ * @param Address The I2C address for this DS1307
+ * @param Chip The chip type for this DS1307 (eg DS1307_CHIP_DS1307)
+ * @return Pointer to the new RTC device or nil on failure
+ */
 RTC_DEVICE * STDCALL ds1307_rtc_create(char *device, uint16_t address, uint32_t chip);
+
+/**
+ * @brief Stop, deregister and destroy a DS1307 RTC device created by this driver
+ * @param RTC The RTC device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL ds1307_rtc_destroy(RTC_DEVICE *rtc);
 
 #ifdef __cplusplus

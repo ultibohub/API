@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -261,7 +261,22 @@ struct _PL011_UART
 };
 
 /** PL011 Functions */
+
+/**
+ * @brief Create and register a new PL011 UART device which can be accessed using the UART API
+ * @param Address The address of the PL011 registers
+ * @param Name The text description of this device which will show in the device list (Optional)
+ * @param IRQ The interrupt number for the PL011
+ * @param ClockRate The clock source frequency for the PL011
+ * @return Pointer to the new UART device or nil if the UART device could not be created
+ */
 UART_DEVICE * STDCALL pl011_uart_create(size_t address, char *name, uint32_t irq, uint32_t clockrate);
+
+/**
+ * @brief Close, deregister and destroy a PL011 UART device created by this driver
+ * @param UART The UART device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL pl011_uart_destroy(UART_DEVICE *uart);
 
 #ifdef __cplusplus

@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -92,8 +92,27 @@ struct _ILI9340_FRAMEBUFFER
 };
 
 /** ILI9340 Functions */
+
+/**
+ * @brief Create, register and allocate a new ILI9340 Framebuffer device which can be accessed using the framebuffer API
+ * @param SPI The SPI device that this ILI9340 is connected to
+ * @param ChipSelect The SPI chip select to use when communicating with this device
+ * @param Name The text description of this device which will show in the device list (Optional)
+ * @param Rotation The rotation value for the framebuffer device (eg FRAMEBUFFER_ROTATION_180)
+ * @param Width The width of the framebuffer in pixels
+ * @param Height The height of the framebuffer in pixels
+ * @param RST GPIO pin information for the Reset pin (Optional)
+ * @param DC GPIO pin information for the Data/Command pin
+ * @param BL GPIO pin information for the Backlight pin (Optional)
+ * @return Pointer to the new Framebuffer device or nil if the framebuffer device could not be created
+ */
 FRAMEBUFFER_DEVICE * STDCALL ili9340_framebuffer_create(SPI_DEVICE *spi, uint16_t chipselect, char *name, uint32_t rotation, uint32_t width, uint32_t height, GPIO_INFO *rst, GPIO_INFO *dc, GPIO_INFO *bl);
 
+/**
+ * @brief Release, deregister and destroy an ILI9340 Framebuffer device created by this driver
+ * @param Framebuffer The Framebuffer device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL ili9340_framebuffer_destroy(FRAMEBUFFER_DEVICE *framebuffer);
 
 #ifdef __cplusplus

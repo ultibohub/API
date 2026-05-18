@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Garry Wood <garry@softoz.com.au>
+ * Copyright (c) 2026 Garry Wood <garry@softoz.com.au>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -83,7 +83,21 @@ struct _PL031_RTC
 };
 
 /** PL031 Functions */
+
+/**
+ * @brief Create, register and start a new PL031 RTC device which can be accessed using the RTC API
+ * @param Address The address of the PL031 registers
+ * @param Name The text description of this device which will show in the device list (Optional)
+ * @param IRQ The interrupt number for the PL031
+ * @return Pointer to the new RTC device or nil if the RTC device could not be created
+ */
 RTC_DEVICE * STDCALL pl031_rtc_create(size_t address, char *name, uint32_t irq);
+
+/**
+ * @brief Stop, deregister and destroy a PL031 RTC device created by this driver
+ * @param RTC The RTC device to destroy
+ * @return ERROR_SUCCESS if completed or another error code on failure
+ */
 uint32_t STDCALL pl031_rtc_destroy(RTC_DEVICE *rtc);
 
 #ifdef __cplusplus
