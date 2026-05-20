@@ -2,6 +2,10 @@
 
 Ultibo core API for C and C++
 
+More information about developing with [Ultibo Core](https://github.com/ultibohub/Core) can be found in the [Ultibo wiki](https://github.com/ultibohub/Core/wiki)
+
+See the [C/C++ API reference](https://ultibo.org/documentation/api/index.html) for detailed documentation of the available functionality
+
 ### Supported interfaces:
 
 The includes folder contains header files for interfaces to the following Ultibo APIs
